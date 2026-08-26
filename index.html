@@ -1,26 +1,50 @@
 <!doctype html>
 <html lang="ka">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ZURA Music</title><meta name="description" content="ZURA — independent artist. Official music, releases and visual world.">
-<style>
-:root{--ink:#090a0b;--paper:#ede9df;--acid:#ffb800}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--ink);color:var(--paper);font-family:Arial,Helvetica,sans-serif}a{color:inherit;text-decoration:none}.shell{width:min(1180px,calc(100% - 48px));margin:auto}.nav{height:92px;display:flex;align-items:center;justify-content:space-between;position:absolute;z-index:10;left:0;right:0;border-bottom:1px solid #ffffff20}.brand{display:flex;align-items:center;gap:13px;font-size:25px;font-weight:900;letter-spacing:.18em}.brand img{width:52px;height:52px;object-fit:contain}.lang-toggle{background:transparent;color:var(--paper);border:1px solid #ffffff55;padding:10px 12px;cursor:pointer;font-weight:800;letter-spacing:.12em}.nav-actions{display:flex;align-items:center;gap:10px}.nav nav{display:flex;gap:36px;font-size:12px;letter-spacing:.16em}.nav nav a:hover{color:var(--acid)}.listen{border:1px solid #ffffff55;padding:11px 16px;font-size:11px;letter-spacing:.14em}.hero{min-height:800px;height:100vh;position:relative;overflow:hidden}.hero-media{position:absolute;inset:0;background:radial-gradient(circle at 72% 46%,transparent 0 10%,#0a0b0d88 45%,#08090b 78%),linear-gradient(90deg,#070809 0 37%,transparent 68%),url('zura-hero.jpg') center/cover no-repeat}.hero-media:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0008,transparent 30%,#08090b 96%)}.hero-grid{height:100%;position:relative;padding-top:185px}.eyebrow,.overline{font-size:10px;font-weight:700;letter-spacing:.28em;color:#d9d4ca}.eyebrow i{display:inline-block;width:30px;height:2px;background:var(--acid);margin-right:13px;vertical-align:middle}h1{margin:38px 0 22px;display:flex;flex-direction:column;font-size:clamp(80px,11.8vw,168px);line-height:.72;letter-spacing:-.075em;font-weight:950}h1 span:nth-child(2){padding-left:.44em;-webkit-text-stroke:1px #eee;color:transparent}h1 em{font:400 .53em Georgia;letter-spacing:-.04em;color:var(--acid);padding-left:1.22em}.hero-copy{max-width:390px;margin:42px 0 28px;line-height:1.7;color:#b7b3ab;font-size:14px}.play{display:inline-flex;align-items:center;gap:15px}.play b{width:50px;height:50px;display:grid;place-items:center;border-radius:50%;background:var(--paper);color:#111}.play small{display:block;font-size:8px;letter-spacing:.2em;color:#aaa;margin-bottom:5px}.ticker{background:var(--acid);color:#0a0a0a;overflow:hidden;font-size:12px;font-weight:900;letter-spacing:.23em;padding:15px;white-space:nowrap;transform:rotate(-1deg);width:102%;margin-left:-1%}.ticker span{padding:0 32px}.music{padding:130px 0}.section-head{display:flex;align-items:end;justify-content:space-between;margin-bottom:55px}.section-head h2{font-size:58px;margin:0;letter-spacing:-.05em}.section-head a,.num{font-size:10px;letter-spacing:.2em;color:#aaa}.release{display:grid;grid-template-columns:55px 80px 1fr 55px;align-items:center;gap:25px;min-height:125px;border-top:1px solid #ffffff20}.release:last-child{border-bottom:1px solid #ffffff20}.cover{width:76px;height:76px;background:linear-gradient(135deg,#1c1d20,#080808);display:grid;place-items:center;border:1px solid #333;box-shadow:inset 0 0 25px #ffb80022}.cover i{font:italic 30px Georgia;color:var(--acid)}.release-title{font-size:25px;font-weight:700}.release-title b{font-size:inherit}.release-title small{display:block;font-size:8px;letter-spacing:.23em;color:#777;margin-bottom:9px}.round{width:44px;height:44px;border:1px solid #555;border-radius:50%;display:grid;place-items:center;font-size:10px}.note{font-size:10px;color:#646464;margin-top:18px}.story{background:var(--paper);color:#111;padding:130px 0}.story-grid{display:grid;grid-template-columns:1.1fr 1fr;align-items:center;gap:90px}.story-mark{font-size:clamp(110px,18vw,250px);font-weight:950;letter-spacing:-.12em;position:relative}.story-mark:before{content:"";position:absolute;width:62%;height:7px;left:3%;top:49%;background:var(--acid);transform:rotate(-14deg)}.story-mark span{display:block;font-size:.27em;letter-spacing:.3em}.story-copy h2{font-size:clamp(45px,5vw,72px);line-height:.95;letter-spacing:-.055em;margin:24px 0 35px}.story-copy p:last-child{color:#5c5952;line-height:1.85}.contact{text-align:center;padding:140px 0}.contact>p{font-size:9px;letter-spacing:.3em;color:#777}.contact h2{font-size:clamp(70px,10vw,135px);line-height:.75;letter-spacing:-.07em;margin:50px 0}.contact h2 em{font-family:Georgia;color:var(--acid);font-weight:400}.contact>a{display:inline-flex;gap:40px;border-bottom:1px solid #666;padding-bottom:14px;font-size:12px;letter-spacing:.12em}footer{height:100px;border-top:1px solid #ffffff20;display:flex;align-items:center;justify-content:space-between;color:#777;font-size:8px;letter-spacing:.18em}
-@media(max-width:760px){.shell{width:calc(100% - 32px)}.nav{height:72px}.nav nav{display:none}.hero-grid{padding-top:165px}h1{font-size:22vw}.release{grid-template-columns:30px 62px 1fr 42px;gap:12px}.cover{width:58px;height:58px}.story{padding:90px 0}.story-grid{grid-template-columns:1fr;gap:65px}.story-mark{font-size:42vw}.contact h2{font-size:21vw}}
-</style>
-</head>
-<body>
-<header class="nav shell"><a class="brand" href="#top"><img src="zv-logo.png" alt="ZV logo"><span>ZURA</span></a><nav><a href="#music" data-ka="მუსიკა" data-en="Music">მუსიკა</a><a href="#story" data-ka="ამბავი" data-en="Story">ამბავი</a><a href="#contact" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</a></nav><div class="nav-actions"><button class="lang-toggle" id="langToggle" aria-label="Switch language">EN</button><a class="listen" href="https://www.youtube.com/@Zuravasadze-w5x" data-ka="მოსმენა ↗" data-en="Listen ↗">მოსმენა ↗</a></div></header>
-<section class="hero" id="top"><div class="hero-media"></div><div class="shell hero-grid"><div class="eyebrow"><i></i> INDEPENDENT ARTIST · TBILISI</div><h1><span>HEAR</span><span>THE</span><em>UNSEEN.</em></h1><p class="hero-copy" data-ka="მუსიკა, რომელიც ჩნდება სიჩუმესა და ხმაურს შორის — ZURA-ს ოფიციალური სივრცე." data-en="Music born between silence and noise — the official world of ZURA.">მუსიკა, რომელიც ჩნდება სიჩუმესა და ხმაურს შორის — ZURA-ს ოფიციალური სივრცე.</p><a class="play" href="https://www.youtube.com/@Zuravasadze-w5x"><b>▶</b><span><small>LISTEN ON</small>YouTube Music</span></a></div></section>
-<div class="ticker">ALTERNATIVE <span>✦</span> ELECTRONIC <span>✦</span> CINEMATIC <span>✦</span> ZURA <span>✦</span> ALTERNATIVE</div>
-<section class="music shell" id="music"><div class="section-head"><span class="num">01 · SELECTED SOUND</span><h2 data-ka="მუსიკა" data-en="Music">მუსიკა</h2><a href="https://www.youtube.com/@Zuravasadze-w5x" data-ka="ყველა ჩანაწერი ↗" data-en="All releases ↗">ყველა ჩანაწერი ↗</a></div>
-<a class="release" href="https://youtu.be/CyVj82pN18o"><span>01</span><span class="cover"><i>ZV</i></span><span class="release-title"><small data-ka="ბერდია ბერიაშვილი" data-en="Berdia Beriashvili">ბერდია ბერიაშვილი</small><b data-ka="რა მოგდის ქალავ" data-en="Ra Mogdis Kalav">რა მოგდის ქალავ</b></span><span class="round">▶</span></a>
-<a class="release" href="https://youtu.be/cGEGZxQW34g"><span>02</span><span class="cover"><i>ZV</i></span><span class="release-title"><small data-ka="მირზა გელოვანი" data-en="Mirza Gelovani">მირზა გელოვანი</small><b data-ka="გაწყვეტილი ლარი" data-en="Broken String">გაწყვეტილი ლარი</b></span><span class="round">▶</span></a>
-<a class="release" href="https://youtu.be/ZAFk4sxfsic"><span>03</span><span class="cover"><i>ZV</i></span><span class="release-title"><small data-ka="ZURA" data-en="ZURA">ZURA</small><b data-ka="ორი სიტყვა" data-en="Two Words">ორი სიტყვა</b></span><span class="round">▶</span></a></section>
-<section class="story" id="story"><div class="shell story-grid"><div class="story-mark">Z<span>URA</span></div><div class="story-copy"><span class="num">02 · THE SIGNAL BEHIND THE SOUND</span><h2 data-ka="სახელი მოკლეა. ხმა — არა." data-en="The name is short. The sound is not.">სახელი მოკლეა. ხმა — არა.</h2><p data-ka="ZURA აერთიანებს ატმოსფერულ ჟღერადობას, ელექტრონულ ენერგიასა და კინემატოგრაფიულ სივრცეს. ეს გვერდი არის მუსიკის, ვიზუალური სამყაროსა და მომავალი რელიზების ერთი სახლი." data-en="ZURA brings together atmospheric sound, electronic energy and cinematic space. This is one home for the music, the visual world and every release still to come.">ZURA აერთიანებს ატმოსფერულ ჟღერადობას, ელექტრონულ ენერგიასა და კინემატოგრაფიულ სივრცეს. ეს გვერდი არის მუსიკის, ვიზუალური სამყაროსა და მომავალი რელიზების ერთი სახლი.</p></div></div></section>
-<section class="contact shell" id="contact"><p>BOOKING · COLLABORATIONS · PRESS</p><h2>LET’S MAKE<br><em>NOISE.</em></h2><a href="https://www.youtube.com/@Zuravasadze-w5x"><span data-ka="ნახე ჩემი YouTube არხი" data-en="Visit my YouTube channel">ნახე ჩემი YouTube არხი</span> <span>↗</span></a></section>
-<footer class="shell"><strong>ZURA</strong><p>© 2026 ZURA. ALL RIGHTS RESERVED.</p><a href="#top">TOP ↑</a></footer>
-<script>
-const btn=document.getElementById('langToggle');let lang=localStorage.getItem('zura-lang')||'ka';
-function setLang(next){lang=next;document.documentElement.lang=lang;document.querySelectorAll('[data-ka]').forEach(el=>el.textContent=el.dataset[lang]);btn.textContent=lang==='ka'?'EN':'KA';localStorage.setItem('zura-lang',lang)}
-btn.addEventListener('click',()=>setLang(lang==='ka'?'en':'ka'));setLang(lang);
-</script></body></html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#090a0b" />
+
+    <title>ZURA Music — Composer Archive</title>
+    <meta
+      name="description"
+      content="ZURA-ს ოფიციალური მუსიკალური სივრცე — რჩეული ჩანაწერები და ორენოვანი კომპოზიტორის არქივის საფუძველი."
+    />
+    <link rel="canonical" href="https://vasozura.github.io/" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ZURA Music" />
+    <meta property="og:title" content="ZURA Music — Hear the Unseen" />
+    <meta
+      property="og:description"
+      content="ZURA-ს ოფიციალური მუსიკალური სივრცე — რჩეული ჩანაწერები და ორენოვანი კომპოზიტორის არქივის საფუძველი."
+    />
+    <meta property="og:url" content="https://vasozura.github.io/" />
+    <meta property="og:image" content="https://vasozura.github.io/assets/zura-hero.jpg" />
+    <meta property="og:image:width" content="1600" />
+    <meta property="og:image:height" content="900" />
+    <meta property="og:image:alt" content="აბსტრაქტული ლურჯი და ოქროსფერი მუსიკალური სცენა" />
+    <meta property="og:locale" content="ka_GE" />
+    <meta property="og:locale:alternate" content="en_US" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ZURA Music — Hear the Unseen" />
+    <meta
+      name="twitter:description"
+      content="The official music space of ZURA — selected releases and the foundation of a bilingual composer archive."
+    />
+    <meta name="twitter:image" content="https://vasozura.github.io/assets/zura-hero.jpg" />
+
+    <style>
+      html { background: #090a0b; }
+      body { margin: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <noscript>This bilingual music archive requires JavaScript to display its catalog.</noscript>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
