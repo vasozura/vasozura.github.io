@@ -9,6 +9,7 @@ The application is fully usable with the three local demo releases until a Supab
    - `supabase/migrations/202608260001_composer_archive.sql`
    - `supabase/migrations/202608260002_seed_verified_songs.sql`
    - `supabase/migrations/202608270001_grant_archive_owner.sql`
+   - `supabase/migrations/202608270002_allow_windows_midi_mime.sql`
 3. Alternatively, after installing and authenticating the Supabase CLI, run:
 
    ```powershell
@@ -16,7 +17,7 @@ The application is fully usable with the three local demo releases until a Supab
    supabase db push
    ```
 
-The first migration creates tables, indexes, updated-at triggers, RLS policies, RPC authorization, and Storage buckets. The second migration inserts only the three verified Phase 1 releases. The third migration grants this archive's existing Auth user owner access.
+The first migration creates tables, indexes, updated-at triggers, RLS policies, RPC authorization, and Storage buckets. The second migration inserts only the three verified Phase 1 releases. The third migration grants this archive's existing Auth user owner access. The fourth adds Windows browser compatibility for the `audio/mid` MIDI MIME type.
 
 ## 2. Create the owner identity
 
@@ -68,4 +69,4 @@ Buckets are private. After RLS confirms that a visitor may read a published song
 - The anonymous key is not an administration bypass; owner writes pass through authentication and RLS.
 - The service-role key is accepted only by the local importer process.
 - File limits are enforced in UI/importer validation, database checks, and Storage bucket configuration.
-- Deleting a song deletes relational file records, but physical Storage objects are retained intentionally for recovery/version history and should be removed manually only after review.
+- Confirmed song deletion removes recorded physical Storage objects before deleting relational records, preventing orphaned archive files. A Storage failure aborts the database deletion.

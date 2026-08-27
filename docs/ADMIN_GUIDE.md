@@ -27,7 +27,7 @@ Draft rows and their files are not readable by anonymous visitors. Public catalo
 - Failed saves leave the form intact and expose a retry submit action.
 - Files are content-checked in the browser before upload and checked again by Storage limits/policies.
 - Duplicate file content for a song reuses the prior `song_files` record.
-- Song deletion removes database child rows via foreign keys. Storage objects remain as recoverable, versioned artifacts until deliberately removed from the Supabase dashboard.
+- Song deletion first removes every recorded version from its private Storage bucket, then removes the song and database child rows. If Storage cleanup fails, the database delete is not attempted.
 
 ## Guitar and accordion parts
 

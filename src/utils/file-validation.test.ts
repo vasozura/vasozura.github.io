@@ -6,6 +6,7 @@ describe("file validation", () => {
   it.each([
     ["cover.webp", "image/webp", "cover"],
     ["performance.mid", "audio/midi", "midi"],
+    ["performance.mid", "audio/mid", "midi"],
     ["score.musicxml", "application/vnd.recordare.musicxml+xml", "musicxml"],
     ["score.mxl", "application/vnd.recordare.musicxml", "musicxml"],
     ["score.pdf", "application/pdf", "score_pdf"],

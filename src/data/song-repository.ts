@@ -155,7 +155,21 @@ export async function setSongStatus(songId: string, status: "draft" | "published
 }
 
 export async function deleteSong(songId: string): Promise<void> {
-  const { error } = await requireSupabase().from("songs").delete().eq("id", songId);
+  const supabase = requireSupabase();
+  const { data: files, error: filesError } = await supabase.from("song_files").select("file_type,storage_path").eq("song_id", songId);
+  if (filesError) throw filesError;
+  const pathsByBucket = new Map<string, string[]>();
+  for (const file of files ?? []) {
+    const fileType = String(file.file_type) as UploadFileType;
+    const rule = fileRules[fileType];
+    if (!rule) throw new Error(`Unsupported stored file type: ${fileType}`);
+    pathsByBucket.set(rule.bucket, [...(pathsByBucket.get(rule.bucket) ?? []), String(file.storage_path)]);
+  }
+  for (const [bucket, paths] of pathsByBucket) {
+    const { error: storageError } = await supabase.storage.from(bucket).remove(paths);
+    if (storageError) throw storageError;
+  }
+  const { error } = await supabase.from("songs").delete().eq("id", songId);
   if (error) throw error;
 }
 

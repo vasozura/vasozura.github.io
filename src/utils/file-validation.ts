@@ -10,12 +10,12 @@ export interface FileRule {
 export const fileRules: Record<UploadFileType, FileRule> = {
   cover: { bucket: "covers", extensions: ["jpg", "jpeg", "png", "webp"], mimeTypes: ["image/jpeg", "image/png", "image/webp"], maxBytes: 5 * 1024 * 1024 },
   audio: { bucket: "audio", extensions: ["mp3"], mimeTypes: ["audio/mpeg", "audio/mp3"], maxBytes: 100 * 1024 * 1024 },
-  midi: { bucket: "midi", extensions: ["mid", "midi"], mimeTypes: ["audio/midi", "audio/x-midi", "application/octet-stream"], maxBytes: 5 * 1024 * 1024 },
+  midi: { bucket: "midi", extensions: ["mid", "midi"], mimeTypes: ["audio/mid", "audio/midi", "audio/x-midi", "application/octet-stream"], maxBytes: 5 * 1024 * 1024 },
   musicxml: { bucket: "musicxml", extensions: ["musicxml", "xml", "mxl"], mimeTypes: ["application/vnd.recordare.musicxml+xml", "application/vnd.recordare.musicxml", "application/xml", "text/xml", "application/zip", "application/octet-stream"], maxBytes: 20 * 1024 * 1024 },
   score_pdf: { bucket: "scores", extensions: ["pdf"], mimeTypes: ["application/pdf"], maxBytes: 25 * 1024 * 1024 },
   source_project: { bucket: "instrument-parts", extensions: ["mscz"], mimeTypes: ["application/x-musescore", "application/zip", "application/octet-stream"], maxBytes: 50 * 1024 * 1024 },
   lyrics: { bucket: "lyrics", extensions: ["txt"], mimeTypes: ["text/plain"], maxBytes: 1024 * 1024 },
-  instrument_part: { bucket: "instrument-parts", extensions: ["musicxml", "xml", "mxl", "mid", "midi", "json"], mimeTypes: ["application/vnd.recordare.musicxml+xml", "application/vnd.recordare.musicxml", "application/xml", "text/xml", "application/zip", "audio/midi", "audio/x-midi", "application/json", "application/octet-stream"], maxBytes: 20 * 1024 * 1024 },
+  instrument_part: { bucket: "instrument-parts", extensions: ["musicxml", "xml", "mxl", "mid", "midi", "json"], mimeTypes: ["application/vnd.recordare.musicxml+xml", "application/vnd.recordare.musicxml", "application/xml", "text/xml", "application/zip", "audio/mid", "audio/midi", "audio/x-midi", "application/json", "application/octet-stream"], maxBytes: 20 * 1024 * 1024 },
 };
 
 export interface FileLike { name: string; size: number; type: string; }
