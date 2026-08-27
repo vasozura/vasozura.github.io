@@ -3,11 +3,17 @@ import { renderFooter } from "./components/footer";
 import { renderHeader } from "./components/header";
 import { renderHome } from "./components/home";
 import { renderPlayerShell } from "./components/player-shell";
+import { renderSongCard } from "./components/song-card";
+import { mountAdmin } from "./components/admin";
 import { renderSongDetail, renderSongNotFound } from "./components/song-detail";
 import { loadSongs } from "./data/load-songs";
 import { getInitialLanguage, storeLanguage, type Language } from "./i18n";
 import { parseRoute } from "./router";
 import type { Song } from "./types/song";
+import { filterSongs } from "./utils/catalog-filter";
+import type { SongFilters } from "./types/song";
+import { PlayerController } from "./player/player-controller";
+import { mountScoreViewer } from "./score/score-viewer";
 
 const appElement = document.querySelector<HTMLDivElement>("#app");
 if (!appElement) throw new Error("The application root was not found.");
@@ -16,6 +22,7 @@ const app: HTMLDivElement = appElement;
 let language: Language = getInitialLanguage();
 let songs: Song[] = [];
 let lastRenderedHash = "";
+const player = new PlayerController();
 
 const descriptions: Record<Language, string> = {
   ka: "ZURA-ს ოფიციალური მუსიკალური სივრცე — რჩეული ჩანაწერები და ორენოვანი კომპოზიტორის არქივის საფუძველი.",
@@ -35,6 +42,38 @@ function bindInteractions(): void {
     storeLanguage(language);
     render();
   });
+  bindCatalogFilters();
+  player.bind(app, songs, language);
+  const score = document.querySelector<HTMLElement>("#interactive-score");
+  if (score) void mountScoreViewer(score);
+}
+
+function readCatalogFilters(): SongFilters {
+  return {
+    query: document.querySelector<HTMLInputElement>("#catalog-search")?.value ?? "",
+    language: document.querySelector<HTMLSelectElement>("#catalog-language")?.value ?? "",
+    lyricist: document.querySelector<HTMLSelectElement>("#catalog-lyricist")?.value ?? "",
+    difficulty: document.querySelector<HTMLSelectElement>("#catalog-difficulty")?.value ?? "",
+    resource: (document.querySelector<HTMLSelectElement>("#catalog-resource")?.value ?? "") as SongFilters["resource"],
+  };
+}
+
+function bindCatalogFilters(): void {
+  const form = document.querySelector<HTMLFormElement>("#catalog-filters");
+  const list = document.querySelector<HTMLElement>("#release-list");
+  const count = document.querySelector<HTMLElement>("#catalog-count");
+  if (!form || !list || !count) return;
+  const apply = (): void => {
+    const filtered = filterSongs(songs, readCatalogFilters());
+    list.innerHTML = filtered.map((song, index) => renderSongCard(song, index, language)).join("");
+    count.textContent = `${language === "ka" ? "ნაპოვნია" : "Showing"} ${filtered.length}`;
+    if (!filtered.length) list.innerHTML = `<p class="catalog-empty">${language === "ka" ? "ამ ფილტრებით ჩანაწერი ვერ მოიძებნა." : "No releases match these filters."}</p>`;
+    player.bind(app, songs, language);
+  };
+  form.addEventListener("submit", (event) => event.preventDefault());
+  form.addEventListener("input", apply);
+  form.addEventListener("change", apply);
+  form.addEventListener("reset", () => window.setTimeout(apply, 0));
 }
 
 function scrollToHomeAnchor(anchor: string | null): void {
@@ -45,6 +84,18 @@ function scrollToHomeAnchor(anchor: string | null): void {
 function render(): void {
   const route = parseRoute(window.location.hash);
   const routeChanged = lastRenderedHash !== window.location.hash;
+  if (route.name === "admin") {
+    updateDocumentMetadata();
+    document.title = "Archive administration — ZURA Music";
+    app.innerHTML = `<main class="admin-route shell" id="main-content"><p class="num">OWNER ARCHIVE</p><p>Loading administration…</p></main>`;
+    void mountAdmin(app).catch((error: unknown) => {
+      console.error(error);
+      app.innerHTML = `<main class="admin-route shell" id="main-content"><p class="num">ADMIN · ERROR</p><h1>The administration area could not be loaded.</h1><p>${error instanceof Error ? error.message : "Unknown error"}</p><a href="#top">Return to site</a></main>`;
+    });
+    if (routeChanged) window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "auto" }));
+    lastRenderedHash = window.location.hash;
+    return;
+  }
   const selectedSong = route.name === "song" ? songs.find((song) => song.slug === route.slug) : undefined;
   updateDocumentMetadata(selectedSong);
 
@@ -59,7 +110,7 @@ function render(): void {
     <a class="skip-link" href="#main-content">${skipLabel}</a>
     ${renderHeader(language)}
     ${content}
-    ${renderPlayerShell(language)}
+    ${renderPlayerShell(language, songs)}
     ${renderFooter(language)}
   `;
 

@@ -1,4 +1,6 @@
 import type { Song } from "../types/song";
+import { extractYouTubeVideoId } from "../utils/youtube";
+import { safeHttpUrl } from "../utils/safe-url";
 
 export interface ValidationIssue {
   path: string;
@@ -7,7 +9,7 @@ export interface ValidationIssue {
 
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const videoIdPattern = /^[A-Za-z0-9_-]{11}$/;
-const publicationStatuses = new Set(["draft", "published", "archived", null]);
+const publicationStatuses = new Set(["draft", "published"]);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -17,19 +19,6 @@ function hasLocalizedTitle(value: unknown): boolean {
   if (!isRecord(value)) return false;
   return typeof value.ka === "string" && value.ka.trim().length > 0 &&
     typeof value.en === "string" && value.en.trim().length > 0;
-}
-
-function extractYouTubeId(url: string): string | null {
-  try {
-    const parsed = new URL(url);
-    if (parsed.hostname === "youtu.be") return parsed.pathname.slice(1) || null;
-    if (parsed.hostname === "www.youtube.com" || parsed.hostname === "youtube.com") {
-      return parsed.searchParams.get("v");
-    }
-  } catch {
-    return null;
-  }
-  return null;
 }
 
 export function validateSongCollection(value: unknown): ValidationIssue[] {
@@ -69,7 +58,7 @@ export function validateSongCollection(value: unknown): ValidationIssue[] {
       issues.push({ path: `${path}.title`, message: "Verified Georgian and English titles are required." });
     }
 
-    if (!publicationStatuses.has(entry.publicationStatus as string | null)) {
+    if (!publicationStatuses.has(String(entry.publicationStatus))) {
       issues.push({ path: `${path}.publicationStatus`, message: "Publication status is not supported." });
     }
 
@@ -77,7 +66,7 @@ export function validateSongCollection(value: unknown): ValidationIssue[] {
       if (typeof entry.youtubeUrl !== "string" || typeof entry.youtubeVideoId !== "string") {
         issues.push({ path: `${path}.youtubeUrl`, message: "YouTube URL and video id must be supplied together." });
       } else {
-        const extractedId = extractYouTubeId(entry.youtubeUrl);
+        const extractedId = extractYouTubeVideoId(entry.youtubeUrl);
         if (!videoIdPattern.test(entry.youtubeVideoId) || extractedId !== entry.youtubeVideoId) {
           issues.push({ path: `${path}.youtubeVideoId`, message: "YouTube URL and video id do not match." });
         } else if (videoIds.has(entry.youtubeVideoId)) {
@@ -93,6 +82,11 @@ export function validateSongCollection(value: unknown): ValidationIssue[] {
       if (fieldValue !== null && (typeof fieldValue !== "number" || fieldValue <= 0)) {
         issues.push({ path: `${path}.${numericField}`, message: "Value must be null or a positive number." });
       }
+    }
+
+    for (const urlField of ["coverUrl", "audioUrl", "midiUrl", "musicXmlUrl", "scorePdfUrl", "sourceProjectUrl", "sunoUrl", "youtubeUrl"] as const) {
+      const fieldValue = entry[urlField];
+      if (fieldValue !== null && (typeof fieldValue !== "string" || !safeHttpUrl(fieldValue))) issues.push({ path: `${path}.${urlField}`, message: "URL must use HTTPS, a root-relative path, or local HTTP during development." });
     }
   });
 

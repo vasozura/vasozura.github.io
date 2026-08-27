@@ -1,0 +1,169 @@
+import { getSupabase, requireSupabase } from "../lib/supabase";
+import type { Difficulty, LocalizedText, Song } from "../types/song";
+import { fileRules, type UploadFileType } from "../utils/file-validation";
+import { safeHttpUrl } from "../utils/safe-url";
+
+type SongRow = Record<string, unknown>;
+
+function stringOrNull(value: unknown): string | null {
+  return typeof value === "string" && value.length > 0 ? value : null;
+}
+
+function localized(ka: unknown, en: unknown): LocalizedText | null {
+  const value = { ka: stringOrNull(ka), en: stringOrNull(en) };
+  return value.ka || value.en ? value : null;
+}
+
+export function songFromRow(row: SongRow): Song {
+  return {
+    id: String(row.id),
+    slug: String(row.slug),
+    title: { ka: stringOrNull(row.title_ka), en: stringOrNull(row.title_en) },
+    displayCredit: localized(row.display_credit, row.display_credit),
+    composer: localized(row.composer, row.composer),
+    lyricistOrPoet: localized(row.lyricist, row.lyricist),
+    translator: localized(row.translator, row.translator),
+    language: stringOrNull(row.language),
+    description: localized(row.description_ka, row.description_en),
+    lyrics: localized(row.lyrics_ka, row.lyrics_en),
+    coverUrl: safeHttpUrl(stringOrNull(row.cover_url)),
+    audioUrl: safeHttpUrl(stringOrNull(row.audio_url)),
+    midiUrl: safeHttpUrl(stringOrNull(row.midi_url)),
+    musicXmlUrl: safeHttpUrl(stringOrNull(row.musicxml_url)),
+    scorePdfUrl: safeHttpUrl(stringOrNull(row.score_pdf_url)),
+    sourceProjectUrl: safeHttpUrl(stringOrNull(row.source_project_url)),
+    sunoUrl: safeHttpUrl(stringOrNull(row.suno_url)),
+    youtubeUrl: safeHttpUrl(stringOrNull(row.youtube_url)),
+    youtubeVideoId: stringOrNull(row.youtube_video_id),
+    durationSeconds: typeof row.duration_seconds === "number" ? row.duration_seconds : null,
+    bpm: typeof row.bpm === "number" ? row.bpm : null,
+    musicalKey: stringOrNull(row.musical_key),
+    timeSignature: stringOrNull(row.time_signature),
+    difficulty: ["beginner", "intermediate", "advanced"].includes(String(row.difficulty)) ? row.difficulty as Difficulty : null,
+    publicationStatus: row.status === "published" ? "published" : "draft",
+    publicationDate: stringOrNull(row.published_at),
+    createdAt: stringOrNull(row.created_at),
+    updatedAt: stringOrNull(row.updated_at),
+  };
+}
+
+export function songToRow(song: Song): Record<string, unknown> {
+  return {
+    id: /^[0-9a-f-]{36}$/i.test(song.id) ? song.id : undefined,
+    slug: song.slug,
+    status: song.publicationStatus,
+    title_ka: song.title.ka,
+    title_en: song.title.en,
+    display_credit: song.displayCredit?.ka ?? song.displayCredit?.en,
+    composer: song.composer?.ka ?? song.composer?.en,
+    lyricist: song.lyricistOrPoet?.ka ?? song.lyricistOrPoet?.en,
+    translator: song.translator?.ka ?? song.translator?.en,
+    language: song.language,
+    description_ka: song.description?.ka,
+    description_en: song.description?.en,
+    lyrics_ka: song.lyrics?.ka,
+    lyrics_en: song.lyrics?.en,
+    cover_url: song.coverUrl,
+    audio_url: song.audioUrl,
+    midi_url: song.midiUrl,
+    musicxml_url: song.musicXmlUrl,
+    score_pdf_url: song.scorePdfUrl,
+    source_project_url: song.sourceProjectUrl,
+    suno_url: song.sunoUrl,
+    youtube_url: song.youtubeUrl,
+    youtube_video_id: song.youtubeVideoId,
+    duration_seconds: song.durationSeconds,
+    bpm: song.bpm,
+    musical_key: song.musicalKey,
+    time_signature: song.timeSignature,
+    difficulty: song.difficulty,
+    published_at: song.publicationStatus === "published" ? song.publicationDate ?? new Date().toISOString() : null,
+  };
+}
+
+const songSelect = "id,slug,status,title_ka,title_en,display_credit,composer,lyricist,translator,language,description_ka,description_en,lyrics_ka,lyrics_en,cover_url,audio_url,midi_url,musicxml_url,score_pdf_url,source_project_url,suno_url,youtube_url,youtube_video_id,duration_seconds,bpm,musical_key,time_signature,difficulty,published_at,created_at,updated_at";
+
+const resourceProperties: Partial<Record<UploadFileType, keyof Pick<Song, "coverUrl" | "audioUrl" | "midiUrl" | "musicXmlUrl" | "scorePdfUrl" | "sourceProjectUrl">>> = {
+  cover: "coverUrl",
+  audio: "audioUrl",
+  midi: "midiUrl",
+  musicxml: "musicXmlUrl",
+  score_pdf: "scorePdfUrl",
+  source_project: "sourceProjectUrl",
+};
+
+async function hydrateSignedResources(songs: Song[]): Promise<Song[]> {
+  if (!songs.length) return songs;
+  const supabase = requireSupabase();
+  const { data, error } = await supabase.from("song_files").select("song_id,file_type,storage_path,version").in("song_id", songs.map((song) => song.id)).order("version", { ascending: false });
+  if (error) throw error;
+  const latest = new Map<string, { songId: string; fileType: UploadFileType; path: string }>();
+  for (const row of data ?? []) {
+    const fileType = String(row.file_type) as UploadFileType;
+    const key = `${row.song_id}:${fileType}`;
+    if (resourceProperties[fileType] && !latest.has(key)) latest.set(key, { songId: String(row.song_id), fileType, path: String(row.storage_path) });
+  }
+  const hydrated = songs.map((song) => ({ ...song }));
+  const byBucket = new Map<string, Array<{ songId: string; fileType: UploadFileType; path: string }>>();
+  for (const entry of latest.values()) {
+    const bucket = fileRules[entry.fileType].bucket;
+    byBucket.set(bucket, [...(byBucket.get(bucket) ?? []), entry]);
+  }
+  for (const [bucket, entries] of byBucket) {
+    const { data: signed, error: signError } = await supabase.storage.from(bucket).createSignedUrls(entries.map((entry) => entry.path), 3600);
+    if (signError) throw signError;
+    entries.forEach((entry, index) => {
+      const song = hydrated.find((candidate) => candidate.id === entry.songId);
+      const property = resourceProperties[entry.fileType];
+      const signedUrl = signed?.[index]?.signedUrl;
+      if (song && property && signedUrl) song[property] = signedUrl;
+    });
+  }
+  return hydrated;
+}
+
+export async function loadPublishedSongsFromSupabase(): Promise<Song[] | null> {
+  const supabase = getSupabase();
+  if (!supabase) return null;
+  const { data, error } = await supabase.from("songs").select(songSelect).eq("status", "published").order("published_at", { ascending: false, nullsFirst: false });
+  if (error) throw error;
+  return hydrateSignedResources((data as SongRow[]).map(songFromRow));
+}
+
+export async function loadAdminSongs(): Promise<Song[]> {
+  const { data, error } = await requireSupabase().from("songs").select(songSelect).order("updated_at", { ascending: false });
+  if (error) throw error;
+  return hydrateSignedResources((data as SongRow[]).map(songFromRow));
+}
+
+export async function saveSong(song: Song): Promise<Song> {
+  const row = songToRow(song);
+  if (row.id === undefined) delete row.id;
+  const { data, error } = await requireSupabase().from("songs").upsert(row, { onConflict: "slug" }).select(songSelect).single();
+  if (error) throw error;
+  return songFromRow(data as SongRow);
+}
+
+export async function updateSongResources(songId: string, changes: Partial<Record<"cover_url" | "audio_url" | "midi_url" | "musicxml_url" | "score_pdf_url" | "source_project_url", string>>): Promise<void> {
+  const { error } = await requireSupabase().from("songs").update(changes).eq("id", songId);
+  if (error) throw error;
+}
+
+export async function setSongStatus(songId: string, status: "draft" | "published"): Promise<void> {
+  const { error } = await requireSupabase().from("songs").update({ status, published_at: status === "published" ? new Date().toISOString() : null }).eq("id", songId);
+  if (error) throw error;
+}
+
+export async function deleteSong(songId: string): Promise<void> {
+  const { error } = await requireSupabase().from("songs").delete().eq("id", songId);
+  if (error) throw error;
+}
+
+export async function isCurrentUserAdmin(): Promise<boolean> {
+  const supabase = requireSupabase();
+  const { data: sessionData } = await supabase.auth.getSession();
+  if (!sessionData.session) return false;
+  const { data, error } = await supabase.rpc("is_admin");
+  if (error) throw error;
+  return data === true;
+}

@@ -2,3 +2,16 @@ node_modules/
 dist/
 *.log
 .vite/
+.env
+.env.*
+!.env.example
+.supabase/
+supabase/.temp/
+tmp/
+uploads/
+*.mp3
+*.mid
+*.midi
+*.musicxml
+*.mxl
+*.mscz
