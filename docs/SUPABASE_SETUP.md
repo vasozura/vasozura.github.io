@@ -8,6 +8,7 @@ The application is fully usable with the three local demo releases until a Supab
 2. Open **SQL Editor** and run, in filename order:
    - `supabase/migrations/202608260001_composer_archive.sql`
    - `supabase/migrations/202608260002_seed_verified_songs.sql`
+   - `supabase/migrations/202608270001_grant_archive_owner.sql`
 3. Alternatively, after installing and authenticating the Supabase CLI, run:
 
    ```powershell
@@ -15,17 +16,18 @@ The application is fully usable with the three local demo releases until a Supab
    supabase db push
    ```
 
-The first migration creates tables, indexes, updated-at triggers, RLS policies, RPC authorization, and Storage buckets. The second migration inserts only the three verified Phase 1 releases.
+The first migration creates tables, indexes, updated-at triggers, RLS policies, RPC authorization, and Storage buckets. The second migration inserts only the three verified Phase 1 releases. The third migration grants this archive's existing Auth user owner access.
 
 ## 2. Create the owner identity
 
-1. In **Authentication → Users**, create/invite the owner's email account.
-2. Copy that user's UUID.
-3. In SQL Editor, run this once, replacing only the UUID and display name:
+1. In **Authentication → Users**, create/invite the owner's email account before applying the owner migration.
+2. For another deployment, replace the project-specific UUID in the owner migration before it is first applied.
+3. If the migration has already been applied and the owner changes, use SQL Editor to upsert the replacement UUID:
 
    ```sql
    insert into public.admin_profiles (id, display_name)
-   values ('OWNER_AUTH_USER_UUID', 'Archive owner');
+   values ('OWNER_AUTH_USER_UUID', 'Archive owner')
+   on conflict (id) do update set display_name = excluded.display_name;
    ```
 
 The bootstrap insert is intentionally not available to browser clients. After it exists, `public.is_admin()` and RLS authorize that owner.

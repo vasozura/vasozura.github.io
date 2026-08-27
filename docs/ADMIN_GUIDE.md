@@ -14,7 +14,7 @@ For local work use `http://127.0.0.1:5173/#/admin` (development) or `http://127.
 2. Select **New song** or **Edit** an existing song.
 3. Complete both titles and a lowercase slug. Unknown fields may remain blank.
 4. Paste a supported YouTube URL; its 11-character ID is derived automatically.
-5. Enter Georgian/English descriptions and lyrics directly, or select validated resource files.
+5. Enter Georgian/English descriptions and lyrics directly, or load each language from a validated UTF-8 `.txt` file. Selected lyric files are also retained in the versioned `lyrics` bucket.
 6. Review cover/audio previews and select **Save song and files**. Each file shows upload progress.
 7. Keep new entries in `draft` until verified. Use **Publish** only when public metadata and permissions are ready.
 

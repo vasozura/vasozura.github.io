@@ -1365,6 +1365,7 @@ img {
 
 .admin-login {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 18px;
 }
 
@@ -1574,6 +1575,11 @@ img {
   .admin-heading {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .admin-route h1 {
+    font-size: clamp(30px, 8vw, 36px);
+    overflow-wrap: anywhere;
   }
 
   .admin-route th:nth-child(3),
