@@ -1,7 +1,7 @@
 import { appConfig } from "../config";
 import { deleteSong, isCurrentUserAdmin, loadAdminSongs, saveSong, setSongStatus, updateSongResources } from "../data/song-repository";
 import { uploadSongFile } from "../data/storage-repository";
-import { requireSupabase } from "../lib/supabase";
+import { clearPasswordRecovery, isPasswordRecovery, requireSupabase } from "../lib/supabase";
 import type { Difficulty, LocalizedText, Song } from "../types/song";
 import { escapeHtml } from "../utils/escape-html";
 import { cleanupLiteralNewlines, validateFile, type UploadFileType } from "../utils/file-validation";
@@ -45,6 +45,10 @@ function fileInput(label: string, name: string, accept: string, current: string 
 function renderLogin(message = ""): string {
   if (!appConfig.hasSupabase) return `<main class="admin-route shell" id="main-content"><div class="admin-setup"><p class="num">OWNER ARCHIVE · SETUP REQUIRED</p><h1>Connect Supabase</h1><p>The administration code is ready, but browser credentials are not configured. Copy <code>.env.example</code> to <code>.env.local</code>, add the project URL and public anonymous key, then restart the local server.</p><a href="#top">Return to site</a></div></main>`;
   return `<main class="admin-route shell" id="main-content"><form class="admin-login" id="admin-login" method="post" action="#/admin"><p class="num">OWNER ACCESS</p><h1>Composer archive administration</h1>${message ? `<p class="form-message error">${escapeHtml(message)}</p>` : ""}${field("Owner email", "email", "", "email", "required autocomplete=\"email\"")}${field("Password", "password", "", "password", "required autocomplete=\"current-password\"")}<button class="admin-primary" type="submit">Sign in</button><a href="#top">Return to site</a></form></main>`;
+}
+
+function renderPasswordRecovery(message = "", success = false): string {
+  return `<main class="admin-route shell" id="main-content"><form class="admin-login" id="password-recovery" method="post" action="#/admin"><p class="num">OWNER ACCESS · RECOVERY</p><h1>Set a new password</h1><p>Use a new, unique password with at least 12 characters.</p><p class="form-message ${success ? "success" : "error"}" id="recovery-message" aria-live="polite" ${message ? "" : "hidden"}>${escapeHtml(message)}</p>${field("New password", "new_password", "", "password", "required minlength=\"12\" autocomplete=\"new-password\"")}${field("Confirm new password", "confirm_password", "", "password", "required minlength=\"12\" autocomplete=\"new-password\"")}<button class="admin-primary" type="submit">Update password</button></form></main>`;
 }
 
 function renderSongList(songs: Song[]): string {
@@ -130,6 +134,29 @@ export async function mountAdmin(root: HTMLElement): Promise<void> {
   installUnsavedGuard();
   if (!appConfig.hasSupabase) { root.innerHTML = renderLogin(); return; }
   const supabase = requireSupabase();
+  if (isPasswordRecovery()) {
+    root.innerHTML = renderPasswordRecovery();
+    root.querySelector<HTMLFormElement>("#password-recovery")?.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget as HTMLFormElement;
+      const data = new FormData(form);
+      const password = String(data.get("new_password") ?? "");
+      const confirmation = String(data.get("confirm_password") ?? "");
+      const message = form.querySelector<HTMLElement>("#recovery-message")!;
+      const showError = (text: string): void => { message.hidden = false; message.textContent = text; };
+      if (password.length < 12) { showError("Password must contain at least 12 characters."); return; }
+      if (password !== confirmation) { showError("The passwords do not match."); return; }
+      const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+      submit.disabled = true;
+      const { error } = await supabase.auth.updateUser({ password });
+      if (error) { submit.disabled = false; showError(error.message); return; }
+      clearPasswordRecovery();
+      await supabase.auth.signOut();
+      window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#/admin`);
+      root.innerHTML = renderLogin("Password updated. Sign in with the new password.");
+    });
+    return;
+  }
   const { data } = await supabase.auth.getSession();
   if (!data.session) {
     root.innerHTML = renderLogin();

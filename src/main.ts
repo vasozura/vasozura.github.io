@@ -14,6 +14,7 @@ import { filterSongs } from "./utils/catalog-filter";
 import type { SongFilters } from "./types/song";
 import { PlayerController } from "./player/player-controller";
 import { mountScoreViewer } from "./score/score-viewer";
+import { isPasswordRecovery } from "./lib/supabase";
 
 const appElement = document.querySelector<HTMLDivElement>("#app");
 if (!appElement) throw new Error("The application root was not found.");
@@ -82,7 +83,7 @@ function scrollToHomeAnchor(anchor: string | null): void {
 }
 
 function render(): void {
-  const route = parseRoute(window.location.hash);
+  const route = isPasswordRecovery() ? { name: "admin" as const } : parseRoute(window.location.hash);
   const routeChanged = lastRenderedHash !== window.location.hash;
   if (route.name === "admin") {
     updateDocumentMetadata();

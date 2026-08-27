@@ -18,6 +18,10 @@ For local work use `http://127.0.0.1:5173/#/admin` (development) or `http://127.
 6. Review cover/audio previews and select **Save song and files**. Each file shows upload progress.
 7. Keep new entries in `draft` until verified. Use **Publish** only when public metadata and permissions are ready.
 
+## Password recovery
+
+Supabase Auth must redirect recovery emails to an allowed application URL. The recovery link opens a dedicated owner form, requires a matching password of at least 12 characters, calls authenticated `updateUser()`, removes recovery parameters from the address bar, signs out the recovery session, and returns to the owner login form.
+
 Draft rows and their files are not readable by anonymous visitors. Public catalog queries request published rows only. Missing resources are omitted from public song pages.
 
 ## Safety behavior
