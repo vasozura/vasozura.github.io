@@ -83,7 +83,13 @@ function scrollToHomeAnchor(anchor: string | null): void {
 }
 
 function scrollToRouteTop(): void {
-  window.requestAnimationFrame(() => window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "auto" })));
+  window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
+    const root = document.documentElement;
+    const previousBehavior = root.style.scrollBehavior;
+    root.style.scrollBehavior = "auto";
+    window.scrollTo({ top: 0, behavior: "auto" });
+    root.style.scrollBehavior = previousBehavior;
+  }));
 }
 
 function render(): void {
