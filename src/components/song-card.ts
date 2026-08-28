@@ -12,8 +12,11 @@ export function renderSongCard(song: Song, index: number, language: Language): s
     ? `<img src="${escapeHtml(song.coverUrl)}" alt="${title}" width="76" height="76" loading="lazy" decoding="async" />`
     : `<i aria-hidden="true">ZV</i>`;
   const youtube = song.youtubeUrl
-    ? `<a class="round" href="${escapeHtml(song.youtubeUrl)}" aria-label="${youtubeLabel}"><span aria-hidden="true">▶</span></a>`
+    ? `<a class="round" href="${escapeHtml(song.youtubeUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${youtubeLabel}"><span aria-hidden="true">▶</span></a>`
     : `<span class="round round-disabled" aria-hidden="true">—</span>`;
+  const play = song.audioUrl
+    ? `<button class="card-play" type="button" data-play-song="${escapeHtml(song.id)}" aria-label="${language === "ka" ? `${title} — MP3 დაკვრა` : `Play ${title} MP3`}">♫</button>`
+    : "";
 
   return `
     <article class="release-card">
@@ -23,6 +26,7 @@ export function renderSongCard(song: Song, index: number, language: Language): s
         <small>${credit}</small>
         <strong>${title}</strong>
       </a>
+      ${play}
       ${youtube}
     </article>
   `;
