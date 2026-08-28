@@ -79,7 +79,11 @@ function bindCatalogFilters(): void {
 
 function scrollToHomeAnchor(anchor: string | null): void {
   if (!anchor) return;
-  window.requestAnimationFrame(() => document.getElementById(anchor)?.scrollIntoView());
+  window.requestAnimationFrame(() => window.requestAnimationFrame(() => document.getElementById(anchor)?.scrollIntoView()));
+}
+
+function scrollToRouteTop(): void {
+  window.requestAnimationFrame(() => window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "auto" })));
 }
 
 function render(): void {
@@ -93,7 +97,7 @@ function render(): void {
       console.error(error);
       app.innerHTML = `<main class="admin-route shell" id="main-content"><p class="num">ADMIN · ERROR</p><h1>The administration area could not be loaded.</h1><p>${error instanceof Error ? error.message : "Unknown error"}</p><a href="#top">Return to site</a></main>`;
     });
-    if (routeChanged) window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "auto" }));
+    if (routeChanged) scrollToRouteTop();
     lastRenderedHash = window.location.hash;
     return;
   }
@@ -117,9 +121,10 @@ function render(): void {
 
   bindInteractions();
   if (route.name === "home") {
-    scrollToHomeAnchor(route.anchor);
+    if (route.anchor) scrollToHomeAnchor(route.anchor);
+    else if (routeChanged) scrollToRouteTop();
   } else if (routeChanged) {
-    window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "auto" }));
+    scrollToRouteTop();
   }
   lastRenderedHash = window.location.hash;
 }
