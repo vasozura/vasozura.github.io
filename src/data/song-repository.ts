@@ -83,6 +83,18 @@ export function songToRow(song: Song): Record<string, unknown> {
 
 const songSelect = "id,slug,status,title_ka,title_en,display_credit,composer,lyricist,translator,language,description_ka,description_en,lyrics_ka,lyrics_en,cover_url,audio_url,midi_url,musicxml_url,score_pdf_url,source_project_url,suno_url,youtube_url,youtube_video_id,duration_seconds,bpm,musical_key,time_signature,difficulty,published_at,created_at,updated_at";
 
+async function hydrateLearningConfiguration(songs: Song[]): Promise<Song[]> {
+  if (!songs.length) return songs;
+  const { data, error } = await requireSupabase().from("songs").select("id,learning_enabled,learning_instruments,learning_source_type,learning_mapping,learning_fingering").in("id", songs.map((song) => song.id));
+  if (error) return songs;
+  const configs = new Map((data as SongRow[]).map((row) => [String(row.id), row]));
+  return songs.map((song) => {
+    const row = configs.get(song.id);
+    if (!row) return song;
+    return { ...song, learningEnabled: row.learning_enabled === true, learningInstruments: Array.isArray(row.learning_instruments) ? row.learning_instruments.filter((entry): entry is "piano" | "guitar" | "accordion" => ["piano", "guitar", "accordion"].includes(String(entry))) : [], learningSource: row.learning_source_type === "midi" ? "midi" : "musicxml", learningMapping: row.learning_mapping && typeof row.learning_mapping === "object" ? row.learning_mapping as Record<string, unknown> : {}, learningFingering: row.learning_fingering && typeof row.learning_fingering === "object" ? row.learning_fingering as Record<string, unknown> : {} };
+  });
+}
+
 const resourceProperties: Partial<Record<UploadFileType, keyof Pick<Song, "coverUrl" | "audioUrl" | "midiUrl" | "musicXmlUrl" | "scorePdfUrl" | "sourceProjectUrl">>> = {
   cover: "coverUrl",
   audio: "audioUrl",
@@ -127,13 +139,13 @@ export async function loadPublishedSongsFromSupabase(): Promise<Song[] | null> {
   if (!supabase) return null;
   const { data, error } = await supabase.from("songs").select(songSelect).eq("status", "published").order("published_at", { ascending: false, nullsFirst: false });
   if (error) throw error;
-  return hydrateSignedResources((data as SongRow[]).map(songFromRow));
+  return hydrateLearningConfiguration(await hydrateSignedResources((data as SongRow[]).map(songFromRow)));
 }
 
 export async function loadAdminSongs(): Promise<Song[]> {
   const { data, error } = await requireSupabase().from("songs").select(songSelect).order("updated_at", { ascending: false });
   if (error) throw error;
-  return hydrateSignedResources((data as SongRow[]).map(songFromRow));
+  return hydrateLearningConfiguration(await hydrateSignedResources((data as SongRow[]).map(songFromRow)));
 }
 
 export async function saveSong(song: Song): Promise<Song> {
@@ -146,6 +158,11 @@ export async function saveSong(song: Song): Promise<Song> {
 
 export async function updateSongResources(songId: string, changes: Partial<Record<"cover_url" | "audio_url" | "midi_url" | "musicxml_url" | "score_pdf_url" | "source_project_url", string>>): Promise<void> {
   const { error } = await requireSupabase().from("songs").update(changes).eq("id", songId);
+  if (error) throw error;
+}
+
+export async function updateLearningConfiguration(songId: string, config: Pick<Song, "learningEnabled" | "learningInstruments" | "learningSource" | "learningMapping" | "learningFingering">): Promise<void> {
+  const { error } = await requireSupabase().from("songs").update({ learning_enabled: config.learningEnabled, learning_instruments: config.learningInstruments ?? [], learning_source_type: config.learningSource ?? "musicxml", learning_mapping: config.learningMapping ?? {}, learning_fingering: config.learningFingering ?? {} }).eq("id", songId);
   if (error) throw error;
 }
 

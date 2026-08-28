@@ -1,0 +1,30 @@
+{
+  "version": "v1",
+  "songId": "fixture-complex",
+  "sourceChecksum": "fixture-sha256",
+  "generatedAt": "2026-08-28T00:00:00.000Z",
+  "parts": [
+    { "id": "piano-rh", "name": "Piano RH", "instrument": "piano", "midiChannel": 0, "hand": "right" },
+    { "id": "piano-lh", "name": "Piano LH", "instrument": "piano", "midiChannel": 1, "hand": "left" }
+  ],
+  "timeline": {
+    "version": "v1",
+    "durationSeconds": 7.5,
+    "tempos": [{ "atSeconds": 0, "bpm": 96, "measureIndex": 0 }, { "atSeconds": 2.5, "bpm": 120, "measureIndex": 2 }],
+    "timeSignatures": [{ "atSeconds": 0, "beats": 4, "beatType": 4, "measureIndex": 0 }],
+    "measures": [
+      { "index": 0, "number": "0", "startSeconds": 0, "durationSeconds": 0.625, "beats": 1, "beatType": 4, "pickup": true, "repeatStart": true },
+      { "index": 1, "number": "1", "startSeconds": 0.625, "durationSeconds": 2.5, "beats": 4, "beatType": 4, "pickup": false },
+      { "index": 2, "number": "2", "startSeconds": 3.125, "durationSeconds": 2, "beats": 4, "beatType": 4, "pickup": false, "repeatEnd": true },
+      { "index": 3, "number": "3", "startSeconds": 5.125, "durationSeconds": 2.375, "beats": 4, "beatType": 4, "pickup": false }
+    ],
+    "notes": [
+      { "id": "n1", "partId": "piano-rh", "measureIndex": 0, "beat": 1, "startSeconds": 0, "durationSeconds": 0.625, "midi": 67, "velocity": 0.8, "hand": "right", "tieStart": true },
+      { "id": "n2", "partId": "piano-rh", "measureIndex": 1, "beat": 1, "startSeconds": 0.625, "durationSeconds": 1.25, "midi": 67, "velocity": 0.8, "hand": "right", "tieStop": true, "chord": true },
+      { "id": "n3", "partId": "piano-rh", "measureIndex": 1, "beat": 1, "startSeconds": 0.625, "durationSeconds": 1.25, "midi": 71, "velocity": 0.8, "hand": "right", "chord": true },
+      { "id": "n4", "partId": "piano-lh", "measureIndex": 1, "beat": 1, "startSeconds": 0.625, "durationSeconds": 2.5, "midi": 48, "velocity": 0.7, "hand": "left" },
+      { "id": "n5", "partId": "piano-rh", "measureIndex": 2, "beat": 1, "startSeconds": 3.125, "durationSeconds": 0.5, "midi": 72, "velocity": 0.8, "hand": "right", "string": 1, "fret": 8 }
+    ]
+  },
+  "warnings": ["Measure 3 contains an intentional rest used by the fixture."]
+}

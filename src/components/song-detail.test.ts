@@ -19,4 +19,11 @@ describe("song resource rendering", () => {
     expect(html).toContain("interactive-score");
     expect(html).not.toContain("PDF score");
   });
+
+  it("supports a MIDI-only learning entry while keeping learning opt-in", () => {
+    const html = renderSongDetail({ ...song, midiUrl: "https://example.com/a.mid", learningEnabled: true, learningInstruments: ["piano"] }, "en");
+    expect(html).toContain("interactive-score");
+    expect(html).toContain('data-learning-enabled="true"');
+    expect(html).toContain('data-musicxml-url=""');
+  });
 });

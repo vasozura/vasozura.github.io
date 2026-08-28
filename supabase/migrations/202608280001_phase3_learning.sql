@@ -1,0 +1,21 @@
+alter table public.songs add column if not exists learning_enabled boolean not null default false;
+alter table public.songs add column if not exists learning_instruments text[] not null default '{}';
+alter table public.songs add column if not exists learning_source_type text check (learning_source_type in ('musicxml','midi'));
+alter table public.songs add column if not exists learning_source_checksum text;
+alter table public.songs add column if not exists learning_manifest_version text;
+alter table public.songs add column if not exists learning_manifest jsonb;
+alter table public.songs add column if not exists learning_mapping jsonb not null default '{}'::jsonb;
+alter table public.songs add column if not exists learning_fingering jsonb not null default '{}'::jsonb;
+alter table public.songs add column if not exists score_processing_status text not null default 'idle' check (score_processing_status in ('idle','pending','processing','ready','failed'));
+
+create table if not exists public.learning_exercises (id uuid primary key default gen_random_uuid(),song_id uuid not null references public.songs(id) on delete cascade,owner_id uuid references auth.users(id) on delete set null,title text not null,config jsonb not null,is_public boolean not null default false,created_at timestamptz not null default now(),updated_at timestamptz not null default now());
+create table if not exists public.learning_attempts (id uuid primary key default gen_random_uuid(),exercise_id uuid not null references public.learning_exercises(id) on delete cascade,user_id uuid not null references auth.users(id) on delete cascade,idempotency_key text not null,result jsonb not null,created_at timestamptz not null default now(),unique(user_id,idempotency_key));
+create table if not exists public.learning_progress (user_id uuid not null references auth.users(id) on delete cascade,song_id uuid not null references public.songs(id) on delete cascade,summary jsonb not null,updated_at timestamptz not null default now(),primary key(user_id,song_id));
+create index if not exists learning_exercises_song_idx on public.learning_exercises(song_id,public);
+create index if not exists learning_attempts_user_idx on public.learning_attempts(user_id,created_at desc);
+alter table public.learning_exercises enable row level security;alter table public.learning_attempts enable row level security;alter table public.learning_progress enable row level security;
+create policy "Published exercises are public" on public.learning_exercises for select to anon,authenticated using (public.is_admin() or (is_public and exists(select 1 from public.songs where songs.id=learning_exercises.song_id and songs.status='published')));
+create policy "Admins manage exercises" on public.learning_exercises for all to authenticated using(public.is_admin()) with check(public.is_admin());
+create policy "Users own attempts" on public.learning_attempts for all to authenticated using(auth.uid()=user_id) with check(auth.uid()=user_id);
+create policy "Users own progress" on public.learning_progress for all to authenticated using(auth.uid()=user_id) with check(auth.uid()=user_id);
+grant select on public.learning_exercises to anon,authenticated;grant select,insert,update,delete on public.learning_exercises,public.learning_attempts,public.learning_progress to authenticated;

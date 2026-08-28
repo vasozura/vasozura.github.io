@@ -3,7 +3,6 @@ import { PianoVisualizer } from "./instrument-visualizer";
 
 export async function mountScoreViewer(root: HTMLElement): Promise<void> {
   const musicXmlUrl = root.dataset.musicxmlUrl;
-  if (!musicXmlUrl) return;
   const canvas = root.querySelector<HTMLElement>(".score-canvas");
   const controls = root.querySelector<HTMLElement>(".score-controls");
   const status = root.querySelector<HTMLElement>(".score-status");
@@ -11,7 +10,7 @@ export async function mountScoreViewer(root: HTMLElement): Promise<void> {
   const piano = root.querySelector<HTMLElement>(".piano-keyboard");
   if (!canvas || !controls || !status || !midiControls || !piano) return;
 
-  try {
+  if (musicXmlUrl) try {
     const { OpenSheetMusicDisplay } = await import("opensheetmusicdisplay");
     const osmd = new OpenSheetMusicDisplay(canvas, { autoResize: true, backend: "svg", drawTitle: true, followCursor: true });
     await osmd.load(musicXmlUrl);
@@ -19,19 +18,25 @@ export async function mountScoreViewer(root: HTMLElement): Promise<void> {
     osmd.cursor.show();
     let zoom = 1;
     let page = 0;
+    let measure = 1;
+    let pageMode = true;
     const pages = () => [...canvas.querySelectorAll<HTMLElement>(".osmd-page")];
     const showPage = (): void => {
       const list = pages();
+      if (!pageMode) { list.forEach((entry) => { entry.hidden = false; }); return; }
       if (list.length <= 1) return;
       page = Math.max(0, Math.min(page, list.length - 1));
       list.forEach((entry, index) => { entry.hidden = index !== page; });
       controls.querySelector<HTMLElement>("[data-page-label]")!.textContent = `${page + 1} / ${list.length}`;
     };
-    controls.innerHTML = `<button type="button" data-score-action="zoom-out" aria-label="Zoom out">−</button><output data-zoom-label>100%</output><button type="button" data-score-action="zoom-in" aria-label="Zoom in">+</button><button type="button" data-score-action="prev-page" aria-label="Previous page">←</button><output data-page-label>1 / ${Math.max(1, pages().length)}</output><button type="button" data-score-action="next-page" aria-label="Next page">→</button><button type="button" data-score-action="cursor" aria-pressed="true">Cursor</button>`;
+    controls.innerHTML = `<button type="button" data-score-action="zoom-out" aria-label="Zoom out">−</button><output data-zoom-label>100%</output><button type="button" data-score-action="zoom-in" aria-label="Zoom in">+</button><label>Layout <select data-score-layout><option value="page">Page</option><option value="continuous">Continuous</option></select></label><button type="button" data-score-action="prev-page" aria-label="Previous page">← page</button><output data-page-label>1 / ${Math.max(1, pages().length)}</output><button type="button" data-score-action="next-page" aria-label="Next page">page →</button><button type="button" data-score-action="prev-measure" aria-label="Previous measure">← measure</button><output data-measure-label>Measure 1</output><button type="button" data-score-action="next-measure" aria-label="Next measure">measure →</button><button type="button" data-score-action="cursor" aria-pressed="true">Cursor</button>`;
     controls.querySelector('[data-score-action="zoom-out"]')?.addEventListener("click", () => { zoom = Math.max(0.5, zoom - 0.1); osmd.Zoom = zoom; osmd.render(); controls.querySelector<HTMLElement>("[data-zoom-label]")!.textContent = `${Math.round(zoom * 100)}%`; showPage(); });
     controls.querySelector('[data-score-action="zoom-in"]')?.addEventListener("click", () => { zoom = Math.min(1.8, zoom + 0.1); osmd.Zoom = zoom; osmd.render(); controls.querySelector<HTMLElement>("[data-zoom-label]")!.textContent = `${Math.round(zoom * 100)}%`; showPage(); });
     controls.querySelector('[data-score-action="prev-page"]')?.addEventListener("click", () => { page -= 1; showPage(); });
     controls.querySelector('[data-score-action="next-page"]')?.addEventListener("click", () => { page += 1; showPage(); });
+    controls.querySelector<HTMLSelectElement>("[data-score-layout]")?.addEventListener("change", (event) => { pageMode = (event.currentTarget as HTMLSelectElement).value === "page"; showPage(); });
+    controls.querySelector('[data-score-action="prev-measure"]')?.addEventListener("click", () => { try { osmd.cursor.previous(); measure = Math.max(1, measure - 1); } catch { measure = 1; } controls.querySelector<HTMLElement>("[data-measure-label]")!.textContent = `Measure ${measure}`; });
+    controls.querySelector('[data-score-action="next-measure"]')?.addEventListener("click", () => { try { osmd.cursor.next(); measure += 1; } catch { /* Cursor stays at the final measure. */ } controls.querySelector<HTMLElement>("[data-measure-label]")!.textContent = `Measure ${measure}`; });
     controls.querySelector<HTMLButtonElement>('[data-score-action="cursor"]')?.addEventListener("click", (event) => {
       const button = event.currentTarget as HTMLButtonElement;
       const visible = button.getAttribute("aria-pressed") !== "true";
@@ -42,7 +47,7 @@ export async function mountScoreViewer(root: HTMLElement): Promise<void> {
     status.textContent = "MusicXML score loaded.";
   } catch (error) {
     status.textContent = error instanceof Error ? error.message : "The score could not be loaded.";
-  }
+  } else { status.textContent = "Notation is unavailable; MIDI learning remains available."; canvas.hidden = true; controls.hidden = true; }
 
   const midiUrl = root.dataset.midiUrl;
   if (!midiUrl) { midiControls.innerHTML = "<p>MIDI playback is not available for this score.</p>"; return; }
