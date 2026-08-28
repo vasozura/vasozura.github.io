@@ -15,4 +15,10 @@ describe("learning integration guards", () => {
     expect(css).toContain("overflow-x: auto");
     expect(css).not.toContain("overflow-x: visible");
   });
+
+  it("keeps the external API URL configurable without embedding server credentials", async () => {
+    const config = await readFile(new URL("../config.ts", import.meta.url), "utf8");
+    expect(config).toContain("VITE_LEARNING_API_URL");
+    expect(config).not.toMatch(/service.?role|anthropic/i);
+  });
 });

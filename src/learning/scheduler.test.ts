@@ -35,4 +35,13 @@ describe("canonical scheduler", () => {
     expect(scheduler.snapshot().measure?.index).toBe(2);
     expect(manifest.timeline.tempos).toHaveLength(2);
   });
+
+  it("cancels its animation frame during route cleanup", () => {
+    const cancel = vi.fn();
+    vi.stubGlobal("cancelAnimationFrame", cancel);
+    const scheduler = new CanonicalScheduler(manifest.timeline, () => now);
+    scheduler.play();
+    scheduler.destroy();
+    expect(cancel).toHaveBeenCalledWith(1);
+  });
 });
