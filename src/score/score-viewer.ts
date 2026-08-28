@@ -16,6 +16,14 @@ export async function mountScoreViewer(root: HTMLElement): Promise<void> {
     await osmd.load(musicXmlUrl);
     osmd.render();
     osmd.cursor.show();
+    let learningCursorStep = -1;
+    root.addEventListener("learning-score-cursor", (event) => {
+      const target = Number((event as CustomEvent<{ cursorStep: number }>).detail.cursorStep);
+      if (!Number.isInteger(target) || target === learningCursorStep) return;
+      if (target < learningCursorStep) { osmd.cursor.reset(); learningCursorStep = -1; }
+      while (learningCursorStep < target) { osmd.cursor.next(); learningCursorStep += 1; }
+      osmd.cursor.show();
+    });
     let zoom = 1;
     let page = 0;
     let measure = 1;

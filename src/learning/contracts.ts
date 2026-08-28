@@ -2,7 +2,7 @@ export const LEARNING_API_VERSION = "v1" as const;
 export type Hand = "left" | "right" | "unknown";
 export interface Part { id:string; name:string; instrument:string; midiChannel:number|null; hand:Hand; }
 export interface Measure { index:number; number:string; startSeconds:number; durationSeconds:number; beats:number; beatType:number; pickup:boolean; repeatStart?:boolean; repeatEnd?:boolean; }
-export interface NoteEvent { id:string; partId:string; measureIndex:number; beat:number; startSeconds:number; durationSeconds:number; midi:number; velocity:number; hand:Hand; tieStart?:boolean; tieStop?:boolean; chord?:boolean; string?:number; fret?:number; }
+export interface NoteEvent { id:string; partId:string; measureIndex:number; beat:number; startSeconds:number; durationSeconds:number; midi:number; velocity:number; hand:Hand; cursorStep?:number; tieStart?:boolean; tieStop?:boolean; chord?:boolean; string?:number; fret?:number; }
 export interface TempoEvent { atSeconds:number; bpm:number; measureIndex:number; }
 export interface TimeSignature { atSeconds:number; beats:number; beatType:number; measureIndex:number; }
 export interface Timeline { version:typeof LEARNING_API_VERSION; durationSeconds:number; notes:NoteEvent[]; tempos:TempoEvent[]; timeSignatures:TimeSignature[]; measures:Measure[]; }

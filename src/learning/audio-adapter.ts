@@ -27,8 +27,9 @@ export class SchedulerAudioAdapter {
   private render(frame: SchedulerFrame): void {
     if (!this.context) return;
     frame.active.forEach((note) => { if (!this.played.has(note.id)) { this.played.add(note.id); this.sound(note); } });
-    const beat = frame.measure ? frame.measure.index * frame.measure.beats + Math.floor(frame.beat) : -1;
-    if (this.metronome && beat >= 0 && beat !== this.lastBeat) this.click();
+    const beatLength = 60 / (this.scheduler.timeline.tempos[0]?.bpm ?? 120);
+    const beat = frame.measure ? frame.measure.index * frame.measure.beats + Math.floor(frame.beat) : Math.floor(frame.position / beatLength);
+    if (this.metronome && beat !== this.lastBeat) this.click();
     this.lastBeat = beat;
   }
 

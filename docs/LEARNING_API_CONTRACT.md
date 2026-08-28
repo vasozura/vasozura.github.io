@@ -33,7 +33,7 @@ components:
 
 Manifest example:
 ```json
-{"version":"v1","songId":"fixture-polyphony","sourceChecksum":"sha256:...","generatedAt":"2026-08-28T00:00:00Z","parts":[{"id":"p1","name":"Piano","instrument":"piano","midiChannel":0,"hand":"right"}],"timeline":{"version":"v1","durationSeconds":4,"notes":[{"id":"n1","partId":"p1","measureIndex":0,"beat":1,"startSeconds":0,"durationSeconds":1,"midi":60,"velocity":0.8,"hand":"right"}],"tempos":[{"atSeconds":0,"bpm":120,"measureIndex":0}],"timeSignatures":[{"atSeconds":0,"beats":4,"beatType":4,"measureIndex":0}],"measures":[{"index":0,"number":"1","startSeconds":0,"durationSeconds":2,"beats":4,"beatType":4,"pickup":false}]},"warnings":[]}
+{"version":"v1","songId":"fixture-polyphony","sourceChecksum":"sha256:...","generatedAt":"2026-08-28T00:00:00Z","parts":[{"id":"p1","name":"Piano","instrument":"piano","midiChannel":0,"hand":"right"}],"timeline":{"version":"v1","durationSeconds":4,"notes":[{"id":"n1","partId":"p1","measureIndex":0,"beat":1,"startSeconds":0,"durationSeconds":1,"midi":60,"velocity":0.8,"hand":"right","cursorStep":0}],"tempos":[{"atSeconds":0,"bpm":120,"measureIndex":0}],"timeSignatures":[{"atSeconds":0,"beats":4,"beatType":4,"measureIndex":0}],"measures":[{"index":0,"number":"1","startSeconds":0,"durationSeconds":2,"beats":4,"beatType":4,"pickup":false}]},"warnings":[]}
 ```
 
 Attempt request/result:
