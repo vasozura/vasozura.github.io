@@ -2,7 +2,11 @@ import { appConfig } from "../config";
 import { getSupabase } from "../lib/supabase";
 import { mountScoreViewer } from "../score/score-viewer";
 import type { AttemptResult, Exercise, NoteEvent, ScoreManifest, Timeline } from "./contracts";
-import { LearningApiClient, type LearningApi } from "./api-client";
+import {
+  isLearningApiUnavailable,
+  LearningApiClient,
+  type LearningApi,
+} from "./api-client";
 import { SchedulerAudioAdapter } from "./audio-adapter";
 import { AccordionVisualizer, GuitarVisualizer, Piano88Visualizer, type TimelineVisualizer } from "./instruments";
 import { LocalLearningApi } from "./mock-api";
@@ -30,7 +34,11 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
   await mountScoreViewer(root);
   const midiUrl = root.dataset.midiUrl;
   const songId = root.dataset.songId ?? "";
-  if (root.dataset.learningEnabled !== "true" || !midiUrl || !songId) return () => {};
+  if (
+    root.dataset.learningEnabled !== "true" ||
+    !songId ||
+    (!appConfig.hasLearningApi && !midiUrl)
+  ) return () => {};
   const legacyPiano = root.querySelector<HTMLElement>(".piano-keyboard");
   if (legacyPiano) legacyPiano.hidden = true;
 
@@ -46,12 +54,22 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
   try {
     let api: LearningApi;
     let manifest: ScoreManifest;
+    let usingLocalAdapter = false;
     if (appConfig.hasLearningApi) {
       api = new LearningApiClient(appConfig.learningApiUrl);
-      manifest = await api.manifest(songId, controller.signal);
+      try {
+        manifest = await api.manifest(songId, controller.signal);
+      } catch (error) {
+        if (!midiUrl || !isLearningApiUnavailable(error)) throw error;
+        manifest = await manifestFromMidi(songId, midiUrl);
+        api = new LocalLearningApi({ [songId]: manifest });
+        usingLocalAdapter = true;
+      }
     } else {
+      if (!midiUrl) throw new Error("Learning resources are unavailable.");
       manifest = await manifestFromMidi(songId, midiUrl);
       api = new LocalLearningApi({ [songId]: manifest });
+      usingLocalAdapter = true;
     }
     const [exercise] = await api.exercises(songId, controller.signal);
     const scheduler = new CanonicalScheduler(manifest.timeline);
@@ -62,6 +80,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     let visualizer: TimelineVisualizer = new Piano88Visualizer(visualRoot);
     let practicing = false;
     let reliable = true;
+    let practiceStartedAtMs = 0;
 
     const select = (name: string): void => {
       visualizer.destroy();
@@ -87,10 +106,75 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     };
     const practice = host.querySelector<HTMLButtonElement>('[data-l="practice"]')!;
     const finish = host.querySelector<HTMLButtonElement>('[data-l="finish"]')!;
-    practice.onclick = () => { recorder.clear(); practicing = true; reliable = scheduler.snapshot().reliable; exercise.mode = host.querySelector<HTMLSelectElement>('[data-l="practice-mode"]')!.value as Exercise["mode"]; scheduler.seek(manifest.timeline.measures[exercise.fromMeasure]?.startSeconds ?? 0); void audio.enable(); scheduler.play(4); practice.disabled = true; finish.disabled = false; host.querySelector<HTMLElement>('[data-l="result"]')!.textContent = exercise.mode === "listen" ? "Listen mode started." : "Practice recording started."; };
-    finish.onclick = async () => { practicing = false; scheduler.pause(); const events = recorder.result(); const shifted = events.map((event) => ({ ...event, startedAtMs: event.startedAtMs - (events[0]?.startedAtMs ?? 0) })); const result = appConfig.hasLearningApi ? await api.evaluate(exercise.id, shifted, crypto.randomUUID(), controller.signal) : await (api as LocalLearningApi).evaluate(exercise.id, shifted); if (!reliable) result.pausedForTiming = true; const session = await getSupabase()?.auth.getSession(); if (!appConfig.hasLearningApi || session?.data.session) await api.saveProgress({ songId, userId: session?.data.session?.user.id ?? null, completedExercises: result.completion >= 80 ? 1 : 0, bestScore: Math.round((result.pitchScore + result.timingScore + result.durationScore) / 3), streak: result.streak, lastPracticedAt: new Date().toISOString() }, controller.signal); host.querySelector<HTMLElement>('[data-l="result"]')!.textContent = result.pausedForTiming ? "Timing score paused because the tab was throttled." : resultText(result); practice.disabled = false; finish.disabled = true; };
+    practice.onclick = () => {
+      recorder.clear();
+      practicing = true;
+      practiceStartedAtMs = performance.now();
+      reliable = scheduler.snapshot().reliable;
+      exercise.mode = host.querySelector<HTMLSelectElement>('[data-l="practice-mode"]')!
+        .value as Exercise["mode"];
+      scheduler.seek(manifest.timeline.measures[exercise.fromMeasure]?.startSeconds ?? 0);
+      void audio.enable();
+      scheduler.play(4);
+      practice.disabled = true;
+      finish.disabled = false;
+      host.querySelector<HTMLElement>('[data-l="result"]')!.textContent =
+        exercise.mode === "listen" ? "Listen mode started." : "Practice recording started.";
+    };
+    finish.onclick = async () => {
+      practicing = false;
+      scheduler.pause();
+      const resultOutput = host.querySelector<HTMLElement>('[data-l="result"]')!;
+      finish.disabled = true;
+      resultOutput.textContent = "Evaluating attempt…";
+      try {
+        const events = recorder.result();
+        const shifted = events.map((event) => ({
+          ...event,
+          startedAtMs: event.startedAtMs - (events[0]?.startedAtMs ?? 0),
+        }));
+        const result = await api.evaluate(
+          exercise.id,
+          shifted,
+          crypto.randomUUID(),
+          controller.signal,
+        );
+        if (!reliable) result.pausedForTiming = true;
+        const session = await getSupabase()?.auth.getSession();
+        if (usingLocalAdapter || session?.data.session) {
+          await api.saveProgress(
+            {
+              songId,
+              userId: session?.data.session?.user.id ?? null,
+              completedExercises: result.completion >= 80 ? 1 : 0,
+              bestScore: Math.round(
+                (result.pitchScore + result.timingScore + result.durationScore) / 3,
+              ),
+              streak: result.streak,
+              practiceSeconds: Math.max(0, (performance.now() - practiceStartedAtMs) / 1000),
+              lastPracticedAt: new Date().toISOString(),
+            },
+            controller.signal,
+          );
+        }
+        resultOutput.textContent = result.pausedForTiming
+          ? "Timing score paused because the tab was throttled."
+          : resultText(result);
+      } catch (error) {
+        resultOutput.textContent = error instanceof Error
+          ? error.message
+          : "Attempt evaluation failed.";
+      } finally {
+        practice.disabled = false;
+        finish.disabled = true;
+      }
+    };
     scheduler.addEventListener("frame", (event) => { const frame = (event as CustomEvent<SchedulerFrame>).detail; reliable = reliable && frame.reliable; visualizer.render(frame.active, frame.upcoming); const cursorNote = frame.active[0] ?? frame.upcoming[0]; if (cursorNote) root.dispatchEvent(new CustomEvent("learning-score-cursor", { detail: { cursorStep: cursorNote.cursorStep ?? manifest.timeline.notes.indexOf(cursorNote) } })); host.querySelector<HTMLOutputElement>('[data-l="position"]')!.value = `${(frame.measure?.index ?? 0) + 1} · ${Math.max(1, Math.floor(frame.beat))}`; });
-    host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = appConfig.hasLearningApi ? "Learning API connected." : "Using the versioned local learning adapter.";
+    host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = usingLocalAdapter
+      ? appConfig.hasLearningApi
+        ? "Learning API unavailable; using the versioned local adapter."
+        : "Using the versioned local learning adapter."
+      : "Learning API connected.";
     return () => { controller.abort(); disconnectMidi(); audio.destroy(); scheduler.destroy(); visualizer.destroy(); host.remove(); if (legacyPiano) legacyPiano.hidden = false; };
   } catch (error) {
     host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = error instanceof Error ? error.message : "Learning mode unavailable";

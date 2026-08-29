@@ -21,4 +21,16 @@ describe("learning integration guards", () => {
     expect(config).toContain("VITE_LEARNING_API_URL");
     expect(config).not.toMatch(/service.?role|anthropic/i);
   });
+
+  it("uses the generated client and omits browser credentials", async () => {
+    const adapter = await readFile(new URL("./api-client.ts", import.meta.url), "utf8");
+    const generatedClient = await readFile(
+      new URL("../lib/zura-api/client.ts", import.meta.url),
+      "utf8",
+    );
+    expect(adapter).toContain('from "../lib/zura-api"');
+    expect(generatedClient).toContain('credentials: "omit"');
+    expect(generatedClient).toContain("getAccessToken");
+    expect(generatedClient).not.toMatch(/service.?role|postgres(?:ql)?:\/\//i);
+  });
 });

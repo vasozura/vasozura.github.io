@@ -1,0 +1,450 @@
+{
+  "chords": [
+    {
+      "duration_quarters": 2.0,
+      "end_seconds": 2.0,
+      "id": "ch_d268943f1f2391da8a992cb8",
+      "kind": "chord",
+      "midis": [
+        60,
+        64,
+        67
+      ],
+      "note_ids": [
+        "n_28d4cb0789afaeb6e2e4a478",
+        "n_70730a666a527a12032f5c65",
+        "n_87a5cc78d081f4f16227f35f"
+      ],
+      "part_id": "P1",
+      "position": {
+        "absolute_offset_quarters": 0.0,
+        "beat": 1.0,
+        "measure_index": 0,
+        "measure_number": 1,
+        "offset_quarters": 0.0,
+        "repeat_pass": 1
+      },
+      "root_midi": 60,
+      "staff": 1,
+      "start_seconds": 0.0,
+      "symbol": null,
+      "voice": "1"
+    }
+  ],
+  "duration_quarters": 8.0,
+  "duration_seconds": 8.0,
+  "endings": [],
+  "filtered_by": {},
+  "key_signatures": [
+    {
+      "fifths": 0,
+      "id": "ks_bce27cb6b3455f1d836ba4f8",
+      "kind": "key_signature",
+      "mode": null,
+      "position": {
+        "absolute_offset_quarters": 0.0,
+        "beat": 1.0,
+        "measure_index": 0,
+        "measure_number": 1,
+        "offset_quarters": 0.0,
+        "repeat_pass": 1
+      },
+      "start_seconds": 0.0,
+      "tonic": null
+    }
+  ],
+  "manifest_key": "mk_ad6cfab2952819aacb23d261",
+  "notes": [
+    {
+      "articulations": {
+        "dynamic": null,
+        "expressions": [],
+        "names": [],
+        "slur_start": false,
+        "slur_stop": false,
+        "tuplet_ratio": null
+      },
+      "chord_id": "ch_d268943f1f2391da8a992cb8",
+      "duration_quarters": 2.0,
+      "duration_seconds": 2.0,
+      "end_seconds": 2.0,
+      "fingering": {
+        "finger": 1,
+        "fret": null,
+        "hand": "right",
+        "origin": "explicit",
+        "raw_text": "1",
+        "string": null,
+        "substitution": false
+      },
+      "grace": "none",
+      "id": "n_28d4cb0789afaeb6e2e4a478",
+      "kind": "note",
+      "midi": 60,
+      "part_id": "P1",
+      "pitch": "C4",
+      "pitch_alter": 0,
+      "pitch_octave": 4,
+      "pitch_step": "C",
+      "position": {
+        "absolute_offset_quarters": 0.0,
+        "beat": 1.0,
+        "measure_index": 0,
+        "measure_number": 1,
+        "offset_quarters": 0.0,
+        "repeat_pass": 1
+      },
+      "staff": 1,
+      "start_seconds": 0.0,
+      "tie": {
+        "group_id": null,
+        "member_count": 1,
+        "member_durations_quarters": [
+          2.0
+        ],
+        "member_measures": [
+          1
+        ],
+        "tie_type": "none"
+      },
+      "velocity": null,
+      "voice": "1"
+    },
+    {
+      "articulations": {
+        "dynamic": null,
+        "expressions": [],
+        "names": [],
+        "slur_start": false,
+        "slur_stop": false,
+        "tuplet_ratio": null
+      },
+      "chord_id": "ch_d268943f1f2391da8a992cb8",
+      "duration_quarters": 2.0,
+      "duration_seconds": 2.0,
+      "end_seconds": 2.0,
+      "fingering": {
+        "finger": 3,
+        "fret": null,
+        "hand": "right",
+        "origin": "explicit",
+        "raw_text": "3",
+        "string": null,
+        "substitution": false
+      },
+      "grace": "none",
+      "id": "n_70730a666a527a12032f5c65",
+      "kind": "note",
+      "midi": 64,
+      "part_id": "P1",
+      "pitch": "E4",
+      "pitch_alter": 0,
+      "pitch_octave": 4,
+      "pitch_step": "E",
+      "position": {
+        "absolute_offset_quarters": 0.0,
+        "beat": 1.0,
+        "measure_index": 0,
+        "measure_number": 1,
+        "offset_quarters": 0.0,
+        "repeat_pass": 1
+      },
+      "staff": 1,
+      "start_seconds": 0.0,
+      "tie": {
+        "group_id": null,
+        "member_count": 1,
+        "member_durations_quarters": [
+          2.0
+        ],
+        "member_measures": [
+          1
+        ],
+        "tie_type": "none"
+      },
+      "velocity": null,
+      "voice": "1"
+    },
+    {
+      "articulations": {
+        "dynamic": null,
+        "expressions": [],
+        "names": [],
+        "slur_start": false,
+        "slur_stop": false,
+        "tuplet_ratio": null
+      },
+      "chord_id": "ch_d268943f1f2391da8a992cb8",
+      "duration_quarters": 2.0,
+      "duration_seconds": 2.0,
+      "end_seconds": 2.0,
+      "fingering": {
+        "finger": 5,
+        "fret": null,
+        "hand": "right",
+        "origin": "explicit",
+        "raw_text": "5",
+        "string": null,
+        "substitution": false
+      },
+      "grace": "none",
+      "id": "n_87a5cc78d081f4f16227f35f",
+      "kind": "note",
+      "midi": 67,
+      "part_id": "P1",
+      "pitch": "G4",
+      "pitch_alter": 0,
+      "pitch_octave": 4,
+      "pitch_step": "G",
+      "position": {
+        "absolute_offset_quarters": 0.0,
+        "beat": 1.0,
+        "measure_index": 0,
+        "measure_number": 1,
+        "offset_quarters": 0.0,
+        "repeat_pass": 1
+      },
+      "staff": 1,
+      "start_seconds": 0.0,
+      "tie": {
+        "group_id": null,
+        "member_count": 1,
+        "member_durations_quarters": [
+          2.0
+        ],
+        "member_measures": [
+          1
+        ],
+        "tie_type": "none"
+      },
+      "velocity": null,
+      "voice": "1"
+    },
+    {
+      "articulations": {
+        "dynamic": null,
+        "expressions": [],
+        "names": [],
+        "slur_start": false,
+        "slur_stop": false,
+        "tuplet_ratio": null
+      },
+      "chord_id": null,
+      "duration_quarters": 4.0,
+      "duration_seconds": 4.0,
+      "end_seconds": 4.0,
+      "fingering": {
+        "finger": 5,
+        "fret": null,
+        "hand": "left",
+        "origin": "explicit",
+        "raw_text": "5",
+        "string": null,
+        "substitution": false
+      },
+      "grace": "none",
+      "id": "n_1621026b8efea086c9ab80fe",
+      "kind": "note",
+      "midi": 48,
+      "part_id": "P1",
+      "pitch": "C3",
+      "pitch_alter": 0,
+      "pitch_octave": 3,
+      "pitch_step": "C",
+      "position": {
+        "absolute_offset_quarters": 0.0,
+        "beat": 1.0,
+        "measure_index": 0,
+        "measure_number": 1,
+        "offset_quarters": 0.0,
+        "repeat_pass": 1
+      },
+      "staff": 2,
+      "start_seconds": 0.0,
+      "tie": {
+        "group_id": null,
+        "member_count": 1,
+        "member_durations_quarters": [
+          4.0
+        ],
+        "member_measures": [
+          1
+        ],
+        "tie_type": "none"
+      },
+      "velocity": null,
+      "voice": "1"
+    },
+    {
+      "articulations": {
+        "dynamic": null,
+        "expressions": [],
+        "names": [],
+        "slur_start": false,
+        "slur_stop": false,
+        "tuplet_ratio": null
+      },
+      "chord_id": null,
+      "duration_quarters": 4.0,
+      "duration_seconds": 4.0,
+      "end_seconds": 6.0,
+      "fingering": {
+        "finger": 4,
+        "fret": null,
+        "hand": "right",
+        "origin": "explicit",
+        "raw_text": "4",
+        "string": null,
+        "substitution": false
+      },
+      "grace": "none",
+      "id": "n_aa68449aa91b8bd2d340d05b",
+      "kind": "note",
+      "midi": 69,
+      "part_id": "P1",
+      "pitch": "A4",
+      "pitch_alter": 0,
+      "pitch_octave": 4,
+      "pitch_step": "A",
+      "position": {
+        "absolute_offset_quarters": 2.0,
+        "beat": 3.0,
+        "measure_index": 0,
+        "measure_number": 1,
+        "offset_quarters": 2.0,
+        "repeat_pass": 1
+      },
+      "staff": 1,
+      "start_seconds": 2.0,
+      "tie": {
+        "group_id": "tg_4c951f6baf4c09a2375b1e7a",
+        "member_count": 2,
+        "member_durations_quarters": [
+          2.0,
+          2.0
+        ],
+        "member_measures": [
+          1,
+          2
+        ],
+        "tie_type": "start"
+      },
+      "velocity": null,
+      "voice": "1"
+    },
+    {
+      "articulations": {
+        "dynamic": null,
+        "expressions": [],
+        "names": [],
+        "slur_start": false,
+        "slur_stop": false,
+        "tuplet_ratio": null
+      },
+      "chord_id": null,
+      "duration_quarters": 4.0,
+      "duration_seconds": 4.0,
+      "end_seconds": 8.0,
+      "fingering": null,
+      "grace": "none",
+      "id": "n_cc9b82f30890ad9ab2b69cc9",
+      "kind": "note",
+      "midi": 43,
+      "part_id": "P1",
+      "pitch": "G2",
+      "pitch_alter": 0,
+      "pitch_octave": 2,
+      "pitch_step": "G",
+      "position": {
+        "absolute_offset_quarters": 4.0,
+        "beat": 1.0,
+        "measure_index": 1,
+        "measure_number": 2,
+        "offset_quarters": 0.0,
+        "repeat_pass": 1
+      },
+      "staff": 2,
+      "start_seconds": 4.0,
+      "tie": {
+        "group_id": null,
+        "member_count": 1,
+        "member_durations_quarters": [
+          4.0
+        ],
+        "member_measures": [
+          2
+        ],
+        "tie_type": "none"
+      },
+      "velocity": null,
+      "voice": "1"
+    }
+  ],
+  "part_ids": [
+    "P1"
+  ],
+  "repeats": [],
+  "rests": [
+    {
+      "duration_quarters": 2.0,
+      "duration_seconds": 2.0,
+      "end_seconds": 8.0,
+      "id": "r_8165ce9e0bcc34854904da40",
+      "kind": "rest",
+      "part_id": "P1",
+      "position": {
+        "absolute_offset_quarters": 6.0,
+        "beat": 3.0,
+        "measure_index": 1,
+        "measure_number": 2,
+        "offset_quarters": 2.0,
+        "repeat_pass": 1
+      },
+      "staff": 1,
+      "start_seconds": 6.0,
+      "voice": "1"
+    }
+  ],
+  "song_id": "example-song",
+  "tempos": [
+    {
+      "id": "tp_7eece34b9d64d31c95868bd8",
+      "kind": "tempo",
+      "position": {
+        "absolute_offset_quarters": 0.0,
+        "beat": 1.0,
+        "measure_index": 0,
+        "measure_number": 1,
+        "offset_quarters": 0.0,
+        "repeat_pass": 1
+      },
+      "qpm": 60.0,
+      "start_seconds": 0.0,
+      "text": null
+    }
+  ],
+  "time_signatures": [
+    {
+      "beat_unit_quarters": 1.0,
+      "denominator": 4,
+      "id": "ts_60c288b1808fddd38f532cb1",
+      "kind": "time_signature",
+      "measure_duration_quarters": 4.0,
+      "numerator": 4,
+      "position": {
+        "absolute_offset_quarters": 0.0,
+        "beat": 1.0,
+        "measure_index": 0,
+        "measure_number": 1,
+        "offset_quarters": 0.0,
+        "repeat_pass": 1
+      },
+      "start_seconds": 0.0
+    }
+  ],
+  "versions": {
+    "mapping_version": "1.0.0",
+    "parser_version": "1.0.0",
+    "schema_version": "1.1.0"
+  }
+}

@@ -12,7 +12,7 @@ export type PracticeMode="listen"|"wait-for-note"|"continuous";
 export interface Exercise { id:string; songId:string; partIds:string[]; fromMeasure:number; toMeasure:number; tempoPercent:number; mode:PracticeMode; timingToleranceMs:number; }
 export interface AttemptEvent { midi:number; startedAtMs:number; durationMs:number; velocity:number; }
 export interface AttemptResult { exerciseId:string; pitchScore:number; timingScore:number; durationScore:number; completion:number; streak:number; pausedForTiming:boolean; wrong:number[]; missed:string[]; }
-export interface ProgressSummary { songId:string; userId:string|null; completedExercises:number; bestScore:number; streak:number; lastPracticedAt:string|null; }
+export interface ProgressSummary { songId:string; userId:string|null; completedExercises:number; bestScore:number; streak:number; lastPracticedAt:string|null; practiceSeconds?:number; }
 export interface LearningApiError { code:string; message:string; requestId?:string; details?:Record<string,unknown>; }
 
 export function isScoreManifest(value: unknown): value is ScoreManifest {
