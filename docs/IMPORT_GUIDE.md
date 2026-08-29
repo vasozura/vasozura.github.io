@@ -49,6 +49,14 @@ the private `instrument-parts` bucket and upsert one `instrument_parts` row per
 instrument. Learning package keys are mapped to the existing `learning_*`
 columns; MusicXML or MIDI may be selected as the canonical source.
 
+## Learning API staging
+
+The canonical archive resource remains in its normal private resource bucket.
+When the external Learning API processes MusicXML, copy the checksum-verified
+canonical object to the private `scores/<slug>/` staging path. The `scores`
+bucket has an explicit MIME allowlist for PDF and supported MusicXML media
+types; it remains private and does not accept wildcard MIME types.
+
 If a production failure occurs after the draft row or any Storage object has
 been created, the report sets `partial: true` and lists every completed upload.
 The importer intentionally does not roll back or delete that partial draft;
