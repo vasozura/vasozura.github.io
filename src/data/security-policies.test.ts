@@ -12,4 +12,13 @@ describe("Supabase security migration", () => {
     expect(sql).toContain("Published archive objects are public");
     expect(sql).not.toContain("service_role");
   });
+
+  it("keeps learning progress private and published exercises read-only for anonymous users", async () => {
+    const sql = await readFile(new URL("../../supabase/migrations/202608280001_phase3_learning.sql", import.meta.url), "utf8");
+    for (const table of ["learning_exercises", "learning_attempts", "learning_progress"]) expect(sql).toContain(`alter table public.${table} enable row level security`);
+    expect(sql).toContain("Published exercises are public");
+    expect(sql).toContain("songs.status='published'");
+    expect(sql).toContain("auth.uid()=user_id");
+    expect(sql).not.toContain("service_role");
+  });
 });

@@ -13,7 +13,6 @@ import type { Song } from "./types/song";
 import { filterSongs } from "./utils/catalog-filter";
 import type { SongFilters } from "./types/song";
 import { PlayerController } from "./player/player-controller";
-import { mountScoreViewer } from "./score/score-viewer";
 import { isPasswordRecovery } from "./lib/supabase";
 
 const appElement = document.querySelector<HTMLDivElement>("#app");
@@ -24,6 +23,7 @@ let language: Language = getInitialLanguage();
 let songs: Song[] = [];
 let lastRenderedHash = "";
 const player = new PlayerController();
+let learningCleanup: (() => void) | null = null;
 
 const descriptions: Record<Language, string> = {
   ka: "ZURA-ს ოფიციალური მუსიკალური სივრცე — რჩეული ჩანაწერები და ორენოვანი კომპოზიტორის არქივის საფუძველი.",
@@ -46,7 +46,7 @@ function bindInteractions(): void {
   bindCatalogFilters();
   player.bind(app, songs, language);
   const score = document.querySelector<HTMLElement>("#interactive-score");
-  if (score) void mountScoreViewer(score);
+  if (score) void import("./learning/learning-mode").then(({ mountLearningMode }) => mountLearningMode(score)).then((cleanup) => { if (score.isConnected) learningCleanup = cleanup; else cleanup(); });
 }
 
 function readCatalogFilters(): SongFilters {
@@ -93,6 +93,8 @@ function scrollToRouteTop(): void {
 }
 
 function render(): void {
+  learningCleanup?.();
+  learningCleanup = null;
   const route = isPasswordRecovery() ? { name: "admin" as const } : parseRoute(window.location.hash);
   const routeChanged = lastRenderedHash !== window.location.hash;
   if (route.name === "admin") {

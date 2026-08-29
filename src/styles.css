@@ -1504,6 +1504,77 @@ img {
   margin-top: 24px;
 }
 
+.learning-admin,
+.learning-mode {
+  margin-top: 28px;
+  border: 1px solid var(--line);
+  padding: clamp(16px, 3vw, 28px);
+}
+
+.learning-admin-options,
+.learning-transport,
+.learning-instruments,
+.learning-practice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  margin: 14px 0;
+}
+
+.admin-check,
+.learning-admin-options label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+[data-l="visualizer"] {
+  overflow-x: auto;
+  min-height: 150px;
+  padding: 14px 0;
+}
+
+.learning-piano {
+  position: relative;
+  display: flex;
+  width: max(880px, 100%);
+  height: 150px;
+}
+
+.learning-key.white {
+  flex: 1;
+  min-width: 14px;
+  border: 1px solid #4a4a4a;
+  background: #eee9dd;
+}
+
+.learning-key.black {
+  z-index: 2;
+  width: 9px;
+  height: 62%;
+  margin: 0 -4.5px;
+  background: #181818;
+}
+
+.learning-key.upcoming,
+.learning-fretboard .upcoming,
+.learning-accordion .upcoming { box-shadow: inset 0 -8px #7f6a31; }
+.learning-key.active,
+.learning-fretboard .active,
+.learning-accordion .active { background: var(--acid); color: #050505; }
+.learning-key.correct { background: #58bd7b; }
+.learning-key.missed,
+.learning-key.wrong { background: #dc6262; }
+
+.learning-fretboard { min-width: 760px; }
+.guitar-string { display: grid; grid-template-columns: repeat(21, minmax(28px, 1fr)); border-top: 1px solid #aaa; }
+.guitar-string span,
+.learning-accordion span { min-height: 28px; padding: 4px; border-right: 1px solid var(--line); text-align: center; }
+.learning-accordion > div { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.learning-accordion span { border: 1px solid var(--line); border-radius: 50%; min-width: 34px; }
+
 @media (max-width: 1024px) {
   .catalog-filters {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1595,4 +1666,6 @@ img {
   .song-resource {
     margin-top: 26px;
   }
+
+  .learning-transport label { width: 100%; }
 }

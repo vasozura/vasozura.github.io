@@ -34,6 +34,11 @@ export interface Song {
   difficulty: Difficulty;
   publicationStatus: PublicationStatus;
   publicationDate: string | null;
+  learningEnabled?: boolean;
+  learningInstruments?: Instrument[];
+  learningSource?: "musicxml" | "midi";
+  learningMapping?: Record<string, unknown>;
+  learningFingering?: Record<string, unknown>;
   createdAt?: string | null;
   updatedAt?: string | null;
 }

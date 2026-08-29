@@ -1,0 +1,89 @@
+{
+  "arranger": null,
+  "composer": null,
+  "created_at": "2026-08-28T14:20:21.672950Z",
+  "duration_quarters": 8.0,
+  "duration_seconds": 8.0,
+  "expanded_measure_count": 2,
+  "has_pickup": false,
+  "has_repeats": false,
+  "initial_key_fifths": 0,
+  "initial_tempo_qpm": 60.0,
+  "initial_time_signature": "4/4",
+  "is_published": true,
+  "manifest_key": "mk_ad6cfab2952819aacb23d261",
+  "measure_count": 2,
+  "measures": [
+    {
+      "duration_quarters": 4.0,
+      "end_seconds": 4.0,
+      "index": 0,
+      "is_pickup": false,
+      "key_signature": 0,
+      "number": 1,
+      "repeat_pass": 1,
+      "start_quarters": 0.0,
+      "start_seconds": 0.0,
+      "time_signature": "4/4"
+    },
+    {
+      "duration_quarters": 4.0,
+      "end_seconds": 8.0,
+      "index": 1,
+      "is_pickup": false,
+      "key_signature": null,
+      "number": 2,
+      "repeat_pass": 1,
+      "start_quarters": 4.0,
+      "start_seconds": 4.0,
+      "time_signature": null
+    }
+  ],
+  "parts": [
+    {
+      "abbreviation": null,
+      "has_explicit_fingering": true,
+      "highest_midi": 69,
+      "id": "P1",
+      "index": 0,
+      "instrument": {
+        "family": "piano",
+        "id": "P1_instrument",
+        "midi_channel": null,
+        "midi_program": null,
+        "name": "Piano",
+        "transposition_semitones": 0,
+        "written_range_midi": null
+      },
+      "lowest_midi": 43,
+      "name": "Piano",
+      "note_count": 7,
+      "staff_count": 2,
+      "voice_ids": [
+        "1"
+      ]
+    }
+  ],
+  "playback_order": [
+    1,
+    2
+  ],
+  "revision": 1,
+  "song_id": "example-song",
+  "source": {
+    "bucket": "scores",
+    "byte_size": 2668,
+    "content_type": null,
+    "format": "musicxml",
+    "object_path": "piano_grand.musicxml",
+    "sha256": "b6873b1325bb2c41951a74010c01e5cfb98fde4051b21f0ed140494d63bb65b6"
+  },
+  "title": "Grand Staff With Fingering",
+  "versions": {
+    "mapping_version": "1.0.0",
+    "parser_version": "1.0.0",
+    "schema_version": "1.1.0"
+  },
+  "visibility": "public",
+  "warnings": []
+}
