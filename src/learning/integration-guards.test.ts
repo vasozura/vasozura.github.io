@@ -18,8 +18,13 @@ describe("learning integration guards", () => {
 
   it("keeps the external API URL configurable without embedding server credentials", async () => {
     const config = await readFile(new URL("../config.ts", import.meta.url), "utf8");
+    const deployWorkflow = await readFile(
+      new URL("../../.github/workflows/deploy-pages.yml", import.meta.url),
+      "utf8",
+    );
     expect(config).toContain("VITE_LEARNING_API_URL");
     expect(config).not.toMatch(/service.?role|anthropic/i);
+    expect(deployWorkflow).toContain("VITE_LEARNING_API_URL: ${{ vars.VITE_LEARNING_API_URL }}");
   });
 
   it("uses the generated client and omits browser credentials", async () => {
