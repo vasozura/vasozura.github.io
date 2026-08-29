@@ -16,7 +16,9 @@ or:
 .\scripts\import-song.ps1 -PackagePath ".\song-packages\song-slug" -DryRun
 ```
 
-The JSON report lists validation issues and the SHA-256 checksum of every skipped upload.
+The JSON report lists validation issues and the SHA-256 checksum of every
+skipped upload. Optional `SHA256SUMS.txt` and `UPLOAD_NOTES.txt` files are
+validated/recognized but are never uploaded.
 
 ## Real import
 
@@ -41,5 +43,15 @@ Do not paste credentials into command history, source files, screenshots, issues
 6. Reuse duplicates; otherwise upload to the resource bucket under `<slug>/<checksum-prefix>-<filename>`.
 7. Insert the versioned `song_files` record and update the corresponding URL on `songs`.
 8. Print a structured success/error report.
+
+Nested `instrument-parts/piano.*` and `instrument-parts/guitar.*` resources use
+the private `instrument-parts` bucket and upsert one `instrument_parts` row per
+instrument. Learning package keys are mapped to the existing `learning_*`
+columns; MusicXML or MIDI may be selected as the canonical source.
+
+If a production failure occurs after the draft row or any Storage object has
+been created, the report sets `partial: true` and lists every completed upload.
+The importer intentionally does not roll back or delete that partial draft;
+inspect the reported state before retrying.
 
 The process is safe to run again. Matching checksums avoid duplicate uploads; changed files create a new version.
