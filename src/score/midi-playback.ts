@@ -57,6 +57,17 @@ export class MidiPlayback {
     this.onPosition(0, this.duration);
   }
 
+  seek(seconds: number): void {
+    const position = Math.min(this.duration, Math.max(0, Number.isFinite(seconds) ? seconds : 0));
+    this.offset = position;
+    this.lastPosition = position - 0.03;
+    this.nextBeat = position;
+    if (this.playing && this.context) this.startedAt = this.context.currentTime;
+    this.activeNotes.clear();
+    this.onNotes([]);
+    this.onPosition(position, this.duration);
+  }
+
   setTempo(percent: number): void {
     const position = this.position();
     this.tempo = Math.min(1.5, Math.max(0.5, percent / 100));
