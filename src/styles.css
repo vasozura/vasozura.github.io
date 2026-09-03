@@ -1470,6 +1470,33 @@ img {
   color: var(--acid);
 }
 
+.admin-preview-link {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  padding: 10px 16px;
+  border: 1px solid var(--acid);
+  text-decoration: none;
+}
+
+.draft-preview-banner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin-bottom: 28px;
+  padding: 16px 18px;
+  border: 1px solid var(--acid);
+  background: rgb(214 255 0 / 8%);
+  color: var(--paper);
+}
+
+.draft-preview-banner strong {
+  color: var(--acid);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .admin-file progress {
   width: 100%;
 }

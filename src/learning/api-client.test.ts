@@ -91,4 +91,19 @@ describe("Learning API adapter", () => {
       status: 422,
     } satisfies Partial<LearningClientError>);
   });
+
+  it("authenticates private draft manifest and timeline reads", async () => {
+    const fetchMock = vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(new Response(JSON.stringify(manifestFixture), { status: 200, headers: { "content-type": "application/json" } }))
+      .mockResolvedValueOnce(new Response(JSON.stringify(timelineFixture), { status: 200, headers: { "content-type": "application/json" } }));
+
+    await new LearningApiClient("https://learning.test", 30_000, undefined, true).manifest("example-song");
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    for (const [, init] of fetchMock.mock.calls) {
+      expect(new Headers(init?.headers).get("Authorization")).toBe("Bearer test-token");
+      expect(init?.credentials).toBe("omit");
+    }
+    expect(getSession).toHaveBeenCalledTimes(2);
+  });
 });

@@ -146,9 +146,11 @@ export function isLearningApiUnavailable(error: unknown): boolean {
 
 export class LearningApiClient implements LearningApi {
   private readonly client: ZuraLearningClient;
+  private readonly authenticatedReads: boolean;
   private lastAttempt: ApiAttemptResult | null = null;
 
-  constructor(baseUrl: string, timeoutMs = 30_000, fetchImpl?: typeof fetch) {
+  constructor(baseUrl: string, timeoutMs = 30_000, fetchImpl?: typeof fetch, authenticatedReads = false) {
+    this.authenticatedReads = authenticatedReads;
     this.client = new ZuraLearningClient({
       baseUrl,
       timeoutMs,
@@ -163,8 +165,8 @@ export class LearningApiClient implements LearningApi {
 
   async manifest(songId: string, signal?: AbortSignal): Promise<ScoreManifest> {
     const [manifest, timeline] = await Promise.all([
-      this.client.getManifest(songId, {}, { signal, anonymous: true }),
-      this.client.getTimeline(songId, {}, { signal, anonymous: true }),
+      this.client.getManifest(songId, {}, { signal, anonymous: !this.authenticatedReads }),
+      this.client.getTimeline(songId, {}, { signal, anonymous: !this.authenticatedReads }),
     ]);
     return mapManifest(manifest, timeline);
   }

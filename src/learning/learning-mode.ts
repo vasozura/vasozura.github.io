@@ -56,7 +56,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     let manifest: ScoreManifest;
     let usingLocalAdapter = false;
     if (appConfig.hasLearningApi) {
-      api = new LearningApiClient(appConfig.learningApiUrl);
+      api = new LearningApiClient(appConfig.learningApiUrl, 30_000, undefined, root.dataset.privatePreview === "true");
       try {
         manifest = await api.manifest(songId, controller.signal);
       } catch (error) {
