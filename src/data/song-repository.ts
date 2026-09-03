@@ -148,6 +148,24 @@ export async function loadAdminSongs(): Promise<Song[]> {
   return hydrateLearningConfiguration(await hydrateSignedResources((data as SongRow[]).map(songFromRow)));
 }
 
+export type DraftPreviewResult =
+  | { status: "authenticated"; song: Song }
+  | { status: "login-required" | "access-denied" | "not-found" };
+
+export async function loadOwnerDraftPreview(slug: string): Promise<DraftPreviewResult> {
+  const supabase = requireSupabase();
+  const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+  if (sessionError) throw sessionError;
+  if (!sessionData.session) return { status: "login-required" };
+  if (!await isCurrentUserAdmin()) return { status: "access-denied" };
+
+  const { data, error } = await supabase.from("songs").select(songSelect).eq("slug", slug).eq("status", "draft").maybeSingle();
+  if (error) throw error;
+  if (!data) return { status: "not-found" };
+  const [song] = await hydrateLearningConfiguration(await hydrateSignedResources([songFromRow(data as SongRow)]));
+  return { status: "authenticated", song };
+}
+
 export async function saveSong(song: Song): Promise<Song> {
   const row = songToRow(song);
   if (row.id === undefined) delete row.id;

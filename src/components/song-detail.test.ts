@@ -26,4 +26,11 @@ describe("song resource rendering", () => {
     expect(html).toContain('data-learning-enabled="true"');
     expect(html).toContain('data-musicxml-url=""');
   });
+
+  it("marks a private preview while reusing the song detail view", () => {
+    const html = renderSongDetail({ ...song, musicXmlUrl: "https://example.com/a.musicxml", learningEnabled: true }, "en", { privateDraftPreview: true });
+    expect(html).toContain("Private draft preview");
+    expect(html).toContain('data-private-preview="true"');
+    expect(html).toContain('href="#/admin"');
+  });
 });

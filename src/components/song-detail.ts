@@ -14,7 +14,9 @@ function formatDuration(seconds: number | null): string | null {
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 }
 
-export function renderSongDetail(song: Song, language: Language): string {
+export interface SongDetailOptions { privateDraftPreview?: boolean; }
+
+export function renderSongDetail(song: Song, language: Language, options: SongDetailOptions = {}): string {
   const title = escapeHtml(localize(song.title, language) ?? song.id);
   const credit = localize(song.displayCredit, language);
   const lyrics = localize(song.lyrics, language);
@@ -49,7 +51,8 @@ export function renderSongDetail(song: Song, language: Language): string {
 
   return `
     <main class="song-detail shell" id="main-content" tabindex="-1">
-      <a class="detail-back" href="#music"><span aria-hidden="true">←</span> ${labels.back}</a>
+      ${options.privateDraftPreview ? `<aside class="draft-preview-banner" role="status"><strong>${language === "ka" ? "პირადი მონახაზის წინასწარი ნახვა" : "Private draft preview"}</strong><span>${language === "ka" ? "ეს ჩანაწერი საჯაროდ არ ჩანს." : "This song is not publicly visible."}</span></aside>` : ""}
+      <a class="detail-back" href="${options.privateDraftPreview ? "#/admin" : "#music"}"><span aria-hidden="true">←</span> ${options.privateDraftPreview ? (language === "ka" ? "ადმინისტრირებაში დაბრუნება" : "Back to administration") : labels.back}</a>
       <article class="song-detail-grid">
         <div class="detail-cover">${cover}</div>
         <div class="detail-copy">
@@ -63,7 +66,7 @@ export function renderSongDetail(song: Song, language: Language): string {
       </article>
       ${song.audioUrl ? `<section class="song-resource" aria-labelledby="audio-title"><h2 id="audio-title">${labels.audio}</h2><audio controls preload="metadata" src="${escapeHtml(song.audioUrl)}">${labels.audio}</audio></section>` : ""}
       ${lyrics ? `<section class="song-resource lyrics-panel" aria-labelledby="lyrics-title"><h2 id="lyrics-title">${labels.lyrics}</h2><p>${escapeHtml(lyrics)}</p></section>` : ""}
-        ${song.musicXmlUrl || song.midiUrl ? `<section class="song-resource score-panel" id="interactive-score" data-song-id="${escapeHtml(song.id)}" data-learning-enabled="${song.learningEnabled === true}" data-learning-instruments="${escapeHtml((song.learningInstruments ?? []).join(","))}" data-musicxml-url="${escapeHtml(song.musicXmlUrl ?? "")}" data-midi-url="${escapeHtml(song.midiUrl ?? "")}" data-bpm="${song.bpm ?? 120}" aria-labelledby="score-title"><h2 id="score-title">${labels.score}</h2><p class="score-status" aria-live="polite">Loading score…</p><div class="score-controls"></div><div class="score-canvas"></div><div class="midi-controls"></div><div class="piano-keyboard" aria-label="Piano visualization"></div></section>` : ""}
+        ${song.musicXmlUrl || song.midiUrl ? `<section class="song-resource score-panel" id="interactive-score" data-song-id="${escapeHtml(song.id)}" data-learning-enabled="${song.learningEnabled === true}" data-learning-instruments="${escapeHtml((song.learningInstruments ?? []).join(","))}" data-private-preview="${options.privateDraftPreview === true}" data-musicxml-url="${escapeHtml(song.musicXmlUrl ?? "")}" data-midi-url="${escapeHtml(song.midiUrl ?? "")}" data-bpm="${song.bpm ?? 120}" aria-labelledby="score-title"><h2 id="score-title">${labels.score}</h2><p class="score-status" aria-live="polite">Loading score…</p><div class="score-controls"></div><div class="score-canvas"></div><div class="midi-controls"></div><div class="piano-keyboard" aria-label="Piano visualization"></div></section>` : ""}
       ${song.scorePdfUrl ? `<section class="song-resource pdf-panel" aria-labelledby="pdf-title"><h2 id="pdf-title">${labels.pdf}</h2><details><summary>${labels.pdfPreview}</summary><iframe src="${escapeHtml(song.scorePdfUrl)}#view=FitH" title="${labels.pdf}: ${title}" loading="lazy"></iframe></details></section>` : ""}
       ${resourceLinks ? `<section class="song-resource"><h2>${labels.resources}</h2><div class="resource-links">${resourceLinks}</div></section>` : ""}
       ${!song.audioUrl && !lyrics && !song.musicXmlUrl && !song.scorePdfUrl && !resourceLinks ? `<p class="detail-unavailable">${labels.noResources}</p>` : ""}

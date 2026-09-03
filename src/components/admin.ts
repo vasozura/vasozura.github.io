@@ -190,6 +190,14 @@ export async function mountAdmin(root: HTMLElement): Promise<void> {
   let editing: Song | null = null;
   const renderDashboard = (): void => {
     root.innerHTML = `<main class="admin-route shell" id="main-content"><header class="admin-top"><div><p class="num">OWNER ONLY</p><h1>Composer archive</h1></div><div><a href="#top">Public site</a><button type="button" data-admin-logout>Sign out</button></div></header>${renderSongList(songs)}${editing ? renderEditor(editing) : ""}</main>`;
+    if (editing?.publicationStatus === "draft") {
+      const heading = root.querySelector<HTMLElement>(".admin-editor .admin-heading");
+      const preview = document.createElement("a");
+      preview.className = "admin-preview-link";
+      preview.href = `#/admin/songs/${encodeURIComponent(editing.slug)}/preview`;
+      preview.textContent = "Preview draft";
+      heading?.append(preview);
+    }
     root.querySelector("[data-admin-logout]")?.addEventListener("click", async () => { dirty = false; await supabase.auth.signOut(); await mountAdmin(root); });
     root.querySelector("[data-admin-new]")?.addEventListener("click", () => { editing = emptySong(); renderDashboard(); });
     root.querySelectorAll<HTMLButtonElement>("[data-admin-edit]").forEach((button) => button.addEventListener("click", () => { editing = songs.find((song) => song.id === button.dataset.adminEdit) ?? null; renderDashboard(); }));

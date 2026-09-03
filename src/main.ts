@@ -13,7 +13,8 @@ import type { Song } from "./types/song";
 import { filterSongs } from "./utils/catalog-filter";
 import type { SongFilters } from "./types/song";
 import { PlayerController } from "./player/player-controller";
-import { isPasswordRecovery } from "./lib/supabase";
+import { getSupabase, isPasswordRecovery } from "./lib/supabase";
+import { loadOwnerDraftPreview, type DraftPreviewResult } from "./data/song-repository";
 
 const appElement = document.querySelector<HTMLDivElement>("#app");
 if (!appElement) throw new Error("The application root was not found.");
@@ -24,6 +25,7 @@ let songs: Song[] = [];
 let lastRenderedHash = "";
 const player = new PlayerController();
 let learningCleanup: (() => void) | null = null;
+let draftPreview: { slug: string; result: DraftPreviewResult | null; error: string | null } | null = null;
 
 const descriptions: Record<Language, string> = {
   ka: "ZURA-ს ოფიციალური მუსიკალური სივრცე — რჩეული ჩანაწერები და ორენოვანი კომპოზიტორის არქივის საფუძველი.",
@@ -37,14 +39,24 @@ function updateDocumentMetadata(song?: Song): void {
   document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute("content", descriptions[language]);
 }
 
-function bindInteractions(): void {
+function updateRobots(indexable: boolean): void {
+  let robots = document.querySelector<HTMLMetaElement>('meta[name="robots"]');
+  if (!robots) {
+    robots = document.createElement("meta");
+    robots.name = "robots";
+    document.head.append(robots);
+  }
+  robots.content = indexable ? "index,follow" : "noindex,nofollow,noarchive";
+}
+
+function bindInteractions(playableSongs: Song[] = songs): void {
   document.querySelector<HTMLButtonElement>("#language-toggle")?.addEventListener("click", () => {
     language = language === "ka" ? "en" : "ka";
     storeLanguage(language);
     render();
   });
   bindCatalogFilters();
-  player.bind(app, songs, language);
+  player.bind(app, playableSongs, language);
   const score = document.querySelector<HTMLElement>("#interactive-score");
   if (score) void import("./learning/learning-mode").then(({ mountLearningMode }) => mountLearningMode(score)).then((cleanup) => { if (score.isConnected) learningCleanup = cleanup; else cleanup(); });
 }
@@ -97,7 +109,9 @@ function render(): void {
   learningCleanup = null;
   const route = isPasswordRecovery() ? { name: "admin" as const } : parseRoute(window.location.hash);
   const routeChanged = lastRenderedHash !== window.location.hash;
+  if (route.name !== "admin-preview") draftPreview = null;
   if (route.name === "admin") {
+    updateRobots(false);
     updateDocumentMetadata();
     document.title = "Archive administration — ZURA Music";
     app.innerHTML = `<main class="admin-route shell" id="main-content"><p class="num">OWNER ARCHIVE</p><p>Loading administration…</p></main>`;
@@ -109,6 +123,43 @@ function render(): void {
     lastRenderedHash = window.location.hash;
     return;
   }
+  if (route.name === "admin-preview") {
+    updateRobots(false);
+    if (!draftPreview || draftPreview.slug !== route.slug) {
+      draftPreview = { slug: route.slug, result: null, error: null };
+      void loadOwnerDraftPreview(route.slug).then((result) => {
+        if (draftPreview?.slug !== route.slug || parseRoute(window.location.hash).name !== "admin-preview") return;
+        draftPreview.result = result;
+        render();
+      }).catch((error: unknown) => {
+        if (draftPreview?.slug !== route.slug || parseRoute(window.location.hash).name !== "admin-preview") return;
+        draftPreview.error = error instanceof Error ? error.message : "Unknown preview error";
+        render();
+      });
+    }
+    const result = draftPreview.result;
+    const previewSong = result?.status === "authenticated" ? result.song : undefined;
+    updateDocumentMetadata(previewSong);
+    document.title = previewSong ? `${previewSong.title[language] ?? previewSong.slug} — Private draft preview` : "Private draft preview — ZURA Music";
+    const skipLabel = language === "ka" ? "მთავარ შინაარსზე გადასვლა" : "Skip to main content";
+    const message = draftPreview.error
+      ? `<p class="num">PREVIEW · ERROR</p><h1>Preview unavailable</h1><p>The private draft could not be loaded.</p><a href="#/admin">Return to administration</a>`
+      : !result
+        ? `<p class="num">OWNER PREVIEW</p><h1>Loading private draft…</h1>`
+        : result.status === "login-required"
+          ? `<p class="num">OWNER PREVIEW · SIGN IN REQUIRED</p><h1>Private draft preview</h1><p>Sign in through archive administration to view this draft.</p><a href="#/admin">Owner sign in</a>`
+          : result.status === "access-denied"
+            ? `<p class="num">OWNER PREVIEW · ACCESS DENIED</p><h1>Private draft preview</h1><p>This account is not authorized to preview drafts.</p><a href="#/admin">Return to administration</a>`
+            : `<p class="num">404 · PRIVATE DRAFT</p><h1>Draft not found</h1><a href="#/admin">Return to administration</a>`;
+    const content = previewSong ? renderSongDetail(previewSong, language, { privateDraftPreview: true }) : `<main class="route-message shell" id="main-content" tabindex="-1">${message}</main>`;
+    const playableSongs = previewSong ? [...songs, previewSong] : songs;
+    app.innerHTML = `<a class="skip-link" href="#main-content">${skipLabel}</a>${renderHeader(language)}${content}${renderPlayerShell(language, playableSongs)}${renderFooter(language)}`;
+    bindInteractions(playableSongs);
+    if (routeChanged) scrollToRouteTop();
+    lastRenderedHash = window.location.hash;
+    return;
+  }
+  updateRobots(true);
   const selectedSong = route.name === "song" ? songs.find((song) => song.slug === route.slug) : undefined;
   updateDocumentMetadata(selectedSong);
 
@@ -156,6 +207,11 @@ function renderLoadError(error: unknown): void {
 }
 
 window.addEventListener("hashchange", render);
+getSupabase()?.auth.onAuthStateChange((event) => {
+  if (event !== "SIGNED_OUT") return;
+  draftPreview = null;
+  if (parseRoute(window.location.hash).name === "admin-preview") render();
+});
 
 loadSongs()
   .then((loadedSongs) => {
