@@ -1533,6 +1533,7 @@ img {
 
 .learning-admin,
 .learning-mode {
+  min-width: 0;
   margin-top: 28px;
   border: 1px solid var(--line);
   padding: clamp(16px, 3vw, 28px);
@@ -1558,6 +1559,9 @@ img {
 }
 
 [data-l="visualizer"] {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   overflow-x: auto;
   min-height: 150px;
   padding: 14px 0;

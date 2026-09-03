@@ -12,6 +12,8 @@ describe("learning integration guards", () => {
   it("keeps the 88-key view horizontally contained on narrow screens", async () => {
     const css = await readFile(new URL("../styles.css", import.meta.url), "utf8");
     expect(css).toContain('[data-l="visualizer"]');
+    expect(css).toContain("max-width: 100%");
+    expect(css).toContain("min-width: 0");
     expect(css).toContain("overflow-x: auto");
     expect(css).not.toContain("overflow-x: visible");
   });
