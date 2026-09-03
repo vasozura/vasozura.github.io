@@ -1599,8 +1599,8 @@ img {
 .learning-key.missed,
 .learning-key.wrong { background: #dc6262; }
 
-.learning-fretboard { min-width: 760px; }
-.guitar-string { display: grid; grid-template-columns: repeat(21, minmax(28px, 1fr)); border-top: 1px solid #aaa; }
+.learning-fretboard { min-width: 0; }
+.guitar-string { display: grid; min-width: 760px; grid-template-columns: repeat(21, minmax(28px, 1fr)); border-top: 1px solid #aaa; }
 .guitar-string span,
 .learning-accordion span { min-height: 28px; padding: 4px; border-right: 1px solid var(--line); text-align: center; }
 .learning-accordion > div { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
