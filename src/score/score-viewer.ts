@@ -1,6 +1,10 @@
 import { MidiPlayback } from "./midi-playback";
 import { PianoVisualizer } from "./instrument-visualizer";
 
+export function enableMidiSeek(progress: HTMLInputElement | null): void {
+  if (progress) progress.disabled = false;
+}
+
 export async function mountScoreViewer(root: HTMLElement): Promise<void> {
   const musicXmlUrl = root.dataset.musicxmlUrl;
   const canvas = root.querySelector<HTMLElement>(".score-canvas");
@@ -68,6 +72,9 @@ export async function mountScoreViewer(root: HTMLElement): Promise<void> {
   midiControls.innerHTML = `<div class="midi-transport"><button type="button" data-midi-action="play">▶ Play / pause</button><button type="button" data-midi-action="stop">■ Stop</button><label>Tempo <input data-midi-tempo type="range" min="50" max="150" value="100" /><output>100%</output></label><button type="button" data-midi-action="metronome" aria-pressed="false">Metronome</button></div><label class="midi-progress">Position <input data-midi-progress type="range" min="0" max="0" value="0" step="0.01" disabled /></label><div class="midi-loop"><label>A (seconds) <input data-loop-a type="number" min="0" step="0.1" /></label><label>B (seconds) <input data-loop-b type="number" min="0" step="0.1" /></label><button type="button" data-midi-action="loop">Set A–B loop</button><button type="button" data-midi-action="clear-loop">Clear loop</button></div>`;
   try {
     await midi.load(midiUrl, Number(root.dataset.bpm) || 120);
+    const progress = midiControls.querySelector<HTMLInputElement>("[data-midi-progress]");
+    enableMidiSeek(progress);
+    progress?.addEventListener("input", () => midi.seek(Number(progress.value)));
     midiControls.querySelector('[data-midi-action="play"]')?.addEventListener("click", () => midi.isPlaying() ? midi.pause() : void midi.play());
     midiControls.querySelector('[data-midi-action="stop"]')?.addEventListener("click", () => midi.stop());
     midiControls.querySelector<HTMLInputElement>("[data-midi-tempo]")?.addEventListener("input", (event) => {
