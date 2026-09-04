@@ -5,6 +5,12 @@ export function enableMidiSeek(progress: HTMLInputElement | null): void {
   if (progress) progress.disabled = false;
 }
 
+export async function fetchScoreSource(url: string, request: typeof fetch = fetch): Promise<Blob> {
+  const response = await request(url, { credentials: "omit" });
+  if (!response.ok) throw new Error(`MusicXML unavailable (${response.status})`);
+  return response.blob();
+}
+
 export async function mountScoreViewer(root: HTMLElement): Promise<void> {
   const musicXmlUrl = root.dataset.musicxmlUrl;
   const canvas = root.querySelector<HTMLElement>(".score-canvas");
@@ -17,7 +23,7 @@ export async function mountScoreViewer(root: HTMLElement): Promise<void> {
   if (musicXmlUrl) try {
     const { OpenSheetMusicDisplay } = await import("opensheetmusicdisplay");
     const osmd = new OpenSheetMusicDisplay(canvas, { autoResize: true, backend: "svg", drawTitle: true, followCursor: true });
-    await osmd.load(musicXmlUrl);
+    await osmd.load(await fetchScoreSource(musicXmlUrl));
     osmd.render();
     osmd.cursor.show();
     let learningCursorStep = -1;
