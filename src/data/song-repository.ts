@@ -185,7 +185,10 @@ export async function updateLearningConfiguration(songId: string, config: Pick<S
 }
 
 export async function setSongStatus(songId: string, status: "draft" | "published"): Promise<void> {
-  const { error } = await requireSupabase().from("songs").update({ status, published_at: status === "published" ? new Date().toISOString() : null }).eq("id", songId);
+  const { error } = await requireSupabase().rpc("set_song_publication_with_learning", {
+    p_song_id: songId,
+    p_status: status,
+  });
   if (error) throw error;
 }
 
