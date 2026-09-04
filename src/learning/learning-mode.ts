@@ -1,4 +1,5 @@
 import { appConfig } from "../config";
+import { getInitialLanguage } from "../i18n";
 import { getSupabase } from "../lib/supabase";
 import { mountScoreViewer } from "../score/score-viewer";
 import type { AttemptResult, Exercise, ExerciseSelection, NoteEvent, ScoreManifest, Timeline } from "./contracts";
@@ -10,6 +11,7 @@ import { MidiAttemptRecorder } from "./practice";
 import { CanonicalScheduler, type SchedulerFrame } from "./scheduler";
 import { assessSynchronization, readMidiDuration } from "./sync-analysis";
 import { connectWebMidi, supportsWebMidi } from "./web-midi";
+import { getLearningCopy } from "./copy";
 
 const noteNames = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
 const noteLabel = (midi: number): string => `${noteNames[midi % 12]}${Math.floor(midi / 12) - 1}`;
@@ -35,19 +37,20 @@ async function manifestFromMidi(songId: string, url: string): Promise<ScoreManif
   return { version: "v1", songId, sourceChecksum: "local-midi", generatedAt: new Date(0).toISOString(), parts: midi.tracks.map((track, index) => ({ id: `track-${index}`, name: track.name || `Track ${index + 1}`, instrument: track.instrument.name, midiChannel: track.channel, hand: "unknown" })), timeline, warnings: ["Local deterministic MIDI adapter; backend analysis unavailable."] };
 }
 
-function resultText(result: AttemptResult): string {
-  return `Pitch ${Math.round(result.pitchScore)}% · timing ${Math.round(result.timingScore)}% · completion ${Math.round(result.completion)}% · streak ${result.streak}`;
+function resultText(result: AttemptResult, copy: ReturnType<typeof getLearningCopy>): string {
+  return `${copy.pitch} ${Math.round(result.pitchScore)}% · ${copy.timing} ${Math.round(result.timingScore)}% · ${copy.completion} ${Math.round(result.completion)}% · ${copy.streak} ${result.streak}`;
 }
 
-async function countdown(beats: number, beatDurationMs: number, output: HTMLElement, signal: AbortSignal): Promise<void> {
+async function countdown(beats: number, beatDurationMs: number, output: HTMLElement, signal: AbortSignal, startingIn: string): Promise<void> {
   for (let remaining = beats; remaining > 0; remaining -= 1) {
     if (signal.aborted) throw new DOMException("Aborted", "AbortError");
-    output.textContent = `Starting in ${remaining}…`;
+    output.textContent = `${startingIn} ${remaining}…`;
     await new Promise<void>((resolve) => window.setTimeout(resolve, beatDurationMs));
   }
 }
 
 export async function mountLearningMode(root: HTMLElement): Promise<() => void> {
+  const copy = getLearningCopy(getInitialLanguage());
   const scoreCleanup = await mountScoreViewer(root, { midiPlayback: false });
   const midiUrl = root.dataset.midiUrl;
   const songId = root.dataset.songId ?? "";
@@ -58,45 +61,45 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
   host.className = "learning-mode";
   host.setAttribute("aria-labelledby", "learning-mode-title");
   host.innerHTML = `
-    <h3 id="learning-mode-title">Learning mode</h3>
-    <p class="learning-clock-note">One canonical score clock drives sound, cursor, instruments, metronome and loops.</p>
-    <p data-l="sync" class="learning-sync" aria-live="polite">Checking score/MIDI alignment…</p>
+    <h3 id="learning-mode-title">${copy.title}</h3>
+    <p class="learning-clock-note">${copy.clock}</p>
+    <p data-l="sync" class="learning-sync" aria-live="polite">${copy.checking}</p>
     <div class="learning-transport">
-      <button type="button" data-l="play">Play</button><button type="button" data-l="pause">Pause</button><button type="button" data-l="stop">Stop</button>
-      <button type="button" data-l="metronome" aria-pressed="false">Metronome</button>
-      <label>Tempo <input data-l="tempo" type="range" min="50" max="150" value="100"><output>100%</output></label>
-      <label>Position <input data-l="seek" type="range" min="0" max="0" value="0" step="0.01"></label>
-      <label>Loop from measure <input data-l="loop-a" type="number" min="1" value="1"></label>
-      <label>to <input data-l="loop-b" type="number" min="1" value="1"></label>
-      <button type="button" data-l="loop">Set loop</button><button type="button" data-l="clear-loop">Clear loop</button>
+      <button type="button" data-l="play">${copy.play}</button><button type="button" data-l="pause">${copy.pause}</button><button type="button" data-l="stop">${copy.stop}</button>
+      <button type="button" data-l="metronome" aria-pressed="false">${copy.metronome}</button>
+      <label>${copy.tempo} <input data-l="tempo" type="range" min="50" max="150" value="100"><output>100%</output></label>
+      <label>${copy.position} <input data-l="seek" type="range" min="0" max="0" value="0" step="0.01"></label>
+      <label>${copy.loopFrom} <input data-l="loop-a" type="number" min="1" value="1"></label>
+      <label>${copy.to} <input data-l="loop-b" type="number" min="1" value="1"></label>
+      <button type="button" data-l="loop">${copy.setLoop}</button><button type="button" data-l="clear-loop">${copy.clearLoop}</button>
       <output data-l="position">1 · 1</output>
     </div>
-    <div class="learning-instruments" role="tablist" aria-label="Instrument view">
-      ${allowed.has("piano") ? '<button type="button" role="tab" data-instrument="piano">Piano</button>' : ""}
-      ${allowed.has("guitar") ? '<button type="button" role="tab" data-instrument="guitar">Guitar / TAB</button>' : ""}
-      ${allowed.has("accordion") ? '<button type="button" role="tab" data-instrument="accordion">Accordion</button>' : ""}
+    <div class="learning-instruments" role="tablist" aria-label="${copy.instrumentView}">
+      ${allowed.has("piano") ? `<button type="button" role="tab" data-instrument="piano">${copy.piano}</button>` : ""}
+      ${allowed.has("guitar") ? `<button type="button" role="tab" data-instrument="guitar">${copy.guitar}</button>` : ""}
+      ${allowed.has("accordion") ? `<button type="button" role="tab" data-instrument="accordion">${copy.accordion}</button>` : ""}
     </div>
-    <div class="learning-view-options"><label><input type="checkbox" data-l="follow" checked> Follow current note</label><label data-l="left-label" hidden><input type="checkbox" data-l="left"> Left-handed guitar</label></div>
-    <p data-l="notes" class="learning-current">Current: — · Upcoming: —</p>
+    <div class="learning-view-options"><label><input type="checkbox" data-l="follow" checked> ${copy.follow}</label><label data-l="left-label" hidden><input type="checkbox" data-l="left"> ${copy.leftHanded}</label></div>
+    <p data-l="notes" class="learning-current">${copy.current}: — · ${copy.upcoming}: —</p>
     <div data-l="visualizer" aria-live="off"></div>
     <section class="learning-practice" aria-labelledby="practice-title">
-      <h4 id="practice-title">Practice exercise</h4>
+      <h4 id="practice-title">${copy.practice}</h4>
       <div class="learning-exercise-options">
-        <label>Instrument <select data-l="exercise-instrument">${[...allowed].map((name) => `<option value="${name}">${name}</option>`).join("")}</select></label>
-        <label>From measure <input data-l="exercise-a" type="number" min="1" value="1"></label>
-        <label>To measure <input data-l="exercise-b" type="number" min="1" value="1"></label>
-        <label>Difficulty <select data-l="difficulty"><option value="70">Beginner</option><option value="85">Intermediate</option><option value="100" selected>Advanced</option></select></label>
-        <label>Countdown <select data-l="countdown"><option value="0">Off</option><option value="2">2 beats</option><option value="4" selected>4 beats</option></select></label>
-        <label>Practice mode <select data-l="practice-mode"><option value="listen">Listen</option><option value="wait-for-note">Wait for note (Web MIDI)</option><option value="continuous" selected>Continuous</option></select></label>
+        <label>${copy.instrument} <select data-l="exercise-instrument">${[...allowed].map((name) => `<option value="${name}">${name === "piano" ? copy.piano : name === "guitar" ? copy.guitar : copy.accordion}</option>`).join("")}</select></label>
+        <label>${copy.fromMeasure} <input data-l="exercise-a" type="number" min="1" value="1"></label>
+        <label>${copy.toMeasure} <input data-l="exercise-b" type="number" min="1" value="1"></label>
+        <label>${copy.difficulty} <select data-l="difficulty"><option value="70">${copy.beginner}</option><option value="85">${copy.intermediate}</option><option value="100" selected>${copy.advanced}</option></select></label>
+        <label>${copy.countdown} <select data-l="countdown"><option value="0">${copy.off}</option><option value="2">${copy.beats2}</option><option value="4" selected>${copy.beats4}</option></select></label>
+        <label>${copy.practiceMode} <select data-l="practice-mode"><option value="listen">${copy.listen}</option><option value="wait-for-note">${copy.waitForNote}</option><option value="continuous" selected>${copy.continuous}</option></select></label>
       </div>
-      <button type="button" data-l="prepare">Prepare exercise</button><button type="button" data-l="midi" ${supportsWebMidi() ? "" : "disabled"}>Connect MIDI input</button><button type="button" data-l="practice" disabled>Start practice</button><button type="button" data-l="finish" disabled>Finish & score</button>
-      <p class="learning-scoring">Scoring compares recorded MIDI pitch, onset and duration against the immutable exercise timeline using the API's versioned deterministic tolerances.</p>
+      <button type="button" data-l="prepare">${copy.prepare}</button><button type="button" data-l="midi" ${supportsWebMidi() ? "" : "disabled"}>${copy.connectMidi}</button><button type="button" data-l="practice" disabled>${copy.startPractice}</button><button type="button" data-l="finish" disabled>${copy.finishScore}</button>
+      <p class="learning-scoring">${copy.scoring}</p>
       <p data-l="result" aria-live="polite"></p>
       <div data-l="feedback"></div>
       <div data-l="progress"></div><div data-l="history"></div>
-      <button type="button" class="danger" data-l="reset">Reset my learning history</button>
+      <button type="button" class="danger" data-l="reset">${copy.reset}</button>
     </section>
-    <p data-l="status" aria-live="polite">Preparing canonical timeline…</p>`;
+    <p data-l="status" aria-live="polite">${copy.preparing}</p>`;
   root.append(host);
 
   const controller = new AbortController();
@@ -174,7 +177,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     try {
       const assessment = assessSynchronization(manifest.timeline, await readMidiDuration(midiUrl, fetch));
       const sync = host.querySelector<HTMLElement>('[data-l="sync"]')!;
-      sync.textContent = `${assessment.confidence.toUpperCase()} synchronization · ${assessment.message}`;
+      sync.textContent = assessment.confidence === "high" ? copy.syncHigh : assessment.confidence === "medium" ? copy.syncMedium : copy.syncUnreliable;
       sync.dataset.confidence = assessment.confidence;
     } catch (error) {
       const sync = host.querySelector<HTMLElement>('[data-l="sync"]')!;
@@ -193,7 +196,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
             if (waitingForMidi && expectedMidi.has(message.midi)) { waitingForMidi = false; scheduler?.play(); }
           } else recorder.noteOff(message.midi, message.atMs);
         });
-        button.textContent = "MIDI connected";
+        button.textContent = copy.midiConnected;
       } catch (error) { button.textContent = errorMessage(error); button.disabled = false; }
     };
 
@@ -203,7 +206,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     prepare.onclick = async () => {
       prepare.disabled = true;
       const result = host.querySelector<HTMLElement>('[data-l="result"]')!;
-      result.textContent = "Generating deterministic exercise…";
+      result.textContent = copy.generating;
       const instrument = host.querySelector<HTMLSelectElement>('[data-l="exercise-instrument"]')!.value;
       const matchingParts = manifest.parts.filter((part) => part.instrument.toLowerCase().includes(instrument)).map((part) => part.id);
       const selection: ExerciseSelection = {
@@ -215,9 +218,9 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       try {
         [exercise] = await api.exercises(songId, selection, controller.signal);
         if (!exercise) throw new Error("Exercise generation returned no exercise.");
-        result.textContent = `Exercise ready · measures ${selection.fromMeasure}–${selection.toMeasure} · ${selection.tempoPercent}%`;
+        result.textContent = `${copy.exerciseReady} · ${copy.measure} ${selection.fromMeasure}–${selection.toMeasure} · ${selection.tempoPercent}%`;
         practice.disabled = false;
-      } catch (error) { result.textContent = `${errorMessage(error)} Select Prepare exercise to retry safely.`; }
+      } catch (error) { result.textContent = `${errorMessage(error)} ${copy.prepareRetry}`; }
       finally { prepare.disabled = false; }
     };
 
@@ -234,16 +237,16 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
         (bpm, tempo) => (tempo.measureIndex <= exercise!.fromMeasure ? tempo.bpm : bpm),
         120,
       );
-      await countdown(countdownBeats, 60_000 / (activeTempo * exercise.tempoPercent / 100), result, controller.signal);
+      await countdown(countdownBeats, 60_000 / (activeTempo * exercise.tempoPercent / 100), result, controller.signal, copy.startingIn);
       scheduler!.play(); practice.disabled = true; finish.disabled = false;
-      result.textContent = exercise.mode === "listen" ? "Listen mode started." : exercise.mode === "wait-for-note" && !supportsWebMidi() ? "Web MIDI is unavailable; continuous fallback started." : "Practice recording started.";
+      result.textContent = exercise.mode === "listen" ? copy.listenStarted : exercise.mode === "wait-for-note" && !supportsWebMidi() ? copy.midiFallback : copy.practiceStarted;
     };
 
     finish.onclick = async () => {
       if (!exercise) return;
       practicing = false; scheduler!.pause(); finish.disabled = true;
       const resultOutput = host.querySelector<HTMLElement>('[data-l="result"]')!;
-      resultOutput.textContent = "Evaluating attempt…";
+      resultOutput.textContent = copy.evaluating;
       try {
         const events = recorder.result();
         const first = events[0]?.startedAtMs ?? 0;
@@ -251,51 +254,51 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
         if (!reliable) result.pausedForTiming = true;
         const session = await getSupabase()?.auth.getSession();
         if (usingLocalAdapter || session?.data.session) await api.saveProgress({ songId, userId: session?.data.session?.user.id ?? null, completedExercises: result.completion >= 80 ? 1 : 0, bestScore: Math.round((result.pitchScore + result.timingScore + result.durationScore) / 3), streak: result.streak, practiceSeconds: Math.max(0, (performance.now() - practiceStartedAtMs) / 1000), lastPracticedAt: new Date().toISOString() }, controller.signal);
-        resultOutput.textContent = result.pausedForTiming ? "Timing score paused because the tab was throttled." : resultText(result);
+        resultOutput.textContent = result.pausedForTiming ? copy.timingPaused : resultText(result, copy);
         const feedbackRoot = host.querySelector<HTMLElement>('[data-l="feedback"]')!;
         feedbackRoot.replaceChildren();
         const actionable = result.feedback.filter((item) => item.status !== "correct").slice(0, 50);
         if (actionable.length) {
-          const title = document.createElement("h5"); title.textContent = "Note feedback";
+          const title = document.createElement("h5"); title.textContent = copy.noteFeedback;
           const list = document.createElement("ol");
           actionable.forEach((item) => {
             const row = document.createElement("li");
             const expected = item.expectedMidi == null ? "—" : noteLabel(item.expectedMidi);
             const played = item.playedMidi == null ? "—" : noteLabel(item.playedMidi);
-            row.textContent = `${item.status.replace("_", " ")} · measure ${item.measureNumber ?? "—"}, beat ${item.beat ?? "—"} · expected ${expected}, played ${played}${item.onsetDeltaMs == null ? "" : ` · ${item.onsetDeltaMs > 0 ? "+" : ""}${item.onsetDeltaMs} ms`}`;
+            row.textContent = `${item.status.replace("_", " ")} · ${copy.measure} ${item.measureNumber ?? "—"}, ${copy.beat} ${item.beat ?? "—"} · ${copy.expected} ${expected}, ${copy.played} ${played}${item.onsetDeltaMs == null ? "" : ` · ${item.onsetDeltaMs > 0 ? "+" : ""}${item.onsetDeltaMs} ms`}`;
             list.append(row);
           });
           feedbackRoot.append(title, list);
         }
         await refreshHistory();
-      } catch (error) { resultOutput.textContent = `${errorMessage(error)} You can finish again to retry safely.`; finish.disabled = false; return; }
+      } catch (error) { resultOutput.textContent = `${errorMessage(error)} ${copy.finishRetry}`; finish.disabled = false; return; }
       practice.disabled = false;
     };
 
     const refreshHistory = async (): Promise<void> => {
       const session = await getSupabase()?.auth.getSession();
       if (!usingLocalAdapter && !session?.data.session) {
-        host.querySelector<HTMLElement>('[data-l="progress"]')!.textContent = "Sign in to save private progress.";
+        host.querySelector<HTMLElement>('[data-l="progress"]')!.textContent = copy.signInProgress;
         host.querySelector<HTMLButtonElement>('[data-l="reset"]')!.hidden = true;
         return;
       }
       try {
         const [progress, history] = await Promise.all([api.progress(songId, controller.signal), api.history(songId, controller.signal)]);
-        host.querySelector<HTMLElement>('[data-l="progress"]')!.textContent = `Attempts ${progress.attempts} · best ${progress.bestScore == null ? "—" : `${Math.round(progress.bestScore)}%`} · recent ${progress.recentScore == null ? "—" : `${Math.round(progress.recentScore)}%`} · streak ${progress.streak}`;
-        host.querySelector<HTMLElement>('[data-l="history"]')!.innerHTML = history.length ? `<h5>Recent attempts</h5><ol>${history.map((item) => `<li>${new Date(item.evaluatedAt).toLocaleString()} · pitch ${Math.round(item.pitchScore)}% · timing ${Math.round(item.timingScore)}%</li>`).join("")}</ol>` : "<p>No attempts recorded yet.</p>";
+        host.querySelector<HTMLElement>('[data-l="progress"]')!.textContent = `${copy.attempts} ${progress.attempts} · ${copy.best} ${progress.bestScore == null ? "—" : `${Math.round(progress.bestScore)}%`} · ${copy.recent} ${progress.recentScore == null ? "—" : `${Math.round(progress.recentScore)}%`} · ${copy.streak} ${progress.streak}`;
+        host.querySelector<HTMLElement>('[data-l="history"]')!.innerHTML = history.length ? `<h5>${copy.recentAttempts}</h5><ol>${history.map((item) => `<li>${new Date(item.evaluatedAt).toLocaleString()} · pitch ${Math.round(item.pitchScore)}% · timing ${Math.round(item.timingScore)}%</li>`).join("")}</ol>` : `<p>${copy.noAttempts}</p>`;
         const perInstrument = [...allowed].map((instrument) => {
           const matching = history.filter((item) => item.instruments.includes(instrument));
           const best = matching.length ? Math.max(...matching.map((item) => (item.pitchScore + item.timingScore) / 2)) : null;
-          return `${instrument}: ${matching.length} attempt${matching.length === 1 ? "" : "s"}${best == null ? "" : ` · best ${Math.round(best)}%`}`;
+          return `${instrument}: ${matching.length} ${matching.length === 1 ? copy.attempt : copy.attemptsPlural}${best == null ? "" : ` · ${copy.best} ${Math.round(best)}%`}`;
         });
         host.querySelector<HTMLElement>('[data-l="progress"]')!.textContent += ` · ${perInstrument.join(" · ")}`;
-      } catch (error) { host.querySelector<HTMLElement>('[data-l="progress"]')!.textContent = `${errorMessage(error)} Progress can be retried after reconnecting.`; }
+      } catch (error) { host.querySelector<HTMLElement>('[data-l="progress"]')!.textContent = `${errorMessage(error)} ${copy.progressRetry}`; }
     };
 
     host.querySelector<HTMLButtonElement>('[data-l="reset"]')!.onclick = async () => {
-      if (!window.confirm("Delete only your attempts and progress for this song? This cannot be undone.")) return;
+      if (!window.confirm(copy.resetConfirm)) return;
       const result = await api.reset(songId, controller.signal);
-      host.querySelector<HTMLElement>('[data-l="result"]')!.textContent = `Deleted ${result.deletedAttempts} attempts and ${result.deletedProgressEntries} progress entries.`;
+      host.querySelector<HTMLElement>('[data-l="result"]')!.textContent = `${copy.deleted} ${result.deletedAttempts} ${copy.attemptsPlural} ${copy.and} ${result.deletedProgressEntries} ${copy.progressEntries}.`;
       await refreshHistory();
     };
 
@@ -309,10 +312,10 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       if (cursorNote) root.dispatchEvent(new CustomEvent("learning-score-cursor", { detail: { cursorStep: cursorNote.cursorStep ?? manifest.timeline.notes.indexOf(cursorNote) } }));
       host.querySelector<HTMLOutputElement>('[data-l="position"]')!.value = `${(frame.measure?.index ?? 0) + 1} · ${Math.max(1, Math.floor(frame.beat))}`;
       seek.value = String(frame.position);
-      host.querySelector<HTMLElement>('[data-l="notes"]')!.textContent = `Current: ${frame.active.map((note) => `${noteLabel(note.midi)}${note.hand === "unknown" ? "" : ` (${note.hand})`}`).join(" + ") || "—"} · Upcoming: ${frame.upcoming.slice(0, 4).map((note) => noteLabel(note.midi)).join(", ") || "—"}`;
+      host.querySelector<HTMLElement>('[data-l="notes"]')!.textContent = `${copy.current}: ${frame.active.map((note) => `${noteLabel(note.midi)}${note.hand === "unknown" ? "" : ` (${note.hand})`}`).join(" + ") || "—"} · ${copy.upcoming}: ${frame.upcoming.slice(0, 4).map((note) => noteLabel(note.midi)).join(", ") || "—"}`;
     });
 
-    host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = usingLocalAdapter ? (appConfig.hasLearningApi ? "Learning API unavailable; using the versioned local adapter." : "Using the versioned local learning adapter.") : "Learning API connected.";
+    host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = usingLocalAdapter ? (appConfig.hasLearningApi ? copy.apiFallback : copy.localAdapter) : copy.apiConnected;
     await refreshHistory();
   } catch (error) {
     host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = errorMessage(error);
