@@ -17,6 +17,10 @@ describe("deterministic practice evaluation", () => {
     expect(result.pitchScore).toBe(100);
     expect(result.wrong).toEqual([20]);
     expect(result.streak).toBe(3);
+    expect(result.feedback).toEqual(expect.arrayContaining([
+      expect.objectContaining({ status: "extra", playedMidi: 20 }),
+      expect.objectContaining({ status: "correct", expectedMidi: 67 }),
+    ]));
   });
 
   it("pauses timing scores when scheduling is unreliable", () => {

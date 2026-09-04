@@ -6,12 +6,17 @@ import {
   type Exercise as ApiExercise,
   type ScoreManifest as ApiScoreManifest,
   type Timeline as ApiTimeline,
+  type ProgressSummary as ApiProgressSummary,
 } from "../lib/zura-api";
 import { getSupabase } from "../lib/supabase";
 import type {
   AttemptEvent,
   AttemptResult,
   Exercise,
+  ExerciseSelection,
+  LearnerProgress,
+  LearningAttemptSummary,
+  LearningResetResult,
   Measure,
   NoteEvent,
   ProgressSummary,
@@ -22,7 +27,7 @@ export { ZuraApiError as LearningClientError } from "../lib/zura-api";
 
 export interface LearningApi {
   manifest(songId: string, signal?: AbortSignal): Promise<ScoreManifest>;
-  exercises(songId: string, signal?: AbortSignal): Promise<Exercise[]>;
+  exercises(songId: string, selection?: ExerciseSelection, signal?: AbortSignal): Promise<Exercise[]>;
   evaluate(
     exerciseId: string,
     events: AttemptEvent[],
@@ -30,6 +35,9 @@ export interface LearningApi {
     signal?: AbortSignal,
   ): Promise<AttemptResult>;
   saveProgress(summary: ProgressSummary, signal?: AbortSignal): Promise<void>;
+  history(songId: string, signal?: AbortSignal): Promise<LearningAttemptSummary[]>;
+  progress(songId: string, signal?: AbortSignal): Promise<LearnerProgress>;
+  reset(songId: string, signal?: AbortSignal): Promise<LearningResetResult>;
 }
 
 const percent = (value: number | null | undefined): number => (value ?? 0) * 100;
@@ -114,8 +122,8 @@ function mapExercise(exercise: ApiExercise): Exercise {
       exercise.options.part_ids.length > 0
         ? exercise.options.part_ids
         : [...new Set(exercise.expected_events.map((event) => event.part_id))],
-    fromMeasure: exercise.options.measure_start ?? firstMeasure,
-    toMeasure: exercise.options.measure_end ?? lastMeasure,
+    fromMeasure: exercise.options.measure_start == null ? firstMeasure : Math.max(0, exercise.options.measure_start - 1),
+    toMeasure: exercise.options.measure_end == null ? lastMeasure : Math.max(0, exercise.options.measure_end - 1),
     tempoPercent: Math.round(exercise.options.tempo_scale * 100),
     mode: "continuous",
     timingToleranceMs: 150,
@@ -137,6 +145,43 @@ function mapAttempt(result: ApiAttemptResult): AttemptResult {
     missed: result.matches
       .filter((match) => match.status === "missed")
       .flatMap((match) => (match.source_note_id == null ? [] : [match.source_note_id])),
+    feedback: result.matches.map((match) => ({
+      status: match.status,
+      sourceNoteId: match.source_note_id ?? null,
+      expectedMidi: match.expected_midi ?? null,
+      playedMidi: match.played_midi ?? null,
+      onsetDeltaMs: match.onset_delta_seconds == null ? null : Math.round(match.onset_delta_seconds * 1_000),
+      measureNumber: match.measure_number ?? null,
+      beat: match.beat ?? null,
+      partId: match.part_id ?? null,
+    })),
+  };
+}
+
+function mapAttemptSummary(result: ApiAttemptResult, partInstruments: ReadonlyMap<string, string>): LearningAttemptSummary {
+  return {
+    id: result.attempt_id,
+    exerciseId: result.exercise_id,
+    evaluatedAt: result.evaluated_at,
+    pitchScore: percent(result.metrics.pitch_accuracy),
+    timingScore: percent(result.metrics.onset_timing),
+    completion: percent(result.metrics.completion),
+    streak: result.metrics.longest_streak_notes,
+    instruments: [...new Set(result.matches.flatMap((match) => {
+      const instrument = match.part_id == null ? null : partInstruments.get(match.part_id);
+      return instrument == null ? [] : [instrument];
+    }))],
+  };
+}
+
+function mapProgress(summary: ApiProgressSummary): LearnerProgress {
+  return {
+    attempts: summary.attempts,
+    bestScore: summary.best_accuracy == null ? null : percent(summary.best_accuracy),
+    recentScore: summary.latest_accuracy == null ? null : percent(summary.latest_accuracy),
+    totalPracticeSeconds: summary.total_practice_seconds,
+    streak: summary.longest_streak_notes,
+    lastPracticedAt: summary.last_attempt_at ?? null,
   };
 }
 
@@ -148,6 +193,7 @@ export class LearningApiClient implements LearningApi {
   private readonly client: ZuraLearningClient;
   private readonly authenticatedReads: boolean;
   private lastAttempt: ApiAttemptResult | null = null;
+  private readonly partInstruments = new Map<string, string>();
 
   constructor(baseUrl: string, timeoutMs = 30_000, fetchImpl?: typeof fetch, authenticatedReads = false) {
     this.authenticatedReads = authenticatedReads;
@@ -168,12 +214,24 @@ export class LearningApiClient implements LearningApi {
       this.client.getManifest(songId, {}, { signal, anonymous: !this.authenticatedReads }),
       this.client.getTimeline(songId, {}, { signal, anonymous: !this.authenticatedReads }),
     ]);
+    manifest.parts.forEach((part) => this.partInstruments.set(part.id, part.instrument.family));
     return mapManifest(manifest, timeline);
   }
 
-  async exercises(songId: string, signal?: AbortSignal): Promise<Exercise[]> {
+  async exercises(songId: string, selection?: ExerciseSelection, signal?: AbortSignal): Promise<Exercise[]> {
     const exercise = await this.client.generateExercise(
-      { song_id: songId, options: { exercise_type: "full_piece" } },
+      {
+        song_id: songId,
+        options: selection
+          ? {
+              exercise_type: "measure_range",
+              part_ids: selection.partIds,
+              measure_start: selection.fromMeasure,
+              measure_end: selection.toMeasure,
+              tempo_scale: selection.tempoPercent / 100,
+            }
+          : { exercise_type: "full_piece" },
+      },
       { signal },
     );
     return [mapExercise(exercise)];
@@ -224,5 +282,23 @@ export class LearningApiClient implements LearningApi {
       },
       { signal },
     );
+  }
+
+  async history(songId: string, signal?: AbortSignal): Promise<LearningAttemptSummary[]> {
+    return (await this.client.getAttempts(songId, { limit: 20 }, { signal }))
+      .map((attempt) => mapAttemptSummary(attempt, this.partInstruments));
+  }
+
+  async progress(songId: string, signal?: AbortSignal): Promise<LearnerProgress> {
+    return mapProgress(await this.client.getProgress(songId, { signal }));
+  }
+
+  async reset(songId: string, signal?: AbortSignal): Promise<LearningResetResult> {
+    const result = await this.client.resetProgress(songId, { confirm_song_id: songId }, { signal });
+    this.lastAttempt = null;
+    return {
+      deletedAttempts: result.deleted_attempts,
+      deletedProgressEntries: result.deleted_progress_entries,
+    };
   }
 }

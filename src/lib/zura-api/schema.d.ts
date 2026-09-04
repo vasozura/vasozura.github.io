@@ -21,6 +21,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/attempts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Recent attempts for the calling user and one song */
+        get: operations["list_attempts_v1_attempts_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/attempts/evaluate": {
         parameters: {
             query?: never;
@@ -180,7 +197,11 @@ export interface paths {
         get: operations["get_progress_v1_progress__song_id__get"];
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Delete the calling user's learning history for one song
+         * @description Requires an exact song-id confirmation and deletes only the caller's attempts and progress entries. Song, exercise and score data are never changed.
+         */
+        delete: operations["reset_progress_v1_progress__song_id__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1718,6 +1739,25 @@ export interface components {
             song_id: string;
         };
         /**
+         * ProgressResetRequest
+         * @description Explicit confirmation required before deleting the caller's history.
+         */
+        ProgressResetRequest: {
+            /** Confirm Song Id */
+            confirm_song_id: string;
+        };
+        /** ProgressResetResult */
+        ProgressResetResult: {
+            /** Deleted Attempts */
+            deleted_attempts: number;
+            /** Deleted Progress Entries */
+            deleted_progress_entries: number;
+            /** Song Id */
+            song_id: string;
+            /** User Id */
+            user_id: string;
+        };
+        /**
          * ProgressSummary
          * @description Aggregate view for one user and one song.
          */
@@ -2303,6 +2343,137 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HealthResponse"];
+                };
+            };
+        };
+    };
+    list_attempts_v1_attempts_get: {
+        parameters: {
+            query: {
+                song_id: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttemptResult"][];
+                };
+            };
+            /** @description The request was not valid. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authentication is required or the token was rejected. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The caller is authenticated but not permitted. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The resource does not exist, or exists but is not visible to this caller. A private song returns 404 rather than 403 so ids cannot be enumerated. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The resource is in a conflicting state. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The source file exceeds the configured size limit. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The source file type is not accepted. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The request body failed validation, or the source could not be processed (checksum mismatch, unsafe archive, unparseable score, ambiguous MIDI mapping). */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Rate limited. Retry-After is set. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected server error. Details stay in the server log. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description An optional upstream is unavailable. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The request exceeded the server timeout. */
+            504: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
                 };
             };
         };
@@ -3379,6 +3550,140 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProgressSummary"];
+                };
+            };
+            /** @description The request was not valid. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Authentication is required or the token was rejected. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The caller is authenticated but not permitted. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The resource does not exist, or exists but is not visible to this caller. A private song returns 404 rather than 403 so ids cannot be enumerated. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The resource is in a conflicting state. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The source file exceeds the configured size limit. */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The source file type is not accepted. */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The request body failed validation, or the source could not be processed (checksum mismatch, unsafe archive, unparseable score, ambiguous MIDI mapping). */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Rate limited. Retry-After is set. */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Unexpected server error. Details stay in the server log. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description An optional upstream is unavailable. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description The request exceeded the server timeout. */
+            504: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    reset_progress_v1_progress__song_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                song_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProgressResetRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProgressResetResult"];
                 };
             };
             /** @description The request was not valid. */

@@ -11,14 +11,21 @@ export async function fetchScoreSource(url: string, request: typeof fetch = fetc
   return response.blob();
 }
 
-export async function mountScoreViewer(root: HTMLElement): Promise<void> {
+export interface ScoreViewerOptions { midiPlayback?: boolean; }
+export const shouldMountStandaloneMidi = (options: ScoreViewerOptions): boolean => options.midiPlayback !== false;
+
+export async function mountScoreViewer(
+  root: HTMLElement,
+  options: ScoreViewerOptions = {},
+): Promise<() => void> {
+  const cleanups: Array<() => void> = [];
   const musicXmlUrl = root.dataset.musicxmlUrl;
   const canvas = root.querySelector<HTMLElement>(".score-canvas");
   const controls = root.querySelector<HTMLElement>(".score-controls");
   const status = root.querySelector<HTMLElement>(".score-status");
   const midiControls = root.querySelector<HTMLElement>(".midi-controls");
   const piano = root.querySelector<HTMLElement>(".piano-keyboard");
-  if (!canvas || !controls || !status || !midiControls || !piano) return;
+  if (!canvas || !controls || !status || !midiControls || !piano) return () => {};
 
   if (musicXmlUrl) try {
     const { OpenSheetMusicDisplay } = await import("opensheetmusicdisplay");
@@ -27,13 +34,15 @@ export async function mountScoreViewer(root: HTMLElement): Promise<void> {
     osmd.render();
     osmd.cursor.show();
     let learningCursorStep = -1;
-    root.addEventListener("learning-score-cursor", (event) => {
+    const moveLearningCursor = (event: Event): void => {
       const target = Number((event as CustomEvent<{ cursorStep: number }>).detail.cursorStep);
       if (!Number.isInteger(target) || target === learningCursorStep) return;
       if (target < learningCursorStep) { osmd.cursor.reset(); learningCursorStep = -1; }
       while (learningCursorStep < target) { osmd.cursor.next(); learningCursorStep += 1; }
       osmd.cursor.show();
-    });
+    };
+    root.addEventListener("learning-score-cursor", moveLearningCursor);
+    cleanups.push(() => root.removeEventListener("learning-score-cursor", moveLearningCursor));
     let zoom = 1;
     let page = 0;
     let measure = 1;
@@ -67,14 +76,24 @@ export async function mountScoreViewer(root: HTMLElement): Promise<void> {
     status.textContent = error instanceof Error ? error.message : "The score could not be loaded.";
   } else { status.textContent = "Notation is unavailable; MIDI learning remains available."; canvas.hidden = true; controls.hidden = true; }
 
+  if (!shouldMountStandaloneMidi(options)) {
+    midiControls.hidden = true;
+    piano.hidden = true;
+    return () => cleanups.splice(0).forEach((cleanup) => cleanup());
+  }
+
   const midiUrl = root.dataset.midiUrl;
-  if (!midiUrl) { midiControls.innerHTML = "<p>MIDI playback is not available for this score.</p>"; return; }
+  if (!midiUrl) {
+    midiControls.innerHTML = "<p>MIDI playback is not available for this score.</p>";
+    return () => cleanups.splice(0).forEach((cleanup) => cleanup());
+  }
   const pianoVisualizer = new PianoVisualizer(piano);
   pianoVisualizer.mount();
   const midi = new MidiPlayback((notes) => pianoVisualizer.setActiveNotes(notes), (position, duration) => {
     const progress = midiControls.querySelector<HTMLInputElement>("[data-midi-progress]");
     if (progress) { progress.max = String(duration); progress.value = String(position); }
   });
+  cleanups.push(() => { midi.destroy(); pianoVisualizer.clear(); piano.replaceChildren(); });
   midiControls.innerHTML = `<div class="midi-transport"><button type="button" data-midi-action="play">▶ Play / pause</button><button type="button" data-midi-action="stop">■ Stop</button><label>Tempo <input data-midi-tempo type="range" min="50" max="150" value="100" /><output>100%</output></label><button type="button" data-midi-action="metronome" aria-pressed="false">Metronome</button></div><label class="midi-progress">Position <input data-midi-progress type="range" min="0" max="0" value="0" step="0.01" disabled /></label><div class="midi-loop"><label>A (seconds) <input data-loop-a type="number" min="0" step="0.1" /></label><label>B (seconds) <input data-loop-b type="number" min="0" step="0.1" /></label><button type="button" data-midi-action="loop">Set A–B loop</button><button type="button" data-midi-action="clear-loop">Clear loop</button></div>`;
   try {
     await midi.load(midiUrl, Number(root.dataset.bpm) || 120);
@@ -99,4 +118,5 @@ export async function mountScoreViewer(root: HTMLElement): Promise<void> {
   } catch (error) {
     midiControls.innerHTML = `<p>${error instanceof Error ? error.message : "MIDI could not be loaded."}</p>`;
   }
+  return () => cleanups.splice(0).forEach((cleanup) => cleanup());
 }

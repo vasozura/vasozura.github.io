@@ -1,8 +1,10 @@
 # Score-to-MIDI synchronization mapping
 
-OpenSheetMusicDisplay and a MIDI file do not guarantee identical note identity, repeats, pickup timing, or tempo interpretation. The first implementation renders MusicXML, exposes the OSMD cursor foundation, plays MIDI, and highlights piano keys. It does not pretend that cursor-to-MIDI synchronization is reliable without mapping data.
+OpenSheetMusicDisplay and a MIDI file do not guarantee identical note identity, repeats, pickup timing, or tempo interpretation. Learning playback therefore uses exactly one monotonic `CanonicalScheduler`. Its expanded, tempo-resolved manifest timeline drives synthesized MIDI-note audio, the OSMD cursor, instrument visualizers, metronome and A–B loop. Pause, resume, seek and 50–150% tempo changes update the same clock anchor; no second playback timer is started.
 
-Future precise synchronization can be stored in `instrument_parts.fingering_json` under a versioned envelope:
+The optional performance MIDI is loaded only after Learning is opened and is used for an alignment check, not as a competing clock. Duration differences up to 100 ms or 0.5% are `high` confidence; differences up to 750 ms or 2.5% are `medium` and normalized to the canonical timeline; larger or unreadable differences are `unreliable` and produce a visible warning. Canonical timing always wins.
+
+Precise source-authored synchronization can be stored in `instrument_parts.fingering_json` under this versioned envelope:
 
 ```json
 {

@@ -28,6 +28,26 @@ describe("canonical scheduler", () => {
     expect(scheduler.snapshot().position).toBeCloseTo(1, 4);
   });
 
+  it("normalizes multiple loop lengths after a throttled frame", () => {
+    const scheduler = new CanonicalScheduler(manifest.timeline, () => now);
+    scheduler.setLoop(1, 2);
+    scheduler.seek(1.5);
+    scheduler.play();
+    now = 4_000;
+    scheduler.pause();
+    expect(scheduler.snapshot().position).toBeCloseTo(1.5, 4);
+  });
+
+  it("keeps seek and tempo changes on the same monotonic clock", () => {
+    const scheduler = new CanonicalScheduler(manifest.timeline, () => now);
+    scheduler.seek(2);
+    scheduler.setTempo(50);
+    scheduler.play();
+    now = 2_000;
+    scheduler.pause();
+    expect(scheduler.snapshot()).toMatchObject({ position: 3, tempoPercent: 50, playing: false });
+  });
+
   it("reports tempo changes and pickup measure data from the same timeline", () => {
     const scheduler = new CanonicalScheduler(manifest.timeline, () => now);
     expect(scheduler.snapshot().measure?.pickup).toBe(true);

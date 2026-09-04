@@ -85,3 +85,5 @@ The importer rejects a mismatch before any database or Storage write.
 | Piano/guitar part | MusicXML, XML, MXL, MID, MIDI | 20 MB each |
 
 The importer validates filename, size, and file signatures (magic bytes), then calculates SHA-256 checksums. Lyrics containing literal `\n`, `\r`, or `\r\n` sequences are normalized to real line breaks.
+
+For multi-song onboarding, a `zura-song-batch/v1` JSON document lists package paths and expected slugs. Batch dry-run validates packages sequentially without credentials or network writes. Re-running a stopped batch is the resume mechanism; immutable checksum paths are reused and are never overwritten.

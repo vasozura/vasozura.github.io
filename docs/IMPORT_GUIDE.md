@@ -63,3 +63,13 @@ The importer intentionally does not roll back or delete that partial draft;
 inspect the reported state before retrying.
 
 The process is safe to run again. Matching checksums avoid duplicate uploads; changed files create a new version.
+
+## Batch readiness and resume
+
+Use the versioned `zura-song-batch/v1` manifest shown in `docs/sample-batch.json`:
+
+```powershell
+pnpm import:batch -- ".\docs\sample-batch.json" --dry-run
+```
+
+The batch stops at the first invalid package or failed write and reports every completed/reused object. After inspecting a partial report, run the same command again: song upserts, checksum-addressed Storage paths, `song_files` conflict keys, and instrument-part upserts make this the supported resume flow. A real batch must pass dry-run before the server-only credential is supplied. The checked-in sample is metadata-only and must never be imported into production.

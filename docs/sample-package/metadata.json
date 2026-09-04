@@ -1,0 +1,13 @@
+{
+  "slug": "taflis-tvali-sample",
+  "status": "draft",
+  "title_ka": "თაფლის თვალი — იმპორტის ნიმუში",
+  "title_en": "Taflis Tvali — Import Sample",
+  "display_credit": "Metadata-only Phase 4 importer sample",
+  "language": "ka",
+  "learning_enabled": false,
+  "learning_instruments": [],
+  "canonical_source": "musicxml",
+  "part_mapping": {},
+  "fingering_overrides": {}
+}

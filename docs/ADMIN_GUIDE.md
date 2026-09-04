@@ -35,4 +35,6 @@ Draft rows and their files are not readable by anonymous visitors. Public catalo
 
 ## Guitar and accordion parts
 
-The schema and `instrument_parts` table support piano, guitar, and accordion MusicXML/MIDI/fingering JSON. This version visualizes piano MIDI notes. It does not claim to infer guitar or accordion fingering from MP3 audio; reliable fingering must be entered or imported explicitly.
+The schema and `instrument_parts` table support piano, guitar, and accordion MusicXML/MIDI/fingering JSON. Piano follows the active source range and labels source-provided hands. Guitar highlights only source-authored string/fret positions; ambiguous playable positions remain labelled suggestions and are not selected automatically. Accordion shows a placeholder until a verified `stradella` or `free-bass` mapping is configured. No fingering is inferred from MP3 audio.
+
+Before publishing a learning-enabled song, use **Check manifest readiness** to verify the canonical resource, manifest checksum, parser/mapping/schema versions and validation problems. **Reprocess safely** reuses an identical immutable manifest. The atomic publication RPC remains the final server-side guard. A deliberately non-learning song can publish without a manifest.

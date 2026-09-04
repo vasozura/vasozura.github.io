@@ -58,7 +58,25 @@ function bindInteractions(playableSongs: Song[] = songs): void {
   bindCatalogFilters();
   player.bind(app, playableSongs, language);
   const score = document.querySelector<HTMLElement>("#interactive-score");
-  if (score) void import("./learning/learning-mode").then(({ mountLearningMode }) => mountLearningMode(score)).then((cleanup) => { if (score.isConnected) learningCleanup = cleanup; else cleanup(); });
+  const openLearning = score?.querySelector<HTMLButtonElement>("[data-open-learning]");
+  if (score && openLearning) openLearning.addEventListener("click", async () => {
+    if (score.dataset.mounted === "true") return;
+    score.dataset.mounted = "true";
+    openLearning.disabled = true;
+    const status = score.querySelector<HTMLElement>(".score-status");
+    if (status) status.textContent = "Loading interactive score…";
+    try {
+      const cleanup = score.dataset.learningEnabled === "true"
+        ? await import("./learning/learning-mode").then(({ mountLearningMode }) => mountLearningMode(score))
+        : await import("./score/score-viewer").then(({ mountScoreViewer }) => mountScoreViewer(score));
+      if (score.isConnected) learningCleanup = cleanup;
+      else cleanup();
+    } catch (error) {
+      score.dataset.mounted = "false";
+      openLearning.disabled = false;
+      if (status) status.textContent = error instanceof Error ? error.message : "Learning could not be opened.";
+    }
+  });
 }
 
 function readCatalogFilters(): SongFilters {

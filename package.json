@@ -11,7 +11,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "import:song": "tsx scripts/import-song.ts",
-    "import:song:dry-run": "tsx scripts/import-song.ts --dry-run"
+    "import:song:dry-run": "tsx scripts/import-song.ts --dry-run",
+    "import:batch": "tsx scripts/import-batch.ts",
+    "import:batch:dry-run": "tsx scripts/import-batch.ts --dry-run"
   },
   "devDependencies": {
     "@types/node": "^26.3.0",

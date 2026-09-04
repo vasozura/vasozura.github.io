@@ -1,0 +1,1 @@
+Metadata-only validation fixture. It intentionally contains no audio, lyrics, score, or other copyrighted media. Do not import this placeholder into production.

@@ -8,6 +8,7 @@ import { cleanupLiteralNewlines, validateFile, type UploadFileType } from "../ut
 import { extractYouTubeVideoId } from "../utils/youtube";
 import { safeHttpUrl } from "../utils/safe-url";
 import { parseLearningConfiguration, validateLearningPublication } from "../learning/admin-config";
+import { inspectLearningReadiness, reprocessLearning } from "../learning/admin-readiness";
 
 let dirty = false;
 let hashGuardInstalled = false;
@@ -46,7 +47,7 @@ function fileInput(label: string, name: string, accept: string, current: string 
 function learningFields(song: Song): string {
   const instruments = song.learningInstruments ?? [];
   const checked = (name: string): string => instruments.includes(name as "piano" | "guitar" | "accordion") ? "checked" : "";
-  return `<fieldset class="learning-admin"><legend>Interactive learning</legend><label class="admin-check"><input name="learning_enabled" type="checkbox" ${song.learningEnabled ? "checked" : ""} /> Enable learning mode</label><div class="learning-admin-options" role="group" aria-label="Learning instruments"><label><input name="learning_instrument" type="checkbox" value="piano" ${checked("piano")} /> Piano (88 keys)</label><label><input name="learning_instrument" type="checkbox" value="guitar" ${checked("guitar")} /> Guitar</label><label><input name="learning_instrument" type="checkbox" value="accordion" ${checked("accordion")} /> Accordion</label></div><label><span>Canonical source</span><select name="learning_source"><option value="musicxml" ${song.learningSource !== "midi" ? "selected" : ""}>MusicXML</option><option value="midi" ${song.learningSource === "midi" ? "selected" : ""}>MIDI</option></select></label><div class="admin-grid admin-textareas">${textarea("Part / hand mapping (JSON)", "learning_mapping", JSON.stringify(song.learningMapping ?? {}, null, 2), 7)}${textarea("Fingering overrides (JSON)", "learning_fingering", JSON.stringify(song.learningFingering ?? {}, null, 2), 7)}</div><button type="button" data-learning-preview>Validate learning configuration</button><p data-learning-preview-status aria-live="polite"></p></fieldset>`;
+  return `<fieldset class="learning-admin"><legend>Interactive learning</legend><label class="admin-check"><input name="learning_enabled" type="checkbox" ${song.learningEnabled ? "checked" : ""} /> Enable learning mode</label><div class="learning-admin-options" role="group" aria-label="Learning instruments"><label><input name="learning_instrument" type="checkbox" value="piano" ${checked("piano")} /> Piano</label><label><input name="learning_instrument" type="checkbox" value="guitar" ${checked("guitar")} /> Guitar</label><label><input name="learning_instrument" type="checkbox" value="accordion" ${checked("accordion")} /> Accordion (verified mapping required)</label></div><label><span>Canonical source</span><select name="learning_source"><option value="musicxml" ${song.learningSource !== "midi" ? "selected" : ""}>MusicXML</option><option value="midi" ${song.learningSource === "midi" ? "selected" : ""}>MIDI</option></select></label><div class="admin-grid admin-textareas">${textarea("Part / hand mapping (JSON)", "learning_mapping", JSON.stringify(song.learningMapping ?? {}, null, 2), 7)}${textarea("Fingering overrides (JSON)", "learning_fingering", JSON.stringify(song.learningFingering ?? {}, null, 2), 7)}</div><div class="admin-form-actions"><button type="button" data-learning-preview>Validate configuration</button>${song.id !== "new" && song.learningEnabled ? '<button type="button" data-learning-readiness>Check manifest readiness</button><button type="button" data-learning-reprocess>Reprocess safely</button>' : ""}</div><div data-learning-readiness-output></div><p data-learning-preview-status aria-live="polite"></p></fieldset>`;
 }
 
 function renderLogin(message = ""): string {
@@ -201,7 +202,19 @@ export async function mountAdmin(root: HTMLElement): Promise<void> {
     root.querySelector("[data-admin-logout]")?.addEventListener("click", async () => { dirty = false; await supabase.auth.signOut(); await mountAdmin(root); });
     root.querySelector("[data-admin-new]")?.addEventListener("click", () => { editing = emptySong(); renderDashboard(); });
     root.querySelectorAll<HTMLButtonElement>("[data-admin-edit]").forEach((button) => button.addEventListener("click", () => { editing = songs.find((song) => song.id === button.dataset.adminEdit) ?? null; renderDashboard(); }));
-    root.querySelectorAll<HTMLButtonElement>("[data-admin-publish]").forEach((button) => button.addEventListener("click", async () => { const song = songs.find((entry) => entry.id === button.dataset.adminPublish); if (button.dataset.status === "published" && song) validateLearningPublication(song); await setSongStatus(button.dataset.adminPublish ?? "", button.dataset.status === "published" ? "published" : "draft"); songs = await loadAdminSongs(); renderDashboard(); }));
+    root.querySelectorAll<HTMLButtonElement>("[data-admin-publish]").forEach((button) => button.addEventListener("click", async () => {
+      const song = songs.find((entry) => entry.id === button.dataset.adminPublish);
+      button.disabled = true;
+      try {
+        if (button.dataset.status === "published" && song) {
+          validateLearningPublication(song);
+          const readiness = await inspectLearningReadiness(song);
+          if (!readiness.ready) throw new Error(`Publication blocked: ${readiness.problems.join(" ")}`);
+        }
+        await setSongStatus(button.dataset.adminPublish ?? "", button.dataset.status === "published" ? "published" : "draft");
+        songs = await loadAdminSongs(); renderDashboard();
+      } catch (error) { window.alert(error instanceof Error ? error.message : "Publication failed."); button.disabled = false; }
+    }));
     root.querySelectorAll<HTMLButtonElement>("[data-admin-delete]").forEach((button) => button.addEventListener("click", async () => { const song = songs.find((entry) => entry.id === button.dataset.adminDelete); if (!song || !window.confirm(`Delete “${song.title.ka ?? song.slug}” and all of its uploaded files? This cannot be undone.`)) return; await deleteSong(song.id); songs = await loadAdminSongs(); renderDashboard(); }));
     root.querySelectorAll("[data-admin-close]").forEach((button) => button.addEventListener("click", () => { if (dirty && !window.confirm("Discard unsaved changes?")) return; dirty = false; editing = null; renderDashboard(); }));
     const form = root.querySelector<HTMLFormElement>("#song-form");
@@ -211,6 +224,27 @@ export async function mountAdmin(root: HTMLElement): Promise<void> {
         const status = form.querySelector<HTMLElement>("[data-learning-preview-status]")!;
         try { const config = parseLearningConfiguration(new FormData(form)); status.textContent = `Valid: ${config.instruments.join(", ") || "disabled"}; ${config.source} source.`; status.className = "success"; }
         catch (error) { status.textContent = error instanceof Error ? error.message : "Invalid learning configuration."; status.className = "error"; }
+      });
+      form.querySelector<HTMLButtonElement>("[data-learning-readiness]")?.addEventListener("click", async (event) => {
+        const button = event.currentTarget as HTMLButtonElement;
+        const output = form.querySelector<HTMLElement>("[data-learning-readiness-output]")!;
+        button.disabled = true; output.textContent = "Checking canonical resources and manifest…";
+        try {
+          const readiness = await inspectLearningReadiness(editing!);
+          output.className = readiness.ready ? "success" : "error";
+          output.textContent = readiness.ready && readiness.versions
+            ? `Ready · manifest ${readiness.manifestKey} · checksum ${readiness.checksum?.slice(0, 12)}… · schema ${readiness.versions.schema} · parser ${readiness.versions.parser} · mapping ${readiness.versions.mapping}. Synchronization confidence is verified in Preview.`
+            : `Not ready · ${readiness.problems.join(" ")}`;
+        } finally { button.disabled = false; }
+      });
+      form.querySelector<HTMLButtonElement>("[data-learning-reprocess]")?.addEventListener("click", async (event) => {
+        const button = event.currentTarget as HTMLButtonElement;
+        const output = form.querySelector<HTMLElement>("[data-learning-readiness-output]")!;
+        if (!window.confirm("Reprocess the existing canonical source? Identical checksums reuse the current manifest.")) return;
+        button.disabled = true; output.textContent = "Processing canonical score…";
+        try { await reprocessLearning(editing!); output.className = "success"; output.textContent = "Processing complete. Run readiness check to verify the manifest."; }
+        catch (error) { output.className = "error"; output.textContent = error instanceof Error ? error.message : "Processing failed."; }
+        finally { button.disabled = false; }
       });
       form.addEventListener("input", () => { dirty = true; });
       form.addEventListener("submit", async (event) => { event.preventDefault(); try { await saveForm(form, editing!, root.querySelector<HTMLElement>("#admin-form-message")!); songs = await loadAdminSongs(); editing = songs.find((song) => song.slug === (form.elements.namedItem("slug") as HTMLInputElement).value) ?? null; window.setTimeout(renderDashboard, 650); } catch { /* Inline retry is available. */ } });

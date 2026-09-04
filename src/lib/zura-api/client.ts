@@ -32,6 +32,8 @@ import type {
   PianoFingeringResponse,
   ProcessResponse,
   ProgressRecordInput,
+  ProgressResetInput,
+  ProgressResetResult,
   ProgressSummary,
   ScoreManifest,
   ScoreProcessInput,
@@ -322,6 +324,31 @@ export class ZuraLearningClient {
     );
   }
 
+  getAttempts(
+    songId: string,
+    params: { limit?: number } = {},
+    options: RequestOptions = {},
+  ): Promise<AttemptResult[]> {
+    return this.request<AttemptResult[]>(
+      "GET",
+      `/v1/attempts${buildQuery({ song_id: songId, limit: params.limit })}`,
+      options,
+    );
+  }
+
+  resetProgress(
+    songId: string,
+    body: ProgressResetInput,
+    options: RequestOptions = {},
+  ): Promise<ProgressResetResult> {
+    return this.request<ProgressResetResult>(
+      "DELETE",
+      `/v1/progress/${encodeURIComponent(songId)}`,
+      options,
+      body,
+    );
+  }
+
   // --- fingering ------------------------------------------------------------
 
   /** Advisory. Explicit fingering you send is preserved and pinned. */
@@ -383,7 +410,7 @@ export class ZuraLearningClient {
   }
 
   private async request<T>(
-    method: "GET" | "POST",
+    method: "GET" | "POST" | "DELETE",
     path: string,
     options: RequestOptions,
     body?: unknown,
@@ -425,7 +452,7 @@ export class ZuraLearningClient {
   }
 
   private async attempt<T>(
-    method: "GET" | "POST",
+    method: "GET" | "POST" | "DELETE",
     path: string,
     options: RequestOptions,
     body: unknown,
