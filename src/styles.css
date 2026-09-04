@@ -1542,12 +1542,43 @@ img {
 .learning-admin-options,
 .learning-transport,
 .learning-instruments,
-.learning-practice {
+.learning-practice,
+.learning-view-options {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 10px 16px;
   margin: 14px 0;
+}
+
+.learning-open {
+  margin: 10px 0;
+  border-color: var(--acid);
+  color: var(--acid);
+}
+
+.learning-clock-note,
+.learning-scoring,
+.learning-current,
+.learning-sync {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.learning-sync[data-confidence="high"] { color: #58bd7b; }
+.learning-sync[data-confidence="medium"] { color: #e2b955; }
+.learning-sync[data-confidence="unreliable"] { color: #ff8181; }
+
+.learning-exercise-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.learning-exercise-options label {
+  display: grid;
+  gap: 6px;
 }
 
 .admin-check,
@@ -1595,16 +1626,27 @@ img {
 .learning-key.active,
 .learning-fretboard .active,
 .learning-accordion .active { background: var(--acid); color: #050505; }
+.learning-key.active.hand-left { background: #6cb7ff; }
+.learning-key.active.hand-right { background: var(--acid); }
 .learning-key.correct { background: #58bd7b; }
 .learning-key.missed,
 .learning-key.wrong { background: #dc6262; }
 
 .learning-fretboard { min-width: 0; }
+.learning-fretboard.left-handed .guitar-string { direction: rtl; }
 .guitar-string { display: grid; min-width: 760px; grid-template-columns: repeat(21, minmax(28px, 1fr)); border-top: 1px solid #aaa; }
 .guitar-string span,
 .learning-accordion span { min-height: 28px; padding: 4px; border-right: 1px solid var(--line); text-align: center; }
 .learning-accordion > div { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
 .learning-accordion span { border: 1px solid var(--line); border-radius: 50%; min-width: 34px; }
+.learning-placeholder { max-width: 620px; color: var(--muted); }
+
+.learning-mode button:focus-visible,
+.learning-mode input:focus-visible,
+.learning-mode select:focus-visible {
+  outline: 3px solid var(--acid);
+  outline-offset: 3px;
+}
 
 @media (max-width: 1024px) {
   .catalog-filters {
@@ -1699,4 +1741,6 @@ img {
   }
 
   .learning-transport label { width: 100%; }
+  .learning-exercise-options { grid-template-columns: 1fr; }
+  .learning-piano { width: max(620px, 100%); }
 }

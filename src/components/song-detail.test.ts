@@ -17,6 +17,8 @@ describe("song resource rendering", () => {
     const html = renderSongDetail({ ...song, audioUrl: "https://example.com/a.mp3", musicXmlUrl: "https://example.com/a.musicxml" }, "en");
     expect(html).toContain("<audio");
     expect(html).toContain("interactive-score");
+    expect(html).toContain("Open interactive learning");
+    expect(html).not.toContain("Loading score");
     expect(html).not.toContain("PDF score");
   });
 

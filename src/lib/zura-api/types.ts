@@ -49,6 +49,7 @@ export type MatchDetail = S["MatchDetail"];
 export type MetricBreakdown = S["MetricBreakdown"];
 export type ProgressEntry = S["ProgressEntry"];
 export type ProgressSummary = S["ProgressSummary"];
+export type ProgressResetResult = S["ProgressResetResult"];
 
 // --- fingering --------------------------------------------------------------
 export type ExplicitFingering = S["ExplicitFingering"];
@@ -76,6 +77,7 @@ export type ScoreReprocessRequest = S["ScoreReprocessRequest"];
 export type ExerciseGenerateRequest = S["ExerciseGenerateRequest"];
 export type AttemptEvaluateRequest = S["AttemptEvaluateRequest"];
 export type ProgressRecordRequest = S["ProgressRecordRequest"];
+export type ProgressResetRequest = S["ProgressResetRequest"];
 
 /**
  * A fingering that came from the score, and is therefore authoritative.
@@ -124,6 +126,7 @@ export type ProgressRecordInput = WithDefaults<
   ProgressRecordRequest,
   "song_id" | "exercise_id" | "attempt_id" | "correct_count" | "expected_count" | "practice_seconds"
 >;
+export type ProgressResetInput = ProgressResetRequest;
 
 export type PianoFingeringInput = { hand: "left" | "right"; notes: NoteRefInput[] };
 export type GuitarFingeringInput = { config?: GuitarConfigInput; notes: NoteRefInput[] };

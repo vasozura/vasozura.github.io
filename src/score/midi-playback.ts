@@ -83,6 +83,14 @@ export class MidiPlayback {
   setMetronome(enabled: boolean): void { this.metronome = enabled; }
   isPlaying(): boolean { return this.playing; }
 
+  destroy(): void {
+    this.pause();
+    window.clearInterval(this.timer);
+    void this.context?.close();
+    this.context = null;
+    this.notes = [];
+  }
+
   private position(): number {
     if (!this.playing || !this.context) return this.offset;
     return this.offset + (this.context.currentTime - this.startedAt) * this.tempo;

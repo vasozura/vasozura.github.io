@@ -1,7 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
-import { enableMidiSeek, fetchScoreSource } from "./score-viewer";
+import { enableMidiSeek, fetchScoreSource, shouldMountStandaloneMidi } from "./score-viewer";
 
 describe("score viewer MIDI controls", () => {
+  it("disables the independent MIDI timer when the canonical learning clock is active", () => {
+    expect(shouldMountStandaloneMidi({ midiPlayback: false })).toBe(false);
+    expect(shouldMountStandaloneMidi({})).toBe(true);
+  });
   it("enables seeking after MIDI has loaded", () => {
     const progress = { disabled: true } as HTMLInputElement;
     enableMidiSeek(progress);

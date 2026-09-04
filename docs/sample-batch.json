@@ -1,0 +1,9 @@
+{
+  "schema": "zura-song-batch/v1",
+  "packages": [
+    {
+      "path": "sample-package",
+      "expectedSlug": "taflis-tvali-sample"
+    }
+  ]
+}
