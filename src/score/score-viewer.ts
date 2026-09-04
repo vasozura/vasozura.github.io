@@ -1,3 +1,4 @@
+import { getInitialLanguage, type Language } from "../i18n";
 import { MidiPlayback } from "./midi-playback";
 import { PianoVisualizer } from "./instrument-visualizer";
 
@@ -14,10 +15,19 @@ export async function fetchScoreSource(url: string, request: typeof fetch = fetc
 export interface ScoreViewerOptions { midiPlayback?: boolean; }
 export const shouldMountStandaloneMidi = (options: ScoreViewerOptions): boolean => options.midiPlayback !== false;
 
+export function getScoreCopy(language: Language) {
+  return language === "ka" ? {
+    zoomOut: "დაპატარავება", zoomIn: "გადიდება", layout: "განლაგება", page: "გვერდი", continuous: "უწყვეტი", previousPage: "წინა გვერდი", nextPage: "შემდეგი გვერდი", previousMeasure: "წინა ზომა", nextMeasure: "შემდეგი ზომა", measure: "ზომა", cursor: "კურსორი", loaded: "MusicXML ნოტები ჩაიტვირთა.", scoreFailed: "ნოტების ჩატვირთვა ვერ მოხერხდა.", notationUnavailable: "ნოტები მიუწვდომელია; MIDI სწავლა კვლავ ხელმისაწვდომია.", midiUnavailable: "ამ ნოტებისთვის MIDI დაკვრა მიუწვდომელია.", playPause: "დაკვრა / პაუზა", stop: "გაჩერება", tempo: "ტემპი", metronome: "მეტრონომი", position: "პოზიცია", seconds: "წამი", setLoop: "A–B ციკლის დაყენება", clearLoop: "ციკლის გაუქმება", midiFailed: "MIDI-ს ჩატვირთვა ვერ მოხერხდა.",
+  } : {
+    zoomOut: "Zoom out", zoomIn: "Zoom in", layout: "Layout", page: "Page", continuous: "Continuous", previousPage: "Previous page", nextPage: "Next page", previousMeasure: "Previous measure", nextMeasure: "Next measure", measure: "Measure", cursor: "Cursor", loaded: "MusicXML score loaded.", scoreFailed: "The score could not be loaded.", notationUnavailable: "Notation is unavailable; MIDI learning remains available.", midiUnavailable: "MIDI playback is not available for this score.", playPause: "Play / pause", stop: "Stop", tempo: "Tempo", metronome: "Metronome", position: "Position", seconds: "seconds", setLoop: "Set A–B loop", clearLoop: "Clear loop", midiFailed: "MIDI could not be loaded.",
+  };
+}
+
 export async function mountScoreViewer(
   root: HTMLElement,
   options: ScoreViewerOptions = {},
 ): Promise<() => void> {
+  const copy = getScoreCopy(getInitialLanguage());
   const cleanups: Array<() => void> = [];
   const musicXmlUrl = root.dataset.musicxmlUrl;
   const canvas = root.querySelector<HTMLElement>(".score-canvas");
@@ -56,14 +66,14 @@ export async function mountScoreViewer(
       list.forEach((entry, index) => { entry.hidden = index !== page; });
       controls.querySelector<HTMLElement>("[data-page-label]")!.textContent = `${page + 1} / ${list.length}`;
     };
-    controls.innerHTML = `<button type="button" data-score-action="zoom-out" aria-label="Zoom out">−</button><output data-zoom-label>100%</output><button type="button" data-score-action="zoom-in" aria-label="Zoom in">+</button><label>Layout <select data-score-layout><option value="page">Page</option><option value="continuous">Continuous</option></select></label><button type="button" data-score-action="prev-page" aria-label="Previous page">← page</button><output data-page-label>1 / ${Math.max(1, pages().length)}</output><button type="button" data-score-action="next-page" aria-label="Next page">page →</button><button type="button" data-score-action="prev-measure" aria-label="Previous measure">← measure</button><output data-measure-label>Measure 1</output><button type="button" data-score-action="next-measure" aria-label="Next measure">measure →</button><button type="button" data-score-action="cursor" aria-pressed="true">Cursor</button>`;
+    controls.innerHTML = `<button type="button" data-score-action="zoom-out" aria-label="${copy.zoomOut}">−</button><output data-zoom-label>100%</output><button type="button" data-score-action="zoom-in" aria-label="${copy.zoomIn}">+</button><label>${copy.layout} <select data-score-layout><option value="page">${copy.page}</option><option value="continuous">${copy.continuous}</option></select></label><button type="button" data-score-action="prev-page" aria-label="${copy.previousPage}">← ${copy.page.toLowerCase()}</button><output data-page-label>1 / ${Math.max(1, pages().length)}</output><button type="button" data-score-action="next-page" aria-label="${copy.nextPage}">${copy.page.toLowerCase()} →</button><button type="button" data-score-action="prev-measure" aria-label="${copy.previousMeasure}">← ${copy.measure.toLowerCase()}</button><output data-measure-label>${copy.measure} 1</output><button type="button" data-score-action="next-measure" aria-label="${copy.nextMeasure}">${copy.measure.toLowerCase()} →</button><button type="button" data-score-action="cursor" aria-pressed="true">${copy.cursor}</button>`;
     controls.querySelector('[data-score-action="zoom-out"]')?.addEventListener("click", () => { zoom = Math.max(0.5, zoom - 0.1); osmd.Zoom = zoom; osmd.render(); controls.querySelector<HTMLElement>("[data-zoom-label]")!.textContent = `${Math.round(zoom * 100)}%`; showPage(); });
     controls.querySelector('[data-score-action="zoom-in"]')?.addEventListener("click", () => { zoom = Math.min(1.8, zoom + 0.1); osmd.Zoom = zoom; osmd.render(); controls.querySelector<HTMLElement>("[data-zoom-label]")!.textContent = `${Math.round(zoom * 100)}%`; showPage(); });
     controls.querySelector('[data-score-action="prev-page"]')?.addEventListener("click", () => { page -= 1; showPage(); });
     controls.querySelector('[data-score-action="next-page"]')?.addEventListener("click", () => { page += 1; showPage(); });
     controls.querySelector<HTMLSelectElement>("[data-score-layout]")?.addEventListener("change", (event) => { pageMode = (event.currentTarget as HTMLSelectElement).value === "page"; showPage(); });
-    controls.querySelector('[data-score-action="prev-measure"]')?.addEventListener("click", () => { try { osmd.cursor.previous(); measure = Math.max(1, measure - 1); } catch { measure = 1; } controls.querySelector<HTMLElement>("[data-measure-label]")!.textContent = `Measure ${measure}`; });
-    controls.querySelector('[data-score-action="next-measure"]')?.addEventListener("click", () => { try { osmd.cursor.next(); measure += 1; } catch { /* Cursor stays at the final measure. */ } controls.querySelector<HTMLElement>("[data-measure-label]")!.textContent = `Measure ${measure}`; });
+    controls.querySelector('[data-score-action="prev-measure"]')?.addEventListener("click", () => { try { osmd.cursor.previous(); measure = Math.max(1, measure - 1); } catch { measure = 1; } controls.querySelector<HTMLElement>("[data-measure-label]")!.textContent = `${copy.measure} ${measure}`; });
+    controls.querySelector('[data-score-action="next-measure"]')?.addEventListener("click", () => { try { osmd.cursor.next(); measure += 1; } catch { /* Cursor stays at the final measure. */ } controls.querySelector<HTMLElement>("[data-measure-label]")!.textContent = `${copy.measure} ${measure}`; });
     controls.querySelector<HTMLButtonElement>('[data-score-action="cursor"]')?.addEventListener("click", (event) => {
       const button = event.currentTarget as HTMLButtonElement;
       const visible = button.getAttribute("aria-pressed") !== "true";
@@ -71,10 +81,10 @@ export async function mountScoreViewer(
       if (visible) osmd.cursor.show(); else osmd.cursor.hide();
     });
     showPage();
-    status.textContent = "MusicXML score loaded.";
+    status.textContent = copy.loaded;
   } catch (error) {
-    status.textContent = error instanceof Error ? error.message : "The score could not be loaded.";
-  } else { status.textContent = "Notation is unavailable; MIDI learning remains available."; canvas.hidden = true; controls.hidden = true; }
+    status.textContent = error instanceof Error ? error.message : copy.scoreFailed;
+  } else { status.textContent = copy.notationUnavailable; canvas.hidden = true; controls.hidden = true; }
 
   if (!shouldMountStandaloneMidi(options)) {
     midiControls.hidden = true;
@@ -84,7 +94,7 @@ export async function mountScoreViewer(
 
   const midiUrl = root.dataset.midiUrl;
   if (!midiUrl) {
-    midiControls.innerHTML = "<p>MIDI playback is not available for this score.</p>";
+    midiControls.innerHTML = `<p>${copy.midiUnavailable}</p>`;
     return () => cleanups.splice(0).forEach((cleanup) => cleanup());
   }
   const pianoVisualizer = new PianoVisualizer(piano);
@@ -94,7 +104,7 @@ export async function mountScoreViewer(
     if (progress) { progress.max = String(duration); progress.value = String(position); }
   });
   cleanups.push(() => { midi.destroy(); pianoVisualizer.clear(); piano.replaceChildren(); });
-  midiControls.innerHTML = `<div class="midi-transport"><button type="button" data-midi-action="play">▶ Play / pause</button><button type="button" data-midi-action="stop">■ Stop</button><label>Tempo <input data-midi-tempo type="range" min="50" max="150" value="100" /><output>100%</output></label><button type="button" data-midi-action="metronome" aria-pressed="false">Metronome</button></div><label class="midi-progress">Position <input data-midi-progress type="range" min="0" max="0" value="0" step="0.01" disabled /></label><div class="midi-loop"><label>A (seconds) <input data-loop-a type="number" min="0" step="0.1" /></label><label>B (seconds) <input data-loop-b type="number" min="0" step="0.1" /></label><button type="button" data-midi-action="loop">Set A–B loop</button><button type="button" data-midi-action="clear-loop">Clear loop</button></div>`;
+  midiControls.innerHTML = `<div class="midi-transport"><button type="button" data-midi-action="play">▶ ${copy.playPause}</button><button type="button" data-midi-action="stop">■ ${copy.stop}</button><label>${copy.tempo} <input data-midi-tempo type="range" min="50" max="150" value="100" /><output>100%</output></label><button type="button" data-midi-action="metronome" aria-pressed="false">${copy.metronome}</button></div><label class="midi-progress">${copy.position} <input data-midi-progress type="range" min="0" max="0" value="0" step="0.01" disabled /></label><div class="midi-loop"><label>A (${copy.seconds}) <input data-loop-a type="number" min="0" step="0.1" /></label><label>B (${copy.seconds}) <input data-loop-b type="number" min="0" step="0.1" /></label><button type="button" data-midi-action="loop">${copy.setLoop}</button><button type="button" data-midi-action="clear-loop">${copy.clearLoop}</button></div>`;
   try {
     await midi.load(midiUrl, Number(root.dataset.bpm) || 120);
     const progress = midiControls.querySelector<HTMLInputElement>("[data-midi-progress]");
@@ -116,7 +126,7 @@ export async function mountScoreViewer(
     midiControls.querySelector('[data-midi-action="loop"]')?.addEventListener("click", () => midi.setLoop(Number(midiControls.querySelector<HTMLInputElement>("[data-loop-a]")?.value) || 0, Number(midiControls.querySelector<HTMLInputElement>("[data-loop-b]")?.value) || null));
     midiControls.querySelector('[data-midi-action="clear-loop"]')?.addEventListener("click", () => midi.setLoop(null, null));
   } catch (error) {
-    midiControls.innerHTML = `<p>${error instanceof Error ? error.message : "MIDI could not be loaded."}</p>`;
+    midiControls.innerHTML = `<p>${error instanceof Error ? error.message : copy.midiFailed}</p>`;
   }
   return () => cleanups.splice(0).forEach((cleanup) => cleanup());
 }
