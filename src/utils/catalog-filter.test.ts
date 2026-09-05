@@ -6,7 +6,7 @@ const base: Song = { id: "1", slug: "one", title: { ka: "სიმღერა",
 
 describe("catalog filtering", () => {
   it("combines search, language, lyricist, difficulty and resource filters", () => {
-    const result = filterSongs([base, { ...base, id: "2", slug: "two", title: { ka: "სხვა", en: "Other" }, audioUrl: null }], { query: "song", language: "ka", lyricist: "Poet", difficulty: "beginner", resource: "audio" });
+    const result = filterSongs([base, { ...base, id: "2", slug: "two", title: { ka: "სხვა", en: "Other" }, audioUrl: null }], { query: "song", language: "ka", lyricist: "Poet", composer: "", difficulty: "beginner", resource: "audio" });
     expect(result.map((song) => song.id)).toEqual(["1"]);
   });
 });

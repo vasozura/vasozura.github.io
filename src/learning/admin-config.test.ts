@@ -20,4 +20,9 @@ describe("learning admin configuration", () => {
     const song = { learningEnabled: true, learningInstruments: ["piano"], learningSource: "musicxml", musicXmlUrl: null } as Song;
     expect(() => validateLearningPublication(song)).toThrow("MusicXML");
   });
+
+  it("blocks accordion publication without a verified mapping", () => {
+    const song = { learningEnabled: true, learningInstruments: ["accordion"], learningSource: "musicxml", musicXmlUrl: "https://example.com/score.musicxml", learningMapping: {} } as Song;
+    expect(() => validateLearningPublication(song)).toThrow("verified zura-accordion-mapping/v1");
+  });
 });

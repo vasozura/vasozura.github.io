@@ -6,10 +6,11 @@
   "packageManager": "pnpm@11.19.0",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && vite build && node scripts/check-performance-budget.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "audit:secrets": "node scripts/check-no-secrets.mjs",
     "import:song": "tsx scripts/import-song.ts",
     "import:song:dry-run": "tsx scripts/import-song.ts --dry-run",
     "import:batch": "tsx scripts/import-batch.ts",

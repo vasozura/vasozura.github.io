@@ -14,10 +14,18 @@ song-slug\
   score.pdf
   source.mscz
   instrument-parts\
-    piano.musicxml     # optional; XML or MXL is also accepted
-    piano.mid          # .midi is also accepted
-    guitar.musicxml
-    guitar.mid
+    piano\
+      piano.musicxml   # XML or MXL is also accepted
+      piano.mid        # .midi is also accepted
+      fingering.json   # optional; source-authored only
+    guitar\
+      guitar.musicxml
+      guitar.mid
+      fingering.json
+    accordion\
+      accordion.musicxml
+      accordion.mid
+      accordion-mapping.json
   SHA256SUMS.txt       # optional integrity manifest; never uploaded
   UPLOAD_NOTES.txt     # optional owner notes; never uploaded
 ```
@@ -54,11 +62,14 @@ Only `metadata.json` is mandatory. Omit any unavailable resource; do not create 
 }
 ```
 
-`status` is `draft` or `published`; omitted status defaults to `draft`. `difficulty` is `beginner`, `intermediate`, `advanced`, or `null`. Slugs use lowercase ASCII letters/numbers separated by single hyphens.
+`status` must be `draft` or omitted. The importer never publishes; publication
+is a separate owner-confirmed action. `difficulty` is `beginner`,
+`intermediate`, `advanced`, or `null`. Slugs use lowercase ASCII
+letters/numbers separated by single hyphens. Unknown metadata keys are rejected.
 
 Do not guess credits, lyrics, dates, or ownership. `display_credit` records the verified public display label; it is not a substitute for unknown composer/lyricist fields.
 
-Learning mode is opt-in. `learning_instruments` accepts `piano` and `guitar`;
+Learning mode is opt-in. `learning_instruments` accepts `piano`, `guitar` and `accordion`;
 `canonical_source` is `musicxml` or `midi`. `part_mapping` and
 `fingering_overrides` must be JSON objects. The importer maps these fields to
 the archive's `learning_*` columns and stores each nested part in
@@ -82,8 +93,16 @@ The importer rejects a mismatch before any database or Storage write.
 | Printable score | PDF | 25 MB |
 | MuseScore archive | MSCZ | 50 MB |
 | Lyrics | TXT / direct admin entry | 1 MB |
-| Piano/guitar part | MusicXML, XML, MXL, MID, MIDI | 20 MB each |
+| Instrument part | MusicXML, XML, MXL, MID, MIDI, verified JSON mapping | 20 MB each |
 
 The importer validates filename, size, and file signatures (magic bytes), then calculates SHA-256 checksums. Lyrics containing literal `\n`, `\r`, or `\r\n` sequences are normalized to real line breaks.
 
-For multi-song onboarding, a `zura-song-batch/v1` JSON document lists package paths and expected slugs. Batch dry-run validates packages sequentially without credentials or network writes. Re-running a stopped batch is the resume mechanism; immutable checksum paths are reused and are never overwritten.
+Both the nested Phase 5 layout and legacy flat `instrument-parts/piano.*` and
+`instrument-parts/guitar.*` packages are accepted. ZIPs are extracted only by
+the PowerShell wrapper after entry-count, expanded-size, compression-ratio and
+path-containment checks.
+
+For multi-song onboarding, a `zura-song-batch/v1` document lists package paths
+and expected slugs. Every package passes preflight before the first write.
+Bounded workers continue independent songs, while a credential-free checkpoint
+supports resume. Immutable checksum paths are reused and never overwritten.

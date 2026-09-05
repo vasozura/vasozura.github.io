@@ -5,7 +5,7 @@ import { mountScoreViewer } from "../score/score-viewer";
 import type { AttemptResult, Exercise, ExerciseSelection, NoteEvent, ScoreManifest, Timeline } from "./contracts";
 import { isLearningApiUnavailable, LearningApiClient, type LearningApi } from "./api-client";
 import { SchedulerAudioAdapter } from "./audio-adapter";
-import { AccordionVisualizer, GuitarVisualizer, isVerifiedAccordionConfig, PianoRangeVisualizer, type TimelineVisualizer } from "./instruments";
+import { isVerifiedAccordionConfig, type TimelineVisualizer } from "./instruments";
 import { LocalLearningApi } from "./mock-api";
 import { MidiAttemptRecorder } from "./practice";
 import { CanonicalScheduler, type SchedulerFrame } from "./scheduler";
@@ -140,8 +140,11 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     const mapping = (() => { try { return JSON.parse(root.dataset.learningMapping || "{}"); } catch { return {}; } })() as Record<string, unknown>;
     const accordionConfig = isVerifiedAccordionConfig(mapping.accordion) ? mapping.accordion : null;
     let selectedInstrument = allowed.values().next().value ?? "piano";
-    let piano: PianoRangeVisualizer | null = null;
-    let guitar: GuitarVisualizer | null = null;
+    type FollowVisualizer = TimelineVisualizer & { setFollow(enabled: boolean): void };
+    type HandedVisualizer = TimelineVisualizer & { setLeftHanded(enabled: boolean): void };
+    let piano: FollowVisualizer | null = null;
+    let guitar: HandedVisualizer | null = null;
+    let accordion: FollowVisualizer | null = null;
     let practicing = false;
     let reliable = true;
     let practiceStartedAtMs = 0;
@@ -149,20 +152,55 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     let waitingForMidi = false;
     let expectedMidi = new Set<number>();
 
-    const selectInstrument = (name: string): void => {
+    const selectInstrument = async (name: string): Promise<void> => {
       selectedInstrument = name;
       visualizer?.destroy();
       visualRoot.className = "";
-      piano = name === "piano" ? new PianoRangeVisualizer(visualRoot, manifest.timeline.notes) : null;
-      guitar = name === "guitar" ? new GuitarVisualizer(visualRoot) : null;
-      visualizer = piano ?? guitar ?? new AccordionVisualizer(visualRoot, accordionConfig);
+      piano = null;
+      guitar = null;
+      accordion = null;
+      let next: TimelineVisualizer;
+      if (name === "piano") {
+        const { PianoRangeVisualizer } = await import("./piano-visualizer");
+        next = new PianoRangeVisualizer(visualRoot, manifest.timeline.notes);
+      } else if (name === "guitar") {
+        const { GuitarVisualizer } = await import("./guitar-visualizer");
+        next = new GuitarVisualizer(visualRoot);
+      } else {
+        const { AccordionVisualizer } = await import("./accordion-visualizer");
+        next = new AccordionVisualizer(visualRoot, name === "accordion" ? accordionConfig : null);
+      }
+      if (selectedInstrument !== name) return;
+      visualizer = next;
+      if (name === "piano") piano = next as FollowVisualizer;
+      if (name === "guitar") guitar = next as HandedVisualizer;
+      if (name === "accordion") accordion = next as FollowVisualizer;
       visualizer.mount();
       host.querySelectorAll<HTMLButtonElement>("[data-instrument]").forEach((button) => button.setAttribute("aria-selected", String(button.dataset.instrument === name)));
       host.querySelector<HTMLElement>('[data-l="left-label"]')!.hidden = name !== "guitar";
     };
-    selectInstrument(selectedInstrument);
-    host.querySelectorAll<HTMLButtonElement>("[data-instrument]").forEach((button) => { button.onclick = () => selectInstrument(button.dataset.instrument ?? "piano"); });
-    host.querySelector<HTMLInputElement>('[data-l="follow"]')!.onchange = (event) => piano?.setFollow((event.currentTarget as HTMLInputElement).checked);
+    await selectInstrument(selectedInstrument);
+    const instrumentTabs = [...host.querySelectorAll<HTMLButtonElement>("[data-instrument]")];
+    instrumentTabs.forEach((button, index) => {
+      button.onclick = () => { void selectInstrument(button.dataset.instrument ?? "piano"); };
+      button.onkeydown = (event) => {
+        const targetIndex = event.key === "ArrowRight" || event.key === "ArrowDown"
+          ? (index + 1) % instrumentTabs.length
+          : event.key === "ArrowLeft" || event.key === "ArrowUp"
+            ? (index - 1 + instrumentTabs.length) % instrumentTabs.length
+            : event.key === "Home" ? 0 : event.key === "End" ? instrumentTabs.length - 1 : -1;
+        if (targetIndex < 0) return;
+        event.preventDefault();
+        const target = instrumentTabs[targetIndex];
+        target.focus();
+        void selectInstrument(target.dataset.instrument ?? "piano");
+      };
+    });
+    host.querySelector<HTMLInputElement>('[data-l="follow"]')!.onchange = (event) => {
+      const enabled = (event.currentTarget as HTMLInputElement).checked;
+      piano?.setFollow(enabled);
+      accordion?.setFollow(enabled);
+    };
     host.querySelector<HTMLInputElement>('[data-l="left"]')!.onchange = (event) => guitar?.setLeftHanded((event.currentTarget as HTMLInputElement).checked);
 
     host.querySelector<HTMLButtonElement>('[data-l="play"]')!.onclick = () => { void audio?.enable(); scheduler?.play(); };

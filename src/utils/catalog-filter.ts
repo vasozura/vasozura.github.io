@@ -7,11 +7,13 @@ function normalize(value: string | null | undefined): string {
 export function filterSongs(songs: Song[], filters: SongFilters): Song[] {
   const query = normalize(filters.query);
   const lyricist = normalize(filters.lyricist);
+  const composer = normalize(filters.composer);
   return songs.filter((song) => {
     const searchable = [song.title.ka, song.title.en, song.displayCredit?.ka, song.displayCredit?.en, song.composer?.ka, song.composer?.en, song.lyricistOrPoet?.ka, song.lyricistOrPoet?.en].map(normalize).join(" ");
     if (query && !searchable.includes(query)) return false;
     if (filters.language && normalize(song.language) !== normalize(filters.language)) return false;
     if (lyricist && ![song.lyricistOrPoet?.ka, song.lyricistOrPoet?.en].map(normalize).some((value) => value.includes(lyricist))) return false;
+    if (composer && ![song.composer?.ka, song.composer?.en].map(normalize).some((value) => value.includes(composer))) return false;
     if (filters.difficulty && song.difficulty !== filters.difficulty) return false;
     if (filters.resource === "audio" && !song.audioUrl) return false;
     if (filters.resource === "midi" && !song.midiUrl) return false;
@@ -22,4 +24,4 @@ export function filterSongs(songs: Song[], filters: SongFilters): Song[] {
   });
 }
 
-export const emptySongFilters: SongFilters = { query: "", language: "", lyricist: "", difficulty: "", resource: "" };
+export const emptySongFilters: SongFilters = { query: "", language: "", lyricist: "", composer: "", difficulty: "", resource: "" };

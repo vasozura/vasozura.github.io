@@ -38,3 +38,14 @@ Draft rows and their files are not readable by anonymous visitors. Public catalo
 The schema and `instrument_parts` table support piano, guitar, and accordion MusicXML/MIDI/fingering JSON. Piano follows the active source range and labels source-provided hands. Guitar highlights only source-authored string/fret positions; ambiguous playable positions remain labelled suggestions and are not selected automatically. Accordion shows a placeholder until a verified `stradella` or `free-bass` mapping is configured. No fingering is inferred from MP3 audio.
 
 Before publishing a learning-enabled song, use **Check manifest readiness** to verify the canonical resource, manifest checksum, parser/mapping/schema versions and validation problems. **Reprocess safely** reuses an identical immutable manifest. The atomic publication RPC remains the final server-side guard. A deliberately non-learning song can publish without a manifest.
+# Phase 5 batch readiness
+
+The owner dashboard accepts a `zura-song-batch/v1` JSON manifest for local
+readiness inspection. It groups validation errors by package, exposes only
+non-secret PowerShell dry-run/resume commands, and never places a server
+credential in browser memory. Batch publication remains disabled; use the
+existing per-song readiness check, draft preview and explicit Publish action.
+
+Incomplete imports are recovered from the structured report and the
+credential-free checkpoint described in `BATCH_MANIFEST.md`. Never retry a
+published slug or delete a pre-existing Storage object during recovery.

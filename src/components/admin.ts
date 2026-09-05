@@ -9,6 +9,7 @@ import { extractYouTubeVideoId } from "../utils/youtube";
 import { safeHttpUrl } from "../utils/safe-url";
 import { parseLearningConfiguration, validateLearningPublication } from "../learning/admin-config";
 import { inspectLearningReadiness, reprocessLearning } from "../learning/admin-readiness";
+import { parseBatchManifest } from "../data/batch-manifest";
 
 let dirty = false;
 let hashGuardInstalled = false;
@@ -61,6 +62,44 @@ function renderPasswordRecovery(message = "", success = false): string {
 
 function renderSongList(songs: Song[]): string {
   return `<section class="admin-list" aria-labelledby="admin-list-title"><div class="admin-heading"><div><p class="num">DATABASE</p><h2 id="admin-list-title">Songs · ${songs.length}</h2></div><button class="admin-primary" type="button" data-admin-new>New song</button></div><div class="admin-table-wrap"><table><thead><tr><th>Title</th><th>Status</th><th>Resources</th><th>Actions</th></tr></thead><tbody>${songs.map((song) => `<tr><td><strong>${value(song.title.ka ?? song.title.en ?? song.slug)}</strong><small>${value(song.slug)}</small></td><td><span class="status-badge ${song.publicationStatus}">${song.publicationStatus}</span></td><td>${[song.audioUrl && "MP3", song.midiUrl && "MIDI", song.musicXmlUrl && "XML", song.scorePdfUrl && "PDF"].filter(Boolean).join(" · ") || "—"}</td><td><div class="admin-row-actions"><button type="button" data-admin-edit="${value(song.id)}">Edit</button><button type="button" data-admin-publish="${value(song.id)}" data-status="${song.publicationStatus === "published" ? "draft" : "published"}">${song.publicationStatus === "published" ? "Unpublish" : "Publish"}</button><button class="danger" type="button" data-admin-delete="${value(song.id)}">Delete</button></div></td></tr>`).join("")}</tbody></table></div></section>`;
+}
+
+function renderBatchPanel(): string {
+  return `<section class="admin-list admin-batch" aria-labelledby="batch-title"><div class="admin-heading"><div><p class="num">BATCH · OWNER ONLY</p><h2 id="batch-title">Catalog onboarding readiness</h2></div></div><p>Validate the versioned batch manifest here, then run the secure local PowerShell importer. Browser code never receives a service credential.</p><label class="admin-file"><span>Batch manifest JSON</span><input type="file" accept="application/json,.json" data-batch-manifest /></label><progress data-batch-progress max="100" value="0" hidden></progress><div data-batch-result role="status" aria-live="polite">No manifest selected.</div><div class="admin-form-actions"><button type="button" data-batch-copy disabled>Copy validation-only command</button><button type="button" data-batch-resume disabled>Copy resume command</button></div><label class="admin-check"><input type="checkbox" data-batch-publication-confirm /> I reviewed every draft and its publication checklist</label><button type="button" data-batch-publish disabled>Batch publication disabled by default</button><p><small>Publication remains a separate confirmed per-song action. Incomplete imports retain a non-secret checkpoint and recovery report.</small></p></section>`;
+}
+
+function bindBatchPanel(root: HTMLElement): void {
+  const input = root.querySelector<HTMLInputElement>("[data-batch-manifest]");
+  const output = root.querySelector<HTMLElement>("[data-batch-result]");
+  const progress = root.querySelector<HTMLProgressElement>("[data-batch-progress]");
+  const copy = root.querySelector<HTMLButtonElement>("[data-batch-copy]");
+  const resume = root.querySelector<HTMLButtonElement>("[data-batch-resume]");
+  const confirmation = root.querySelector<HTMLInputElement>("[data-batch-publication-confirm]");
+  const publish = root.querySelector<HTMLButtonElement>("[data-batch-publish]");
+  if (!input || !output || !progress || !copy || !resume || !confirmation || !publish) return;
+  let filename = "batch.json";
+  const copyCommand = async (withResume: boolean): Promise<void> => {
+    const command = `.\\scripts\\import-batch.ps1 -ManifestPath ".\\${filename}"${withResume ? " -Resume" : " -DryRun"}`;
+    await navigator.clipboard.writeText(command);
+    output.textContent = `${withResume ? "Resume" : "Validation-only"} PowerShell command copied.`;
+  };
+  input.addEventListener("change", async () => {
+    const file = input.files?.[0];
+    if (!file) return;
+    filename = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
+    progress.hidden = false; progress.value = 25;
+    const readiness = parseBatchManifest(await file.text());
+    progress.value = 100;
+    output.className = readiness.valid ? "success" : "error";
+    output.innerHTML = readiness.valid
+      ? `Ready for local dry-run · ${readiness.manifest!.packages.length} package(s) · concurrency ${readiness.manifest!.concurrency ?? 2}. No production write occurred.`
+      : readiness.errors.map((error) => `<p><strong>${value(error.song)}</strong>: ${value(error.message)}</p>`).join("");
+    copy.disabled = !readiness.valid;
+    resume.disabled = !readiness.valid;
+  });
+  copy.addEventListener("click", () => { void copyCommand(false); });
+  resume.addEventListener("click", () => { void copyCommand(true); });
+  confirmation.addEventListener("change", () => { publish.disabled = true; publish.textContent = confirmation.checked ? "Use the reviewed per-song Publish action" : "Batch publication disabled by default"; });
 }
 
 function renderEditor(song: Song): string {
@@ -190,7 +229,8 @@ export async function mountAdmin(root: HTMLElement): Promise<void> {
   let songs = await loadAdminSongs();
   let editing: Song | null = null;
   const renderDashboard = (): void => {
-    root.innerHTML = `<main class="admin-route shell" id="main-content"><header class="admin-top"><div><p class="num">OWNER ONLY</p><h1>Composer archive</h1></div><div><a href="#top">Public site</a><button type="button" data-admin-logout>Sign out</button></div></header>${renderSongList(songs)}${editing ? renderEditor(editing) : ""}</main>`;
+    root.innerHTML = `<main class="admin-route shell" id="main-content"><header class="admin-top"><div><p class="num">OWNER ONLY</p><h1>Composer archive</h1></div><div><a href="#top">Public site</a><button type="button" data-admin-logout>Sign out</button></div></header>${renderSongList(songs)}${renderBatchPanel()}${editing ? renderEditor(editing) : ""}</main>`;
+    bindBatchPanel(root);
     if (editing?.publicationStatus === "draft") {
       const heading = root.querySelector<HTMLElement>(".admin-editor .admin-heading");
       const preview = document.createElement("a");

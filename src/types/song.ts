@@ -47,6 +47,7 @@ export interface SongFilters {
   query: string;
   language: string;
   lyricist: string;
+  composer: string;
   difficulty: string;
   resource: "" | "audio" | "midi" | "musicxml" | "score" | "lyrics";
 }
