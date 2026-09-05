@@ -1,5 +1,5 @@
 import { getSupabase, requireSupabase } from "../lib/supabase";
-import type { Difficulty, LocalizedText, Song } from "../types/song";
+import type { Difficulty, LocalizedText, Song, SongFilters } from "../types/song";
 import { fileRules, type UploadFileType } from "../utils/file-validation";
 import { safeHttpUrl } from "../utils/safe-url";
 
@@ -140,6 +140,56 @@ export async function loadPublishedSongsFromSupabase(): Promise<Song[] | null> {
   const { data, error } = await supabase.from("songs").select(songSelect).eq("status", "published").order("published_at", { ascending: false, nullsFirst: false });
   if (error) throw error;
   return hydrateLearningConfiguration(await hydrateSignedResources((data as SongRow[]).map(songFromRow)));
+}
+
+export interface CatalogPageOptions {
+  offset?: number;
+  limit?: number;
+  filters?: SongFilters;
+  signal?: AbortSignal;
+}
+
+export interface CatalogPage { songs: Song[]; total: number; offset: number; limit: number; hasMore: boolean; }
+
+function safeSearchTerm(value: string): string {
+  return value.normalize("NFC").trim().replace(/[^\p{L}\p{N}\s]/gu, " ").replace(/\s+/g, " ").slice(0, 120);
+}
+
+export async function loadPublishedSongPage(options: CatalogPageOptions = {}): Promise<CatalogPage | null> {
+  const supabase = getSupabase();
+  if (!supabase) return null;
+  const offset = Math.max(0, options.offset ?? 0);
+  const limit = Math.min(48, Math.max(1, options.limit ?? 24));
+  const filters = options.filters;
+  let query = supabase.from("songs").select(songSelect, { count: "exact" }).eq("status", "published");
+  const search = safeSearchTerm(filters?.query ?? "");
+  if (search) query = query.or(`title_ka.ilike.%${search}%,title_en.ilike.%${search}%,display_credit.ilike.%${search}%,composer.ilike.%${search}%,lyricist.ilike.%${search}%`);
+  if (filters?.language) query = query.eq("language", filters.language);
+  if (filters?.lyricist) query = query.ilike("lyricist", `%${safeSearchTerm(filters.lyricist)}%`);
+  if (filters?.composer) query = query.ilike("composer", `%${safeSearchTerm(filters.composer)}%`);
+  if (filters?.difficulty) query = query.eq("difficulty", filters.difficulty);
+  const resourceColumn = filters?.resource === "audio" ? "audio_url" : filters?.resource === "midi" ? "midi_url" : filters?.resource === "musicxml" ? "musicxml_url" : filters?.resource === "score" ? "score_pdf_url" : null;
+  if (resourceColumn) query = query.not(resourceColumn, "is", null);
+  if (filters?.resource === "lyrics") query = query.or("lyrics_ka.not.is.null,lyrics_en.not.is.null");
+  query = query.order("published_at", { ascending: false, nullsFirst: false }).order("id", { ascending: true }).range(offset, offset + limit - 1);
+  if (options.signal) query = query.abortSignal(options.signal);
+  const { data, error, count } = await query;
+  if (error) throw error;
+  const songs = await hydrateLearningConfiguration(await hydrateSignedResources((data as SongRow[]).map(songFromRow)));
+  const total = count ?? songs.length;
+  return { songs, total, offset, limit, hasMore: offset + songs.length < total };
+}
+
+export async function loadPublishedSongBySlug(slug: string, signal?: AbortSignal): Promise<Song | null> {
+  const supabase = getSupabase();
+  if (!supabase) return null;
+  let query = supabase.from("songs").select(songSelect).eq("status", "published").eq("slug", slug);
+  if (signal) query = query.abortSignal(signal);
+  const { data, error } = await query.maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+  const [song] = await hydrateLearningConfiguration(await hydrateSignedResources([songFromRow(data as SongRow)]));
+  return song ?? null;
 }
 
 export async function loadAdminSongs(): Promise<Song[]> {

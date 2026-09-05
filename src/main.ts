@@ -14,7 +14,7 @@ import { filterSongs } from "./utils/catalog-filter";
 import type { SongFilters } from "./types/song";
 import { PlayerController } from "./player/player-controller";
 import { getSupabase, isPasswordRecovery } from "./lib/supabase";
-import { loadOwnerDraftPreview, type DraftPreviewResult } from "./data/song-repository";
+import { loadOwnerDraftPreview, loadPublishedSongBySlug, loadPublishedSongPage, type DraftPreviewResult } from "./data/song-repository";
 
 const appElement = document.querySelector<HTMLDivElement>("#app");
 if (!appElement) throw new Error("The application root was not found.");
@@ -26,6 +26,10 @@ let lastRenderedHash = "";
 const player = new PlayerController();
 let learningCleanup: (() => void) | null = null;
 let draftPreview: { slug: string; result: DraftPreviewResult | null; error: string | null } | null = null;
+let catalogRequest: AbortController | null = null;
+let catalogTimer = 0;
+const loadingSongSlugs = new Set<string>();
+const missingSongSlugs = new Set<string>();
 
 const descriptions: Record<Language, string> = {
   ka: "ZURA-ს ოფიციალური მუსიკალური სივრცე — რჩეული ჩანაწერები და ორენოვანი კომპოზიტორის არქივის საფუძველი.",
@@ -83,7 +87,8 @@ function readCatalogFilters(): SongFilters {
   return {
     query: document.querySelector<HTMLInputElement>("#catalog-search")?.value ?? "",
     language: document.querySelector<HTMLSelectElement>("#catalog-language")?.value ?? "",
-    lyricist: document.querySelector<HTMLSelectElement>("#catalog-lyricist")?.value ?? "",
+    lyricist: document.querySelector<HTMLInputElement>("#catalog-lyricist")?.value ?? "",
+    composer: document.querySelector<HTMLInputElement>("#catalog-composer")?.value ?? "",
     difficulty: document.querySelector<HTMLSelectElement>("#catalog-difficulty")?.value ?? "",
     resource: (document.querySelector<HTMLSelectElement>("#catalog-resource")?.value ?? "") as SongFilters["resource"],
   };
@@ -93,18 +98,59 @@ function bindCatalogFilters(): void {
   const form = document.querySelector<HTMLFormElement>("#catalog-filters");
   const list = document.querySelector<HTMLElement>("#release-list");
   const count = document.querySelector<HTMLElement>("#catalog-count");
-  if (!form || !list || !count) return;
-  const apply = (): void => {
-    const filtered = filterSongs(songs, readCatalogFilters());
-    list.innerHTML = filtered.map((song, index) => renderSongCard(song, index, language)).join("");
-    count.textContent = `${language === "ka" ? "ნაპოვნია" : "Showing"} ${filtered.length}`;
-    if (!filtered.length) list.innerHTML = `<p class="catalog-empty">${language === "ka" ? "ამ ფილტრებით ჩანაწერი ვერ მოიძებნა." : "No releases match these filters."}</p>`;
+  const loading = document.querySelector<HTMLElement>("#catalog-loading");
+  const more = document.querySelector<HTMLButtonElement>("[data-catalog-more]");
+  if (!form || !list || !count || !loading || !more) return;
+  let visibleSongs = [...songs];
+  let hasMore = false;
+  const paint = (entries: Song[], total = entries.length): void => {
+    visibleSongs = entries;
+    list.innerHTML = entries.map((song, index) => renderSongCard(song, index, language)).join("");
+    count.textContent = `${language === "ka" ? "ნაპოვნია" : "Showing"} ${entries.length} / ${total}`;
+    if (!entries.length) list.innerHTML = `<p class="catalog-empty">${language === "ka" ? "ამ ფილტრებით ჩანაწერი ვერ მოიძებნა." : "No releases match these filters."}</p>`;
+    more.hidden = !hasMore;
     player.bind(app, songs, language);
   };
+  const applyLocal = (): void => {
+    const filtered = filterSongs(songs, readCatalogFilters());
+    hasMore = false;
+    paint(filtered);
+  };
+  const requestPage = async (append: boolean): Promise<void> => {
+    catalogRequest?.abort();
+    const request = new AbortController();
+    catalogRequest = request;
+    let failed = false;
+    loading.hidden = false;
+    loading.textContent = language === "ka" ? "კატალოგი იტვირთება…" : "Loading catalog…";
+    more.disabled = true;
+    try {
+      const page = await loadPublishedSongPage({ offset: append ? visibleSongs.length : 0, limit: 24, filters: readCatalogFilters(), signal: request.signal });
+      if (!page) { applyLocal(); return; }
+      const entries = append ? [...visibleSongs, ...page.songs.filter((song) => !visibleSongs.some((entry) => entry.id === song.id))] : page.songs;
+      for (const song of page.songs) if (!songs.some((entry) => entry.id === song.id)) songs.push(song);
+      hasMore = page.hasMore;
+      paint(entries, page.total);
+    } catch (error) {
+      if ((error as Error).name !== "AbortError") {
+        failed = true;
+        loading.textContent = language === "ka" ? "კატალოგის მოთხოვნა ვერ შესრულდა. სცადეთ ხელახლა." : "Catalog request failed. Retry.";
+        return;
+      }
+    } finally {
+      if (catalogRequest === request) {
+        loading.hidden = !failed;
+        more.disabled = false;
+      }
+    }
+  };
+  const debounce = (): void => { window.clearTimeout(catalogTimer); catalogTimer = window.setTimeout(() => { void requestPage(false); }, 300); };
   form.addEventListener("submit", (event) => event.preventDefault());
-  form.addEventListener("input", apply);
-  form.addEventListener("change", apply);
-  form.addEventListener("reset", () => window.setTimeout(apply, 0));
+  form.addEventListener("input", debounce);
+  form.addEventListener("change", () => { void requestPage(false); });
+  form.addEventListener("reset", () => window.setTimeout(() => { void requestPage(false); }, 0));
+  more.addEventListener("click", () => { void requestPage(true); });
+  void requestPage(false);
 }
 
 function scrollToHomeAnchor(anchor: string | null): void {
@@ -126,6 +172,7 @@ function render(): void {
   learningCleanup?.();
   learningCleanup = null;
   const route = isPasswordRecovery() ? { name: "admin" as const } : parseRoute(window.location.hash);
+  if (route.name !== "home") { catalogRequest?.abort(); catalogRequest = null; window.clearTimeout(catalogTimer); }
   const routeChanged = lastRenderedHash !== window.location.hash;
   if (route.name !== "admin-preview") draftPreview = null;
   if (route.name === "admin") {
@@ -179,13 +226,22 @@ function render(): void {
   }
   updateRobots(true);
   const selectedSong = route.name === "song" ? songs.find((song) => song.slug === route.slug) : undefined;
+  if (route.name === "song" && !selectedSong && !loadingSongSlugs.has(route.slug) && !missingSongSlugs.has(route.slug) && getSupabase()) {
+    loadingSongSlugs.add(route.slug);
+    const requestedSlug = route.slug;
+    void loadPublishedSongBySlug(requestedSlug).then((song) => {
+      if (song) songs.push(song); else missingSongSlugs.add(requestedSlug);
+    }).catch(() => { missingSongSlugs.add(requestedSlug); }).finally(() => { loadingSongSlugs.delete(requestedSlug); if (parseRoute(window.location.hash).name === "song") render(); });
+  }
   updateDocumentMetadata(selectedSong);
 
   const skipLabel = language === "ka" ? "მთავარ შინაარსზე გადასვლა" : "Skip to main content";
   const content = route.name === "song"
     ? selectedSong
       ? renderSongDetail(selectedSong, language)
-      : renderSongNotFound(language)
+      : loadingSongSlugs.has(route.slug)
+        ? `<main class="route-message shell" id="main-content" tabindex="-1"><p>${language === "ka" ? "სიმღერა იტვირთება…" : "Loading song…"}</p></main>`
+        : renderSongNotFound(language)
     : renderHome(songs, language);
 
   app.innerHTML = `

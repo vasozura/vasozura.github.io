@@ -9,6 +9,14 @@ describe("learning integration guards", () => {
     expect(source).not.toContain('from "./learning/learning-mode"');
   });
 
+  it("loads each instrument visualizer only when its tab is selected", async () => {
+    const source = await readFile(new URL("./learning-mode.ts", import.meta.url), "utf8");
+    expect(source).toContain('import("./piano-visualizer")');
+    expect(source).toContain('import("./guitar-visualizer")');
+    expect(source).toContain('import("./accordion-visualizer")');
+    expect(source).not.toMatch(/from "\.\/(piano|guitar|accordion)-visualizer"/);
+  });
+
   it("keeps the 88-key view horizontally contained on narrow screens", async () => {
     const css = await readFile(new URL("../styles.css", import.meta.url), "utf8");
     expect(css).toContain('[data-l="visualizer"]');

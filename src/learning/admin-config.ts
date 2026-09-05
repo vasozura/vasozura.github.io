@@ -1,5 +1,6 @@
 import type { Instrument } from "../types/song";
 import type { Song } from "../types/song";
+import { isVerifiedAccordionConfig } from "./instruments";
 
 export type LearningSource = "musicxml" | "midi";
 
@@ -40,4 +41,5 @@ export function validateLearningPublication(song: Song): void {
   if (!(song.learningInstruments?.length)) throw new Error("Learning mode needs at least one instrument before publishing.");
   if (song.learningSource === "midi" && !song.midiUrl) throw new Error("The selected learning source requires a MIDI file.");
   if (song.learningSource !== "midi" && !song.musicXmlUrl) throw new Error("The selected learning source requires a MusicXML/MXL file.");
+  if (song.learningInstruments.includes("accordion") && !isVerifiedAccordionConfig(song.learningMapping?.accordion)) throw new Error("Accordion publication requires a verified zura-accordion-mapping/v1 configuration.");
 }

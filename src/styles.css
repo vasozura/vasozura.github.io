@@ -1637,8 +1637,17 @@ img {
 .guitar-string { display: grid; min-width: 760px; grid-template-columns: repeat(21, minmax(28px, 1fr)); border-top: 1px solid #aaa; }
 .guitar-string span,
 .learning-accordion span { min-height: 28px; padding: 4px; border-right: 1px solid var(--line); text-align: center; }
-.learning-accordion > div { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
-.learning-accordion span { border: 1px solid var(--line); border-radius: 50%; min-width: 34px; }
+.learning-accordion { min-width: 0; }
+.accordion-layout-status,
+.accordion-provenance { color: var(--muted); }
+.accordion-boards { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 18px; }
+.accordion-side { min-width: 0; overflow-x: auto; border: 1px solid var(--line); padding: 12px; }
+.accordion-side h4 { margin: 0 0 10px; }
+.accordion-row { display: flex; gap: 6px; min-width: max-content; margin: 5px 0; }
+.learning-accordion .accordion-button { display: inline-grid; place-items: center; min-width: 42px; min-height: 42px; padding: 5px; border: 1px solid var(--line); border-radius: 50%; text-align: center; }
+.accordion-button.provenance-deterministic { border-style: dashed; }
+.accordion-button.provenance-inferred { opacity: .65; border-style: dotted; }
+.accordion-side.unavailable { color: var(--muted); }
 .learning-placeholder { max-width: 620px; color: var(--muted); }
 
 .learning-mode button:focus-visible,
@@ -1743,4 +1752,5 @@ img {
   .learning-transport label { width: 100%; }
   .learning-exercise-options { grid-template-columns: 1fr; }
   .learning-piano { width: max(620px, 100%); }
+  .accordion-boards { grid-template-columns: 1fr; }
 }

@@ -38,13 +38,13 @@ Do not paste credentials into command history, source files, screenshots, issues
 1. Validate metadata, expected filenames, size, extension, and magic-byte MIME signature.
 2. Normalize literal newline sequences in lyrics.
 3. Calculate SHA-256 for every resource.
-4. Upsert the song by slug.
+4. Refuse an existing slug unless it is an explicitly reviewed draft resume.
 5. Query `song_files` for the same song/checksum.
 6. Reuse duplicates; otherwise upload to the resource bucket under `<slug>/<checksum-prefix>-<filename>`.
-7. Insert the versioned `song_files` record and update the corresponding URL on `songs`.
+7. Stage every immutable object, then finalize the song, files and parts in one database transaction.
 8. Print a structured success/error report.
 
-Nested `instrument-parts/piano.*` and `instrument-parts/guitar.*` resources use
+Nested piano, guitar and accordion resources use
 the private `instrument-parts` bucket and upsert one `instrument_parts` row per
 instrument. Learning package keys are mapped to the existing `learning_*`
 columns; MusicXML or MIDI may be selected as the canonical source.
@@ -57,10 +57,10 @@ canonical object to the private `scores/<slug>/` staging path. The `scores`
 bucket has an explicit MIME allowlist for PDF and supported MusicXML media
 types; it remains private and does not accept wildcard MIME types.
 
-If a production failure occurs after the draft row or any Storage object has
-been created, the report sets `partial: true` and lists every completed upload.
-The importer intentionally does not roll back or delete that partial draft;
-inspect the reported state before retrying.
+If staging fails before database finalization, compensation removes only the
+objects uploaded by that run. If Learning processing fails after finalization,
+the private draft remains intact and the report stops with `processing=failed`;
+no pre-existing object is deleted.
 
 The process is safe to run again. Matching checksums avoid duplicate uploads; changed files create a new version.
 
@@ -72,4 +72,14 @@ Use the versioned `zura-song-batch/v1` manifest shown in `docs/sample-batch.json
 pnpm import:batch -- ".\docs\sample-batch.json" --dry-run
 ```
 
-The batch stops at the first invalid package or failed write and reports every completed/reused object. After inspecting a partial report, run the same command again: song upserts, checksum-addressed Storage paths, `song_files` conflict keys, and instrument-part upserts make this the supported resume flow. A real batch must pass dry-run before the server-only credential is supplied. The checked-in sample is metadata-only and must never be imported into production.
+Or use the Windows wrapper:
+
+```powershell
+.\scripts\import-batch.ps1 -ManifestPath ".\docs\sample-batch.json" -DryRun
+.\scripts\import-batch.ps1 -ManifestPath ".\approved-batch.json" -Resume -Concurrency 2
+```
+
+The batch validates every package before the first write, runs at most four
+workers, continues independent songs after one failure, and writes only a
+non-secret `.checkpoint.json`. A real batch must pass dry-run before the
+server-only credential and short-lived owner token are supplied.

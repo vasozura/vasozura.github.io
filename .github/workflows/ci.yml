@@ -41,3 +41,6 @@ jobs:
 
       - name: Audit production dependencies
         run: pnpm audit --prod
+
+      - name: Scan committed files for credentials
+        run: pnpm audit:secrets

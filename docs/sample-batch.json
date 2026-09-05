@@ -1,9 +1,11 @@
 {
   "schema": "zura-song-batch/v1",
+  "concurrency": 2,
   "packages": [
     {
-      "path": "sample-package",
-      "expectedSlug": "taflis-tvali-sample"
+      "path": "packages/synthetic-score-one",
+      "expectedSlug": "synthetic-score-one",
+      "resume": false
     }
   ]
 }

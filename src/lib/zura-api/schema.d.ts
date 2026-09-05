@@ -345,6 +345,51 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /**
+         * AccordionButton
+         * @description One verified physical accordion control.
+         *
+         *     ``midi`` may contain several pitches for a Stradella chord button.  Finger
+         *     and bellows values are optional and are never synthesized by the service.
+         */
+        AccordionButton: {
+            /** Bellows */
+            bellows?: ("push" | "pull" | "either") | null;
+            /** Column */
+            column: number;
+            /**
+             * Confidence
+             * @default 1
+             */
+            confidence: number;
+            /** Finger */
+            finger?: number | null;
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @default note
+             * @enum {string}
+             */
+            kind: "note" | "bass" | "counterbass" | "major" | "minor" | "seventh" | "diminished";
+            /** Label */
+            label?: string | null;
+            /** Midi */
+            midi: number[];
+            /**
+             * Provenance
+             * @default source
+             * @enum {string}
+             */
+            provenance: "source" | "deterministic" | "inferred";
+            /** Row */
+            row: number;
+            /**
+             * Side
+             * @enum {string}
+             */
+            side: "right" | "left";
+        };
+        /**
          * AccordionCandidateResult
          * @description Accordion result, which may legitimately be 'we do not know'.
          */
@@ -360,7 +405,15 @@ export interface components {
             known_layouts?: string[];
             /** Layout Id */
             layout_id?: string | null;
+            /**
+             * Schema Version
+             * @default zura-accordion-mapping/v1
+             * @constant
+             */
+            schema_version: "zura-accordion-mapping/v1";
             support: components["schemas"]["SupportState"];
+            /** System */
+            system?: string | null;
             /** Unsupported Reason */
             unsupported_reason?: string | null;
         };
@@ -372,7 +425,7 @@ export interface components {
         };
         /**
          * AccordionLayout
-         * @description Explicit accordion layout. Required - never inferred.
+         * @description Versioned accordion layout. Explicit configuration is always required.
          */
         AccordionLayout: {
             /**
@@ -382,6 +435,11 @@ export interface components {
             button_map?: {
                 [key: string]: number;
             } | null;
+            /**
+             * Buttons
+             * @default []
+             */
+            buttons: components["schemas"]["AccordionButton"][];
             /** Highest Midi */
             highest_midi?: number | null;
             /**
@@ -392,11 +450,33 @@ export interface components {
             /** Lowest Midi */
             lowest_midi?: number | null;
             /**
+             * Orientation
+             * @default vertical
+             * @enum {string}
+             */
+            orientation: "vertical" | "horizontal";
+            /** Row Count */
+            row_count?: number | null;
+            /**
+             * Row Direction
+             * @default top_to_bottom
+             * @enum {string}
+             */
+            row_direction: "top_to_bottom" | "bottom_to_top" | "left_to_right" | "right_to_left";
+            /**
+             * Schema Version
+             * @default zura-accordion-mapping/v1
+             * @constant
+             */
+            schema_version: "zura-accordion-mapping/v1";
+            /**
              * Side
              * @default right
              * @enum {string}
              */
             side: "right" | "left";
+            /** System */
+            system?: ("piano_accordion" | "chromatic_button" | "stradella" | "free_bass" | "custom") | null;
         };
         /**
          * ApiError
@@ -1004,6 +1084,10 @@ export interface components {
             finger?: number | null;
             /** Fret */
             fret?: number | null;
+            /** @default unknown */
+            hand: components["schemas"]["Hand"];
+            /** Mapping Provenance */
+            mapping_provenance?: ("source" | "deterministic" | "inferred") | null;
             /**
              * Midi
              * @description MIDI note number
