@@ -70,6 +70,7 @@ do $$ begin
 end $$;
 
 grant select, insert, update, delete on public.archive_import_batches, public.archive_import_jobs to authenticated;
+revoke all on public.archive_import_batches, public.archive_import_jobs from anon;
 
 create or replace function public.finalize_song_import(
   p_song_id uuid,
@@ -171,5 +172,5 @@ begin
 end;
 $$;
 
-revoke all on function public.finalize_song_import(uuid,jsonb,jsonb,jsonb,boolean) from public;
+revoke all on function public.finalize_song_import(uuid,jsonb,jsonb,jsonb,boolean) from public, anon;
 grant execute on function public.finalize_song_import(uuid,jsonb,jsonb,jsonb,boolean) to authenticated, service_role;

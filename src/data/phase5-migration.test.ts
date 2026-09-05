@@ -2,6 +2,10 @@ import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 
 const migrationUrl = new URL("../../supabase/migrations/202609050001_phase5_catalog_import.sql", import.meta.url);
+const hardeningMigrationUrl = new URL(
+  "../../supabase/migrations/202609050002_phase5_import_privilege_hardening.sql",
+  import.meta.url,
+);
 
 describe("Phase 5 catalog/import migration", () => {
   it("is additive, idempotent and draft-only", async () => {
@@ -21,6 +25,14 @@ describe("Phase 5 catalog/import migration", () => {
     expect(sql).toContain("alter table public.archive_import_batches enable row level security");
     expect(sql).toContain("alter table public.archive_import_jobs enable row level security");
     expect(sql).toContain("public.is_admin() and owner_id = auth.uid()");
-    expect(sql).toContain("revoke all on function public.finalize_song_import");
+    expect(sql).toContain("revoke all on public.archive_import_batches, public.archive_import_jobs from anon");
+    expect(sql).toContain("revoke all on function public.finalize_song_import(uuid,jsonb,jsonb,jsonb,boolean) from public, anon");
+  });
+
+  it("hardens already-migrated projects without touching data or policies", async () => {
+    const sql = (await readFile(hardeningMigrationUrl, "utf8")).toLowerCase();
+    expect(sql).toContain("revoke all on table public.archive_import_batches, public.archive_import_jobs from anon");
+    expect(sql).toContain("revoke all on function public.finalize_song_import(uuid,jsonb,jsonb,jsonb,boolean) from anon");
+    expect(sql).not.toMatch(/\b(drop|truncate|delete\s+from|update|insert\s+into|create|alter)\b/);
   });
 });
