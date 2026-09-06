@@ -1,14 +1,20 @@
 {
   "schema": "zura-phase6-suno-preparation/v1",
   "workbook_sha256": "5bca4c50268cec128ab7ba3b6b987e22a83550397a873aabd93d9b5bbcf61b25",
+  "project_metadata": {
+    "artist_name": "Zura Alexandria",
+    "legal_owner": "Vasil Zurashvili",
+    "rights_holder": "Vasil Zurashvili / Zura Alexandria",
+    "archive_owner": "Vasil Zurashvili / Zura Alexandria"
+  },
   "owner_confirmation": {
-    "composer": "pending",
-    "lyricist": "pending",
-    "translator": "pending",
-    "recording_rights": "pending",
-    "publication_rights": "pending",
-    "final_mp3": "pending",
-    "learning_mode": "pending"
+    "composer": "confirmed",
+    "lyricist": "confirmed",
+    "translator": "confirmed",
+    "recording_rights": "confirmed",
+    "publication_rights": "confirmed",
+    "final_mp3": "confirmed",
+    "learning_mode": "confirmed"
   },
   "records": [
     {
@@ -16,6 +22,11 @@
       "slug": "suno-80ccf1f1",
       "language": "en",
       "youtube_url": "https://www.youtube.com/watch?v=IJXtjZqytiw",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Berdia Beriashvili",
+        "translator": "Zura Alexandria"
+      },
       "canonical": {
         "generation_id": "80ccf1f1-a8d3-4b14-9393-5fdda4f9392c",
         "url": "https://suno.com/song/80ccf1f1-a8d3-4b14-9393-5fdda4f9392c",
@@ -47,6 +58,11 @@
       "slug": "suno-e925fe09",
       "language": "en",
       "youtube_url": "https://www.youtube.com/watch?v=QWS6ORn0i8o",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Berdia Beriashvili",
+        "translator": "Zura Alexandria"
+      },
       "canonical": {
         "generation_id": "e925fe09-ed36-4092-81b6-ef4141d43d66",
         "url": "https://suno.com/song/e925fe09-ed36-4092-81b6-ef4141d43d66",
@@ -76,6 +92,11 @@
       "slug": "suno-ddff59b0",
       "language": "fr",
       "youtube_url": "https://www.youtube.com/watch?v=gHrUvv8oUac",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Berdia Beriashvili",
+        "translator": "Zura Alexandria"
+      },
       "canonical": {
         "generation_id": "ddff59b0-336a-44d5-b18b-2f301b83850b",
         "url": "https://suno.com/song/ddff59b0-336a-44d5-b18b-2f301b83850b",
@@ -107,6 +128,11 @@
       "slug": "suno-6b85f175",
       "language": "en",
       "youtube_url": "https://www.youtube.com/watch?v=6fVZr9eKG98",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Berdia Beriashvili",
+        "translator": "Zura Alexandria"
+      },
       "canonical": {
         "generation_id": "6b85f175-2289-4eac-88fb-5483153bd01b",
         "url": "https://suno.com/song/6b85f175-2289-4eac-88fb-5483153bd01b",
@@ -159,6 +185,11 @@
       "slug": "suno-4b855a49",
       "language": "it",
       "youtube_url": "https://www.youtube.com/watch?v=JB83Fdj-XUk",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Zura Alexandria",
+        "translator": null
+      },
       "canonical": {
         "generation_id": "4b855a49-af5a-4b3a-88d9-92a4ab4563bb",
         "url": "https://suno.com/song/4b855a49-af5a-4b3a-88d9-92a4ab4563bb",

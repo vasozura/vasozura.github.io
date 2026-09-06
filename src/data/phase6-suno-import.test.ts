@@ -15,6 +15,7 @@ interface Phase6Record {
   slug: string;
   language: string;
   youtube_url: string;
+  credits: { composer: string; lyricist: string; translator: string | null };
   canonical: SunoPackageProvenance["canonical"];
   alternates: SunoPackageProvenance["alternates"];
 }
@@ -22,6 +23,7 @@ interface Phase6Record {
 interface Phase6Data {
   schema: string;
   workbook_sha256: string;
+  project_metadata: { artist_name: string; legal_owner: string; rights_holder: string; archive_owner: string };
   owner_confirmation: SunoPackageProvenance["owner_confirmation"];
   records: Phase6Record[];
 }
@@ -134,11 +136,30 @@ describe("Phase 6 Suno provenance", () => {
     expect(data.records.every((entry) => entry.canonical.local_media?.filename.endsWith(".mp3"))).toBe(true);
   });
 
-  it("keeps every owner-confirmation field pending and never infers a composer", async () => {
+  it("applies confirmed project defaults without replacing verified poet attribution", async () => {
     const data = await records();
-    expect(Object.values(data.owner_confirmation)).toEqual(Array(7).fill("pending"));
-    expect(JSON.stringify(data)).not.toContain("ვასილ ზურაშვილი");
-    expect(data.records.every((record) => !Object.hasOwn(record, "composer"))).toBe(true);
+    expect(data.owner_confirmation).toMatchObject({
+      composer: "confirmed",
+      lyricist: "confirmed",
+      translator: "confirmed",
+      recording_rights: "confirmed",
+      publication_rights: "confirmed",
+      final_mp3: "confirmed",
+      learning_mode: "confirmed",
+    });
+    expect(data.records.every((record) => record.credits.composer === "Zura Alexandria")).toBe(true);
+    expect(data.project_metadata).toEqual({
+      artist_name: "Zura Alexandria",
+      legal_owner: "Vasil Zurashvili",
+      rights_holder: "Vasil Zurashvili / Zura Alexandria",
+      archive_owner: "Vasil Zurashvili / Zura Alexandria",
+    });
+    expect(data.records.filter((record) => record.credits.lyricist === "Berdia Beriashvili").map((record) => record.source_index)).toEqual([51, 52, 53, 55]);
+    expect(data.records.find((record) => record.source_index === 144)?.credits).toEqual({
+      composer: "Zura Alexandria",
+      lyricist: "Zura Alexandria",
+      translator: null,
+    });
   });
 
   it("stores only stable public source URLs and no protected Suno media URL", async () => {

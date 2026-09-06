@@ -40,10 +40,11 @@ source-language lyrics in the archive's existing non-Georgian fallback slot,
 titles are repeated in both required title slots without claiming a Georgian
 translation.
 
-Composer, lyricist, translator, recording rights, publication rights, final
-MP3 approval and Learning mode remain `pending`. The packages are suitable for
-validation and owner review only. They must not be imported or published until
-the remaining confirmations are recorded.
+Composer, lyricist/poet, translator, recording rights and publication rights
+now follow the confirmed project defaults while preserving the verified Berdia
+Beriashvili attribution for indices 51, 52, 53 and 55. Final MP3 approval and
+Learning mode are owner-confirmed for all five canonical packages. The packages
+remain draft-only; this confirmation does not itself import or publish them.
 
 ## Index 55 invariant
 

@@ -9,6 +9,11 @@ interface PreparationRecord {
   slug: string;
   language: string;
   youtube_url: string;
+  credits: {
+    composer: string;
+    lyricist: string;
+    translator: string | null;
+  };
   canonical: SunoGenerationProvenance;
   alternates: SunoGenerationProvenance[];
 }
@@ -16,6 +21,12 @@ interface PreparationRecord {
 interface PreparationFile {
   schema: "zura-phase6-suno-preparation/v1";
   workbook_sha256: string;
+  project_metadata: {
+    artist_name: string;
+    legal_owner: string;
+    rights_holder: string;
+    archive_owner: string;
+  };
   owner_confirmation: SunoPackageProvenance["owner_confirmation"];
   records: PreparationRecord[];
 }
@@ -88,9 +99,9 @@ export async function preparePhase6Packages(options: {
       title_ka: record.canonical.title,
       title_en: record.canonical.title,
       display_credit: null,
-      composer: null,
-      lyricist: null,
-      translator: null,
+      composer: record.credits.composer,
+      lyricist: record.credits.lyricist,
+      translator: record.credits.translator,
       language: record.language,
       description_ka: null,
       description_en: null,
@@ -114,14 +125,8 @@ export async function preparePhase6Packages(options: {
       alternates: record.alternates,
       owner_confirmation: preparation.owner_confirmation,
       readiness: {
-        status: "owner-review-required",
-        blockers: [
-          "composer confirmation",
-          "lyricist and translator confirmation",
-          "recording and publication rights confirmation",
-          "final MP3 approval",
-          "Learning mode approval",
-        ],
+        status: "approved",
+        blockers: [],
       },
     };
     const validated = validateSunoProvenance(provenance);
@@ -133,7 +138,10 @@ export async function preparePhase6Packages(options: {
       "Canonical audio is an unchanged checksum-verified local MP3.",
       "The exact Suno title is repeated in both required title slots; no Georgian translation is claimed.",
       "lyrics-en.txt is the existing non-Georgian fallback slot and preserves the source-language lyrics.",
-      "Composer, lyricist, translator, rights, final MP3 and Learning mode remain pending owner confirmation.",
+      "Composer, lyricist/poet, translator and rights use the confirmed project defaults and verified per-song attribution.",
+      `Recording and publication rights: CONFIRMED — ${preparation.project_metadata.rights_holder}.`,
+      `Archive ownership: CONFIRMED — ${preparation.project_metadata.archive_owner}.`,
+      "Final MP3 approval and Learning mode are CONFIRMED for this canonical package.",
       "This preparation is draft-only and does not authorize import or publication.",
       "No temporary, signed, protected or expiring Suno media URL is stored.",
     ].join("\n");

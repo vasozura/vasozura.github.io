@@ -97,5 +97,6 @@ pnpm import:batch -- "tmp\phase6-suno-import\phase6-batch.json" --dry-run
 
 The generator refuses to overwrite an existing package and stops on any
 canonical MP3 checksum mismatch. Generated packages are draft-only. They keep
-Suno generation metadata separate from the unchanged local audio binary and
-leave every authorship, rights, final-MP3 and Learning decision pending.
+Suno generation metadata separate from the unchanged local audio binary,
+preserve verified per-song attribution, apply confirmed project defaults and
+carry the separately confirmed final-MP3 and Learning decisions.
