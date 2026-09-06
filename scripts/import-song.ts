@@ -12,6 +12,11 @@ import {
 import { safeHttpUrl } from "../src/utils/safe-url";
 import { extractYouTubeVideoId } from "../src/utils/youtube";
 import { ZuraLearningClient } from "../src/lib/zura-api";
+import {
+  mapSunoProvenanceRows,
+  validateSunoProvenance,
+  type SunoPackageProvenance,
+} from "./suno-provenance";
 
 export type Instrument = "piano" | "guitar" | "accordion";
 type CanonicalSource = "musicxml" | "midi";
@@ -85,6 +90,7 @@ export interface ImportReport {
   compensated: string[];
   processing: { status: "not-required" | "pending" | "validated" | "complete" | "failed"; manifestKey?: string; reused?: boolean };
   checksums: Array<{ file: string; checksum: string }>;
+  provenance?: { canonicalGenerationId: string; alternateCount: number; generationIds: string[] };
 }
 
 export interface ImportOptions {
@@ -94,7 +100,7 @@ export interface ImportOptions {
   compensateOnFailure?: boolean;
 }
 
-const auxiliaryFiles = new Set(["SHA256SUMS.txt", "UPLOAD_NOTES.txt"]);
+const auxiliaryFiles = new Set(["SHA256SUMS.txt", "UPLOAD_NOTES.txt", "suno-provenance.json"]);
 const MAX_PACKAGE_FILES = 2048;
 const MAX_PACKAGE_BYTES = 512 * 1024 * 1024;
 const MAX_ARCHIVE_RATIO = 100;
@@ -342,27 +348,38 @@ function classifyFile(relativePath: string): Omit<PackageFile, "buffer" | "check
 
 export async function inspectSongPackage(packagePath: string): Promise<{
   metadata: ImportMetadata | null;
+  provenance: SunoPackageProvenance | null;
   files: PackageFile[];
   issues: string[];
 }> {
   const issues: string[] = [];
   const folder = path.resolve(packagePath);
   const folderStat = await stat(folder).catch(() => null);
-  if (!folderStat?.isDirectory()) return { metadata: null, files: [], issues: [`Package folder does not exist: ${folder}`] };
+  if (!folderStat?.isDirectory()) return { metadata: null, provenance: null, files: [], issues: [`Package folder does not exist: ${folder}`] };
   const relativeFiles = await listRelativeFiles(folder, issues);
   if (relativeFiles.length > MAX_PACKAGE_FILES) issues.push(`Package contains more than ${MAX_PACKAGE_FILES} files.`);
   let packageBytes = 0;
   for (const relative of relativeFiles) packageBytes += (await stat(path.join(folder, ...relative.split("/")))).size;
   if (packageBytes > MAX_PACKAGE_BYTES) issues.push("Package exceeds the 512 MB expanded-size limit.");
-  if (!relativeFiles.includes("metadata.json")) return { metadata: null, files: [], issues: [...issues, "metadata.json is required."] };
+  if (!relativeFiles.includes("metadata.json")) return { metadata: null, provenance: null, files: [], issues: [...issues, "metadata.json is required."] };
   let parsed: unknown;
   try {
     parsed = JSON.parse(await readFile(path.join(folder, "metadata.json"), "utf8"));
   } catch (error) {
-    return { metadata: null, files: [], issues: [...issues, `metadata.json is invalid: ${error instanceof Error ? error.message : "parse error"}`] };
+    return { metadata: null, provenance: null, files: [], issues: [...issues, `metadata.json is invalid: ${error instanceof Error ? error.message : "parse error"}`] };
   }
   const checked = validateMetadata(parsed);
   issues.push(...checked.issues);
+  let provenance: SunoPackageProvenance | null = null;
+  if (relativeFiles.includes("suno-provenance.json")) {
+    try {
+      const validated = validateSunoProvenance(JSON.parse(await readFile(path.join(folder, "suno-provenance.json"), "utf8")));
+      issues.push(...validated.issues);
+      provenance = validated.provenance;
+    } catch {
+      issues.push("suno-provenance.json contains invalid JSON.");
+    }
+  }
   issues.push(...await verifyChecksumManifest(folder, relativeFiles));
   const files: PackageFile[] = [];
   for (const relativePath of relativeFiles) {
@@ -417,7 +434,16 @@ export async function inspectSongPackage(packagePath: string): Promise<{
       if (instrument === "accordion" && !files.some((file) => file.instrument === "accordion" && file.partKind === "accordion_mapping")) issues.push("Accordion learning requires accordion-mapping.json.");
     }
   }
-  return { metadata: checked.metadata, files, issues };
+  if (checked.metadata && provenance) {
+    if (checked.metadata.suno_url !== provenance.canonical.url) issues.push("metadata.suno_url must match the canonical Suno provenance URL.");
+    const audio = files.find((file) => file.fileType === "audio");
+    if (!audio) issues.push("Suno provenance packages require audio.mp3.");
+    else if (audio.checksum !== provenance.canonical.local_media?.sha256) issues.push("audio.mp3 does not match the canonical local-media SHA-256.");
+    if (checked.metadata.duration_seconds == null || Math.abs(checked.metadata.duration_seconds - (provenance.canonical.local_media?.duration_seconds ?? 0)) > 0.05) {
+      issues.push("metadata.duration_seconds must match the canonical local-media duration evidence.");
+    }
+  }
+  return { metadata: checked.metadata, provenance, files, issues };
 }
 
 export function mapMetadataToSongRow(
@@ -527,6 +553,14 @@ export async function runImport(
     compensated: [],
     processing: { status: inspected.metadata?.learning_enabled ? "pending" : "not-required" },
     checksums: inspected.files.map((file) => ({ file: file.relativePath, checksum: file.checksum })),
+    provenance: inspected.provenance ? {
+      canonicalGenerationId: inspected.provenance.canonical.generation_id,
+      alternateCount: inspected.provenance.alternates.length,
+      generationIds: [
+        inspected.provenance.canonical.generation_id,
+        ...inspected.provenance.alternates.map((entry) => entry.generation_id),
+      ],
+    } : undefined,
   };
   if (!inspected.metadata || inspected.issues.length) return report;
   if (dryRun) {
@@ -673,13 +707,18 @@ export async function runImport(
       processingSource = { bucket, object_path: objectPath, sha256: canonicalFile.checksum, format, content_type: canonicalFile.mimeType, byte_size: canonicalFile.buffer.length };
     }
 
-    const { error: finalizeError } = await supabase.rpc("finalize_song_import", {
-      p_song_id: songId,
-      p_song: { ...row, ...resourceChanges, id: songId, status: "draft" },
-      p_files: fileRows,
-      p_parts: [...partRows.values()],
-      p_resume: Boolean(existingSong && options.resume),
-    });
+    const finalizeArgs: Record<string, unknown> = {
+        p_song_id: songId,
+        p_song: { ...row, ...resourceChanges, id: songId, status: "draft" },
+        p_files: fileRows,
+        p_parts: [...partRows.values()],
+        p_resume: Boolean(existingSong && options.resume),
+      };
+    if (inspected.provenance) finalizeArgs.p_generations = mapSunoProvenanceRows(inspected.provenance);
+    const { error: finalizeError } = await supabase.rpc(
+      inspected.provenance ? "finalize_song_import_with_suno_provenance" : "finalize_song_import",
+      finalizeArgs,
+    );
     if (finalizeError) throw finalizeError;
     finalized = true;
     if (metadata.learning_enabled) {

@@ -17,8 +17,8 @@ or:
 ```
 
 The JSON report lists validation issues and the SHA-256 checksum of every
-skipped upload. Optional `SHA256SUMS.txt` and `UPLOAD_NOTES.txt` files are
-validated/recognized but are never uploaded.
+skipped upload. Optional `SHA256SUMS.txt`, `UPLOAD_NOTES.txt` and
+`suno-provenance.json` files are validated/recognized but are never uploaded.
 
 ## Real import
 
@@ -83,3 +83,19 @@ The batch validates every package before the first write, runs at most four
 workers, continues independent songs after one failure, and writes only a
 non-secret `.checkpoint.json`. A real batch must pass dry-run before the
 server-only credential and short-lived owner token are supplied.
+
+## Phase 6 Suno preparation
+
+The reviewed Phase 6 records live in `docs/phase6-suno-records.json`. Generate
+the five local packages from the checksum-verified archive MP3 files and the
+owner-provided lyric export:
+
+```powershell
+pnpm prepare:phase6 -- --audio-root="C:\path\to\approved\mp3-archive" --lyrics-source="C:\path\to\Suno-lyrics.txt" --output="tmp\phase6-suno-import"
+pnpm import:batch -- "tmp\phase6-suno-import\phase6-batch.json" --dry-run
+```
+
+The generator refuses to overwrite an existing package and stops on any
+canonical MP3 checksum mismatch. Generated packages are draft-only. They keep
+Suno generation metadata separate from the unchanged local audio binary and
+leave every authorship, rights, final-MP3 and Learning decision pending.
