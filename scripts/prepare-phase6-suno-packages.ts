@@ -19,7 +19,8 @@ interface PreparationRecord {
 }
 
 interface PreparationFile {
-  schema: "zura-phase6-suno-preparation/v1";
+  schema: "zura-phase6-suno-preparation/v1" | "zura-suno-preparation/v1";
+  batch_name?: string;
   workbook_sha256: string;
   project_metadata: {
     artist_name: string;
@@ -70,7 +71,10 @@ export async function preparePhase6Packages(options: {
 }): Promise<{ batchPath: string; packages: Array<{ slug: string; path: string; audioSha256: string }> }> {
   const recordsFile = options.recordsFile ?? path.resolve("docs/phase6-suno-records.json");
   const preparation = JSON.parse(await readFile(recordsFile, "utf8")) as PreparationFile;
-  if (preparation.schema !== "zura-phase6-suno-preparation/v1" || preparation.records.length !== 5) throw new Error("Phase 6 preparation file must contain exactly five versioned records.");
+  if (!(preparation.schema === "zura-phase6-suno-preparation/v1" || preparation.schema === "zura-suno-preparation/v1")) throw new Error("Unsupported Suno preparation schema.");
+  if (!Array.isArray(preparation.records) || preparation.records.length === 0) throw new Error("Suno preparation file must contain at least one versioned record.");
+  if (preparation.schema === "zura-phase6-suno-preparation/v1" && preparation.records.length !== 5) throw new Error("Phase 6 preparation file must contain exactly five versioned records.");
+  if (preparation.batch_name !== undefined && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(preparation.batch_name)) throw new Error("Suno preparation batch_name is invalid.");
   await access(options.audioRoot);
   const lyricsSource = await readFile(options.lyricsSource, "utf8");
   await mkdir(options.output, { recursive: true });
@@ -132,12 +136,13 @@ export async function preparePhase6Packages(options: {
     const validated = validateSunoProvenance(provenance);
     if (validated.issues.length) throw new Error(`${record.slug}: ${validated.issues.join(" ")}`);
     const lyrics = extractLyrics(lyricsSource, record.canonical.generation_id);
+    const lyricsFilename = record.language === "ka" ? "lyrics-ka.txt" : "lyrics-en.txt";
     const notes = [
-      `Phase 6 source index: ${record.source_index}`,
+      `Catalog source index: ${record.source_index}`,
       `Canonical Suno generation: ${record.canonical.generation_id}`,
       "Canonical audio is an unchanged checksum-verified local MP3.",
       "The exact Suno title is repeated in both required title slots; no Georgian translation is claimed.",
-      "lyrics-en.txt is the existing non-Georgian fallback slot and preserves the source-language lyrics.",
+      `${lyricsFilename} preserves the source-language lyrics in the appropriate importer slot.`,
       "Composer, lyricist/poet, translator and rights use the confirmed project defaults and verified per-song attribution.",
       `Recording and publication rights: CONFIRMED — ${preparation.project_metadata.rights_holder}.`,
       `Archive ownership: CONFIRMED — ${preparation.project_metadata.archive_owner}.`,
@@ -148,10 +153,10 @@ export async function preparePhase6Packages(options: {
     await Promise.all([
       writeFile(path.join(folder, "metadata.json"), `${JSON.stringify(metadata, null, 2)}\n`, "utf8"),
       writeFile(path.join(folder, "suno-provenance.json"), `${JSON.stringify(provenance, null, 2)}\n`, "utf8"),
-      writeFile(path.join(folder, "lyrics-en.txt"), lyrics, "utf8"),
+      writeFile(path.join(folder, lyricsFilename), lyrics, "utf8"),
       writeFile(path.join(folder, "UPLOAD_NOTES.txt"), `${notes}\n`, "utf8"),
     ]);
-    await writeChecksums(folder, ["audio.mp3", "lyrics-en.txt", "metadata.json", "suno-provenance.json", "UPLOAD_NOTES.txt"]);
+    await writeChecksums(folder, ["audio.mp3", lyricsFilename, "metadata.json", "suno-provenance.json", "UPLOAD_NOTES.txt"]);
     packages.push({ slug: record.slug, path: folder, audioSha256: actualSha256 });
   }
 
@@ -160,7 +165,7 @@ export async function preparePhase6Packages(options: {
     concurrency: 2,
     packages: packages.map((entry) => ({ path: path.relative(options.output, entry.path).replace(/\\/g, "/"), expectedSlug: entry.slug })),
   };
-  const batchPath = path.join(options.output, "phase6-batch.json");
+  const batchPath = path.join(options.output, `${preparation.batch_name ?? "phase6"}-batch.json`);
   await writeFile(batchPath, `${JSON.stringify(batch, null, 2)}\n`, "utf8");
   return { batchPath, packages };
 }
@@ -168,12 +173,13 @@ export async function preparePhase6Packages(options: {
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const audioRoot = argument("audio-root");
   const lyricsSource = argument("lyrics-source");
+  const recordsFile = argument("records-file");
   const output = argument("output") ?? path.resolve("tmp/phase6-suno-import");
   if (!audioRoot || !lyricsSource) {
-    console.error("Usage: pnpm prepare:phase6 -- --audio-root=<folder> --lyrics-source=<file> [--output=<folder>]");
+    console.error("Usage: pnpm prepare:phase6 -- --audio-root=<folder> --lyrics-source=<file> [--records-file=<file>] [--output=<folder>]");
     process.exitCode = 2;
   } else {
-    preparePhase6Packages({ audioRoot, lyricsSource, output })
+    preparePhase6Packages({ audioRoot, lyricsSource, output, recordsFile: recordsFile ?? undefined })
       .then((result) => console.log(JSON.stringify(result, null, 2)))
       .catch((error: unknown) => { console.error(error instanceof Error ? error.message : error); process.exitCode = 1; });
   }

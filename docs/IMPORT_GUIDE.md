@@ -100,3 +100,12 @@ canonical MP3 checksum mismatch. Generated packages are draft-only. They keep
 Suno generation metadata separate from the unchanged local audio binary,
 preserve verified per-song attribution, apply confirmed project defaults and
 carry the separately confirmed final-MP3 and Learning decisions.
+
+Later reviewed batches reuse the same generator and importer by supplying a
+versioned `zura-suno-preparation/v1` source file with `--records-file`. A stable
+`batch_name` controls the generated manifest filename; the source file may
+contain any non-zero number of canonical records.
+
+```powershell
+pnpm prepare:phase6 -- --audio-root="C:\path\to\approved\mp3-archive" --lyrics-source="C:\path\to\Suno-lyrics.txt" --records-file="docs\phase7-next-suno-records.json" --output="tmp\phase7-next-suno-import"
+```

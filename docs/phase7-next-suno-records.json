@@ -1,0 +1,811 @@
+{
+  "schema": "zura-suno-preparation/v1",
+  "batch_name": "phase7-next-20",
+  "workbook_sha256": "5bca4c50268cec128ab7ba3b6b987e22a83550397a873aabd93d9b5bbcf61b25",
+  "project_metadata": {
+    "artist_name": "Zura Alexandria",
+    "legal_owner": "Vasil Zurashvili",
+    "rights_holder": "Vasil Zurashvili / Zura Alexandria",
+    "archive_owner": "Vasil Zurashvili / Zura Alexandria"
+  },
+  "owner_confirmation": {
+    "composer": "confirmed",
+    "lyricist": "confirmed",
+    "translator": "confirmed",
+    "recording_rights": "confirmed",
+    "publication_rights": "confirmed",
+    "final_mp3": "confirmed",
+    "learning_mode": "confirmed"
+  },
+  "records": [
+    {
+      "source_index": 33,
+      "slug": "suno-2017ae41",
+      "language": "ka",
+      "youtube_url": "https://www.youtube.com/watch?v=u_LyCgSf7C0",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Berdia Beriashvili",
+        "translator": null
+      },
+      "canonical": {
+        "generation_id": "2017ae41-bc61-481b-b471-f596623fb3e0",
+        "url": "https://suno.com/song/2017ae41-bc61-481b-b471-f596623fb3e0",
+        "title": "ბერდია ბერიაშვილი - ჩემგან შორს არი",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 316.64,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "ბერდია ბერიაშვილი - ჩემგან შორს არი.mp3",
+          "sha256": "fc1a373c6838c4e718185e4b88d9e2102ac6bcc75553888c25b19f4280086536",
+          "duration_seconds": 316.64,
+          "confidence": "high"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies a unique Suno and local MP3 match at high confidence.",
+          "Canonical local MP3 title, measured duration and SHA-256 identity agree with the owner archive.",
+          "Existing verified YouTube title and duration agree with the selected local MP3."
+        ]
+      },
+      "alternates": []
+    },
+    {
+      "source_index": 37,
+      "slug": "suno-af9a4bab",
+      "language": "ka",
+      "youtube_url": "https://www.youtube.com/watch?v=Xejm5Q34mt8",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Berdia Beriashvili",
+        "translator": null
+      },
+      "canonical": {
+        "generation_id": "af9a4bab-9b42-4b12-bac0-30623387eae0",
+        "url": "https://suno.com/song/af9a4bab-9b42-4b12-bac0-30623387eae0",
+        "title": "ბერდია ბერიაშვილი - აქსიომა",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 382.6,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "ბერდია ბერიაშვილი - აქსიომა.mp3",
+          "sha256": "085e24a0005b6a707199f51e63eb0f938ccb2924cd75c4046d6912665d6e54c4",
+          "duration_seconds": 382.6,
+          "confidence": "high"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies a unique Suno and local MP3 match at high confidence.",
+          "Canonical local MP3 title, measured duration and SHA-256 identity agree with the owner archive.",
+          "Existing verified YouTube title and duration agree with the selected local MP3."
+        ]
+      },
+      "alternates": []
+    },
+    {
+      "source_index": 38,
+      "slug": "suno-304f1b29",
+      "language": "ka",
+      "youtube_url": "https://www.youtube.com/watch?v=LLJICGv_E-Q",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Berdia Beriashvili",
+        "translator": null
+      },
+      "canonical": {
+        "generation_id": "304f1b29-075b-40d1-99a9-daf73aa33cbd",
+        "url": "https://suno.com/song/304f1b29-075b-40d1-99a9-daf73aa33cbd",
+        "title": "ბერდია ბერიაშვილი - საფიცარი",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 311.12,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "ბერდია ბერიაშვილი - საფიცარი.mp3",
+          "sha256": "1077230951b35632adea367def04a2cf8ffd0acabc97b407fce1636eabbccb11",
+          "duration_seconds": 311.12,
+          "confidence": "high"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies a unique Suno and local MP3 match at high confidence.",
+          "Canonical local MP3 title, measured duration and SHA-256 identity agree with the owner archive.",
+          "Existing verified YouTube title and duration agree with the selected local MP3."
+        ]
+      },
+      "alternates": []
+    },
+    {
+      "source_index": 44,
+      "slug": "suno-fdf581a0",
+      "language": "ka",
+      "youtube_url": "https://www.youtube.com/watch?v=aQxVhaZCA0g",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Berdia Beriashvili",
+        "translator": null
+      },
+      "canonical": {
+        "generation_id": "fdf581a0-889c-4d1e-a39d-936ac1e22b97",
+        "url": "https://suno.com/song/fdf581a0-889c-4d1e-a39d-936ac1e22b97",
+        "title": "ნუ დააბრალებ სხვას - ბერდია ბერიაშვილი - თავს დააბრალე",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 305,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "ნუ დააბრალებ სხვას - ბერდია ბერიაშვილი - თავს დააბრალე.mp3",
+          "sha256": "386d6ad2a0923cf813a6230e33859fc0a85a6e6c1e042efe45b5cf2c00201258",
+          "duration_seconds": 305,
+          "confidence": "high"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies a unique Suno and local MP3 match at high confidence.",
+          "Canonical local MP3 title, measured duration and SHA-256 identity agree with the owner archive.",
+          "Existing verified YouTube title and duration agree with the selected local MP3."
+        ]
+      },
+      "alternates": []
+    },
+    {
+      "source_index": 48,
+      "slug": "suno-4848401c",
+      "language": "ka",
+      "youtube_url": "https://www.youtube.com/watch?v=UxHiJ9bcdY0",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Berdia Beriashvili",
+        "translator": null
+      },
+      "canonical": {
+        "generation_id": "4848401c-51fb-4680-acea-1c2e4b566b45",
+        "url": "https://suno.com/song/4848401c-51fb-4680-acea-1c2e4b566b45",
+        "title": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 264.88,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი.mp3",
+          "sha256": "2b126a59c73b0878333eda410765a066640770bc4a2e186717be3f2b55162a22",
+          "duration_seconds": 264.88,
+          "confidence": "high"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies a unique Suno and local MP3 match at high confidence.",
+          "Canonical local MP3 title, measured duration and SHA-256 identity agree with the owner archive.",
+          "Existing verified YouTube title and duration agree with the selected local MP3."
+        ]
+      },
+      "alternates": []
+    },
+    {
+      "source_index": 49,
+      "slug": "suno-f59d2437",
+      "language": "ka",
+      "youtube_url": "https://www.youtube.com/watch?v=WwRJxy7LkfE",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Berdia Beriashvili",
+        "translator": null
+      },
+      "canonical": {
+        "generation_id": "f59d2437-d9cf-40ce-9d51-80de18a46d71",
+        "url": "https://suno.com/song/f59d2437-d9cf-40ce-9d51-80de18a46d71",
+      "title": "სხვისი გული - ბერდია ბერიაშვილი - გული",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 361.72,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "სხვისი გული -ბერდია ბერიაშვილი - გული.mp3",
+          "sha256": "30942d662b2698fe795ece17f226bf4e655c151a9041130ae4fe046e62d3e1f1",
+          "duration_seconds": 361.72,
+          "confidence": "high"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies a unique Suno and local MP3 match at high confidence.",
+          "Canonical local MP3 title, measured duration and SHA-256 identity agree with the owner archive.",
+          "Existing verified YouTube title and duration agree with the selected local MP3."
+        ]
+      },
+      "alternates": []
+    },
+    {
+      "source_index": 50,
+      "slug": "suno-4fdae2b6",
+      "language": "en",
+      "youtube_url": "https://www.youtube.com/watch?v=xgY3wmQeRvc",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Berdia Beriashvili",
+        "translator": "Zura Alexandria"
+      },
+      "canonical": {
+        "generation_id": "4fdae2b6-e5b9-4233-963d-5bba1d0c5742",
+        "url": "https://suno.com/song/4fdae2b6-e5b9-4233-963d-5bba1d0c5742",
+        "title": "Another Heart-Based on the Poem by Berdia Beriashvili",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 329.92,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "Another Heart-Based on the Poem by Berdia Beriashvili.mp3",
+          "sha256": "80e0a2b8b785ad51d92420b9da8d617298e73ecc55ced3ea32393bcbf3ec8a83",
+          "duration_seconds": 329.92,
+          "confidence": "high"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies a unique Suno and local MP3 match at high confidence.",
+          "Canonical local MP3 title, measured duration and SHA-256 identity agree with the owner archive.",
+          "Existing verified YouTube title and duration agree with the selected local MP3."
+        ]
+      },
+      "alternates": []
+    },
+    {
+      "source_index": 57,
+      "slug": "suno-0d116a84",
+      "language": "ka",
+      "youtube_url": "https://www.youtube.com/watch?v=euYCoK0jjfE",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Berdia Beriashvili",
+        "translator": null
+      },
+      "canonical": {
+        "generation_id": "0d116a84-60f9-40a8-9e92-3fb7ec695076",
+        "url": "https://suno.com/song/0d116a84-60f9-40a8-9e92-3fb7ec695076",
+      "title": "მეხი დიდ ხეებს ეძებს - ბერდია ბერიაშვილი",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 229.2,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი.mp3",
+          "sha256": "4e55a2736828edf09f4e9c1777609ce5c1de2915313fe4976015bf69da4d8ea3",
+          "duration_seconds": 229.2,
+          "confidence": "high"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies a unique Suno and local MP3 match at high confidence.",
+          "Canonical local MP3 title, measured duration and SHA-256 identity agree with the owner archive.",
+          "Existing verified YouTube title and duration agree with the selected local MP3."
+        ]
+      },
+      "alternates": []
+    },
+    {
+      "source_index": 59,
+      "slug": "suno-77e62e25",
+      "language": "ka",
+      "youtube_url": "https://www.youtube.com/watch?v=KH2EZr9-qYo",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Berdia Beriashvili",
+        "translator": null
+      },
+      "canonical": {
+        "generation_id": "77e62e25-d1aa-4b31-9557-ecc7bc5d8625",
+        "url": "https://suno.com/song/77e62e25-d1aa-4b31-9557-ecc7bc5d8625",
+      "title": "ხეივანთან ჩავიარე - ბერდია ბერიაშვილი",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 219.92,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "ხეივანთან ჩავიარე -- ბერდია ბერიაშვილი.mp3",
+          "sha256": "ce37f474c7a6868fe77547b15f748541c35ec78f91a23f8688cfe62fa0b7a74e",
+          "duration_seconds": 219.92,
+          "confidence": "high"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies a unique Suno and local MP3 match at high confidence.",
+          "Canonical local MP3 title, measured duration and SHA-256 identity agree with the owner archive.",
+          "Existing verified YouTube title and duration agree with the selected local MP3."
+        ]
+      },
+      "alternates": []
+    },
+    {
+      "source_index": 61,
+      "slug": "suno-1829ca46",
+      "language": "ka",
+      "youtube_url": "https://www.youtube.com/watch?v=mv9rJFdWOHo",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Berdia Beriashvili",
+        "translator": null
+      },
+      "canonical": {
+        "generation_id": "1829ca46-999c-4702-ba35-6a8b26567886",
+        "url": "https://suno.com/song/1829ca46-999c-4702-ba35-6a8b26567886",
+        "title": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 187.44,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი.mp3",
+          "sha256": "b7ae6fefdfab25d8997c297397760900cd3cba67a5e3373ec95979287448d749",
+          "duration_seconds": 187.44,
+          "confidence": "high"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies a unique Suno and local MP3 match at high confidence.",
+          "Canonical local MP3 title, measured duration and SHA-256 identity agree with the owner archive.",
+          "Existing verified YouTube title and duration agree with the selected local MP3."
+        ]
+      },
+      "alternates": []
+    },
+    {
+      "source_index": 75,
+      "slug": "suno-cdf81aba",
+      "language": "ka",
+      "youtube_url": "https://www.youtube.com/watch?v=ZhwZ74QR520",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Zura Alexandria",
+        "translator": null
+      },
+      "canonical": {
+        "generation_id": "cdf81aba-c26c-4d0a-80e8-29f0e7d5415b",
+        "url": "https://suno.com/song/cdf81aba-c26c-4d0a-80e8-29f0e7d5415b",
+        "title": "სანთელი-დნება",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 304.6,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "სანთელი-დნება.mp3",
+          "sha256": "2a7f5ff50514d6e7d155f89b3e94ce8c155431778e0dbc9a2f112966c5e24e33",
+          "duration_seconds": 304.6,
+          "confidence": "high"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies a unique Suno and local MP3 match at high confidence.",
+          "Canonical local MP3 title, measured duration and SHA-256 identity agree with the owner archive.",
+          "Existing verified YouTube title and duration agree with the selected local MP3."
+        ]
+      },
+      "alternates": []
+    },
+    {
+      "source_index": 197,
+      "slug": "suno-cff0def8",
+      "language": "ka",
+      "youtube_url": "https://www.youtube.com/watch?v=k_q9rntARDk",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Zura Alexandria",
+        "translator": null
+      },
+      "canonical": {
+        "generation_id": "cff0def8-3981-4076-910b-e92ec12dca9e",
+        "url": "https://suno.com/song/cff0def8-3981-4076-910b-e92ec12dca9e",
+        "title": "ჟღალი მიმინო",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 244.72,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "ჟღალი მიმინო.mp3",
+          "sha256": "ac930d85681bd35eceb860a86aed98a7887b2f1a041bb1c6e293d1faf1d86d6b",
+          "duration_seconds": 244.72,
+          "confidence": "high"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies a unique Suno and local MP3 match at high confidence.",
+          "Canonical local MP3 title, measured duration and SHA-256 identity agree with the owner archive.",
+          "Existing verified YouTube title and duration agree with the selected local MP3."
+        ]
+      },
+      "alternates": []
+    },
+    {
+      "source_index": 104,
+      "slug": "suno-5e8c4dfc",
+      "language": "en",
+      "youtube_url": "https://www.youtube.com/watch?v=mVRYcFWwZ_I",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Tariel Chanturia",
+        "translator": "Zura Alexandria"
+      },
+      "canonical": {
+        "generation_id": "5e8c4dfc-ec1c-44f5-ab43-0b15eb5fe561",
+        "url": "https://suno.com/song/5e8c4dfc-ec1c-44f5-ab43-0b15eb5fe561",
+        "title": "Blue-Cloud Blanket",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 353,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "Blue-Cloud Blanket.mp3",
+          "sha256": "5d7e06a9132f5692a995b17f13ec76b2afb53dede319cc1de10fec744a8180ac",
+          "duration_seconds": 353,
+          "confidence": "exact"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies an exact Suno and local MP3 match.",
+          "YouTube title is an exact normalized match and its duration differs from the selected MP3 by less than one second.",
+          "Canonical local MP3 SHA-256 is verified against the owner archive."
+        ]
+      },
+      "alternates": []
+    },
+    {
+      "source_index": 62,
+      "slug": "suno-83535f74",
+      "language": "ru",
+      "youtube_url": "https://www.youtube.com/watch?v=Hjn62A3HSqA",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Zura Alexandria",
+        "translator": "Zura Alexandria"
+      },
+      "canonical": {
+        "generation_id": "83535f74-c946-4b80-9206-7ef42420e4fb",
+        "url": "https://suno.com/song/83535f74-c946-4b80-9206-7ef42420e4fb",
+        "title": "oставь след любви",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 261.96,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "oставь след любви.mp3",
+          "sha256": "f49799fbfeb916d4fd1a514f097b3f01d7b5aa4a442b7959039b0a327c6acac0",
+          "duration_seconds": 261.96,
+          "confidence": "exact"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies an exact Suno and local MP3 match.",
+          "YouTube title is an exact normalized match and its duration differs from the selected MP3 by less than one second.",
+          "Canonical local MP3 SHA-256 is verified against the owner archive."
+        ]
+      },
+      "alternates": [
+        {
+          "generation_id": "086919d1-d96d-4b3b-93f9-76a3eac638b6",
+          "url": "https://suno.com/song/086919d1-d96d-4b3b-93f9-76a3eac638b6",
+          "title": "oставь след любви",
+          "role": "alternate",
+          "source_created_at_text": null,
+          "duration_seconds": 241.2,
+          "style_prompt": null,
+          "local_media": {
+            "filename": "oставь след любви_1.mp3",
+            "sha256": "772bf4754a4c64e07526907075df5401b04de538dcb45e285f5375405f3c1f7a",
+            "duration_seconds": 241.2,
+            "confidence": "exact"
+          },
+          "matching_evidence": [
+            "Same normalized-title version group in the existing reconciliation inventory; retained as an alternate, not a separate canonical song."
+          ]
+        }
+      ]
+    },
+    {
+      "source_index": 96,
+      "slug": "suno-1b43514d",
+      "language": "fr",
+      "youtube_url": "https://www.youtube.com/watch?v=mw970tytwgs",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Tariel Chanturia",
+        "translator": "Zura Alexandria"
+      },
+      "canonical": {
+        "generation_id": "1b43514d-76e3-474c-8532-7364474e276c",
+        "url": "https://suno.com/song/1b43514d-76e3-474c-8532-7364474e276c",
+        "title": "Neige en Duel",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 257.12,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "Neige en Duel_1.mp3",
+          "sha256": "8346cb05c7302cb7b0de5bfb764803baeb548e16a7c7e386682cad234152c388",
+          "duration_seconds": 257.12,
+          "confidence": "exact"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies an exact Suno and local MP3 match.",
+          "YouTube title is an exact normalized match and its duration differs from the selected MP3 by less than one second.",
+          "Canonical local MP3 SHA-256 is verified against the owner archive."
+        ]
+      },
+      "alternates": [
+        {
+          "generation_id": "f89e850e-f8c3-4e23-b6a4-2b20d9a19b9e",
+          "url": "https://suno.com/song/f89e850e-f8c3-4e23-b6a4-2b20d9a19b9e",
+          "title": "Neige en Duel",
+          "role": "alternate",
+          "source_created_at_text": null,
+          "duration_seconds": 249.56,
+          "style_prompt": null,
+          "local_media": {
+            "filename": "Neige en Duel.mp3",
+            "sha256": "c7ab1cc402aa0fd80ad510e0c8cecc330fb359e24403edb20ca24ae486433c21",
+            "duration_seconds": 249.56,
+            "confidence": "exact"
+          },
+          "matching_evidence": [
+            "Same normalized-title version group in the existing reconciliation inventory; retained as an alternate, not a separate canonical song."
+          ]
+        }
+      ]
+    },
+    {
+      "source_index": 148,
+      "slug": "suno-868a58e9",
+      "language": "ru",
+      "youtube_url": "https://www.youtube.com/watch?v=prpNrWD3AgQ",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Zura Alexandria",
+        "translator": "Zura Alexandria"
+      },
+      "canonical": {
+        "generation_id": "868a58e9-16ff-4194-a974-4c8a4f47a75b",
+        "url": "https://suno.com/song/868a58e9-16ff-4194-a974-4c8a4f47a75b",
+        "title": "Я любил молча...",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 263.16,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "Я любил молча.mp3",
+          "sha256": "f1468abb3dea6a002e703f52c4d1ca60f978b38c5feaad90beba567a94e8a6b4",
+          "duration_seconds": 263.16,
+          "confidence": "exact"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies an exact Suno and local MP3 match.",
+          "YouTube title is an exact normalized match and its duration differs from the selected MP3 by less than one second.",
+          "Canonical local MP3 SHA-256 is verified against the owner archive."
+        ]
+      },
+      "alternates": []
+    },
+    {
+      "source_index": 152,
+      "slug": "suno-eef7eb6f",
+      "language": "en",
+      "youtube_url": "https://www.youtube.com/watch?v=eFkEuHWer24",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Zura Alexandria",
+        "translator": "Zura Alexandria"
+      },
+      "canonical": {
+        "generation_id": "eef7eb6f-bbf7-40d6-8a53-c54e2985c10a",
+        "url": "https://suno.com/song/eef7eb6f-bbf7-40d6-8a53-c54e2985c10a",
+        "title": "Just two small words…",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 294.52,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "Just two small words.mp3",
+          "sha256": "e5f0abf3210f9d1c2f756f22de4ee61ae54bfaaf9bd5c20df5bc68aabb2e663c",
+          "duration_seconds": 294.52,
+          "confidence": "exact"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies an exact Suno and local MP3 match.",
+          "YouTube title is an exact normalized match and its duration differs from the selected MP3 by less than one second.",
+          "Canonical local MP3 SHA-256 is verified against the owner archive."
+        ]
+      },
+      "alternates": [
+        {
+          "generation_id": "477eaf82-a84e-46f1-9144-b4374ec69077",
+          "url": "https://suno.com/song/477eaf82-a84e-46f1-9144-b4374ec69077",
+          "title": "Just two small words…",
+          "role": "alternate",
+          "source_created_at_text": null,
+          "duration_seconds": 302.96,
+          "style_prompt": null,
+          "local_media": {
+            "filename": "Just two small words_1.mp3",
+            "sha256": "5735db242ef31d54bde102fc9202f69bedcadd3a25fca0c8e049318d01b0500a",
+            "duration_seconds": 302.96,
+            "confidence": "exact"
+          },
+          "matching_evidence": [
+            "Same normalized-title version group in the existing reconciliation inventory; retained as an alternate, not a separate canonical song."
+          ]
+        }
+      ]
+    },
+    {
+      "source_index": 54,
+      "slug": "suno-f0b9a135",
+      "language": "fr",
+      "youtube_url": "https://www.youtube.com/watch?v=7ZtK_1MOShQ",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Berdia Beriashvili",
+        "translator": "Zura Alexandria"
+      },
+      "canonical": {
+        "generation_id": "f0b9a135-5cfa-4f28-ac16-3c39b90e8d34",
+        "url": "https://suno.com/song/f0b9a135-5cfa-4f28-ac16-3c39b90e8d34",
+        "title": "Que me voulais-tu",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 218.4,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "Que me voulais-tu.mp3",
+          "sha256": "8a6284baea86d33c78db3f10bcf081199d93d939c3a314a58686ad7992a0bb13",
+          "duration_seconds": 218.4,
+          "confidence": "exact"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies an exact Suno and local MP3 match.",
+          "YouTube title is an exact normalized match and its duration differs from the selected MP3 by less than one second.",
+          "Canonical local MP3 SHA-256 is verified against the owner archive."
+        ]
+      },
+      "alternates": []
+    },
+    {
+      "source_index": 150,
+      "slug": "suno-4cd7f85c",
+      "language": "ru",
+      "youtube_url": "https://www.youtube.com/watch?v=peyvO-ArTcA",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Zura Alexandria",
+        "translator": "Zura Alexandria"
+      },
+      "canonical": {
+        "generation_id": "4cd7f85c-5f2c-48a4-bca1-a1bf98566d76",
+        "url": "https://suno.com/song/4cd7f85c-5f2c-48a4-bca1-a1bf98566d76",
+        "title": "Всего два слова…",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 293.32,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "Всего два слова_1.mp3",
+          "sha256": "382c68985ae76cde6203a242d1bed3c52f0df76186229b16644c29c037674c13",
+          "duration_seconds": 293.32,
+          "confidence": "exact"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies an exact Suno and local MP3 match.",
+          "YouTube title is an exact normalized match and its duration differs from the selected MP3 by less than one second.",
+          "Canonical local MP3 SHA-256 is verified against the owner archive."
+        ]
+      },
+      "alternates": [
+        {
+          "generation_id": "2286810e-a0d1-4180-a7a7-f52da893ea5f",
+          "url": "https://suno.com/song/2286810e-a0d1-4180-a7a7-f52da893ea5f",
+          "title": "Всего два слова…",
+          "role": "alternate",
+          "source_created_at_text": null,
+          "duration_seconds": 333.24,
+          "style_prompt": null,
+          "local_media": {
+            "filename": "Всего два слова.mp3",
+            "sha256": "fbb5bf4f30bded391491744e97233fe575e16ba34c0b836aa65a12d5e679f8f2",
+            "duration_seconds": 333.24,
+            "confidence": "exact"
+          },
+          "matching_evidence": [
+            "Same normalized-title version group in the existing reconciliation inventory; retained as an alternate, not a separate canonical song."
+          ]
+        }
+      ]
+    },
+    {
+      "source_index": 19,
+      "slug": "suno-b1c35a84",
+      "language": "en",
+      "youtube_url": "https://www.youtube.com/watch?v=A0ZO3hjxOB8",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Zura Alexandria",
+        "translator": "Zura Alexandria"
+      },
+      "canonical": {
+        "generation_id": "b1c35a84-bf24-4441-a7b5-c497fc0999cd",
+        "url": "https://suno.com/song/b1c35a84-bf24-4441-a7b5-c497fc0999cd",
+        "title": "Too late…",
+        "role": "canonical",
+        "source_created_at_text": null,
+        "duration_seconds": 338.08,
+        "style_prompt": null,
+        "local_media": {
+          "filename": "Too late_4.mp3",
+          "sha256": "45380a3d22f6fdcbf41391b4f4db5678900af14907b317b8b6c543251bb50f87",
+          "duration_seconds": 338.08,
+          "confidence": "exact"
+        },
+        "matching_evidence": [
+          "Existing reconciliation inventory identifies an exact Suno and local MP3 match.",
+          "YouTube title is an exact normalized match and its duration differs from the selected MP3 by less than one second.",
+          "Canonical local MP3 SHA-256 is verified against the owner archive."
+        ]
+      },
+      "alternates": [
+        {
+          "generation_id": "30297d57-efcc-421d-a11d-4fea93c023ab",
+          "url": "https://suno.com/song/30297d57-efcc-421d-a11d-4fea93c023ab",
+          "title": "Too late…",
+          "role": "alternate",
+          "source_created_at_text": null,
+          "duration_seconds": 388.08,
+          "style_prompt": null,
+          "local_media": {
+            "filename": "Too late_1.mp3",
+            "sha256": "035590d35df2e3d07ed3169a27cfe65e606f22429d384624ebaed5fd3ba45331",
+            "duration_seconds": 388.08,
+            "confidence": "exact"
+          },
+          "matching_evidence": [
+            "Same normalized-title version group in the existing reconciliation inventory; retained as an alternate, not a separate canonical song."
+          ]
+        },
+        {
+          "generation_id": "a5c9baae-ce7a-4a91-8994-bb9218bd7658",
+          "url": "https://suno.com/song/a5c9baae-ce7a-4a91-8994-bb9218bd7658",
+          "title": "Too late…",
+          "role": "alternate",
+          "source_created_at_text": null,
+          "duration_seconds": 347.16,
+          "style_prompt": null,
+          "local_media": {
+            "filename": "Too late.mp3",
+            "sha256": "0d26fc45afdc8a343459aa914c717b608af36c0a3e89a9f4b46ab8fe8d92b87e",
+            "duration_seconds": 347.16,
+            "confidence": "exact"
+          },
+          "matching_evidence": [
+            "Same normalized-title version group in the existing reconciliation inventory; retained as an alternate, not a separate canonical song."
+          ]
+        },
+        {
+          "generation_id": "14f91584-80ee-4d04-b9ae-4abbbd1f1bbd",
+          "url": "https://suno.com/song/14f91584-80ee-4d04-b9ae-4abbbd1f1bbd",
+          "title": "Too late…",
+          "role": "alternate",
+          "source_created_at_text": null,
+          "duration_seconds": 299.64,
+          "style_prompt": null,
+          "local_media": {
+            "filename": "Too late_2.mp3",
+            "sha256": "171936d061e3d9ca4cd9bae4cc4e9c9980b8dd174fcee60abc988ab2dbf18cb5",
+            "duration_seconds": 299.64,
+            "confidence": "exact"
+          },
+          "matching_evidence": [
+            "Same normalized-title version group in the existing reconciliation inventory; retained as an alternate, not a separate canonical song."
+          ]
+        },
+        {
+          "generation_id": "3c2fc98e-6bb4-41ee-bf8f-1de0a9361947",
+          "url": "https://suno.com/song/3c2fc98e-6bb4-41ee-bf8f-1de0a9361947",
+          "title": "Too late…",
+          "role": "alternate",
+          "source_created_at_text": null,
+          "duration_seconds": 269.88,
+          "style_prompt": null,
+          "local_media": {
+            "filename": "Too late_3.mp3",
+            "sha256": "20f3f109dbc60c5c2b2e2c04ef75c8729b48bca46ef8ded563add254a603f645",
+            "duration_seconds": 269.88,
+            "confidence": "exact"
+          },
+          "matching_evidence": [
+            "Same normalized-title version group in the existing reconciliation inventory; retained as an alternate, not a separate canonical song."
+          ]
+        }
+      ]
+    }
+  ]
+}
