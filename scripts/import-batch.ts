@@ -81,6 +81,7 @@ export async function runBatch(
     if (!report.valid) result.valid = false;
   }
   const checksumOwners = new Map<string, { slug: string; file: string }>();
+  const generationOwners = new Map<string, string>();
   for (const report of result.reports) {
     for (const entry of report.checksums) {
       const owner = checksumOwners.get(entry.checksum);
@@ -89,6 +90,15 @@ export async function runBatch(
         result.issues.push(`Duplicate checksum across ${owner.slug}/${owner.file} and ${report.slug}/${entry.file}.`);
       } else {
         checksumOwners.set(entry.checksum, { slug: report.slug, file: entry.file });
+      }
+    }
+    for (const generationId of report.provenance?.generationIds ?? []) {
+      const owner = generationOwners.get(generationId);
+      if (owner && owner !== report.slug) {
+        result.valid = false;
+        result.issues.push(`Suno generation ${generationId} is duplicated across ${owner} and ${report.slug}.`);
+      } else {
+        generationOwners.set(generationId, report.slug);
       }
     }
   }

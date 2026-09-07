@@ -1,0 +1,216 @@
+{
+  "schema": "zura-phase6-suno-preparation/v1",
+  "workbook_sha256": "5bca4c50268cec128ab7ba3b6b987e22a83550397a873aabd93d9b5bbcf61b25",
+  "project_metadata": {
+    "artist_name": "Zura Alexandria",
+    "legal_owner": "Vasil Zurashvili",
+    "rights_holder": "Vasil Zurashvili / Zura Alexandria",
+    "archive_owner": "Vasil Zurashvili / Zura Alexandria"
+  },
+  "owner_confirmation": {
+    "composer": "confirmed",
+    "lyricist": "confirmed",
+    "translator": "confirmed",
+    "recording_rights": "confirmed",
+    "publication_rights": "confirmed",
+    "final_mp3": "confirmed",
+    "learning_mode": "confirmed"
+  },
+  "records": [
+    {
+      "source_index": 51,
+      "slug": "suno-80ccf1f1",
+      "language": "en",
+      "youtube_url": "https://www.youtube.com/watch?v=IJXtjZqytiw",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Berdia Beriashvili",
+        "translator": "Zura Alexandria"
+      },
+      "canonical": {
+        "generation_id": "80ccf1f1-a8d3-4b14-9393-5fdda4f9392c",
+        "url": "https://suno.com/song/80ccf1f1-a8d3-4b14-9393-5fdda4f9392c",
+        "title": "Dream one up-Based on the Poem by Berdia Beriashvili",
+        "role": "canonical",
+        "source_created_at_text": "July 10, 2026 at 6:40 PM",
+        "duration_seconds": 238,
+        "style_prompt": "roots reggae, 90 BPM, warm baritone vocal, melodic bassline, soft Hammond organ, clean reggae/ska/pop-rock guitar, rimshot backbeat, hand percussion, spring reverb, tape saturation, late-afternoon warmth, bittersweet humor, singalong hook, repetitive chorus, one-drop groove",
+        "local_media": {
+          "filename": "Dream one up-Based on the Poem by Berdia Beriashvili.mp3",
+          "sha256": "fb5de1888496079a5ade7b69cb967753209428e8330da60e666377d1aac50b0b",
+          "duration_seconds": 238.88,
+          "confidence": "exact"
+        },
+        "matching_evidence": [
+          "Owner archive embeds the exact Suno ID.",
+          "Exact long title and lyrics match.",
+          "Suno 3:58/3:59, local MP3 238.880 seconds and YouTube 239 seconds agree."
+        ]
+      },
+      "alternates": [
+        { "generation_id": "398b217a-61ef-4f98-a9e4-c98ee7f9f17a", "url": "https://suno.com/song/398b217a-61ef-4f98-a9e4-c98ee7f9f17a", "title": "Dream one up", "role": "alternate", "source_created_at_text": null, "duration_seconds": 247, "style_prompt": null, "local_media": null, "matching_evidence": ["Alternate generation shown in the authenticated owner Library."] },
+        { "generation_id": "9fc844c4-dd8f-4af6-9a31-b8a438eca80b", "url": "https://suno.com/song/9fc844c4-dd8f-4af6-9a31-b8a438eca80b", "title": "Dream one up", "role": "alternate", "source_created_at_text": null, "duration_seconds": 235, "style_prompt": null, "local_media": null, "matching_evidence": ["Alternate generation shown in the authenticated owner Library."] },
+        { "generation_id": "d9cf8f72-0ae2-4e34-9de1-6810f3d393df", "url": "https://suno.com/song/d9cf8f72-0ae2-4e34-9de1-6810f3d393df", "title": "Dream one up", "role": "alternate", "source_created_at_text": null, "duration_seconds": 249, "style_prompt": null, "local_media": null, "matching_evidence": ["Alternate generation shown in the authenticated owner Library."] }
+      ]
+    },
+    {
+      "source_index": 52,
+      "slug": "suno-e925fe09",
+      "language": "en",
+      "youtube_url": "https://www.youtube.com/watch?v=QWS6ORn0i8o",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Berdia Beriashvili",
+        "translator": "Zura Alexandria"
+      },
+      "canonical": {
+        "generation_id": "e925fe09-ed36-4092-81b6-ef4141d43d66",
+        "url": "https://suno.com/song/e925fe09-ed36-4092-81b6-ef4141d43d66",
+        "title": "Don't come again-Based on the Poem by Berdia Beriashvili",
+        "role": "canonical",
+        "source_created_at_text": "July 10, 2026 at 3:20 PM",
+        "duration_seconds": 253,
+        "style_prompt": "Georgian acoustic ballad, panduri prelude, fingerpicked acoustic guitar, warm close-mic baritone, spoken-word intro, upright bass pedal tones, brushed frame drum, 1970s tape warmth, plate reverb, sparse room ambience, free-tempo parlando, rubato chorus, minor-7th harmonies, two-chord vamp, distant whisper duet, nocturnal confession, romantic defiance, melody-first phrasing, natural dynamics, whispered outro",
+        "local_media": {
+          "filename": "Dont come again-Based on the Poem by Berdia Beriashvili.mp3",
+          "sha256": "e9f5a899600156a5d5738516621c003aecd8b3debde845b6bfad52fe1fc6dd02",
+          "duration_seconds": 253.8,
+          "confidence": "exact"
+        },
+        "matching_evidence": [
+          "Owner archive embeds the exact Suno ID.",
+          "Filename differs only by the apostrophe and the exact lyrics match.",
+          "Suno 4:13/4:14, local MP3 253.800 seconds and YouTube 254 seconds agree."
+        ]
+      },
+      "alternates": [
+        { "generation_id": "b0ad54cd-d667-4cd1-9667-9c0f482a4d95", "url": "https://suno.com/song/b0ad54cd-d667-4cd1-9667-9c0f482a4d95", "title": "Don't come again", "role": "alternate", "source_created_at_text": null, "duration_seconds": 248, "style_prompt": null, "local_media": null, "matching_evidence": ["Alternate generation shown in the authenticated owner Library."] }
+      ]
+    },
+    {
+      "source_index": 53,
+      "slug": "suno-ddff59b0",
+      "language": "fr",
+      "youtube_url": "https://www.youtube.com/watch?v=gHrUvv8oUac",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Berdia Beriashvili",
+        "translator": "Zura Alexandria"
+      },
+      "canonical": {
+        "generation_id": "ddff59b0-336a-44d5-b18b-2f301b83850b",
+        "url": "https://suno.com/song/ddff59b0-336a-44d5-b18b-2f301b83850b",
+        "title": "Ne viens plus-Based on the Poem by Berdia Beriashvili",
+        "role": "canonical",
+        "source_created_at_text": "July 10, 2026 at 3:18 PM",
+        "duration_seconds": 234,
+        "style_prompt": "Georgian acoustic ballad, panduri prelude, fingerpicked acoustic guitar, warm close-mic baritone, spoken-word intro, upright bass pedal tones, brushed frame drum, 1970s tape warmth, plate reverb, sparse room ambience, free-tempo parlando, rubato chorus, minor-7th harmonies, two-chord vamp, distant whisper duet, nocturnal confession, romantic defiance, melody-first phrasing, natural dynamics, whispered outro",
+        "local_media": {
+          "filename": "Ne viens plus-Based on the Poem by Berdia Beriashvili.mp3",
+          "sha256": "1d5b42d62a51aa3e4bb1333f54cade524b5c65fbe90fa9aa21c9b54652097201",
+          "duration_seconds": 234.6,
+          "confidence": "exact"
+        },
+        "matching_evidence": [
+          "Owner archive embeds the exact Suno ID.",
+          "Exact long title and French lyrics match.",
+          "Suno 3:54/3:55, local MP3 234.600 seconds and YouTube 235 seconds agree."
+        ]
+      },
+      "alternates": [
+        { "generation_id": "ac646d70-8392-49a4-b7d4-0010902ee026", "url": "https://suno.com/song/ac646d70-8392-49a4-b7d4-0010902ee026", "title": "French chanson arrangement", "role": "alternate", "source_created_at_text": null, "duration_seconds": 229, "style_prompt": "French chanson", "local_media": null, "matching_evidence": ["Alternate generation shown in the authenticated owner Library."] },
+        { "generation_id": "1b497e7f-42d5-4fd5-9603-829da38c3626", "url": "https://suno.com/song/1b497e7f-42d5-4fd5-9603-829da38c3626", "title": "French chanson arrangement", "role": "alternate", "source_created_at_text": null, "duration_seconds": 232, "style_prompt": "French chanson", "local_media": null, "matching_evidence": ["Alternate generation shown in the authenticated owner Library."] },
+        { "generation_id": "a2cd5bd1-1085-4790-92d9-7855751001da", "url": "https://suno.com/song/a2cd5bd1-1085-4790-92d9-7855751001da", "title": "Georgian acoustic-ballad arrangement", "role": "alternate", "source_created_at_text": null, "duration_seconds": 239, "style_prompt": "Georgian acoustic ballad", "local_media": null, "matching_evidence": ["Alternate generation shown in the authenticated owner Library."] }
+      ]
+    },
+    {
+      "source_index": 55,
+      "slug": "suno-6b85f175",
+      "language": "en",
+      "youtube_url": "https://www.youtube.com/watch?v=6fVZr9eKG98",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Berdia Beriashvili",
+        "translator": "Zura Alexandria"
+      },
+      "canonical": {
+        "generation_id": "6b85f175-2289-4eac-88fb-5483153bd01b",
+        "url": "https://suno.com/song/6b85f175-2289-4eac-88fb-5483153bd01b",
+        "title": "The lightning seeks The tallest trees-Based on the Poem by Berdia Beriashvili",
+        "role": "canonical",
+        "source_created_at_text": "July 10, 2026 at 2:39 PM",
+        "duration_seconds": 257,
+        "style_prompt": "Georgian experimental chamber folk, minimal percussion groove, frame drum and body percussion, prepared piano textures, low drone, sparse panduri and bass clarinet, deep conversational baritone, simple repetitive melody, subtle polyrhythms, unexpected harmonic turns, philosophical and introspective atmosphere, modern reinterpretation of Georgian poetic recitation and folk song",
+        "local_media": {
+          "filename": "The lightning seeks The tallest trees-Based on the Poem by Berdia Beriashvili.mp3",
+          "sha256": "c30a13a460650671fc57d9756b84ff8aa142836b8658acc5a3eb9fd16f51718f",
+          "duration_seconds": 257.6,
+          "confidence": "exact"
+        },
+        "matching_evidence": [
+          "Owner archive and YouTube title embed the canonical Suno ID prefix.",
+          "Exact title and lyrics match.",
+          "Suno 4:17/4:18, local MP3 257.600 seconds and YouTube 258 seconds agree."
+        ]
+      },
+      "alternates": [
+        { "generation_id": "619fdedd-e19c-4353-84c0-ebb2e5a50915", "url": "https://suno.com/song/619fdedd-e19c-4353-84c0-ebb2e5a50915", "title": "Irish chamber folk", "role": "alternate", "source_created_at_text": null, "duration_seconds": 268, "style_prompt": "Irish chamber folk", "local_media": null, "matching_evidence": ["Alternate generation shown in the authenticated owner Library."] },
+        { "generation_id": "8364aaa6-d936-484a-b907-34633385b7d4", "url": "https://suno.com/song/8364aaa6-d936-484a-b907-34633385b7d4", "title": "Irish chamber folk", "role": "alternate", "source_created_at_text": null, "duration_seconds": 237, "style_prompt": "Irish chamber folk", "local_media": null, "matching_evidence": ["Alternate generation shown in the authenticated owner Library."] },
+        { "generation_id": "523f3328-89eb-4c08-a342-3b40550a12f7", "url": "https://suno.com/song/523f3328-89eb-4c08-a342-3b40550a12f7", "title": "Georgian chamber folk", "role": "alternate", "source_created_at_text": null, "duration_seconds": 263, "style_prompt": "Georgian chamber folk", "local_media": null, "matching_evidence": ["Alternate generation shown in the authenticated owner Library."] },
+        { "generation_id": "9b459acb-af51-4c69-9f15-862f4a3d56a1", "url": "https://suno.com/song/9b459acb-af51-4c69-9f15-862f4a3d56a1", "title": "Georgian chamber folk", "role": "alternate", "source_created_at_text": null, "duration_seconds": 275, "style_prompt": "Georgian chamber folk", "local_media": null, "matching_evidence": ["Alternate generation shown in the authenticated owner Library."] },
+        { "generation_id": "edd4fbb3-8b59-485b-9b4c-5d4f0f3ae08e", "url": "https://suno.com/song/edd4fbb3-8b59-485b-9b4c-5d4f0f3ae08e", "title": "Georgian chamber folk", "role": "alternate", "source_created_at_text": null, "duration_seconds": 260, "style_prompt": "Georgian chamber folk", "local_media": null, "matching_evidence": ["Alternate generation shown in the authenticated owner Library."] },
+        {
+          "generation_id": "81dc6c14-63c3-4104-a806-3efa99f38601",
+          "url": "https://suno.com/song/81dc6c14-63c3-4104-a806-3efa99f38601",
+          "title": "The lightning seeks The tallest trees-Based on the Poem by Berdia Beriashvili",
+          "role": "alternate",
+          "source_created_at_text": "July 10, 2026 at 2:25 PM",
+          "duration_seconds": 278,
+          "style_prompt": "Georgian indie folk",
+          "local_media": {
+            "filename": "The lightning seeks The tallest trees-Based on the Poem by Berdia Beriashvili_1.mp3",
+            "sha256": "5ca126235cdc8ed792fc1c12a809551c08c6f8e55ac2b29bf498b09201ba4932",
+            "duration_seconds": 278.44,
+            "confidence": "high"
+          },
+          "matching_evidence": [
+            "The separate local _1 MP3 duration of 278.440 seconds matches the 4:38 alternate.",
+            "This alternate is not the 258-second YouTube generation."
+          ]
+        }
+      ]
+    },
+    {
+      "source_index": 144,
+      "slug": "suno-4b855a49",
+      "language": "it",
+      "youtube_url": "https://www.youtube.com/watch?v=JB83Fdj-XUk",
+      "credits": {
+        "composer": "Zura Alexandria",
+        "lyricist": "Zura Alexandria",
+        "translator": null
+      },
+      "canonical": {
+        "generation_id": "4b855a49-af5a-4b3a-88d9-92a4ab4563bb",
+        "url": "https://suno.com/song/4b855a49-af5a-4b3a-88d9-92a4ab4563bb",
+        "title": "Ti amavo in silenzio...",
+        "role": "canonical",
+        "source_created_at_text": "March 3, 2026 at 5:30 PM",
+        "duration_seconds": 252,
+        "style_prompt": "Italian melodic romantic ballad, 72–78 BPM, warm grand piano, soft strings, light pop drums, melodic electric bass, expressive non-operatic male vocal, clear lyrical phrasing, nostalgic atmosphere, memorable chorus, subtle orchestral lift, minimal jazz, cinematic 1980s Italian-pop mood, Mediterranean melancholy, smooth final build, gentle fade-out",
+        "local_media": {
+          "filename": "Ti amavo in silenzio.mp3",
+          "sha256": "ba0af53f16bc8f0575a18ec4aaa43b428c16d1db95b98a813d181628a11ed75d",
+          "duration_seconds": 252.04,
+          "confidence": "exact"
+        },
+        "matching_evidence": [
+          "Owner archive embeds the exact Suno ID.",
+          "Exact title and Italian lyrics match.",
+          "Suno 4:12, local MP3 252.040 seconds and YouTube 253 seconds agree."
+        ]
+      },
+      "alternates": []
+    }
+  ]
+}

@@ -26,6 +26,7 @@ song-slug\
       accordion.musicxml
       accordion.mid
       accordion-mapping.json
+  suno-provenance.json # optional stable generation metadata; never uploaded
   SHA256SUMS.txt       # optional integrity manifest; never uploaded
   UPLOAD_NOTES.txt     # optional owner notes; never uploaded
 ```
@@ -101,6 +102,29 @@ Both the nested Phase 5 layout and legacy flat `instrument-parts/piano.*` and
 `instrument-parts/guitar.*` packages are accepted. ZIPs are extracted only by
 the PowerShell wrapper after entry-count, expanded-size, compression-ratio and
 path-containment checks.
+
+## Suno generation provenance
+
+`suno-provenance.json` uses `zura-suno-provenance/v1`. It preserves one
+canonical generation and zero or more alternate generations without creating
+duplicate songs. Each generation has its stable public
+`https://suno.com/song/<generation-id>` URL, title, source-visible creation
+label, duration, relationship, style/prompt evidence and matching evidence.
+The canonical entry also requires the checksum, basename and measured duration
+of the unchanged local MP3. An alternate may have its own local-media identity
+when independently matched.
+
+The sidecar rejects unknown URL fields and local paths. Temporary, signed,
+authenticated, protected or expiring Suno media URLs are never permitted. It
+also records explicit pending/confirmed states for composer, lyricist,
+translator, recording rights, publication rights, final MP3 selection and
+Learning mode. A pending state remains pending; account ownership is not
+authorship or rights evidence.
+
+Packages with this sidecar use the additive
+`finalize_song_import_with_suno_provenance` RPC. It atomically calls the legacy
+song finalizer and upserts normalized `suno_generations` rows. Packages without
+the sidecar continue to use the unchanged Phase 5 RPC.
 
 For multi-song onboarding, a `zura-song-batch/v1` document lists package paths
 and expected slugs. Every package passes preflight before the first write.
