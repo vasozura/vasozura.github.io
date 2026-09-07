@@ -171,6 +171,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
         next = new AccordionVisualizer(visualRoot, name === "accordion" ? accordionConfig : null);
       }
       if (selectedInstrument !== name) return;
+      audio?.setInstrument(name as "piano" | "guitar" | "accordion");
       visualizer = next;
       if (name === "piano") piano = next as FollowVisualizer;
       if (name === "guitar") guitar = next as HandedVisualizer;
@@ -204,7 +205,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     host.querySelector<HTMLInputElement>('[data-l="left"]')!.onchange = (event) => guitar?.setLeftHanded((event.currentTarget as HTMLInputElement).checked);
 
     host.querySelector<HTMLButtonElement>('[data-l="play"]')!.onclick = () => { void audio?.enable(); scheduler?.play(); };
-    host.querySelector<HTMLButtonElement>('[data-l="pause"]')!.onclick = () => scheduler?.pause();
+    host.querySelector<HTMLButtonElement>('[data-l="pause"]')!.onclick = () => { scheduler?.pause(); audio?.reset(); };
     host.querySelector<HTMLButtonElement>('[data-l="stop"]')!.onclick = () => { scheduler?.stop(); audio?.reset(); };
     seek.oninput = () => { scheduler?.seek(Number(seek.value)); audio?.reset(); };
     host.querySelector<HTMLInputElement>('[data-l="tempo"]')!.oninput = (event) => { const input = event.currentTarget as HTMLInputElement; scheduler?.setTempo(Number(input.value)); input.nextElementSibling!.textContent = `${input.value}%`; };

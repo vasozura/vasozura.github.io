@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { enableMidiSeek, fetchScoreSource, getScoreCopy, shouldMountStandaloneMidi } from "./score-viewer";
+import { enableMidiSeek, fetchScoreSource, getScoreCopy, scoreWidthChanged, shouldMountStandaloneMidi } from "./score-viewer";
 
 describe("score viewer MIDI controls", () => {
   it("disables the independent MIDI timer when the canonical learning clock is active", () => {
@@ -19,6 +19,12 @@ describe("score viewer MIDI controls", () => {
   it("keeps score and transport controls bilingual", () => {
     expect(getScoreCopy("ka")).toMatchObject({ loaded: "MusicXML ნოტები ჩაიტვირთა.", cursor: "კურსორი" });
     expect(getScoreCopy("en")).toMatchObject({ loaded: "MusicXML score loaded.", cursor: "Cursor" });
+  });
+
+  it("rerenders only for meaningful score workspace width changes", () => {
+    expect(scoreWidthChanged(0, 900)).toBe(true);
+    expect(scoreWidthChanged(900, 904)).toBe(false);
+    expect(scoreWidthChanged(900, 920)).toBe(true);
   });
 });
 

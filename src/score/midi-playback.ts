@@ -1,7 +1,8 @@
+import { SampleInstrumentEngine, type InstrumentPlayback } from "../audio/sample-instrument";
+
 interface MidiNoteEvent { time: number; duration: number; midi: number; velocity: number; }
 
 export class MidiPlayback {
-  private context: AudioContext | null = null;
   private notes: MidiNoteEvent[] = [];
   private duration = 0;
   private timer = 0;
@@ -15,9 +16,14 @@ export class MidiPlayback {
   private loopB: number | null = null;
   private metronome = false;
   private nextBeat = 0;
-  private readonly activeNotes = new Set<number>();
+  private readonly activeNotes = new Map<number, number>();
+  private readonly noteTimers = new Set<number>();
 
-  constructor(private readonly onNotes: (activeMidiNotes: number[]) => void, private readonly onPosition: (seconds: number, duration: number) => void) {}
+  constructor(
+    private readonly onNotes: (activeMidiNotes: number[]) => void,
+    private readonly onPosition: (seconds: number, duration: number) => void,
+    private readonly instrument: InstrumentPlayback = new SampleInstrumentEngine(),
+  ) {}
 
   async load(url: string, fallbackBpm = 120): Promise<void> {
     const [{ Midi }, response] = await Promise.all([import("@tonejs/midi"), fetch(url)]);
@@ -32,10 +38,9 @@ export class MidiPlayback {
 
   async play(): Promise<void> {
     if (!this.notes.length || this.playing) return;
-    this.context ??= new AudioContext();
-    await this.context.resume();
+    await this.instrument.enable(this.notes.map((note) => note.midi));
     this.playing = true;
-    this.startedAt = this.context.currentTime;
+    this.startedAt = this.instrument.currentTime;
     this.lastPosition = this.offset - 0.03;
     this.nextBeat = this.offset;
     this.timer = window.setInterval(() => this.tick(), 20);
@@ -46,8 +51,8 @@ export class MidiPlayback {
     this.offset = this.position();
     this.playing = false;
     window.clearInterval(this.timer);
-    this.activeNotes.clear();
-    this.onNotes([]);
+    this.clearActiveNotes();
+    this.instrument.releaseAll();
   }
 
   stop(): void {
@@ -62,9 +67,9 @@ export class MidiPlayback {
     this.offset = position;
     this.lastPosition = position - 0.03;
     this.nextBeat = position;
-    if (this.playing && this.context) this.startedAt = this.context.currentTime;
-    this.activeNotes.clear();
-    this.onNotes([]);
+    if (this.playing) this.startedAt = this.instrument.currentTime;
+    this.clearActiveNotes();
+    this.instrument.releaseAll();
     this.onPosition(position, this.duration);
   }
 
@@ -72,7 +77,11 @@ export class MidiPlayback {
     const position = this.position();
     this.tempo = Math.min(1.5, Math.max(0.5, percent / 100));
     this.offset = position;
-    if (this.playing && this.context) this.startedAt = this.context.currentTime;
+    if (this.playing) {
+      this.startedAt = this.instrument.currentTime;
+      this.instrument.releaseAll();
+      this.clearActiveNotes();
+    }
   }
 
   setLoop(a: number | null, b: number | null): void {
@@ -86,23 +95,24 @@ export class MidiPlayback {
   destroy(): void {
     this.pause();
     window.clearInterval(this.timer);
-    void this.context?.close();
-    this.context = null;
+    this.instrument.destroy();
     this.notes = [];
   }
 
   private position(): number {
-    if (!this.playing || !this.context) return this.offset;
-    return this.offset + (this.context.currentTime - this.startedAt) * this.tempo;
+    if (!this.playing) return this.offset;
+    return this.offset + (this.instrument.currentTime - this.startedAt) * this.tempo;
   }
 
   private tick(): void {
     let position = this.position();
     if (this.loopB !== null && position >= this.loopB) {
       this.offset = this.loopA ?? 0;
-      if (this.context) this.startedAt = this.context.currentTime;
+      this.startedAt = this.instrument.currentTime;
       this.lastPosition = this.offset - 0.03;
       this.nextBeat = this.offset;
+      this.instrument.releaseAll();
+      this.clearActiveNotes();
       position = this.offset;
     }
     if (position >= this.duration) { this.stop(); return; }
@@ -119,33 +129,27 @@ export class MidiPlayback {
   }
 
   private sound(note: MidiNoteEvent): void {
-    if (!this.context) return;
-    const oscillator = this.context.createOscillator();
-    const gain = this.context.createGain();
-    const frequency = 440 * 2 ** ((note.midi - 69) / 12);
-    oscillator.frequency.value = frequency;
-    oscillator.type = "triangle";
-    const now = this.context.currentTime;
     const length = Math.max(0.04, note.duration / this.tempo);
-    gain.gain.setValueAtTime(Math.max(0.015, note.velocity * 0.12), now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + length);
-    oscillator.connect(gain).connect(this.context.destination);
-    oscillator.start(now);
-    oscillator.stop(now + length);
-    this.activeNotes.add(note.midi);
-    this.onNotes([...this.activeNotes]);
-    window.setTimeout(() => { this.activeNotes.delete(note.midi); this.onNotes([...this.activeNotes]); }, length * 1000);
+    this.instrument.play({ midi: note.midi, velocity: note.velocity, durationSeconds: length });
+    this.activeNotes.set(note.midi, (this.activeNotes.get(note.midi) ?? 0) + 1);
+    this.onNotes([...this.activeNotes.keys()]);
+    const timer = window.setTimeout(() => {
+      this.noteTimers.delete(timer);
+      const remaining = (this.activeNotes.get(note.midi) ?? 1) - 1;
+      if (remaining > 0) this.activeNotes.set(note.midi, remaining); else this.activeNotes.delete(note.midi);
+      this.onNotes([...this.activeNotes.keys()]);
+    }, length * 1000);
+    this.noteTimers.add(timer);
   }
 
   private click(): void {
-    if (!this.context) return;
-    const oscillator = this.context.createOscillator();
-    const gain = this.context.createGain();
-    oscillator.frequency.value = 1100;
-    gain.gain.setValueAtTime(0.05, this.context.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.04);
-    oscillator.connect(gain).connect(this.context.destination);
-    oscillator.start();
-    oscillator.stop(this.context.currentTime + 0.04);
+    this.instrument.metronome();
+  }
+
+  private clearActiveNotes(): void {
+    for (const timer of this.noteTimers) window.clearTimeout(timer);
+    this.noteTimers.clear();
+    this.activeNotes.clear();
+    this.onNotes([]);
   }
 }

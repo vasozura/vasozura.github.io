@@ -14,6 +14,7 @@ export async function fetchScoreSource(url: string, request: typeof fetch = fetc
 
 export interface ScoreViewerOptions { midiPlayback?: boolean; }
 export const shouldMountStandaloneMidi = (options: ScoreViewerOptions): boolean => options.midiPlayback !== false;
+export const scoreWidthChanged = (previous: number, next: number): boolean => previous <= 0 || Math.abs(previous - next) >= 8;
 
 export function getScoreCopy(language: Language) {
   return language === "ka" ? {
@@ -31,17 +32,40 @@ export async function mountScoreViewer(
   const cleanups: Array<() => void> = [];
   const musicXmlUrl = root.dataset.musicxmlUrl;
   const canvas = root.querySelector<HTMLElement>(".score-canvas");
+  const surface = root.querySelector<HTMLElement>(".score-render-surface") ?? canvas;
   const controls = root.querySelector<HTMLElement>(".score-controls");
   const status = root.querySelector<HTMLElement>(".score-status");
   const midiControls = root.querySelector<HTMLElement>(".midi-controls");
   const piano = root.querySelector<HTMLElement>(".piano-keyboard");
-  if (!canvas || !controls || !status || !midiControls || !piano) return () => {};
+  if (!canvas || !surface || !controls || !status || !midiControls || !piano) return () => {};
 
   if (musicXmlUrl) try {
     const { OpenSheetMusicDisplay } = await import("opensheetmusicdisplay");
-    const osmd = new OpenSheetMusicDisplay(canvas, { autoResize: true, backend: "svg", drawTitle: true, followCursor: true });
+    const osmd = new OpenSheetMusicDisplay(surface, { autoResize: false, backend: "svg", drawTitle: true, followCursor: true });
     await osmd.load(await fetchScoreSource(musicXmlUrl));
-    osmd.render();
+    let renderFrame = 0;
+    let lastWidth = surface.clientWidth;
+    const renderScore = (): void => {
+      window.cancelAnimationFrame(renderFrame);
+      const stableHeight = Math.max(canvas.clientHeight, 320);
+      const previousTop = canvas.scrollTop;
+      const previousLeft = canvas.scrollLeft;
+      const previousScrollableHeight = Math.max(1, canvas.scrollHeight - canvas.clientHeight);
+      const previousScrollableWidth = Math.max(1, canvas.scrollWidth - canvas.clientWidth);
+      canvas.style.setProperty("--score-stable-height", `${stableHeight}px`);
+      canvas.classList.add("is-rendering");
+      osmd.render();
+      renderFrame = window.requestAnimationFrame(() => {
+        canvas.scrollTop = previousScrollableHeight > 1
+          ? previousTop / previousScrollableHeight * Math.max(0, canvas.scrollHeight - canvas.clientHeight)
+          : previousTop;
+        canvas.scrollLeft = previousScrollableWidth > 1
+          ? previousLeft / previousScrollableWidth * Math.max(0, canvas.scrollWidth - canvas.clientWidth)
+          : previousLeft;
+        canvas.classList.remove("is-rendering");
+      });
+    };
+    renderScore();
     osmd.cursor.show();
     let learningCursorStep = -1;
     const moveLearningCursor = (event: Event): void => {
@@ -57,7 +81,7 @@ export async function mountScoreViewer(
     let page = 0;
     let measure = 1;
     let pageMode = true;
-    const pages = () => [...canvas.querySelectorAll<HTMLElement>(".osmd-page")];
+    const pages = () => [...surface.querySelectorAll<HTMLElement>(".osmd-page")];
     const showPage = (): void => {
       const list = pages();
       if (!pageMode) { list.forEach((entry) => { entry.hidden = false; }); return; }
@@ -66,9 +90,9 @@ export async function mountScoreViewer(
       list.forEach((entry, index) => { entry.hidden = index !== page; });
       controls.querySelector<HTMLElement>("[data-page-label]")!.textContent = `${page + 1} / ${list.length}`;
     };
-    controls.innerHTML = `<button type="button" data-score-action="zoom-out" aria-label="${copy.zoomOut}">−</button><output data-zoom-label>100%</output><button type="button" data-score-action="zoom-in" aria-label="${copy.zoomIn}">+</button><label>${copy.layout} <select data-score-layout><option value="page">${copy.page}</option><option value="continuous">${copy.continuous}</option></select></label><button type="button" data-score-action="prev-page" aria-label="${copy.previousPage}">← ${copy.page.toLowerCase()}</button><output data-page-label>1 / ${Math.max(1, pages().length)}</output><button type="button" data-score-action="next-page" aria-label="${copy.nextPage}">${copy.page.toLowerCase()} →</button><button type="button" data-score-action="prev-measure" aria-label="${copy.previousMeasure}">← ${copy.measure.toLowerCase()}</button><output data-measure-label>${copy.measure} 1</output><button type="button" data-score-action="next-measure" aria-label="${copy.nextMeasure}">${copy.measure.toLowerCase()} →</button><button type="button" data-score-action="cursor" aria-pressed="true">${copy.cursor}</button>`;
-    controls.querySelector('[data-score-action="zoom-out"]')?.addEventListener("click", () => { zoom = Math.max(0.5, zoom - 0.1); osmd.Zoom = zoom; osmd.render(); controls.querySelector<HTMLElement>("[data-zoom-label]")!.textContent = `${Math.round(zoom * 100)}%`; showPage(); });
-    controls.querySelector('[data-score-action="zoom-in"]')?.addEventListener("click", () => { zoom = Math.min(1.8, zoom + 0.1); osmd.Zoom = zoom; osmd.render(); controls.querySelector<HTMLElement>("[data-zoom-label]")!.textContent = `${Math.round(zoom * 100)}%`; showPage(); });
+    controls.innerHTML = `<div class="score-control-group"><button type="button" data-score-action="zoom-out" aria-label="${copy.zoomOut}">−</button><output data-zoom-label>100%</output><button type="button" data-score-action="zoom-in" aria-label="${copy.zoomIn}">+</button></div><div class="score-control-group"><label>${copy.layout} <select data-score-layout><option value="page">${copy.page}</option><option value="continuous">${copy.continuous}</option></select></label><button type="button" data-score-action="cursor" aria-pressed="true">${copy.cursor}</button></div><div class="score-control-group"><button type="button" data-score-action="prev-page" aria-label="${copy.previousPage}">← ${copy.page.toLowerCase()}</button><output data-page-label>1 / ${Math.max(1, pages().length)}</output><button type="button" data-score-action="next-page" aria-label="${copy.nextPage}">${copy.page.toLowerCase()} →</button></div><div class="score-control-group"><button type="button" data-score-action="prev-measure" aria-label="${copy.previousMeasure}">← ${copy.measure.toLowerCase()}</button><output data-measure-label>${copy.measure} 1</output><button type="button" data-score-action="next-measure" aria-label="${copy.nextMeasure}">${copy.measure.toLowerCase()} →</button></div>`;
+    controls.querySelector('[data-score-action="zoom-out"]')?.addEventListener("click", () => { zoom = Math.max(0.5, zoom - 0.1); osmd.Zoom = zoom; renderScore(); controls.querySelector<HTMLElement>("[data-zoom-label]")!.textContent = `${Math.round(zoom * 100)}%`; showPage(); });
+    controls.querySelector('[data-score-action="zoom-in"]')?.addEventListener("click", () => { zoom = Math.min(1.8, zoom + 0.1); osmd.Zoom = zoom; renderScore(); controls.querySelector<HTMLElement>("[data-zoom-label]")!.textContent = `${Math.round(zoom * 100)}%`; showPage(); });
     controls.querySelector('[data-score-action="prev-page"]')?.addEventListener("click", () => { page -= 1; showPage(); });
     controls.querySelector('[data-score-action="next-page"]')?.addEventListener("click", () => { page += 1; showPage(); });
     controls.querySelector<HTMLSelectElement>("[data-score-layout]")?.addEventListener("change", (event) => { pageMode = (event.currentTarget as HTMLSelectElement).value === "page"; showPage(); });
@@ -80,6 +104,18 @@ export async function mountScoreViewer(
       button.setAttribute("aria-pressed", String(visible));
       if (visible) osmd.cursor.show(); else osmd.cursor.hide();
     });
+    if ("ResizeObserver" in window) {
+      const observer = new ResizeObserver((entries) => {
+        const width = entries[0]?.contentRect.width ?? surface.clientWidth;
+        if (!scoreWidthChanged(lastWidth, width)) return;
+        lastWidth = width;
+        window.cancelAnimationFrame(renderFrame);
+        renderFrame = window.requestAnimationFrame(() => { renderScore(); showPage(); });
+      });
+      observer.observe(surface);
+      cleanups.push(() => observer.disconnect());
+    }
+    cleanups.push(() => window.cancelAnimationFrame(renderFrame));
     showPage();
     status.textContent = copy.loaded;
   } catch (error) {

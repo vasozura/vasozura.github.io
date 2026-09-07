@@ -10,6 +10,7 @@ supabase/.temp/
 tmp/
 uploads/
 *.mp3
+!public/audio/salamander/*.mp3
 *.mid
 *.midi
 *.musicxml
