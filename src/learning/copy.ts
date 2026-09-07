@@ -3,7 +3,7 @@ import type { Language } from "../i18n";
 export const learningCopy = {
   en: {
     title: "Learning mode", clock: "One canonical score clock drives sound, cursor, instruments, metronome and loops.", checking: "Checking score/MIDI alignment…",
-    play: "Play", pause: "Pause", stop: "Stop", metronome: "Metronome", tempo: "Tempo", position: "Position", loopFrom: "Loop from measure", to: "to", setLoop: "Set loop", clearLoop: "Clear loop",
+    play: "Play", pause: "Pause", stop: "Stop", metronome: "Metronome", tempo: "Tempo", position: "Position", loopFrom: "Loop from measure", to: "to", setLoop: "Set loop", clearLoop: "Clear loop", playbackMode: "Playback", chords: "Chords", solo: "Solo", voices: "Voices", staffScope: "Staff", both: "Both", treble: "Treble", bass: "Bass", inferredStaff: "MIDI-only staff scope is an approximate pitch split.",
     instrumentView: "Instrument view", piano: "Piano", guitar: "Guitar / TAB", accordion: "Accordion", follow: "Follow current note", leftHanded: "Left-handed guitar", current: "Current", upcoming: "Upcoming",
     practice: "Practice exercise", instrument: "Instrument", fromMeasure: "From measure", toMeasure: "To measure", difficulty: "Difficulty", beginner: "Beginner", intermediate: "Intermediate", advanced: "Advanced",
     countdown: "Countdown", off: "Off", beats2: "2 beats", beats4: "4 beats", practiceMode: "Practice mode", listen: "Listen", waitForNote: "Wait for note (Web MIDI)", continuous: "Continuous",
@@ -18,7 +18,7 @@ export const learningCopy = {
   },
   ka: {
     title: "სწავლის რეჟიმი", clock: "ხმა, სანოტო კურსორი, ინსტრუმენტები, მეტრონომი და ციკლი ერთ კანონიკურ საათს მიჰყვება.", checking: "ნოტებისა და MIDI-ს სინქრონიზაციის შემოწმება…",
-    play: "დაკვრა", pause: "პაუზა", stop: "გაჩერება", metronome: "მეტრონომი", tempo: "ტემპი", position: "პოზიცია", loopFrom: "ციკლი ზომიდან", to: "მდე", setLoop: "ციკლის დაყენება", clearLoop: "ციკლის გაუქმება",
+    play: "დაკვრა", pause: "პაუზა", stop: "გაჩერება", metronome: "მეტრონომი", tempo: "ტემპი", position: "პოზიცია", loopFrom: "ციკლი ზომიდან", to: "მდე", setLoop: "ციკლის დაყენება", clearLoop: "ციკლის გაუქმება", playbackMode: "დაკვრა", chords: "აკორდები", solo: "სოლო", voices: "ხმები", staffScope: "სანოტო სისტემა", both: "ორივე", treble: "ზედა", bass: "ქვედა", inferredStaff: "მხოლოდ MIDI-ს სანოტო სისტემის არჩევა მიახლოებითი ხმოვანი გაყოფაა.",
     instrumentView: "ინსტრუმენტის ხედი", piano: "ფორტეპიანო", guitar: "გიტარა / TAB", accordion: "აკორდეონი", follow: "მიმდინარე ნოტის მიყოლა", leftHanded: "მარცხენახელიანი გიტარა", current: "მიმდინარე", upcoming: "შემდეგი",
     practice: "სავარჯიშო", instrument: "ინსტრუმენტი", fromMeasure: "ზომიდან", toMeasure: "ზომამდე", difficulty: "სირთულე", beginner: "დამწყები", intermediate: "საშუალო", advanced: "რთული",
     countdown: "ათვლა", off: "გამორთული", beats2: "2 დარტყმა", beats4: "4 დარტყმა", practiceMode: "ვარჯიშის რეჟიმი", listen: "მოსმენა", waitForNote: "ნოტის მოლოდინი (Web MIDI)", continuous: "უწყვეტი",

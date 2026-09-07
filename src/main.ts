@@ -15,6 +15,7 @@ import type { SongFilters } from "./types/song";
 import { PlayerController } from "./player/player-controller";
 import { getSupabase, isPasswordRecovery } from "./lib/supabase";
 import { loadOwnerDraftPreview, loadPublishedSongBySlug, loadPublishedSongPage, type DraftPreviewResult } from "./data/song-repository";
+import { playbackCoordinator } from "./audio/playback-coordinator";
 
 const appElement = document.querySelector<HTMLDivElement>("#app");
 if (!appElement) throw new Error("The application root was not found.");
@@ -24,6 +25,9 @@ let language: Language = getInitialLanguage();
 let songs: Song[] = [];
 let lastRenderedHash = "";
 const player = new PlayerController();
+playbackCoordinator.register("global", player, true);
+player.setBeforePlay(() => playbackCoordinator.activate("global"));
+document.addEventListener("keydown", (event) => playbackCoordinator.handleKeydown(event));
 let learningCleanup: (() => void) | null = null;
 let draftPreview: { slug: string; result: DraftPreviewResult | null; error: string | null } | null = null;
 let catalogRequest: AbortController | null = null;

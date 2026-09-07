@@ -12,17 +12,28 @@ import { CanonicalScheduler, type SchedulerFrame } from "./scheduler";
 import { assessSynchronization, readMidiDuration } from "./sync-analysis";
 import { connectWebMidi, supportsWebMidi } from "./web-midi";
 import { getLearningCopy } from "./copy";
+import { playbackCoordinator } from "../audio/playback-coordinator";
+import { resolveCanonicalScorePosition } from "../score/score-navigation";
+import { hasExplicitStaffIdentity, practicalVoiceCap, type PlaybackMode, type StaffScope } from "./playback-selection";
 
 const noteNames = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
 const noteLabel = (midi: number): string => `${noteNames[midi % 12]}${Math.floor(midi / 12) - 1}`;
 
-function errorMessage(error: unknown): string {
+export function errorMessage(error: unknown): string {
   if (!(error instanceof Error)) return "Unexpected learning error.";
   const message = error.message;
-  if (/401|auth/i.test(message)) return `Authorization: ${message}`;
+  if (/401|403|auth|bearer|access.?token|jwt/i.test(message)) return "Authentication is required for this action.";
   if (/timeout|network|fetch|reach/i.test(message)) return `Network: ${message}`;
   if (/parse|musicxml|midi/i.test(message)) return `Source parsing: ${message}`;
   return message;
+}
+
+export const canUseProtectedLearningApi = (usingLocalAdapter: boolean, hasSession: boolean): boolean => usingLocalAdapter || hasSession;
+
+export function formatClock(seconds: number): string {
+  const safe = Math.max(0, Number.isFinite(seconds) ? seconds : 0);
+  const minutes = Math.floor(safe / 60);
+  return `${String(minutes).padStart(2, "0")}:${String(Math.floor(safe % 60)).padStart(2, "0")}`;
 }
 
 async function manifestFromMidi(songId: string, url: string): Promise<ScoreManifest> {
@@ -68,15 +79,17 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       <div class="learning-transport-row learning-transport-primary">
         <button type="button" data-l="play">${copy.play}</button><button type="button" data-l="pause">${copy.pause}</button><button type="button" data-l="stop">${copy.stop}</button>
         <button type="button" data-l="metronome" aria-pressed="false">${copy.metronome}</button>
-        <label>${copy.tempo} <input data-l="tempo" type="range" min="50" max="150" value="100"><output>100%</output></label>
-        <label>${copy.position} <input data-l="seek" type="range" min="0" max="0" value="0" step="0.01"></label>
+        <div class="learning-transport-metrics"><label><span>${copy.tempo}</span><input data-l="tempo" type="range" min="50" max="150" value="100"><output data-l="tempo-value">100%</output></label><label><span>${copy.position}</span><input data-l="seek" type="range" min="0" max="0" value="0" step="0.01"><output data-l="time-value">00:00 / 00:00</output></label><output data-l="position">${copy.measure} 1 · ${copy.beat} 1</output></div>
       </div>
       <div class="learning-transport-row learning-transport-secondary">
         <label>${copy.loopFrom} <input data-l="loop-a" type="number" min="1" value="1"></label>
         <label>${copy.to} <input data-l="loop-b" type="number" min="1" value="1"></label>
         <button type="button" data-l="loop">${copy.setLoop}</button><button type="button" data-l="clear-loop">${copy.clearLoop}</button>
-        <output data-l="position">1 · 1</output>
+        <label>${copy.playbackMode} <select data-l="playback-mode"><option value="chords">${copy.chords}</option><option value="solo">${copy.solo}</option></select></label>
+        <label>${copy.voices} <input data-l="voices" type="number" min="1" value="1"></label>
+        <label>${copy.staffScope} <select data-l="staff-scope"><option value="both">${copy.both}</option><option value="treble">${copy.treble}</option><option value="bass">${copy.bass}</option></select></label>
       </div>
+      <p data-l="staff-evidence" class="learning-staff-evidence" hidden>${copy.inferredStaff}</p>
     </div>
     <div class="learning-instruments" role="tablist" aria-label="${copy.instrumentView}">
       ${allowed.has("piano") ? `<button type="button" role="tab" data-instrument="piano">${copy.piano}</button>` : ""}
@@ -96,12 +109,11 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
         <label>${copy.countdown} <select data-l="countdown"><option value="0">${copy.off}</option><option value="2">${copy.beats2}</option><option value="4" selected>${copy.beats4}</option></select></label>
         <label>${copy.practiceMode} <select data-l="practice-mode"><option value="listen">${copy.listen}</option><option value="wait-for-note">${copy.waitForNote}</option><option value="continuous" selected>${copy.continuous}</option></select></label>
       </div>
-      <button type="button" data-l="prepare">${copy.prepare}</button><button type="button" data-l="midi" ${supportsWebMidi() ? "" : "disabled"}>${copy.connectMidi}</button><button type="button" data-l="practice" disabled>${copy.startPractice}</button><button type="button" data-l="finish" disabled>${copy.finishScore}</button>
+      <div class="learning-practice-actions"><button type="button" data-l="prepare">${copy.prepare}</button><button type="button" data-l="midi" ${supportsWebMidi() ? "" : "disabled"}>${copy.connectMidi}</button><button type="button" data-l="practice" disabled>${copy.startPractice}</button><button type="button" data-l="finish" disabled>${copy.finishScore}</button><button type="button" class="danger" data-l="reset">${copy.reset}</button><p data-l="practice-status" aria-live="polite"></p></div>
       <p class="learning-scoring">${copy.scoring}</p>
       <p data-l="result" aria-live="polite"></p>
       <div data-l="feedback"></div>
       <div data-l="progress"></div><div data-l="history"></div>
-      <button type="button" class="danger" data-l="reset">${copy.reset}</button>
     </section>
     <p data-l="status" aria-live="polite">${copy.preparing}</p>`;
   root.append(host);
@@ -111,6 +123,8 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
   let audio: SchedulerAudioAdapter | null = null;
   let scheduler: CanonicalScheduler | null = null;
   let visualizer: TimelineVisualizer | null = null;
+  let unregisterTransport = (): void => {};
+  let removeScorePositionListener = (): void => {};
   try {
     let api: LearningApi;
     let manifest: ScoreManifest;
@@ -133,6 +147,14 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
 
     scheduler = new CanonicalScheduler(manifest.timeline);
     audio = new SchedulerAudioAdapter(scheduler);
+    const transportId = `learning-${songId}`;
+    unregisterTransport = playbackCoordinator.register(transportId, {
+      canPlay: () => Boolean(scheduler?.timeline.notes.length),
+      isPlaying: () => scheduler?.snapshot().playing ?? false,
+      play: async () => { await audio?.enable(); scheduler?.play(); },
+      pause: () => { scheduler?.pause(); audio?.reset(); },
+      stop: () => { scheduler?.stop(); audio?.reset(); },
+    });
     const recorder = new MidiAttemptRecorder();
     const visualRoot = host.querySelector<HTMLElement>('[data-l="visualizer"]')!;
     const maxMeasure = Math.max(1, manifest.timeline.measures.length);
@@ -141,6 +163,16 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     host.querySelector<HTMLInputElement>('[data-l="exercise-b"]')!.value = String(maxMeasure);
     const seek = host.querySelector<HTMLInputElement>('[data-l="seek"]')!;
     seek.max = String(manifest.timeline.durationSeconds);
+    host.querySelector<HTMLOutputElement>('[data-l="time-value"]')!.value = `00:00 / ${formatClock(manifest.timeline.durationSeconds)}`;
+    const voices = host.querySelector<HTMLInputElement>('[data-l="voices"]')!;
+    voices.max = String(practicalVoiceCap(manifest.timeline));
+    const playbackMode = host.querySelector<HTMLSelectElement>('[data-l="playback-mode"]')!;
+    const staffScope = host.querySelector<HTMLSelectElement>('[data-l="staff-scope"]')!;
+    const updatePlaybackSelection = (): void => audio?.setSelection({ mode: playbackMode.value as PlaybackMode, voices: Number(voices.value), scope: staffScope.value as StaffScope });
+    playbackMode.onchange = updatePlaybackSelection;
+    voices.oninput = updatePlaybackSelection;
+    staffScope.onchange = updatePlaybackSelection;
+    host.querySelector<HTMLElement>('[data-l="staff-evidence"]')!.hidden = hasExplicitStaffIdentity(manifest.timeline);
     const mapping = (() => { try { return JSON.parse(root.dataset.learningMapping || "{}"); } catch { return {}; } })() as Record<string, unknown>;
     const accordionConfig = isVerifiedAccordionConfig(mapping.accordion) ? mapping.accordion : null;
     let selectedInstrument = allowed.values().next().value ?? "piano";
@@ -208,11 +240,20 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     };
     host.querySelector<HTMLInputElement>('[data-l="left"]')!.onchange = (event) => guitar?.setLeftHanded((event.currentTarget as HTMLInputElement).checked);
 
-    host.querySelector<HTMLButtonElement>('[data-l="play"]')!.onclick = () => { void audio?.enable(); scheduler?.play(); };
-    host.querySelector<HTMLButtonElement>('[data-l="pause"]')!.onclick = () => { scheduler?.pause(); audio?.reset(); };
-    host.querySelector<HTMLButtonElement>('[data-l="stop"]')!.onclick = () => { scheduler?.stop(); audio?.reset(); };
-    seek.oninput = () => { scheduler?.seek(Number(seek.value)); audio?.reset(); };
-    host.querySelector<HTMLInputElement>('[data-l="tempo"]')!.oninput = (event) => { const input = event.currentTarget as HTMLInputElement; scheduler?.setTempo(Number(input.value)); input.nextElementSibling!.textContent = `${input.value}%`; };
+    host.querySelector<HTMLButtonElement>('[data-l="play"]')!.onclick = () => { void playbackCoordinator.play(transportId); };
+    host.querySelector<HTMLButtonElement>('[data-l="pause"]')!.onclick = () => playbackCoordinator.pause(transportId);
+    host.querySelector<HTMLButtonElement>('[data-l="stop"]')!.onclick = () => playbackCoordinator.stop(transportId);
+    seek.oninput = () => { playbackCoordinator.activate(transportId); scheduler?.seek(Number(seek.value)); audio?.reset(); };
+    host.querySelector<HTMLInputElement>('[data-l="tempo"]')!.oninput = (event) => { const input = event.currentTarget as HTMLInputElement; scheduler?.setTempo(Number(input.value)); host.querySelector<HTMLOutputElement>('[data-l="tempo-value"]')!.value = `${input.value}%`; };
+    const scorePositionRequest = (event: Event): void => {
+      const ratio = Number((event as CustomEvent<{ ratio: number }>).detail.ratio);
+      if (!Number.isFinite(ratio)) return;
+      playbackCoordinator.activate(transportId);
+      scheduler?.seek(resolveCanonicalScorePosition(manifest.timeline, ratio));
+      audio?.reset();
+    };
+    root.addEventListener("score-position-request", scorePositionRequest);
+    removeScorePositionListener = () => root.removeEventListener("score-position-request", scorePositionRequest);
     host.querySelector<HTMLButtonElement>('[data-l="loop"]')!.onclick = () => scheduler?.setMeasureLoop(Number(host.querySelector<HTMLInputElement>('[data-l="loop-a"]')!.value) - 1, Number(host.querySelector<HTMLInputElement>('[data-l="loop-b"]')!.value) - 1);
     host.querySelector<HTMLButtonElement>('[data-l="clear-loop"]')!.onclick = () => scheduler?.setLoop(null, null);
     host.querySelector<HTMLButtonElement>('[data-l="metronome"]')!.onclick = (event) => { const button = event.currentTarget as HTMLButtonElement; const enabled = button.getAttribute("aria-pressed") !== "true"; button.setAttribute("aria-pressed", String(enabled)); audio?.setMetronome(enabled); };
@@ -236,7 +277,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
           if (!practicing) return;
           if (message.on) {
             recorder.noteOn(message.midi, message.velocity, message.atMs);
-            if (waitingForMidi && expectedMidi.has(message.midi)) { waitingForMidi = false; scheduler?.play(); }
+            if (waitingForMidi && expectedMidi.has(message.midi)) { waitingForMidi = false; void playbackCoordinator.play(transportId); }
           } else recorder.noteOff(message.midi, message.atMs);
         });
         button.textContent = copy.midiConnected;
@@ -246,7 +287,14 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     const prepare = host.querySelector<HTMLButtonElement>('[data-l="prepare"]')!;
     const practice = host.querySelector<HTMLButtonElement>('[data-l="practice"]')!;
     const finish = host.querySelector<HTMLButtonElement>('[data-l="finish"]')!;
+    const hasPracticeAccess = async (): Promise<boolean> => {
+      if (usingLocalAdapter) return true;
+      const session = await getSupabase()?.auth.getSession();
+      return Boolean(session?.data.session);
+    };
+    const denyPractice = (): void => { host.querySelector<HTMLElement>('[data-l="practice-status"]')!.textContent = copy.signInProgress; };
     prepare.onclick = async () => {
+      if (!(await hasPracticeAccess())) { denyPractice(); return; }
       prepare.disabled = true;
       const result = host.querySelector<HTMLElement>('[data-l="result"]')!;
       result.textContent = copy.generating;
@@ -268,7 +316,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     };
 
     practice.onclick = async () => {
-      if (!exercise) return;
+      if (!exercise || !(await hasPracticeAccess())) { denyPractice(); return; }
       recorder.clear(); practicing = true; reliable = scheduler!.snapshot().reliable; practiceStartedAtMs = performance.now();
       exercise.mode = host.querySelector<HTMLSelectElement>('[data-l="practice-mode"]')!.value as Exercise["mode"];
       scheduler!.seek(manifest.timeline.measures[exercise.fromMeasure]?.startSeconds ?? 0);
@@ -281,12 +329,12 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
         120,
       );
       await countdown(countdownBeats, 60_000 / (activeTempo * exercise.tempoPercent / 100), result, controller.signal, copy.startingIn);
-      scheduler!.play(); practice.disabled = true; finish.disabled = false;
+      await playbackCoordinator.play(transportId); practice.disabled = true; finish.disabled = false;
       result.textContent = exercise.mode === "listen" ? copy.listenStarted : exercise.mode === "wait-for-note" && !supportsWebMidi() ? copy.midiFallback : copy.practiceStarted;
     };
 
     finish.onclick = async () => {
-      if (!exercise) return;
+      if (!exercise || !(await hasPracticeAccess())) { denyPractice(); return; }
       practicing = false; scheduler!.pause(); finish.disabled = true;
       const resultOutput = host.querySelector<HTMLElement>('[data-l="result"]')!;
       resultOutput.textContent = copy.evaluating;
@@ -339,6 +387,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     };
 
     host.querySelector<HTMLButtonElement>('[data-l="reset"]')!.onclick = async () => {
+      if (!(await hasPracticeAccess())) { denyPractice(); return; }
       if (!window.confirm(copy.resetConfirm)) return;
       const result = await api.reset(songId, controller.signal);
       host.querySelector<HTMLElement>('[data-l="result"]')!.textContent = `${copy.deleted} ${result.deletedAttempts} ${copy.attemptsPlural} ${copy.and} ${result.deletedProgressEntries} ${copy.progressEntries}.`;
@@ -348,23 +397,33 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     scheduler.addEventListener("frame", (event) => {
       const frame = (event as CustomEvent<SchedulerFrame>).detail;
       reliable = reliable && frame.reliable;
-      visualizer?.render(frame.active, frame.upcoming);
-      expectedMidi = new Set(frame.active.map((note) => note.midi));
-      if (practicing && exercise?.mode === "wait-for-note" && supportsWebMidi() && frame.playing && frame.active.length) { waitingForMidi = true; scheduler?.pause(); }
-      const cursorNote = frame.active[0] ?? frame.upcoming[0];
+      const active = audio?.selectNotes(frame.active) ?? frame.active;
+      const upcoming = audio?.selectNotes(frame.upcoming) ?? frame.upcoming;
+      visualizer?.render(active, upcoming);
+      expectedMidi = new Set(active.map((note) => note.midi));
+      if (practicing && exercise?.mode === "wait-for-note" && supportsWebMidi() && frame.playing && active.length) { waitingForMidi = true; scheduler?.pause(); }
+      const cursorNote = active[0] ?? upcoming[0];
       if (cursorNote) root.dispatchEvent(new CustomEvent("learning-score-cursor", { detail: { cursorStep: cursorNote.cursorStep ?? manifest.timeline.notes.indexOf(cursorNote) } }));
-      host.querySelector<HTMLOutputElement>('[data-l="position"]')!.value = `${(frame.measure?.index ?? 0) + 1} · ${Math.max(1, Math.floor(frame.beat))}`;
+      host.querySelector<HTMLOutputElement>('[data-l="position"]')!.value = `${copy.measure} ${(frame.measure?.index ?? 0) + 1} · ${copy.beat} ${Math.max(1, Math.floor(frame.beat))}`;
+      host.querySelector<HTMLOutputElement>('[data-l="time-value"]')!.value = `${formatClock(frame.position)} / ${formatClock(frame.duration)}`;
       seek.value = String(frame.position);
-      host.querySelector<HTMLElement>('[data-l="notes"]')!.textContent = `${copy.current}: ${frame.active.map((note) => `${noteLabel(note.midi)}${note.hand === "unknown" ? "" : ` (${note.hand})`}`).join(" + ") || "—"} · ${copy.upcoming}: ${frame.upcoming.slice(0, 4).map((note) => noteLabel(note.midi)).join(", ") || "—"}`;
+      host.querySelector<HTMLElement>('[data-l="notes"]')!.textContent = `${copy.current}: ${active.map((note) => `${noteLabel(note.midi)}${note.hand === "unknown" ? "" : ` (${note.hand})`}`).join(" + ") || "—"} · ${copy.upcoming}: ${upcoming.slice(0, 4).map((note) => noteLabel(note.midi)).join(", ") || "—"}`;
     });
 
     host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = usingLocalAdapter ? (appConfig.hasLearningApi ? copy.apiFallback : copy.localAdapter) : copy.apiConnected;
+    if (!(await hasPracticeAccess())) {
+      prepare.disabled = true;
+      practice.disabled = true;
+      finish.disabled = true;
+      host.querySelector<HTMLButtonElement>('[data-l="reset"]')!.hidden = true;
+      denyPractice();
+    }
     await refreshHistory();
   } catch (error) {
     host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = errorMessage(error);
   }
 
   return () => {
-    controller.abort(); disconnectMidi(); audio?.destroy(); scheduler?.destroy(); visualizer?.destroy(); scoreCleanup(); host.remove();
+    controller.abort(); disconnectMidi(); unregisterTransport(); removeScorePositionListener(); audio?.destroy(); scheduler?.destroy(); visualizer?.destroy(); scoreCleanup(); host.remove();
   };
 }

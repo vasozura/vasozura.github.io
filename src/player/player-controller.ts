@@ -6,6 +6,11 @@ interface PersistedPlayerState { queue: string[]; currentId: string | null; posi
 
 const storageKey = "zura-player-state-v1";
 
+export function resetAudioPosition(audio: { pause(): void; currentTime: number }): void {
+  audio.pause();
+  audio.currentTime = 0;
+}
+
 export class PlayerController {
   private readonly audio = new Audio();
   private songs: Song[] = [];
@@ -17,6 +22,8 @@ export class PlayerController {
   private language: Language = "ka";
   private restoredPosition = 0;
   private lastPersistedSecond = 0;
+  private beforePlay: (() => void) | null = null;
+  private readonly boundControls = new WeakSet<EventTarget>();
 
   constructor() {
     this.audio.preload = "metadata";
@@ -39,15 +46,16 @@ export class PlayerController {
       this.audio.src = restoredSong.audioUrl;
       this.audio.addEventListener("loadedmetadata", () => { this.audio.currentTime = Math.min(this.restoredPosition, Number.isFinite(this.audio.duration) ? this.audio.duration : this.restoredPosition); this.updateUi(); }, { once: true });
     }
-    root.querySelectorAll<HTMLButtonElement>("[data-play-song]").forEach((button) => button.addEventListener("click", () => void this.playSong(button.dataset.playSong ?? "")));
-    root.querySelector<HTMLButtonElement>("#player-play")?.addEventListener("click", () => void this.toggle());
-    root.querySelector<HTMLButtonElement>("#player-prev")?.addEventListener("click", () => void this.previous());
-    root.querySelector<HTMLButtonElement>("#player-next")?.addEventListener("click", () => void this.next());
-    root.querySelector<HTMLButtonElement>("#player-shuffle")?.addEventListener("click", () => { this.shuffle = !this.shuffle; this.persist(); this.updateUi(); });
-    root.querySelector<HTMLButtonElement>("#player-repeat")?.addEventListener("click", () => { this.repeat = this.repeat === "off" ? "all" : this.repeat === "all" ? "one" : "off"; this.persist(); this.updateUi(); });
-    root.querySelector<HTMLInputElement>("#player-seek")?.addEventListener("input", (event) => { this.audio.currentTime = Number((event.target as HTMLInputElement).value); });
-    root.querySelector<HTMLInputElement>("#player-volume")?.addEventListener("input", (event) => { this.audio.volume = Number((event.target as HTMLInputElement).value); this.persist(); });
-    root.querySelectorAll<HTMLButtonElement>("[data-queue-song]").forEach((button) => button.addEventListener("click", () => void this.playSong(button.dataset.queueSong ?? "")));
+    root.querySelectorAll<HTMLButtonElement>("[data-play-song]").forEach((button) => this.bindOnce(button, "click", () => void this.playSong(button.dataset.playSong ?? "")));
+    this.bindOnce(root.querySelector<HTMLButtonElement>("#player-play"), "click", () => void this.toggle());
+    this.bindOnce(root.querySelector<HTMLButtonElement>("#player-stop"), "click", () => this.stop());
+    this.bindOnce(root.querySelector<HTMLButtonElement>("#player-prev"), "click", () => void this.previous());
+    this.bindOnce(root.querySelector<HTMLButtonElement>("#player-next"), "click", () => void this.next());
+    this.bindOnce(root.querySelector<HTMLButtonElement>("#player-shuffle"), "click", () => { this.shuffle = !this.shuffle; this.persist(); this.updateUi(); });
+    this.bindOnce(root.querySelector<HTMLButtonElement>("#player-repeat"), "click", () => { this.repeat = this.repeat === "off" ? "all" : this.repeat === "all" ? "one" : "off"; this.persist(); this.updateUi(); });
+    this.bindOnce(root.querySelector<HTMLInputElement>("#player-seek"), "input", (event) => { this.audio.currentTime = Number((event.target as HTMLInputElement).value); });
+    this.bindOnce(root.querySelector<HTMLInputElement>("#player-volume"), "input", (event) => { this.audio.volume = Number((event.target as HTMLInputElement).value); this.persist(); });
+    root.querySelectorAll<HTMLButtonElement>("[data-queue-song]").forEach((button) => this.bindOnce(button, "click", () => void this.playSong(button.dataset.queueSong ?? "")));
     this.updateUi();
   }
 
@@ -59,14 +67,32 @@ export class PlayerController {
       this.audio.src = song.audioUrl;
       this.audio.currentTime = 0;
     }
-    await this.audio.play();
+    this.beforePlay?.();
+    if (!(await this.startAudio())) return;
     this.persist();
     this.updateUi();
   }
 
-  private async toggle(): Promise<void> {
+  setBeforePlay(callback: () => void): void { this.beforePlay = callback; }
+  canPlay(): boolean { return Boolean(this.currentId || this.queue[0]); }
+  isPlaying(): boolean { return !this.audio.paused; }
+  pause(): void { this.audio.pause(); this.persist(); this.updateUi(); }
+
+  stop(): void {
+    resetAudioPosition(this.audio);
+    this.restoredPosition = 0;
+    this.lastPersistedSecond = 0;
+    this.persist();
+    this.updateUi();
+  }
+
+  async play(): Promise<void> {
     if (!this.currentId && this.queue[0]) return this.playSong(this.queue[0]);
-    if (this.audio.paused) await this.audio.play(); else this.audio.pause();
+    if (this.audio.paused) { this.beforePlay?.(); if (!(await this.startAudio())) return; this.persist(); this.updateUi(); }
+  }
+
+  async toggle(): Promise<void> {
+    if (this.audio.paused) await this.play(); else this.pause();
   }
 
   private async previous(): Promise<void> {
@@ -92,7 +118,7 @@ export class PlayerController {
   }
 
   private handleEnded(): void {
-    if (this.repeat === "one") { this.audio.currentTime = 0; void this.audio.play(); }
+    if (this.repeat === "one") { this.audio.currentTime = 0; void this.startAudio(); }
     else void this.next();
   }
 
@@ -131,5 +157,16 @@ export class PlayerController {
       this.shuffle = Boolean(state.shuffle);
       this.repeat = ["off", "all", "one"].includes(state.repeat) ? state.repeat : "off";
     } catch { /* Ignore invalid stored state. */ }
+  }
+
+  private async startAudio(): Promise<boolean> {
+    try { await this.audio.play(); return true; }
+    catch { this.updateUi(); return false; }
+  }
+
+  private bindOnce(target: EventTarget | null, event: string, listener: EventListener): void {
+    if (!target || this.boundControls.has(target)) return;
+    this.boundControls.add(target);
+    target.addEventListener(event, listener);
   }
 }

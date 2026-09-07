@@ -91,6 +91,8 @@ export class MidiPlayback {
 
   setMetronome(enabled: boolean): void { this.metronome = enabled; }
   isPlaying(): boolean { return this.playing; }
+  canPlay(): boolean { return this.notes.length > 0; }
+  getDuration(): number { return this.duration; }
 
   destroy(): void {
     this.pause();

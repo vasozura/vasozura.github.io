@@ -5,8 +5,8 @@ import { escapeHtml } from "../utils/escape-html";
 export function renderPlayerShell(language: Language, songs: Song[]): string {
   const available = songs.filter((song) => Boolean(song.audioUrl));
   const labels = language === "ka"
-    ? { player: "გლობალური აუდიო ფლეერი", previous: "წინა", next: "შემდეგი", shuffle: "შემთხვევითი რიგი", repeat: "გამეორება", seek: "დრო", volume: "ხმა", queue: "რიგი", empty: "MP3 აუდიო ჯერ არ არის დამატებული" }
-    : { player: "Global audio player", previous: "Previous", next: "Next", shuffle: "Shuffle", repeat: "Repeat", seek: "Seek", volume: "Volume", queue: "Queue", empty: "No MP3 audio is available yet" };
+    ? { player: "გლობალური აუდიო ფლეერი", previous: "წინა", next: "შემდეგი", stop: "გაჩერება და დასაწყისში დაბრუნება", shuffle: "შემთხვევითი რიგი", repeat: "გამეორება", seek: "დრო", volume: "ხმა", queue: "რიგი", empty: "MP3 აუდიო ჯერ არ არის დამატებული" }
+    : { player: "Global audio player", previous: "Previous", next: "Next", stop: "Stop and return to start", shuffle: "Shuffle", repeat: "Repeat", seek: "Seek", volume: "Volume", queue: "Queue", empty: "No MP3 audio is available yet" };
 
   return `
     <aside class="player-shell" aria-label="${labels.player}">
@@ -14,6 +14,7 @@ export function renderPlayerShell(language: Language, songs: Song[]): string {
         <button id="player-shuffle" type="button" aria-label="${labels.shuffle}" aria-pressed="false">⇄</button>
         <button id="player-prev" type="button" aria-label="${labels.previous}" ${available.length ? "" : "disabled"}>│◀</button>
         <button id="player-play" type="button" aria-label="Play" ${available.length ? "" : "disabled"}>▶</button>
+        <button id="player-stop" type="button" aria-label="${labels.stop}" ${available.length ? "" : "disabled"}>■</button>
         <button id="player-next" type="button" aria-label="${labels.next}" ${available.length ? "" : "disabled"}>▶│</button>
         <button id="player-repeat" type="button" aria-label="${labels.repeat}" aria-pressed="false" data-mode="off">↻</button>
       </div>

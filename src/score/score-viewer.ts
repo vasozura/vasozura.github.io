@@ -1,6 +1,8 @@
 import { getInitialLanguage, type Language } from "../i18n";
 import { MidiPlayback } from "./midi-playback";
 import { PianoVisualizer } from "./instrument-visualizer";
+import { playbackCoordinator } from "../audio/playback-coordinator";
+import { logicalPageState, scoreClickRatio } from "./score-navigation";
 
 export function enableMidiSeek(progress: HTMLInputElement | null): void {
   if (progress) progress.disabled = false;
@@ -64,6 +66,7 @@ export async function mountScoreViewer(
           ? previousLeft / previousScrollableWidth * Math.max(0, canvas.scrollWidth - canvas.clientWidth)
           : previousLeft;
         canvas.classList.remove("is-rendering");
+        showPage();
       });
     };
     renderScore();
@@ -79,23 +82,28 @@ export async function mountScoreViewer(
     root.addEventListener("learning-score-cursor", moveLearningCursor);
     cleanups.push(() => root.removeEventListener("learning-score-cursor", moveLearningCursor));
     let zoom = 1;
-    let page = 0;
     let measure = 1;
     let pageMode = true;
-    const pages = () => [...surface.querySelectorAll<HTMLElement>(".osmd-page")];
     const showPage = (): void => {
-      const list = pages();
-      if (!pageMode) { list.forEach((entry) => { entry.hidden = false; }); return; }
-      if (list.length <= 1) return;
-      page = Math.max(0, Math.min(page, list.length - 1));
-      list.forEach((entry, index) => { entry.hidden = index !== page; });
-      controls.querySelector<HTMLElement>("[data-page-label]")!.textContent = `${page + 1} / ${list.length}`;
+      surface.querySelectorAll<HTMLElement>(".osmd-page").forEach((entry) => { entry.hidden = false; });
+      canvas.dataset.scoreLayout = pageMode ? "page" : "continuous";
+      const state = logicalPageState(canvas.scrollTop, canvas.clientHeight, surface.scrollHeight);
+      const group = controls.querySelector<HTMLElement>("[data-score-pages]");
+      if (group) group.hidden = !pageMode;
+      const label = controls.querySelector<HTMLElement>("[data-page-label]");
+      if (label) label.textContent = `${state.index + 1} / ${state.count}`;
     };
-    controls.innerHTML = `<div class="score-control-group"><button type="button" data-score-action="zoom-out" aria-label="${copy.zoomOut}">−</button><output data-zoom-label>100%</output><button type="button" data-score-action="zoom-in" aria-label="${copy.zoomIn}">+</button></div><div class="score-control-group"><label>${copy.layout} <select data-score-layout><option value="page">${copy.page}</option><option value="continuous">${copy.continuous}</option></select></label><button type="button" data-score-action="cursor" aria-pressed="true">${copy.cursor}</button></div><div class="score-control-group"><button type="button" data-score-action="prev-page" aria-label="${copy.previousPage}">← ${copy.page.toLowerCase()}</button><output data-page-label>1 / ${Math.max(1, pages().length)}</output><button type="button" data-score-action="next-page" aria-label="${copy.nextPage}">${copy.page.toLowerCase()} →</button></div><div class="score-control-group"><button type="button" data-score-action="prev-measure" aria-label="${copy.previousMeasure}">← ${copy.measure.toLowerCase()}</button><output data-measure-label>${copy.measure} 1</output><button type="button" data-score-action="next-measure" aria-label="${copy.nextMeasure}">${copy.measure.toLowerCase()} →</button></div>`;
+    const changePage = (delta: number): void => {
+      const state = logicalPageState(canvas.scrollTop, canvas.clientHeight, surface.scrollHeight);
+      const index = Math.max(0, Math.min(state.count - 1, state.index + delta));
+      canvas.scrollTo({ top: index * canvas.clientHeight, left: canvas.scrollLeft });
+      showPage();
+    };
+    controls.innerHTML = `<div class="score-control-group"><button type="button" data-score-action="zoom-out" aria-label="${copy.zoomOut}">−</button><output data-zoom-label>100%</output><button type="button" data-score-action="zoom-in" aria-label="${copy.zoomIn}">+</button></div><div class="score-control-group"><label>${copy.layout} <select data-score-layout><option value="page">${copy.page}</option><option value="continuous">${copy.continuous}</option></select></label><button type="button" data-score-action="cursor" aria-pressed="true">${copy.cursor}</button></div><div class="score-control-group" data-score-pages><button type="button" data-score-action="prev-page" aria-label="${copy.previousPage}">← ${copy.page.toLowerCase()}</button><output data-page-label>1 / 1</output><button type="button" data-score-action="next-page" aria-label="${copy.nextPage}">${copy.page.toLowerCase()} →</button></div><div class="score-control-group"><button type="button" data-score-action="prev-measure" aria-label="${copy.previousMeasure}">← ${copy.measure.toLowerCase()}</button><output data-measure-label>${copy.measure} 1</output><button type="button" data-score-action="next-measure" aria-label="${copy.nextMeasure}">${copy.measure.toLowerCase()} →</button></div>`;
     controls.querySelector('[data-score-action="zoom-out"]')?.addEventListener("click", () => { zoom = Math.max(0.5, zoom - 0.1); osmd.Zoom = zoom; renderScore(); controls.querySelector<HTMLElement>("[data-zoom-label]")!.textContent = `${Math.round(zoom * 100)}%`; showPage(); });
     controls.querySelector('[data-score-action="zoom-in"]')?.addEventListener("click", () => { zoom = Math.min(1.8, zoom + 0.1); osmd.Zoom = zoom; renderScore(); controls.querySelector<HTMLElement>("[data-zoom-label]")!.textContent = `${Math.round(zoom * 100)}%`; showPage(); });
-    controls.querySelector('[data-score-action="prev-page"]')?.addEventListener("click", () => { page -= 1; showPage(); });
-    controls.querySelector('[data-score-action="next-page"]')?.addEventListener("click", () => { page += 1; showPage(); });
+    controls.querySelector('[data-score-action="prev-page"]')?.addEventListener("click", () => changePage(-1));
+    controls.querySelector('[data-score-action="next-page"]')?.addEventListener("click", () => changePage(1));
     controls.querySelector<HTMLSelectElement>("[data-score-layout]")?.addEventListener("change", (event) => { pageMode = (event.currentTarget as HTMLSelectElement).value === "page"; showPage(); });
     controls.querySelector('[data-score-action="prev-measure"]')?.addEventListener("click", () => { try { osmd.cursor.previous(); measure = Math.max(1, measure - 1); } catch { measure = 1; } controls.querySelector<HTMLElement>("[data-measure-label]")!.textContent = `${copy.measure} ${measure}`; });
     controls.querySelector('[data-score-action="next-measure"]')?.addEventListener("click", () => { try { osmd.cursor.next(); measure += 1; } catch { /* Cursor stays at the final measure. */ } controls.querySelector<HTMLElement>("[data-measure-label]")!.textContent = `${copy.measure} ${measure}`; });
@@ -116,6 +124,14 @@ export async function mountScoreViewer(
       observer.observe(surface);
       cleanups.push(() => observer.disconnect());
     }
+    const updatePageOnScroll = (): void => showPage();
+    canvas.addEventListener("scroll", updatePageOnScroll, { passive: true });
+    cleanups.push(() => canvas.removeEventListener("scroll", updatePageOnScroll));
+    const seekFromScore = (event: MouseEvent): void => {
+      root.dispatchEvent(new CustomEvent("score-position-request", { detail: { ratio: scoreClickRatio(event, surface) } }));
+    };
+    surface.addEventListener("click", seekFromScore);
+    cleanups.push(() => surface.removeEventListener("click", seekFromScore));
     cleanups.push(() => window.cancelAnimationFrame(renderFrame));
     showPage();
     status.textContent = copy.loaded;
@@ -140,15 +156,22 @@ export async function mountScoreViewer(
     const progress = midiControls.querySelector<HTMLInputElement>("[data-midi-progress]");
     if (progress) { progress.max = String(duration); progress.value = String(position); }
   });
-  cleanups.push(() => { midi.destroy(); pianoVisualizer.clear(); piano.replaceChildren(); });
+  const transportId = `score-${root.dataset.songId || crypto.randomUUID()}`;
+  const unregisterTransport = playbackCoordinator.register(transportId, midi);
+  const seekFromScore = (event: Event): void => {
+    const ratio = Number((event as CustomEvent<{ ratio: number }>).detail.ratio);
+    if (Number.isFinite(ratio)) { playbackCoordinator.activate(transportId); midi.seek(ratio * midi.getDuration()); }
+  };
+  root.addEventListener("score-position-request", seekFromScore);
+  cleanups.push(() => { unregisterTransport(); root.removeEventListener("score-position-request", seekFromScore); midi.destroy(); pianoVisualizer.clear(); piano.replaceChildren(); });
   midiControls.innerHTML = `<div class="midi-transport"><button type="button" data-midi-action="play">▶ ${copy.playPause}</button><button type="button" data-midi-action="stop">■ ${copy.stop}</button><label>${copy.tempo} <input data-midi-tempo type="range" min="50" max="150" value="100" /><output>100%</output></label><button type="button" data-midi-action="metronome" aria-pressed="false">${copy.metronome}</button></div><label class="midi-progress">${copy.position} <input data-midi-progress type="range" min="0" max="0" value="0" step="0.01" disabled /></label><div class="midi-loop"><label>A (${copy.seconds}) <input data-loop-a type="number" min="0" step="0.1" /></label><label>B (${copy.seconds}) <input data-loop-b type="number" min="0" step="0.1" /></label><button type="button" data-midi-action="loop">${copy.setLoop}</button><button type="button" data-midi-action="clear-loop">${copy.clearLoop}</button></div>`;
   try {
     await midi.load(midiUrl, Number(root.dataset.bpm) || 120);
     const progress = midiControls.querySelector<HTMLInputElement>("[data-midi-progress]");
     enableMidiSeek(progress);
     progress?.addEventListener("input", () => midi.seek(Number(progress.value)));
-    midiControls.querySelector('[data-midi-action="play"]')?.addEventListener("click", () => midi.isPlaying() ? midi.pause() : void midi.play());
-    midiControls.querySelector('[data-midi-action="stop"]')?.addEventListener("click", () => midi.stop());
+    midiControls.querySelector('[data-midi-action="play"]')?.addEventListener("click", () => midi.isPlaying() ? playbackCoordinator.pause(transportId) : void playbackCoordinator.play(transportId));
+    midiControls.querySelector('[data-midi-action="stop"]')?.addEventListener("click", () => playbackCoordinator.stop(transportId));
     midiControls.querySelector<HTMLInputElement>("[data-midi-tempo]")?.addEventListener("input", (event) => {
       const input = event.currentTarget as HTMLInputElement;
       midi.setTempo(Number(input.value));

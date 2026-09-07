@@ -626,6 +626,7 @@ img {
 
 .song-metadata dd {
   margin: 8px 0 0;
+  overflow-wrap: anywhere;
 }
 
 .detail-youtube {
@@ -946,6 +947,14 @@ img {
 }
 
 @media (max-width: 420px) {
+  .song-metadata {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-credit {
+    overflow-wrap: anywhere;
+  }
+
   .brand {
     font-size: 18px;
   }
@@ -1074,7 +1083,8 @@ img {
 .admin-route button,
 .resource-link,
 .score-controls button,
-.midi-controls button {
+.midi-controls button,
+.learning-mode button {
   min-height: 44px;
   padding: 10px 16px;
   border: 1px solid #5b5b5b;
@@ -1093,7 +1103,9 @@ img {
 .score-controls button:hover,
 .score-controls button:focus-visible,
 .midi-controls button:hover,
-.midi-controls button:focus-visible {
+.midi-controls button:focus-visible,
+.learning-mode button:hover,
+.learning-mode button:focus-visible {
   border-color: var(--acid);
   color: var(--acid);
 }
@@ -1204,7 +1216,7 @@ img {
 
 .score-controls {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: stretch;
   gap: 10px;
 }
@@ -1215,9 +1227,18 @@ img {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 8px;
+  padding: 5px;
   border: 1px solid rgb(255 255 255 / 10%);
   background: rgb(0 0 0 / 18%);
+}
+
+.score-control-group[hidden] {
+  display: none;
+}
+
+.score-controls button {
+  min-height: 36px;
+  padding: 7px 10px;
 }
 
 .score-control-group label {
@@ -1244,6 +1265,18 @@ img {
   scrollbar-gutter: stable both-edges;
   background: #fff;
   color: #000;
+}
+
+.score-canvas[data-score-layout="page"] {
+  scroll-snap-type: y proximity;
+}
+
+.score-canvas[data-score-layout="page"] .osmd-page {
+  scroll-snap-align: start;
+}
+
+.score-canvas[data-score-layout="continuous"] {
+  scroll-snap-type: none;
 }
 
 .score-canvas.is-rendering {
@@ -1627,7 +1660,7 @@ img {
 
 .learning-transport-primary {
   display: grid;
-  grid-template-columns: repeat(4, max-content) minmax(190px, 1fr) minmax(240px, 1.6fr);
+  grid-template-columns: repeat(4, max-content) minmax(300px, 1fr);
 }
 
 .learning-transport-secondary {
@@ -1641,14 +1674,41 @@ img {
   gap: 8px;
 }
 
-.learning-transport-primary > label {
+.learning-transport-primary > label,
+.learning-transport-metrics label {
   display: grid;
   align-content: center;
   gap: 6px;
 }
 
-.learning-transport-primary input[type="range"] {
+.learning-transport-primary input[type="range"],
+.learning-transport-metrics input[type="range"] {
   width: 100%;
+}
+
+.learning-transport-metrics {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+}
+
+.learning-transport-metrics label {
+  grid-template-columns: 64px minmax(100px, 1fr) 94px;
+  align-items: center;
+}
+
+.learning-transport-metrics output,
+.learning-staff-evidence {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.learning-transport-secondary select,
+.learning-transport-secondary input {
+  min-height: 36px;
+  border: 1px solid #5b5b5b;
+  background: #111315;
+  color: var(--paper);
 }
 
 .learning-transport-secondary input[type="number"] {
@@ -1692,8 +1752,8 @@ img {
 
 .learning-exercise-options {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(6, minmax(105px, 1fr));
+  gap: 8px;
   width: 100%;
 }
 
@@ -1716,6 +1776,33 @@ img {
   min-width: 0;
   overflow-x: auto;
   min-height: 150px;
+}
+
+.learning-exercise-options input,
+.learning-exercise-options select {
+  min-width: 0;
+  min-height: 38px;
+  width: 100%;
+}
+
+.learning-practice-actions {
+  display: grid;
+  grid-template-columns: repeat(5, max-content) minmax(100px, 1fr);
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.learning-practice-actions button {
+  min-height: 38px;
+  padding: 7px 10px;
+}
+
+.learning-practice-actions p {
+  min-width: 0;
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
 }
 
 .learning-visualizer-panel {
@@ -1820,12 +1907,12 @@ img {
   }
 
   .learning-transport-primary {
-    grid-template-columns: repeat(4, max-content) minmax(150px, 1fr);
+    grid-template-columns: repeat(4, max-content) minmax(220px, 1fr);
   }
 
-  .learning-transport-primary > label:last-child {
-    grid-column: 1 / -1;
-  }
+  .learning-exercise-options { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .learning-practice-actions { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .learning-practice-actions p { grid-column: 1 / -1; }
 }
 
 @media (max-width: 760px) {
@@ -1901,7 +1988,7 @@ img {
   }
 
   .score-controls {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .score-control-group {
@@ -1914,10 +2001,12 @@ img {
   }
 
   .learning-transport-primary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .learning-transport-primary > label { grid-column: 1 / -1; }
+  .learning-transport-metrics { grid-column: 1 / -1; }
   .learning-transport-secondary { align-items: stretch; }
   .learning-transport-secondary label { width: calc(50% - 5px); }
   .learning-transport-secondary button { flex: 1 1 auto; }
   .learning-exercise-options { grid-template-columns: 1fr; }
+  .learning-practice-actions { grid-template-columns: 1fr; }
+  .learning-practice-actions p { grid-column: auto; }
   .accordion-boards { grid-template-columns: 1fr; }
 }

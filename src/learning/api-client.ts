@@ -68,6 +68,8 @@ function mapNote(note: ApiTimeline["notes"][number], cursorStep: number): NoteEv
     midi: note.midi,
     velocity: note.velocity ?? 0.8,
     hand: note.fingering?.hand ?? "unknown",
+    staff: note.staff,
+    voice: note.voice,
     cursorStep,
     tieStart: note.tie.tie_type === "start",
     tieStop: note.tie.tie_type === "stop",

@@ -4,6 +4,7 @@ import fixture from "./fixtures/complex-score.json";
 import { SchedulerAudioAdapter } from "./audio-adapter";
 import { CanonicalScheduler } from "./scheduler";
 import type { ScoreManifest } from "./contracts";
+import type { NoteEvent } from "./contracts";
 
 function instrument(): InstrumentPlayback {
   return {
@@ -31,5 +32,20 @@ describe("learning audio adapter", () => {
     expect(audio.releaseAll).toHaveBeenCalled();
     adapter.destroy();
     scheduler.destroy();
+  });
+
+  it("switches between chords and scoped solo voices without remounting", () => {
+    const scheduler = new CanonicalScheduler((fixture as ScoreManifest).timeline);
+    const audio = instrument();
+    const adapter = new SchedulerAudioAdapter(scheduler, audio);
+    const notes = [
+      { id: "low", midi: 48, hand: "left" },
+      { id: "high", midi: 76, hand: "right" },
+    ] as NoteEvent[];
+    expect(adapter.selectNotes(notes)).toHaveLength(2);
+    adapter.setSelection({ mode: "solo", voices: 1, scope: "treble" });
+    expect(adapter.selectNotes(notes).map((note) => note.id)).toEqual(["high"]);
+    expect(audio.releaseAll).toHaveBeenCalled();
+    adapter.destroy(); scheduler.destroy();
   });
 });

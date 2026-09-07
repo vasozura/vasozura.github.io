@@ -64,4 +64,14 @@ describe("canonical scheduler", () => {
     scheduler.destroy();
     expect(cancel).toHaveBeenCalledWith(1);
   });
+
+  it("preserves playing or paused state when a score click seeks", () => {
+    const scheduler = new CanonicalScheduler(manifest.timeline, () => now);
+    scheduler.play();
+    scheduler.seek(3);
+    expect(scheduler.snapshot()).toMatchObject({ position: 3, playing: true });
+    scheduler.pause();
+    scheduler.seek(1);
+    expect(scheduler.snapshot()).toMatchObject({ position: 1, playing: false });
+  });
 });
