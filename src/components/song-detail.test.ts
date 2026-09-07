@@ -10,7 +10,19 @@ describe("song resource rendering", () => {
     expect(html).not.toContain("<audio");
     expect(html).not.toContain("interactive-score");
     expect(html).not.toContain("<iframe");
-    expect(html).toContain("No additional files");
+    expect(html).not.toContain("No additional files");
+    expect(html).toContain("Resource availability");
+    expect(html).toContain('<li class="is-unavailable"><span aria-hidden="true">○</span>Audio</li>');
+    expect(html).not.toContain("song-metadata");
+  });
+
+  it("gives a sparse YouTube-only song an intentional hero without empty shells", () => {
+    const html = renderSongDetail({ ...song, youtubeUrl: "https://www.youtube.com/watch?v=abc123def45", youtubeVideoId: "abc123def45" }, "en");
+    expect(html).toContain("detail-actions");
+    expect(html).toContain('<li class="is-available"><span aria-hidden="true">●</span>YouTube</li>');
+    expect(html).not.toContain("detail-unavailable");
+    expect(html).not.toContain("song-metadata");
+    expect(html).not.toContain("<audio");
   });
 
   it("renders only supplied resources", () => {
@@ -20,6 +32,19 @@ describe("song resource rendering", () => {
     expect(html).toContain("Open interactive learning");
     expect(html).not.toContain("Loading score");
     expect(html).not.toContain("PDF score");
+  });
+
+  it("renders medium and full records without reserving missing metadata", () => {
+    const medium = renderSongDetail({ ...song, audioUrl: "https://example.com/a.mp3", lyrics: { ka: "ტექსტი", en: "Lyrics" }, youtubeUrl: "https://youtu.be/abc123def45", youtubeVideoId: "abc123def45" }, "en");
+    expect(medium).toContain("Play MP3");
+    expect(medium).toContain("lyrics-panel");
+    expect(medium).not.toContain("song-metadata");
+
+    const full = renderSongDetail({ ...song, coverUrl: "https://example.com/cover.jpg", audioUrl: "https://example.com/a.mp3", lyrics: { ka: "ტექსტი", en: "Lyrics" }, musicXmlUrl: "https://example.com/a.musicxml", midiUrl: "https://example.com/a.mid", scorePdfUrl: "https://example.com/a.pdf", youtubeUrl: "https://youtu.be/abc123def45", youtubeVideoId: "abc123def45", composer: { ka: "ავტორი", en: "Composer" }, bpm: 96 }, "en");
+    expect(full).toContain("song-metadata");
+    expect(full).toContain('<li class="is-available"><span aria-hidden="true">●</span>Score</li>');
+    expect(full).toContain("interactive-score");
+    expect(full).toContain("pdf-panel");
   });
 
   it("supports a MIDI-only learning entry while keeping learning opt-in", () => {
