@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { enableMidiSeek, fetchScoreSource, getScoreCopy, scoreWidthChanged, shouldMountStandaloneMidi } from "./score-viewer";
+import { enableMidiSeek, fetchScoreSource, getScoreCopy, osmdViewerOptions, scoreWidthChanged, shouldMountStandaloneMidi } from "./score-viewer";
 
 describe("score viewer MIDI controls", () => {
   it("disables the independent MIDI timer when the canonical learning clock is active", () => {
@@ -25,6 +25,10 @@ describe("score viewer MIDI controls", () => {
     expect(scoreWidthChanged(0, 900)).toBe(true);
     expect(scoreWidthChanged(900, 904)).toBe(false);
     expect(scoreWidthChanged(900, 920)).toBe(true);
+  });
+
+  it("keeps OSMD resize and page-follow movement under application control", () => {
+    expect(osmdViewerOptions).toMatchObject({ autoResize: false, followCursor: false });
   });
 });
 

@@ -15,6 +15,7 @@ export async function fetchScoreSource(url: string, request: typeof fetch = fetc
 export interface ScoreViewerOptions { midiPlayback?: boolean; }
 export const shouldMountStandaloneMidi = (options: ScoreViewerOptions): boolean => options.midiPlayback !== false;
 export const scoreWidthChanged = (previous: number, next: number): boolean => previous <= 0 || Math.abs(previous - next) >= 8;
+export const osmdViewerOptions = { autoResize: false, backend: "svg", drawTitle: true, followCursor: false } as const;
 
 export function getScoreCopy(language: Language) {
   return language === "ka" ? {
@@ -41,7 +42,7 @@ export async function mountScoreViewer(
 
   if (musicXmlUrl) try {
     const { OpenSheetMusicDisplay } = await import("opensheetmusicdisplay");
-    const osmd = new OpenSheetMusicDisplay(surface, { autoResize: false, backend: "svg", drawTitle: true, followCursor: true });
+    const osmd = new OpenSheetMusicDisplay(surface, osmdViewerOptions);
     await osmd.load(await fetchScoreSource(musicXmlUrl));
     let renderFrame = 0;
     let lastWidth = surface.clientWidth;

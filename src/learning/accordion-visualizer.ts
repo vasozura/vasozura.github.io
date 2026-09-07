@@ -4,7 +4,7 @@ import { normalizedAccordionButtons, type AccordionConfig, type TimelineVisualiz
 type AccordionInput = AccordionConfig | Parameters<typeof normalizedAccordionButtons>[0] | null;
 
 export class AccordionVisualizer implements TimelineVisualizer {
-  private follow = true;
+  private follow = false;
   constructor(private readonly root: HTMLElement, private readonly config: AccordionInput) {}
 
   setFollow(enabled: boolean): void { this.follow = enabled; }
@@ -33,7 +33,14 @@ export class AccordionVisualizer implements TimelineVisualizer {
       element.classList.toggle("active", pitches.some((midi) => activePitches.has(midi)));
       element.classList.toggle("upcoming", pitches.some((midi) => upcomingPitches.has(midi)));
     });
-    if (this.follow && active[0]) this.root.querySelector<HTMLElement>(".active[data-notes]")?.scrollIntoView({ block: "nearest", inline: "center" });
+    const activeButton = this.follow && active[0]
+      ? this.root.querySelector<HTMLElement>(".active[data-notes]")
+      : null;
+    const scroller = activeButton?.closest<HTMLElement>(".accordion-side");
+    if (activeButton && scroller) {
+      const target = activeButton.offsetLeft + activeButton.offsetWidth / 2 - scroller.clientWidth / 2;
+      scroller.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
+    }
   }
 
   destroy(): void { this.root.replaceChildren(); this.root.className = ""; }

@@ -1235,8 +1235,9 @@ img {
 }
 
 .score-canvas {
-  min-height: min(600px, calc(100svh - 180px));
-  max-height: 78vh;
+  height: clamp(560px, 68svh, 680px);
+  min-height: 0;
+  max-height: none;
   overflow: auto;
   padding: 14px;
   overscroll-behavior: contain;
@@ -1246,7 +1247,7 @@ img {
 }
 
 .score-canvas.is-rendering {
-  min-height: max(var(--score-stable-height, 320px), min(600px, calc(100svh - 180px)));
+  height: var(--score-stable-height, clamp(560px, 68svh, 680px));
 }
 
 .score-render-surface {
@@ -1283,6 +1284,11 @@ img {
   background: #161616;
 }
 
+.midi-controls[hidden],
+.piano-keyboard[hidden] {
+  display: none;
+}
+
 .piano-key {
   flex: 0 0 28px;
   height: 120px;
@@ -1301,6 +1307,14 @@ img {
 
 .piano-key.active {
   background: var(--acid);
+}
+
+.song-detail + .player-shell {
+  position: relative;
+  inset: auto;
+  width: min(1560px, calc(100% - clamp(32px, 5vw, 80px)));
+  max-width: none;
+  margin: 0 auto 48px;
 }
 
 .player-shell {
@@ -1601,32 +1615,61 @@ img {
 
 .learning-transport {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
-  align-items: stretch;
+  gap: 10px;
 }
 
-.learning-transport > button,
-.learning-transport > label,
-.learning-transport > output {
+.learning-transport-row {
+  display: flex;
   min-width: 0;
+  align-items: center;
+  gap: 10px;
 }
 
-.learning-transport > label {
+.learning-transport-primary {
+  display: grid;
+  grid-template-columns: repeat(4, max-content) minmax(190px, 1fr) minmax(240px, 1.6fr);
+}
+
+.learning-transport-secondary {
+  flex-wrap: wrap;
+}
+
+.learning-transport-row > label {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.learning-transport-primary > label {
   display: grid;
   align-content: center;
   gap: 6px;
 }
 
+.learning-transport-primary input[type="range"] {
+  width: 100%;
+}
+
+.learning-transport-secondary input[type="number"] {
+  width: 76px;
+}
+
 .learning-admin-options,
-.learning-transport,
 .learning-instruments,
-.learning-practice,
 .learning-view-options {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 10px 16px;
   margin: 14px 0;
+}
+
+.learning-practice {
+  display: block;
+  margin: 26px 0 14px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
 }
 
 .learning-open {
@@ -1673,14 +1716,25 @@ img {
   min-width: 0;
   overflow-x: auto;
   min-height: 150px;
-  padding: 14px 0;
+}
+
+.learning-visualizer-panel {
+  min-width: 0;
+  margin-top: 14px;
+  padding: 16px;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 12%);
+  background: #111315;
 }
 
 .learning-piano {
   position: relative;
   display: flex;
-  width: max(880px, 100%);
+  width: 100%;
   height: 150px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-gutter: stable;
 }
 
 .learning-key.white {
@@ -1759,6 +1813,19 @@ img {
   .score-render-surface {
     min-width: 760px;
   }
+
+  .score-canvas,
+  .score-canvas.is-rendering {
+    height: clamp(470px, 64svh, 600px);
+  }
+
+  .learning-transport-primary {
+    grid-template-columns: repeat(4, max-content) minmax(150px, 1fr);
+  }
+
+  .learning-transport-primary > label:last-child {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (max-width: 760px) {
@@ -1823,13 +1890,14 @@ img {
   }
 
   .score-canvas {
-    min-height: clamp(320px, 55svh, 460px);
-    max-height: 68svh;
+    height: clamp(320px, 55svh, 460px);
+    min-height: 0;
+    max-height: none;
     padding: 5px;
   }
 
   .score-canvas.is-rendering {
-    min-height: max(var(--score-stable-height, 320px), clamp(320px, 55svh, 460px));
+    height: var(--score-stable-height, clamp(320px, 55svh, 460px));
   }
 
   .score-controls {
@@ -1845,9 +1913,11 @@ img {
     margin-top: 26px;
   }
 
-  .learning-transport { grid-template-columns: 1fr; }
-  .learning-transport label { width: 100%; }
+  .learning-transport-primary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .learning-transport-primary > label { grid-column: 1 / -1; }
+  .learning-transport-secondary { align-items: stretch; }
+  .learning-transport-secondary label { width: calc(50% - 5px); }
+  .learning-transport-secondary button { flex: 1 1 auto; }
   .learning-exercise-options { grid-template-columns: 1fr; }
-  .learning-piano { width: max(620px, 100%); }
   .accordion-boards { grid-template-columns: 1fr; }
 }

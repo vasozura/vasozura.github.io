@@ -65,23 +65,27 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     <p class="learning-clock-note">${copy.clock}</p>
     <p data-l="sync" class="learning-sync" aria-live="polite">${copy.checking}</p>
     <div class="learning-transport">
-      <button type="button" data-l="play">${copy.play}</button><button type="button" data-l="pause">${copy.pause}</button><button type="button" data-l="stop">${copy.stop}</button>
-      <button type="button" data-l="metronome" aria-pressed="false">${copy.metronome}</button>
-      <label>${copy.tempo} <input data-l="tempo" type="range" min="50" max="150" value="100"><output>100%</output></label>
-      <label>${copy.position} <input data-l="seek" type="range" min="0" max="0" value="0" step="0.01"></label>
-      <label>${copy.loopFrom} <input data-l="loop-a" type="number" min="1" value="1"></label>
-      <label>${copy.to} <input data-l="loop-b" type="number" min="1" value="1"></label>
-      <button type="button" data-l="loop">${copy.setLoop}</button><button type="button" data-l="clear-loop">${copy.clearLoop}</button>
-      <output data-l="position">1 · 1</output>
+      <div class="learning-transport-row learning-transport-primary">
+        <button type="button" data-l="play">${copy.play}</button><button type="button" data-l="pause">${copy.pause}</button><button type="button" data-l="stop">${copy.stop}</button>
+        <button type="button" data-l="metronome" aria-pressed="false">${copy.metronome}</button>
+        <label>${copy.tempo} <input data-l="tempo" type="range" min="50" max="150" value="100"><output>100%</output></label>
+        <label>${copy.position} <input data-l="seek" type="range" min="0" max="0" value="0" step="0.01"></label>
+      </div>
+      <div class="learning-transport-row learning-transport-secondary">
+        <label>${copy.loopFrom} <input data-l="loop-a" type="number" min="1" value="1"></label>
+        <label>${copy.to} <input data-l="loop-b" type="number" min="1" value="1"></label>
+        <button type="button" data-l="loop">${copy.setLoop}</button><button type="button" data-l="clear-loop">${copy.clearLoop}</button>
+        <output data-l="position">1 · 1</output>
+      </div>
     </div>
     <div class="learning-instruments" role="tablist" aria-label="${copy.instrumentView}">
       ${allowed.has("piano") ? `<button type="button" role="tab" data-instrument="piano">${copy.piano}</button>` : ""}
       ${allowed.has("guitar") ? `<button type="button" role="tab" data-instrument="guitar">${copy.guitar}</button>` : ""}
       ${allowed.has("accordion") ? `<button type="button" role="tab" data-instrument="accordion">${copy.accordion}</button>` : ""}
     </div>
-    <div class="learning-view-options"><label><input type="checkbox" data-l="follow" checked> ${copy.follow}</label><label data-l="left-label" hidden><input type="checkbox" data-l="left"> ${copy.leftHanded}</label></div>
+    <div class="learning-view-options"><label><input type="checkbox" data-l="follow"> ${copy.follow}</label><label data-l="left-label" hidden><input type="checkbox" data-l="left"> ${copy.leftHanded}</label></div>
     <p data-l="notes" class="learning-current">${copy.current}: — · ${copy.upcoming}: —</p>
-    <div data-l="visualizer" aria-live="off"></div>
+    <div class="learning-visualizer-panel"><div data-l="visualizer" aria-live="off"></div></div>
     <section class="learning-practice" aria-labelledby="practice-title">
       <h4 id="practice-title">${copy.practice}</h4>
       <div class="learning-exercise-options">

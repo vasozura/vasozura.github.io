@@ -7,7 +7,7 @@ export class PianoRangeVisualizer implements TimelineVisualizer {
   private readonly min: number;
   private readonly max: number;
 
-  constructor(private readonly root: HTMLElement, notes: NoteEvent[], private follow = true) {
+  constructor(private readonly root: HTMLElement, notes: NoteEvent[], private follow = false) {
     const pitches = notes.map((note) => note.midi);
     this.min = Math.max(21, Math.min(...pitches, 60) - 2);
     this.max = Math.min(108, Math.max(...pitches, 60) + 2);
@@ -32,7 +32,13 @@ export class PianoRangeVisualizer implements TimelineVisualizer {
       const hand = note?.hand === "left" || note?.hand === "right" ? `hand-${note.hand}` : "";
       key.className = `learning-key ${isBlack(midi) ? "black" : "white"} ${note ? "active" : ""} ${upcomingPitches.has(midi) ? "upcoming" : ""} ${hand} ${states.get(midi) ?? ""}`;
     });
-    if (this.follow && active[0]) this.root.querySelector<HTMLElement>(`[data-note="${active[0].midi}"]`)?.scrollIntoView({ block: "nearest", inline: "center" });
+    const activeKey = this.follow && active[0]
+      ? this.root.querySelector<HTMLElement>(`[data-note="${active[0].midi}"]`)
+      : null;
+    if (activeKey) {
+      const target = activeKey.offsetLeft + activeKey.offsetWidth / 2 - this.root.clientWidth / 2;
+      this.root.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
+    }
   }
 
   destroy(): void { this.root.replaceChildren(); this.root.className = ""; }
