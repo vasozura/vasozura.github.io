@@ -68,6 +68,28 @@ function learningEvent(note: NoteEvent, lane: VoiceLane, source: MelodyProvenanc
   return { ...note, id: `learning-${index}-${note.id}`, learningId: `learning-${index}-${note.id}`, sourceNoteId: note.id, sourceLaneId: lane.id, provenance: source };
 }
 
+function enforceMonophonicLine(notes: LearningMelodyEvent[]): LearningMelodyEvent[] {
+  const groups = new Map<number, LearningMelodyEvent[]>();
+  for (const note of sorted(notes) as LearningMelodyEvent[]) {
+    const key = Math.round(note.startSeconds * 1000);
+    const group = groups.get(key) ?? [];
+    group.push(note);
+    groups.set(key, group);
+  }
+  let previous = 60;
+  const winners = [...groups.values()].map((group) => {
+    const winner = [...group].sort((a, b) => Math.abs(a.midi - previous) - Math.abs(b.midi - previous) || b.midi - a.midi || a.id.localeCompare(b.id))[0];
+    previous = winner.midi;
+    return winner;
+  });
+  return winners.map((note, index) => {
+    const next = winners[index + 1];
+    if (!next) return note;
+    const available = Math.max(0.01, next.startSeconds - note.startSeconds);
+    return note.durationSeconds > available ? { ...note, durationSeconds: available } : note;
+  });
+}
+
 export function composeLearningMelody(canonical: Timeline, lanes: VoiceLane[], options: LearningMelodyOptions = {}): LearningMelody {
   const primary = options.primaryLane ?? lanes[0] ?? null;
   if (!primary) return { timeline: { ...canonical, notes: [] }, notes: [], segments: [], diagnostics: diagnostics([], canonical.durationSeconds), primaryLaneId: null };
@@ -100,7 +122,7 @@ export function composeLearningMelody(canonical: Timeline, lanes: VoiceLane[], o
     sourceNotes.forEach((note) => notes.push(learningEvent(note, lane!, source, notes.length)));
     segments.push({ id: segmentId, startSeconds: interval.start, endSeconds: interval.end, sourceLaneId: unresolvedGap ? null : lane!.id, sourceLabel: unresolvedGap ? (retainedRest ? "Retained musical rest" : "Unresolved source gap") : lane!.label, provenance: unresolvedGap ? "Musical rest" : source, noteCount: sourceNotes.length, retainedRest });
   }
-  const ordered = sorted(notes) as LearningMelodyEvent[];
+  const ordered = enforceMonophonicLine(notes);
   const timeline = { ...canonical, notes: ordered.map((note, cursorStep) => ({ ...note, cursorStep })) };
   return { timeline, notes: timeline.notes as LearningMelodyEvent[], segments, diagnostics: diagnostics(timeline.notes as LearningMelodyEvent[], canonical.durationSeconds, segments), primaryLaneId: primary.id };
 }
@@ -110,7 +132,7 @@ export function replaceLearningSegmentSource(melody: LearningMelody, segmentId: 
   if (!segment) return melody;
   const kept = melody.notes.filter((note) => note.startSeconds < segment.startSeconds || note.startSeconds >= segment.endSeconds);
   const inserted = oneContinuousLine(lane.notes).filter((note) => note.startSeconds >= segment.startSeconds && note.startSeconds < segment.endSeconds).map((note, index) => learningEvent(note, lane, "Manual reference", kept.length + index));
-  const notes = sorted([...kept, ...inserted]).map((note, cursorStep) => ({ ...note, cursorStep })) as LearningMelodyEvent[];
+  const notes = enforceMonophonicLine([...kept, ...inserted]).map((note, cursorStep) => ({ ...note, cursorStep })) as LearningMelodyEvent[];
   const segments = melody.segments.map((entry) => entry.id === segmentId ? { ...entry, sourceLaneId: lane.id, sourceLabel: lane.label, provenance: "Manual reference" as const, noteCount: inserted.length, retainedRest: inserted.length === 0 } : entry);
   return { ...melody, notes, segments, timeline: { ...melody.timeline, notes }, diagnostics: diagnostics(notes, melody.timeline.durationSeconds, segments) };
 }

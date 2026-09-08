@@ -47,6 +47,13 @@ describe("complete Learning Melody", () => {
     expect(sameLearningSequence(piano, guitar)).toBe(true);
   });
 
+  it("normalizes overlapping source durations into one monophonic line", () => {
+    const overlapping = lane("vocal", "Vocal", [note("a", 0, 60, 2), note("b", 1, 62, 2), note("c", 2, 64, 1)]);
+    const melody = composeLearningMelody({ ...timeline, durationSeconds: 3 }, [overlapping], { primaryLane: overlapping });
+    expect(melody.notes.map((event) => [event.startSeconds, event.durationSeconds])).toEqual([[0, 1], [1, 1], [2, 1]]);
+    expect(melody.diagnostics.monophonyRatio).toBe(1);
+  });
+
   it("chooses a principal melodic source for gaps and never defaults to bass ordering", () => {
     const bass = lane("bass", "Bass", [40, 41, 43, 45].map((midi, index) => note(`b${index}`, index, midi)));
     const guitar = lane("guitar", "Guitar lead", [64, 65, 67, 69].map((midi, index) => note(`g${index}`, index, midi)));
