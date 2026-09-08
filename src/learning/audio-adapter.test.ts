@@ -5,6 +5,7 @@ import { SchedulerAudioAdapter } from "./audio-adapter";
 import { CanonicalScheduler } from "./scheduler";
 import type { ScoreManifest } from "./contracts";
 import type { NoteEvent } from "./contracts";
+import { buildHarmonicTimeline } from "./harmony";
 
 function instrument(): InstrumentPlayback {
   return {
@@ -34,7 +35,7 @@ describe("learning audio adapter", () => {
     scheduler.destroy();
   });
 
-  it("switches between chords and scoped solo voices without remounting", () => {
+  it("switches between derived harmony and scoped solo voices without remounting", () => {
     const scheduler = new CanonicalScheduler((fixture as ScoreManifest).timeline);
     const audio = instrument();
     const adapter = new SchedulerAudioAdapter(scheduler, audio);
@@ -42,10 +43,22 @@ describe("learning audio adapter", () => {
       { id: "low", midi: 48, hand: "left" },
       { id: "high", midi: 76, hand: "right" },
     ] as NoteEvent[];
-    expect(adapter.selectNotes(notes)).toHaveLength(2);
+    expect(adapter.selectNotes(notes)).toEqual([]);
     adapter.setSelection({ mode: "solo", voices: 1, scope: "treble" });
     expect(adapter.selectNotes(notes).map((note) => note.id)).toEqual(["high"]);
     expect(audio.releaseAll).toHaveBeenCalled();
+    adapter.destroy(); scheduler.destroy();
+  });
+
+  it("plays one triad voicing per harmonic change instead of every active score note", () => {
+    const source = (fixture as ScoreManifest).timeline;
+    const scheduler = new CanonicalScheduler(source, () => 0);
+    const output = instrument();
+    const adapter = new SchedulerAudioAdapter(scheduler, output);
+    adapter.setHarmonicTimeline(buildHarmonicTimeline(source, [{ measureIndex: 0, relativePosition: 0, label: "Am" }]));
+    scheduler.seek(0);
+    expect(vi.mocked(output.play).mock.calls.length).toBeGreaterThanOrEqual(3);
+    expect(vi.mocked(output.play).mock.calls.length).toBeLessThanOrEqual(4);
     adapter.destroy(); scheduler.destroy();
   });
 });

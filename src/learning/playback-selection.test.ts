@@ -5,9 +5,9 @@ import { practicalVoiceCap, selectPlaybackNotes } from "./playback-selection";
 
 const note = (id: string, midi: number, hand: NoteEvent["hand"]): NoteEvent => ({ id, midi, hand, partId: "p", measureIndex: 0, beat: 1, startSeconds: 0, durationSeconds: 1, velocity: 1 });
 
-describe("polyphony playback selection", () => {
+describe("persistent-lane playback selection", () => {
   const chord = [note("bass", 48, "left"), note("middle", 64, "right"), note("top", 76, "right")];
-  it("keeps full selected polyphony in chords mode", () => expect(selectPlaybackNotes(chord, { mode: "chords", voices: 1, scope: "both" })).toHaveLength(3));
+  it("never treats raw score polyphony as a chord", () => expect(selectPlaybackNotes(chord, { mode: "chords", voices: 1, scope: "both" })).toEqual([]));
   it("selects highest treble and lowest bass voices deterministically", () => {
     expect(selectPlaybackNotes(chord, { mode: "solo", voices: 1, scope: "treble" }).map((item) => item.id)).toEqual(["top"]);
     expect(selectPlaybackNotes(chord, { mode: "solo", voices: 1, scope: "bass" }).map((item) => item.id)).toEqual(["bass"]);

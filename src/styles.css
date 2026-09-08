@@ -1789,6 +1789,35 @@ img {
   width: 76px;
 }
 
+.learning-vocal-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid rgb(255 183 0 / 32%);
+  background: rgb(255 183 0 / 4%);
+}
+
+.learning-vocal-controls fieldset,
+.learning-vocal-controls label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  border: 0;
+}
+
+.learning-vocal-controls fieldset { padding: 0; }
+.learning-vocal-controls legend { margin-right: 8px; color: var(--muted); }
+.learning-vocal-controls input[type="number"] { width: 64px; }
+.learning-vocal-quick { color: var(--acid); }
+.learning-voice-picker { margin-top: 10px; color: var(--muted); }
+.learning-voice-picker [data-l="voice-list"] { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 7px; margin-top: 9px; }
+.learning-voice-picker label { color: var(--paper); }
+.learning-harmony { color: var(--acid); }
+
 .learning-admin-options,
 .learning-instruments,
 .learning-view-options {
@@ -1903,6 +1932,7 @@ img {
   min-width: 14px;
   border: 1px solid #4a4a4a;
   background: #eee9dd;
+  padding: 0;
 }
 
 .learning-key.black {
@@ -1911,6 +1941,7 @@ img {
   height: 62%;
   margin: 0 -4.5px;
   background: #181818;
+  padding: 0;
 }
 
 .learning-key.upcoming,
@@ -1928,8 +1959,11 @@ img {
 .learning-fretboard { min-width: 0; }
 .learning-fretboard.left-handed .guitar-string { direction: rtl; }
 .guitar-string { display: grid; min-width: 760px; grid-template-columns: repeat(21, minmax(28px, 1fr)); border-top: 1px solid #aaa; }
-.guitar-string span,
+.guitar-string button,
 .learning-accordion span { min-height: 28px; padding: 4px; border-right: 1px solid var(--line); text-align: center; }
+.guitar-string button { border-top: 0; border-bottom: 0; border-left: 0; background: transparent; color: var(--muted); }
+.guitar-string button.suggested { border-style: dashed; }
+.guitar-string button.source-authored { outline: 1px solid rgb(255 255 255 / 45%); }
 .learning-accordion { min-width: 0; }
 .accordion-layout-status,
 .accordion-provenance { color: var(--muted); }

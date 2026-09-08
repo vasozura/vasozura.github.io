@@ -1,5 +1,5 @@
 import type { NoteEvent } from "./contracts";
-import type { NoteState, TimelineVisualizer } from "./instruments";
+import type { AuditionCallbacks, NoteState, TimelineVisualizer } from "./instruments";
 
 const isBlack = (midi: number): boolean => [1, 3, 6, 8, 10].includes(midi % 12);
 
@@ -7,7 +7,7 @@ export class PianoRangeVisualizer implements TimelineVisualizer {
   private readonly min: number;
   private readonly max: number;
 
-  constructor(private readonly root: HTMLElement, notes: NoteEvent[], private follow = false) {
+  constructor(private readonly root: HTMLElement, notes: NoteEvent[], private follow = false, private readonly audition?: AuditionCallbacks) {
     const pitches = notes.map((note) => note.midi);
     this.min = Math.max(21, Math.min(...pitches, 60) - 2);
     this.max = Math.min(108, Math.max(...pitches, 60) + 2);
@@ -19,8 +19,16 @@ export class PianoRangeVisualizer implements TimelineVisualizer {
     this.root.classList.add("learning-piano");
     this.root.innerHTML = Array.from({ length: this.max - this.min + 1 }, (_, index) => {
       const midi = this.min + index;
-      return `<span class="learning-key ${isBlack(midi) ? "black" : "white"}" data-note="${midi}" role="img" aria-label="MIDI note ${midi}"></span>`;
+      return `<button type="button" class="learning-key ${isBlack(midi) ? "black" : "white"}" data-note="${midi}" aria-label="MIDI note ${midi}"></button>`;
     }).join("");
+    this.root.querySelectorAll<HTMLButtonElement>("[data-note]").forEach((key) => {
+      const start = (event: PointerEvent): void => { event.preventDefault(); key.setPointerCapture?.(event.pointerId); this.audition?.noteOn(Number(key.dataset.note)); };
+      const stop = (): void => this.audition?.noteOff();
+      key.addEventListener("pointerdown", start);
+      key.addEventListener("pointerup", stop);
+      key.addEventListener("pointercancel", stop);
+      key.addEventListener("lostpointercapture", stop);
+    });
   }
 
   render(active: NoteEvent[], upcoming: NoteEvent[], states = new Map<number, NoteState>()): void {

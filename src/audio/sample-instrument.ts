@@ -48,13 +48,24 @@ const pianoSamples: readonly SampleDefinition[] = [
   { midi: 96, file: "C7.mp3" },
 ] as const;
 
+// Real acoustic-guitar samples from nbrosowsky/tonejs-instruments (CC BY 3.0).
+// Sparse roots keep the lazy-loaded bank small; playbackRate preserves source MIDI pitch.
+const guitarSamples: readonly SampleDefinition[] = [
+  { midi: 38, file: "D2.mp3" },
+  { midi: 48, file: "C3.mp3" },
+  { midi: 60, file: "C4.mp3" },
+  { midi: 72, file: "C5.mp3" },
+] as const;
+
 const sampleBanks: Partial<Record<InstrumentName, readonly SampleDefinition[]>> = {
   piano: pianoSamples,
+  guitar: guitarSamples,
 };
 
 const decodedBuffers = new Map<string, Promise<AudioBuffer>>();
 
 export const sampledPianoFiles = pianoSamples.map((sample) => sample.file);
+export const sampledGuitarFiles = guitarSamples.map((sample) => sample.file);
 
 export function nearestSample(midi: number, samples: readonly SampleDefinition[] = pianoSamples): SampleDefinition {
   return samples.reduce((nearest, sample) => (
@@ -65,52 +76,65 @@ export function nearestSample(midi: number, samples: readonly SampleDefinition[]
 export class SampleInstrumentEngine implements InstrumentPlayback {
   private context: AudioContext | null = null;
   private instrument: InstrumentName = "piano";
-  private readonly buffers = new Map<number, AudioBuffer>();
-  private readonly failedSamples = new Set<number>();
+  private readonly buffers = new Map<string, AudioBuffer>();
+  private readonly failedSamples = new Set<string>();
   private readonly voices = new Set<Voice>();
 
   constructor(private readonly contextFactory: () => AudioContext = () => new AudioContext()) {}
 
   get currentTime(): number { return this.context?.currentTime ?? 0; }
+  get currentInstrument(): InstrumentName { return this.instrument; }
 
   setInstrument(instrument: InstrumentName): void {
-    this.instrument = sampleBanks[instrument] ? instrument : "piano";
+    this.releaseAll();
+    this.instrument = instrument;
   }
 
   async enable(midiNotes: readonly number[] = [60]): Promise<void> {
     this.context ??= this.contextFactory();
     await this.context.resume();
     const context = this.context;
+    const instrument = this.instrument;
     const bank = this.bank();
     const required = new Map(midiNotes.map((midi) => {
       const sample = nearestSample(midi, bank);
       return [sample.midi, sample] as const;
     }));
     await Promise.all([...required.values()].map(async (sample) => {
-      if (this.buffers.has(sample.midi) || this.failedSamples.has(sample.midi)) return;
+      const key = `${instrument}:${sample.midi}`;
+      if (this.buffers.has(key) || this.failedSamples.has(key)) return;
       try {
-        const url = this.sampleUrl(sample.file);
+        const url = this.sampleUrl(sample.file, instrument);
         let pending = decodedBuffers.get(url);
         if (!pending) {
           pending = fetch(url, { credentials: "same-origin" }).then(async (response) => {
-            if (!response.ok) throw new Error(`Piano sample unavailable (${response.status}).`);
+            if (!response.ok) throw new Error(`${instrument} sample unavailable (${response.status}).`);
             return context.decodeAudioData(await response.arrayBuffer());
           });
           decodedBuffers.set(url, pending);
         }
-        this.buffers.set(sample.midi, await pending);
+        this.buffers.set(key, await pending);
       } catch {
-        this.failedSamples.add(sample.midi);
+        this.failedSamples.add(key);
       }
     }));
+    if (instrument !== "piano" && [...required].some(([midi]) => !this.buffers.has(`${instrument}:${midi}`))) {
+      throw new Error(instrument === "guitar" ? "Guitar audio unavailable." : "Accordion audio unavailable.");
+    }
   }
 
   play(note: InstrumentNote): void {
     const context = this.context;
     if (!context) return;
-    const sample = nearestSample(note.midi, this.bank());
-    const buffer = this.buffers.get(sample.midi);
-    if (!buffer) { this.playEmergencyFallback(note); return; }
+    const bank = sampleBanks[this.instrument];
+    if (!bank) return;
+    const sample = nearestSample(note.midi, bank);
+    const buffer = this.buffers.get(`${this.instrument}:${sample.midi}`);
+    if (!buffer) {
+      if (this.instrument !== "piano") return;
+      this.playEmergencyFallback(note);
+      return;
+    }
 
     const source = context.createBufferSource();
     const gain = context.createGain();
@@ -171,11 +195,16 @@ export class SampleInstrumentEngine implements InstrumentPlayback {
     this.failedSamples.clear();
   }
 
-  private bank(): readonly SampleDefinition[] { return sampleBanks[this.instrument] ?? pianoSamples; }
+  private bank(): readonly SampleDefinition[] {
+    const bank = sampleBanks[this.instrument];
+    if (!bank) throw new Error("Accordion audio unavailable.");
+    return bank;
+  }
 
-  private sampleUrl(file: string): string {
+  private sampleUrl(file: string, instrument: InstrumentName = this.instrument): string {
     const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
-    return `${base}audio/salamander/${file}`;
+    const directory = instrument === "guitar" ? "guitar-acoustic" : "salamander";
+    return `${base}audio/${directory}/${file}`;
   }
 
   private playEmergencyFallback(note: InstrumentNote): void {

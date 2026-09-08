@@ -2,7 +2,46 @@ import { getInitialLanguage, type Language } from "../i18n";
 import { MidiPlayback } from "./midi-playback";
 import { PianoVisualizer } from "./instrument-visualizer";
 import { playbackCoordinator } from "../audio/playback-coordinator";
-import { logicalPageState, scoreClickRatio } from "./score-navigation";
+import { logicalPageState, nearestScorePosition, type ScoreMeasureTarget, type ScorePositionRequest } from "./score-navigation";
+
+interface GraphicalEntryLike {
+  PositionAndShape?: { AbsolutePosition?: { x: number; y: number } };
+  relInMeasureTimestamp?: { RealValue?: number };
+  graphicalChordContainers?: Array<{ GraphicalLabel?: { Label?: { text?: string } } }>;
+}
+interface GraphicalMeasureLike {
+  PositionAndShape?: { AbsolutePosition?: { x: number; y: number }; BorderLeft?: number; BorderRight?: number; BorderTop?: number; BorderBottom?: number; Size?: { width?: number; height?: number } };
+  parentSourceMeasure?: { measureListIndex?: number; Duration?: { RealValue?: number } };
+  ParentMusicSystem?: { Parent?: { PositionAndShape?: { AbsolutePosition?: { x: number; y: number } } } };
+  staffEntries?: GraphicalEntryLike[];
+}
+
+export function scoreTargetsFromGraphicalMeasures(measureList: GraphicalMeasureLike[][], scale = 10): { targets: ScoreMeasureTarget[]; harmonies: Array<{ measureIndex: number; relativePosition: number; label: string }> } {
+  const targets: ScoreMeasureTarget[] = [];
+  const harmonies: Array<{ measureIndex: number; relativePosition: number; label: string }> = [];
+  for (const measureRow of measureList) for (const measure of measureRow) {
+    const box = measure.PositionAndShape;
+    const position = box?.AbsolutePosition;
+    const measureIndex = measure.parentSourceMeasure?.measureListIndex;
+    if (!position || measureIndex == null) continue;
+    const duration = measure.parentSourceMeasure?.Duration?.RealValue || 1;
+    const page = measure.ParentMusicSystem?.Parent?.PositionAndShape?.AbsolutePosition ?? { x: 0, y: 0 };
+    const entries = (measure.staffEntries ?? []).map((entry) => ({ x: (page.x + (entry.PositionAndShape?.AbsolutePosition?.x ?? position.x)) * scale, relativePosition: Math.max(0, Math.min(1, (entry.relInMeasureTimestamp?.RealValue ?? 0) / duration)) }));
+    for (const entry of measure.staffEntries ?? []) for (const chord of entry.graphicalChordContainers ?? []) {
+      const label = chord.GraphicalLabel?.Label?.text?.trim();
+      if (label) harmonies.push({ measureIndex, relativePosition: Math.max(0, Math.min(1, (entry.relInMeasureTimestamp?.RealValue ?? 0) / duration)), label });
+    }
+    targets.push({
+      measureIndex,
+      left: (page.x + position.x + (box?.BorderLeft ?? 0)) * scale,
+      right: (page.x + position.x + (box?.BorderRight ?? box?.Size?.width ?? 1)) * scale,
+      top: (page.y + position.y + (box?.BorderTop ?? 0)) * scale,
+      bottom: (page.y + position.y + (box?.BorderBottom ?? box?.Size?.height ?? 1)) * scale,
+      entries,
+    });
+  }
+  return { targets, harmonies: harmonies.filter((item, index) => !harmonies.slice(0, index).some((seen) => seen.measureIndex === item.measureIndex && seen.relativePosition === item.relativePosition && seen.label === item.label)) };
+}
 
 export function enableMidiSeek(progress: HTMLInputElement | null): void {
   if (progress) progress.disabled = false;
@@ -46,6 +85,7 @@ export async function mountScoreViewer(
     const { OpenSheetMusicDisplay } = await import("opensheetmusicdisplay");
     const osmd = new OpenSheetMusicDisplay(surface, osmdViewerOptions);
     await osmd.load(await fetchScoreSource(musicXmlUrl));
+    let scoreTargets: ScoreMeasureTarget[] = [];
     let renderFrame = 0;
     let lastWidth = surface.clientWidth;
     const renderScore = (): void => {
@@ -58,6 +98,10 @@ export async function mountScoreViewer(
       canvas.style.setProperty("--score-stable-height", `${stableHeight}px`);
       canvas.classList.add("is-rendering");
       osmd.render();
+      const graphical = (osmd as unknown as { GraphicSheet?: { MeasureList?: GraphicalMeasureLike[][] } }).GraphicSheet?.MeasureList ?? [];
+      const mapped = scoreTargetsFromGraphicalMeasures(graphical, 10 * osmd.Zoom);
+      scoreTargets = mapped.targets;
+      root.dataset.scoreHarmonies = JSON.stringify(mapped.harmonies);
       renderFrame = window.requestAnimationFrame(() => {
         canvas.scrollTop = previousScrollableHeight > 1
           ? previousTop / previousScrollableHeight * Math.max(0, canvas.scrollHeight - canvas.clientHeight)
@@ -128,7 +172,9 @@ export async function mountScoreViewer(
     canvas.addEventListener("scroll", updatePageOnScroll, { passive: true });
     cleanups.push(() => canvas.removeEventListener("scroll", updatePageOnScroll));
     const seekFromScore = (event: MouseEvent): void => {
-      root.dispatchEvent(new CustomEvent("score-position-request", { detail: { ratio: scoreClickRatio(event, surface) } }));
+      const rect = surface.getBoundingClientRect();
+      const detail = nearestScorePosition(event.clientX - rect.left, event.clientY - rect.top, scoreTargets);
+      if (detail) root.dispatchEvent(new CustomEvent<ScorePositionRequest>("score-position-request", { detail }));
     };
     surface.addEventListener("click", seekFromScore);
     cleanups.push(() => surface.removeEventListener("click", seekFromScore));
@@ -159,8 +205,12 @@ export async function mountScoreViewer(
   const transportId = `score-${root.dataset.songId || crypto.randomUUID()}`;
   const unregisterTransport = playbackCoordinator.register(transportId, midi);
   const seekFromScore = (event: Event): void => {
-    const ratio = Number((event as CustomEvent<{ ratio: number }>).detail.ratio);
-    if (Number.isFinite(ratio)) { playbackCoordinator.activate(transportId); midi.seek(ratio * midi.getDuration()); }
+    const detail = (event as CustomEvent<ScorePositionRequest>).detail;
+    if (Number.isInteger(detail?.measureIndex) && Number.isFinite(detail.relativePosition)) {
+      playbackCoordinator.activate(transportId);
+      const measureCount = Math.max(1, Number(root.dataset.measureCount) || 1);
+      midi.seek(Math.max(0, Math.min(1, (detail.measureIndex + detail.relativePosition) / measureCount)) * midi.getDuration());
+    }
   };
   root.addEventListener("score-position-request", seekFromScore);
   cleanups.push(() => { unregisterTransport(); root.removeEventListener("score-position-request", seekFromScore); midi.destroy(); pianoVisualizer.clear(); piano.replaceChildren(); });

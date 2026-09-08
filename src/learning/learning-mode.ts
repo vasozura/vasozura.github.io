@@ -13,8 +13,13 @@ import { assessSynchronization, readMidiDuration } from "./sync-analysis";
 import { connectWebMidi, supportsWebMidi } from "./web-midi";
 import { getLearningCopy } from "./copy";
 import { playbackCoordinator } from "../audio/playback-coordinator";
-import { resolveCanonicalScorePosition } from "../score/score-navigation";
-import { hasExplicitStaffIdentity, practicalVoiceCap, type PlaybackMode, type StaffScope } from "./playback-selection";
+import { resolveCanonicalScoreLocation, type ScorePositionRequest } from "../score/score-navigation";
+import { hasExplicitStaffIdentity, type PlaybackMode, type StaffScope } from "./playback-selection";
+import { buildVoiceLanes, laneInScope, selectMelodyLane } from "./voice-lanes";
+import { createActiveMelodyTimeline } from "./active-melody";
+import { activeHarmonyAt, buildHarmonicTimeline, type ExplicitHarmony } from "./harmony";
+import { SampleInstrumentEngine, type InstrumentName } from "../audio/sample-instrument";
+import { guitarCandidates } from "./instruments";
 
 const noteNames = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
 const noteLabel = (midi: number): string => `${noteNames[midi % 12]}${Math.floor(midi / 12) - 1}`;
@@ -86,9 +91,16 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
         <label>${copy.to} <input data-l="loop-b" type="number" min="1" value="1"></label>
         <button type="button" data-l="loop">${copy.setLoop}</button><button type="button" data-l="clear-loop">${copy.clearLoop}</button>
         <label>${copy.playbackMode} <select data-l="playback-mode"><option value="chords">${copy.chords}</option><option value="solo">${copy.solo}</option></select></label>
-        <label>${copy.voices} <input data-l="voices" type="number" min="1" value="1"></label>
         <label>${copy.staffScope} <select data-l="staff-scope"><option value="both">${copy.both}</option><option value="treble">${copy.treble}</option><option value="bass">${copy.bass}</option></select></label>
       </div>
+      <div class="learning-vocal-controls" data-l="vocal-controls">
+        <label class="learning-vocal-quick"><input type="checkbox" data-l="melody"> <strong>${copy.vocalMelody}</strong></label>
+        <fieldset data-l="timing"><legend>${copy.timing}</legend><label><input type="radio" name="learning-timing" value="original" checked> ${copy.original}</label><label><input type="radio" name="learning-timing" value="active"> ${copy.active}</label></fieldset>
+        <label>${copy.restThreshold} <input data-l="rest-threshold" type="number" min="0.3" max="5" step="0.1" value="0.6"> s</label>
+        <label>${copy.activeGap} <input data-l="active-gap" type="number" min="0.05" max="0.5" step="0.05" value="0.2"> s</label>
+        <label>${copy.melodySound} <select data-l="melody-sound">${allowed.has("piano") ? `<option value="piano">${copy.piano}</option>` : ""}${allowed.has("guitar") ? `<option value="guitar">${copy.guitar}</option>` : ""}</select></label>
+      </div>
+      <details class="learning-voice-picker"><summary>${copy.sourceVoices}</summary><div data-l="voice-list"></div></details>
       <p data-l="staff-evidence" class="learning-staff-evidence" hidden>${copy.inferredStaff}</p>
     </div>
     <div class="learning-instruments" role="tablist" aria-label="${copy.instrumentView}">
@@ -97,6 +109,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       ${allowed.has("accordion") ? `<button type="button" role="tab" data-instrument="accordion">${copy.accordion}</button>` : ""}
     </div>
     <div class="learning-view-options"><label><input type="checkbox" data-l="follow"> ${copy.follow}</label><label data-l="left-label" hidden><input type="checkbox" data-l="left"> ${copy.leftHanded}</label></div>
+    <p data-l="harmony" class="learning-harmony">${copy.currentChord}: —</p>
     <p data-l="notes" class="learning-current">${copy.current}: — · ${copy.upcoming}: —</p>
     <div class="learning-visualizer-panel"><div data-l="visualizer" aria-live="off"></div></div>
     <section class="learning-practice" aria-labelledby="practice-title">
@@ -123,6 +136,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
   let audio: SchedulerAudioAdapter | null = null;
   let scheduler: CanonicalScheduler | null = null;
   let visualizer: TimelineVisualizer | null = null;
+  let auditionEngine: SampleInstrumentEngine | null = null;
   let unregisterTransport = (): void => {};
   let removeScorePositionListener = (): void => {};
   try {
@@ -145,13 +159,25 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       usingLocalAdapter = true;
     }
 
-    scheduler = new CanonicalScheduler(manifest.timeline);
+    const canonicalTimeline = manifest.timeline;
+    const lanes = buildVoiceLanes(manifest);
+    const melodyLane = selectMelodyLane(manifest, lanes);
+    let activeTiming = createActiveMelodyTimeline(canonicalTimeline, melodyLane?.notes ?? []);
+    let timingMode: "original" | "active" = "original";
+    let selectedLaneIds = new Set<string>(melodyLane ? [melodyLane.id] : lanes[0] ? [lanes[0].id] : []);
+    const explicitHarmonies = (() => { try { return JSON.parse(root.dataset.scoreHarmonies || "[]") as ExplicitHarmony[]; } catch { return []; } })();
+    const harmonies = buildHarmonicTimeline(canonicalTimeline, explicitHarmonies);
+    scheduler = new CanonicalScheduler(canonicalTimeline);
     audio = new SchedulerAudioAdapter(scheduler);
+    audio.setHarmonicTimeline(harmonies);
     const transportId = `learning-${songId}`;
     unregisterTransport = playbackCoordinator.register(transportId, {
       canPlay: () => Boolean(scheduler?.timeline.notes.length),
       isPlaying: () => scheduler?.snapshot().playing ?? false,
-      play: async () => { await audio?.enable(); scheduler?.play(); },
+      play: async () => {
+        try { await audio?.enable(); scheduler?.play(); }
+        catch (error) { host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = errorMessage(error); }
+      },
       pause: () => { scheduler?.pause(); audio?.reset(); },
       stop: () => { scheduler?.stop(); audio?.reset(); },
     });
@@ -164,18 +190,63 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     const seek = host.querySelector<HTMLInputElement>('[data-l="seek"]')!;
     seek.max = String(manifest.timeline.durationSeconds);
     host.querySelector<HTMLOutputElement>('[data-l="time-value"]')!.value = `00:00 / ${formatClock(manifest.timeline.durationSeconds)}`;
-    const voices = host.querySelector<HTMLInputElement>('[data-l="voices"]')!;
-    voices.max = String(practicalVoiceCap(manifest.timeline));
     const playbackMode = host.querySelector<HTMLSelectElement>('[data-l="playback-mode"]')!;
     const staffScope = host.querySelector<HTMLSelectElement>('[data-l="staff-scope"]')!;
-    const updatePlaybackSelection = (): void => audio?.setSelection({ mode: playbackMode.value as PlaybackMode, voices: Number(voices.value), scope: staffScope.value as StaffScope });
-    playbackMode.onchange = updatePlaybackSelection;
-    voices.oninput = updatePlaybackSelection;
+    const melodyToggle = host.querySelector<HTMLInputElement>('[data-l="melody"]')!;
+    const melodySound = host.querySelector<HTMLSelectElement>('[data-l="melody-sound"]')!;
+    if (!melodySound.options.length) melodySound.parentElement!.hidden = true;
+    melodyToggle.disabled = !melodyLane;
+    if (!melodyLane) host.querySelectorAll<HTMLInputElement>('[data-l="timing"] input,[data-l="rest-threshold"],[data-l="active-gap"]').forEach((input) => { input.disabled = true; });
+    if (melodyLane) melodyToggle.parentElement!.append(document.createTextNode(` · ${melodyLane.label}`));
+    const voiceList = host.querySelector<HTMLElement>('[data-l="voice-list"]')!;
+    for (const lane of lanes) {
+      const label = document.createElement("label");
+      const input = document.createElement("input");
+      input.type = "checkbox";
+      input.value = lane.id;
+      input.checked = selectedLaneIds.has(lane.id);
+      input.dataset.lane = lane.id;
+      label.append(input, document.createTextNode(` ${lane.label}`));
+      voiceList.append(label);
+    }
+    const updateLaneVisibility = (): void => {
+      const scope = staffScope.value as StaffScope;
+      lanes.forEach((lane) => { const input = voiceList.querySelector<HTMLInputElement>(`[data-lane="${CSS.escape(lane.id)}"]`); if (input?.parentElement) input.parentElement.hidden = !laneInScope(lane, scope); });
+    };
+    const updatePlaybackSelection = (): void => {
+      audio?.setSelection({ mode: playbackMode.value as PlaybackMode, voices: 1, scope: staffScope.value as StaffScope }, lanes, selectedLaneIds);
+      updateLaneVisibility();
+    };
+    playbackMode.onchange = () => { if (playbackMode.value === "chords") melodyToggle.checked = false; updatePlaybackSelection(); };
     staffScope.onchange = updatePlaybackSelection;
+    voiceList.onchange = () => {
+      selectedLaneIds = new Set([...voiceList.querySelectorAll<HTMLInputElement>("[data-lane]:checked")].map((input) => input.value));
+      melodyToggle.checked = Boolean(melodyLane && selectedLaneIds.size === 1 && selectedLaneIds.has(melodyLane.id));
+      updatePlaybackSelection();
+    };
+    melodyToggle.onchange = () => {
+      if (!melodyLane) return;
+      if (melodyToggle.checked) {
+        selectedLaneIds = new Set([melodyLane.id]);
+        playbackMode.value = "solo";
+      } else selectedLaneIds.delete(melodyLane.id);
+      voiceList.querySelectorAll<HTMLInputElement>("[data-lane]").forEach((input) => { input.checked = selectedLaneIds.has(input.value); });
+      updatePlaybackSelection();
+    };
+    updatePlaybackSelection();
     host.querySelector<HTMLElement>('[data-l="staff-evidence"]')!.hidden = hasExplicitStaffIdentity(manifest.timeline);
     const mapping = (() => { try { return JSON.parse(root.dataset.learningMapping || "{}"); } catch { return {}; } })() as Record<string, unknown>;
     const accordionConfig = isVerifiedAccordionConfig(mapping.accordion) ? mapping.accordion : null;
     let selectedInstrument = allowed.values().next().value ?? "piano";
+    auditionEngine = new SampleInstrumentEngine();
+    const audition = {
+      noteOn: (midi: number): void => {
+        auditionEngine?.releaseAll();
+        auditionEngine?.setInstrument(selectedInstrument as InstrumentName);
+        void auditionEngine?.enable([midi]).then(() => auditionEngine?.play({ midi, velocity: 0.78, durationSeconds: 1.5 })).catch((error) => { host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = errorMessage(error); });
+      },
+      noteOff: (): void => auditionEngine?.releaseAll(),
+    };
     type FollowVisualizer = TimelineVisualizer & { setFollow(enabled: boolean): void };
     type HandedVisualizer = TimelineVisualizer & { setLeftHanded(enabled: boolean): void };
     let piano: FollowVisualizer | null = null;
@@ -198,16 +269,17 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       let next: TimelineVisualizer;
       if (name === "piano") {
         const { PianoRangeVisualizer } = await import("./piano-visualizer");
-        next = new PianoRangeVisualizer(visualRoot, manifest.timeline.notes);
+        next = new PianoRangeVisualizer(visualRoot, manifest.timeline.notes, false, audition);
       } else if (name === "guitar") {
         const { GuitarVisualizer } = await import("./guitar-visualizer");
-        next = new GuitarVisualizer(visualRoot);
+        next = new GuitarVisualizer(visualRoot, undefined, audition);
       } else {
         const { AccordionVisualizer } = await import("./accordion-visualizer");
         next = new AccordionVisualizer(visualRoot, name === "accordion" ? accordionConfig : null);
       }
       if (selectedInstrument !== name) return;
       audio?.setInstrument(name as "piano" | "guitar" | "accordion");
+      auditionEngine?.setInstrument(name as InstrumentName);
       visualizer = next;
       if (name === "piano") piano = next as FollowVisualizer;
       if (name === "guitar") guitar = next as HandedVisualizer;
@@ -215,6 +287,12 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       visualizer.mount();
       host.querySelectorAll<HTMLButtonElement>("[data-instrument]").forEach((button) => button.setAttribute("aria-selected", String(button.dataset.instrument === name)));
       host.querySelector<HTMLElement>('[data-l="left-label"]')!.hidden = name !== "guitar";
+      if (name === "accordion") host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = "Accordion audio unavailable.";
+      const sound = host.querySelector<HTMLSelectElement>('[data-l="melody-sound"]');
+      if (sound && (name === "piano" || name === "guitar")) sound.value = name;
+      if (scheduler?.snapshot().playing) {
+        try { await audio?.enable(); } catch (error) { host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = errorMessage(error); }
+      }
     };
     await selectInstrument(selectedInstrument);
     const instrumentTabs = [...host.querySelectorAll<HTMLButtonElement>("[data-instrument]")];
@@ -246,11 +324,13 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     seek.oninput = () => { playbackCoordinator.activate(transportId); scheduler?.seek(Number(seek.value)); audio?.reset(); };
     host.querySelector<HTMLInputElement>('[data-l="tempo"]')!.oninput = (event) => { const input = event.currentTarget as HTMLInputElement; scheduler?.setTempo(Number(input.value)); host.querySelector<HTMLOutputElement>('[data-l="tempo-value"]')!.value = `${input.value}%`; };
     const scorePositionRequest = (event: Event): void => {
-      const ratio = Number((event as CustomEvent<{ ratio: number }>).detail.ratio);
-      if (!Number.isFinite(ratio)) return;
+      const detail = (event as CustomEvent<ScorePositionRequest>).detail;
+      if (!Number.isInteger(detail?.measureIndex) || !Number.isFinite(detail.relativePosition)) return;
+      const location = resolveCanonicalScoreLocation(canonicalTimeline, detail);
       playbackCoordinator.activate(transportId);
-      scheduler?.seek(resolveCanonicalScorePosition(manifest.timeline, ratio));
+      scheduler?.seek(timingMode === "active" ? activeTiming.originalToActive(location.seconds) : location.seconds);
       audio?.reset();
+      if (location.cursorStep != null) root.dispatchEvent(new CustomEvent("learning-score-cursor", { detail: { cursorStep: location.cursorStep } }));
     };
     root.addEventListener("score-position-request", scorePositionRequest);
     removeScorePositionListener = () => root.removeEventListener("score-position-request", scorePositionRequest);
@@ -317,6 +397,10 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
 
     practice.onclick = async () => {
       if (!exercise || !(await hasPracticeAccess())) { denyPractice(); return; }
+      if (timingMode === "active") {
+        host.querySelector<HTMLInputElement>('input[name="learning-timing"][value="original"]')!.checked = true;
+        await switchTiming("original");
+      }
       recorder.clear(); practicing = true; reliable = scheduler!.snapshot().reliable; practiceStartedAtMs = performance.now();
       exercise.mode = host.querySelector<HTMLSelectElement>('[data-l="practice-mode"]')!.value as Exercise["mode"];
       scheduler!.seek(manifest.timeline.measures[exercise.fromMeasure]?.startSeconds ?? 0);
@@ -394,7 +478,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       await refreshHistory();
     };
 
-    scheduler.addEventListener("frame", (event) => {
+    const renderFrame = (event: Event): void => {
       const frame = (event as CustomEvent<SchedulerFrame>).detail;
       reliable = reliable && frame.reliable;
       const active = audio?.selectNotes(frame.active) ?? frame.active;
@@ -404,12 +488,66 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       if (practicing && exercise?.mode === "wait-for-note" && supportsWebMidi() && frame.playing && active.length) { waitingForMidi = true; scheduler?.pause(); }
       const cursorNote = active[0] ?? upcoming[0];
       if (cursorNote) root.dispatchEvent(new CustomEvent("learning-score-cursor", { detail: { cursorStep: cursorNote.cursorStep ?? manifest.timeline.notes.indexOf(cursorNote) } }));
-      host.querySelector<HTMLOutputElement>('[data-l="position"]')!.value = `${copy.measure} ${(frame.measure?.index ?? 0) + 1} · ${copy.beat} ${Math.max(1, Math.floor(frame.beat))}`;
-      host.querySelector<HTMLOutputElement>('[data-l="time-value"]')!.value = `${formatClock(frame.position)} / ${formatClock(frame.duration)}`;
+      const originalPosition = timingMode === "active" ? activeTiming.activeToOriginal(frame.position) : frame.position;
+      const originalMeasure = canonicalTimeline.measures.find((measure) => originalPosition >= measure.startSeconds && originalPosition < measure.startSeconds + measure.durationSeconds) ?? canonicalTimeline.measures.at(-1) ?? null;
+      const originalBeat = originalMeasure ? 1 + (originalPosition - originalMeasure.startSeconds) / Math.max(0.001, originalMeasure.durationSeconds / originalMeasure.beats) : 1;
+      host.querySelector<HTMLOutputElement>('[data-l="position"]')!.value = `${copy.measure} ${(originalMeasure?.index ?? 0) + 1} · ${copy.beat} ${Math.max(1, Math.floor(originalBeat))}`;
+      host.querySelector<HTMLOutputElement>('[data-l="time-value"]')!.value = timingMode === "active"
+        ? `ACTIVE ${formatClock(frame.position)} / ${formatClock(frame.duration)} · ${copy.originalPosition}: ${formatClock(originalPosition)}`
+        : `${copy.original.toUpperCase()} ${formatClock(frame.position)} / ${formatClock(frame.duration)}`;
       seek.value = String(frame.position);
-      host.querySelector<HTMLElement>('[data-l="notes"]')!.textContent = `${copy.current}: ${active.map((note) => `${noteLabel(note.midi)}${note.hand === "unknown" ? "" : ` (${note.hand})`}`).join(" + ") || "—"} · ${copy.upcoming}: ${upcoming.slice(0, 4).map((note) => noteLabel(note.midi)).join(", ") || "—"}`;
-    });
+      const displayActive = timingMode === "active" ? frame.active : active;
+      const displayUpcoming = timingMode === "active" ? frame.upcoming : upcoming;
+      let instrumentDetail = "";
+      if (selectedInstrument === "guitar" && displayActive[0]) {
+        const candidate = guitarCandidates(displayActive[0])[0];
+        instrumentDetail = candidate ? ` · String ${candidate.string} · Fret ${candidate.fret}` : ` · ${copy.outOfGuitarRange}`;
+      }
+      const prefix = melodyToggle.checked || timingMode === "active" ? `VOCAL MELODY\n` : "";
+      host.querySelector<HTMLElement>('[data-l="notes"]')!.textContent = `${prefix}${copy.current}: ${displayActive.map((note) => noteLabel(note.midi)).join(" ") || "—"}${instrumentDetail} · ${copy.upcoming}: ${displayUpcoming.slice(0, 7).map((note) => noteLabel(note.midi)).join(" ") || "—"}`;
+      const harmony = activeHarmonyAt(harmonies, originalPosition);
+      host.querySelector<HTMLElement>('[data-l="harmony"]')!.textContent = harmony ? `${copy.currentChord}: ${harmony.label} · ${harmony.pitches.map(noteLabel).join(" ")} · ${harmony.inferred ? copy.harmonyInferred : copy.harmonySource}` : `${copy.currentChord}: —`;
+    };
+    scheduler.addEventListener("frame", renderFrame);
 
+    const switchTiming = async (next: "original" | "active"): Promise<void> => {
+      if (!scheduler || !audio || next === timingMode) return;
+      const snapshot = scheduler.snapshot();
+      const canonicalPosition = timingMode === "active" ? activeTiming.activeToOriginal(snapshot.position) : snapshot.position;
+      const wasPlaying = snapshot.playing;
+      scheduler.removeEventListener("frame", renderFrame);
+      scheduler.pause();
+      audio.destroy();
+      scheduler.destroy();
+      timingMode = next;
+      if (next === "active") {
+        if (!melodyLane) return;
+        melodyToggle.checked = true;
+        playbackMode.value = "solo";
+        selectedLaneIds = new Set([melodyLane.id]);
+        voiceList.querySelectorAll<HTMLInputElement>("[data-lane]").forEach((input) => { input.checked = selectedLaneIds.has(input.value); });
+      }
+      const timeline = next === "active" ? activeTiming.timeline : canonicalTimeline;
+      playbackCoordinator.activate(transportId);
+      scheduler = new CanonicalScheduler(timeline);
+      audio = new SchedulerAudioAdapter(scheduler);
+      audio.setInstrument(selectedInstrument as InstrumentName);
+      audio.setHarmonicTimeline(harmonies);
+      updatePlaybackSelection();
+      scheduler.addEventListener("frame", renderFrame);
+      scheduler.seek(next === "active" ? activeTiming.originalToActive(canonicalPosition) : canonicalPosition);
+      seek.max = String(timeline.durationSeconds);
+      if (wasPlaying) { try { await audio.enable(); scheduler.play(); } catch (error) { host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = errorMessage(error); } }
+    };
+    host.querySelectorAll<HTMLInputElement>('input[name="learning-timing"]').forEach((input) => { input.onchange = () => { if (input.checked) void switchTiming(input.value as "original" | "active"); }; });
+    const rebuildActiveTiming = (): void => {
+      const options = { restThresholdSeconds: Number(host.querySelector<HTMLInputElement>('[data-l="rest-threshold"]')!.value), compressedGapSeconds: Number(host.querySelector<HTMLInputElement>('[data-l="active-gap"]')!.value) };
+      if (timingMode === "active") void switchTiming("original").then(() => { activeTiming = createActiveMelodyTimeline(canonicalTimeline, melodyLane?.notes ?? [], options); return switchTiming("active"); });
+      else activeTiming = createActiveMelodyTimeline(canonicalTimeline, melodyLane?.notes ?? [], options);
+    };
+    host.querySelector<HTMLInputElement>('[data-l="rest-threshold"]')!.onchange = rebuildActiveTiming;
+    host.querySelector<HTMLInputElement>('[data-l="active-gap"]')!.onchange = rebuildActiveTiming;
+    melodySound.onchange = (event) => { const name = (event.currentTarget as HTMLSelectElement).value; void selectInstrument(name); };
     host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = usingLocalAdapter ? (appConfig.hasLearningApi ? copy.apiFallback : copy.localAdapter) : copy.apiConnected;
     if (!(await hasPracticeAccess())) {
       prepare.disabled = true;
@@ -424,6 +562,6 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
   }
 
   return () => {
-    controller.abort(); disconnectMidi(); unregisterTransport(); removeScorePositionListener(); audio?.destroy(); scheduler?.destroy(); visualizer?.destroy(); scoreCleanup(); host.remove();
+    controller.abort(); disconnectMidi(); unregisterTransport(); removeScorePositionListener(); audio?.destroy(); scheduler?.destroy(); visualizer?.destroy(); auditionEngine?.destroy(); scoreCleanup(); host.remove();
   };
 }

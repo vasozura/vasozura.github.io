@@ -16,6 +16,12 @@ describe("instrument adapters", () => {
     expect(candidates.every((entry) => entry.confidence === "suggestion")).toBe(true);
   });
 
+  it("keeps vocal pitch exact and reports no guitar position when out of range", () => {
+    const high = { ...manifest.timeline.notes[0], midi: 108 };
+    expect(guitarCandidates(high)).toEqual([]);
+    expect(high.midi).toBe(108);
+  });
+
   it("accepts only an explicitly verified accordion mapping", () => {
     expect(isVerifiedAccordionConfig({
       schema_version: "zura-accordion-mapping/v1",

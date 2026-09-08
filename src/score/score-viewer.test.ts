@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { enableMidiSeek, fetchScoreSource, getScoreCopy, osmdViewerOptions, scoreWidthChanged, shouldMountStandaloneMidi } from "./score-viewer";
+import { enableMidiSeek, fetchScoreSource, getScoreCopy, osmdViewerOptions, scoreTargetsFromGraphicalMeasures, scoreWidthChanged, shouldMountStandaloneMidi } from "./score-viewer";
 
 describe("score viewer MIDI controls", () => {
   it("disables the independent MIDI timer when the canonical learning clock is active", () => {
@@ -29,6 +29,17 @@ describe("score viewer MIDI controls", () => {
 
   it("keeps OSMD resize and page-follow movement under application control", () => {
     expect(osmdViewerOptions).toMatchObject({ autoResize: false, followCursor: false });
+  });
+
+  it("extracts graphical score hit targets and source-authored harmony", () => {
+    const result = scoreTargetsFromGraphicalMeasures([[{
+      PositionAndShape: { AbsolutePosition: { x: 2, y: 3 }, BorderLeft: 0, BorderRight: 12, BorderTop: 0, BorderBottom: 5 },
+      ParentMusicSystem: { Parent: { PositionAndShape: { AbsolutePosition: { x: 0, y: 20 } } } },
+      parentSourceMeasure: { measureListIndex: 4, Duration: { RealValue: 1 } },
+      staffEntries: [{ PositionAndShape: { AbsolutePosition: { x: 7, y: 3 } }, relInMeasureTimestamp: { RealValue: 0.5 }, graphicalChordContainers: [{ GraphicalLabel: { Label: { text: "Am" } } }] }],
+    }]], 10);
+    expect(result.targets[0]).toMatchObject({ measureIndex: 4, left: 20, right: 140, top: 230, bottom: 280 });
+    expect(result.harmonies).toEqual([{ measureIndex: 4, relativePosition: 0.5, label: "Am" }]);
   });
 });
 

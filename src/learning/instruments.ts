@@ -6,6 +6,10 @@ export interface TimelineVisualizer {
   render(active: NoteEvent[], upcoming: NoteEvent[], states?: Map<number, NoteState>): void;
   destroy(): void;
 }
+export interface AuditionCallbacks {
+  noteOn(midi: number): void;
+  noteOff(): void;
+}
 
 export interface GuitarConfig { tuning: number[]; frets: number; leftHanded?: boolean; }
 

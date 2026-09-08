@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { nearestSample, sampledPianoFiles, SampleInstrumentEngine } from "./sample-instrument";
+import { nearestSample, sampledGuitarFiles, sampledPianoFiles, SampleInstrumentEngine } from "./sample-instrument";
 
 function audioParam() {
   return {
@@ -72,6 +72,31 @@ describe("sample instrument", () => {
 
     expect(oscillator.type).toBe("triangle");
     expect(oscillator.start).toHaveBeenCalledWith(2);
+    vi.unstubAllGlobals();
+  });
+
+  it("routes Guitar to the guitar bank and never silently uses piano", async () => {
+    const { context, bufferSource, oscillator } = audioContext();
+    vi.stubGlobal("fetch", vi.fn(async (url: string) => new Response(url.includes("guitar-acoustic") ? new Uint8Array([1]) : null, { status: url.includes("guitar-acoustic") ? 200 : 404 })));
+    const engine = new SampleInstrumentEngine(() => context);
+    engine.setInstrument("guitar");
+    await engine.enable([64]);
+    engine.play({ midi: 64, velocity: 0.8, durationSeconds: 0.4 });
+    expect(sampledGuitarFiles).toEqual(["D2.mp3", "C3.mp3", "C4.mp3", "C5.mp3"]);
+    expect(engine.currentInstrument).toBe("guitar");
+    expect(String(vi.mocked(fetch).mock.calls[0][0])).toContain("guitar-acoustic");
+    expect(bufferSource.start).toHaveBeenCalled();
+    expect(oscillator.start).not.toHaveBeenCalled();
+    vi.unstubAllGlobals();
+  });
+
+  it("reports guitar unavailable instead of falling back to piano", async () => {
+    const { context, oscillator } = audioContext();
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(null, { status: 404 })));
+    const engine = new SampleInstrumentEngine(() => context);
+    engine.setInstrument("guitar");
+    await expect(engine.enable([38])).rejects.toThrow("Guitar audio unavailable");
+    expect(oscillator.start).not.toHaveBeenCalled();
     vi.unstubAllGlobals();
   });
 });
