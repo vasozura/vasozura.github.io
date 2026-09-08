@@ -1789,6 +1789,15 @@ img {
   width: 76px;
 }
 
+.learning-transport-secondary [data-l="pattern-control"] {
+  flex: 1 1 360px;
+}
+
+.learning-transport-secondary [data-l="chord-pattern"] {
+  min-width: 0;
+  max-width: 100%;
+}
+
 .learning-vocal-controls {
   display: flex;
   flex-wrap: wrap;
@@ -1817,6 +1826,11 @@ img {
 .learning-voice-picker [data-l="voice-list"] { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 7px; margin-top: 9px; }
 .learning-voice-picker label { color: var(--paper); }
 .learning-harmony { color: var(--acid); }
+.learning-pattern-status {
+  margin-top: -4px;
+  color: var(--paper);
+  font-variant-numeric: tabular-nums;
+}
 
 .learning-admin-options,
 .learning-instruments,
@@ -2112,6 +2126,7 @@ img {
   .learning-transport-metrics { grid-column: 1 / -1; }
   .learning-transport-secondary { align-items: stretch; }
   .learning-transport-secondary label { width: calc(50% - 5px); }
+  .learning-transport-secondary [data-l="pattern-control"] { width: 100%; flex-basis: 100%; }
   .learning-transport-secondary button { flex: 1 1 auto; }
   .learning-exercise-options { grid-template-columns: 1fr; }
   .learning-practice-actions { grid-template-columns: 1fr; }

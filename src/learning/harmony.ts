@@ -54,17 +54,28 @@ export function parseChordLabel(raw: string): { label: string; root: number; int
 }
 
 function voicing(root: number, intervals: readonly number[], bass: number): number[] {
-  const pitches = intervals.map((interval) => 48 + root + interval).map((midi) => midi > 71 ? midi - 12 : midi).sort((a, b) => a - b);
+  const pitches = intervals.map((interval) => 60 + root + interval).map((midi) => midi > 76 ? midi - 12 : midi).sort((a, b) => a - b);
   const bassMidi = 36 + bass + (36 + bass < 40 ? 12 : 0);
   return [...new Set([bassMidi, ...pitches])].slice(0, 4);
 }
 
-function guitarShape(label: string, pitchClasses: number[]): GuitarChordPosition[] {
+function guitarShape(label: string, pitchClasses: number[], bassPitchClass: number): GuitarChordPosition[] {
   const shape = chordShapes[label.replace(/\/.*$/, "")];
-  if (shape) return shape.flatMap((fret, index) => fret < 0 ? [] : [{ string: 6 - index, fret, midi: openStrings[index] + fret }]);
-  const used = new Set<number>();
+  if (shape) {
+    const positions = shape.flatMap((fret, index) => fret < 0 ? [] : [{ string: 6 - index, fret, midi: openStrings[index] + fret }]);
+    const inversionBass = positions.findIndex((position) => position.midi % 12 === bassPitchClass);
+    return inversionBass > 0 ? positions.slice(inversionBass) : positions;
+  }
+  const used = new Set<number>([bassPitchClass]);
   const result: GuitarChordPosition[] = [];
-  for (let index = 0; index < openStrings.length; index += 1) {
+  let bassStringIndex = 0;
+  outer: for (let index = 0; index < openStrings.length; index += 1) {
+    for (let fret = 0; fret <= 12; fret += 1) {
+      const midi = openStrings[index] + fret;
+      if (midi % 12 === bassPitchClass) { result.push({ string: 6 - index, fret, midi }); bassStringIndex = index; break outer; }
+    }
+  }
+  for (let index = bassStringIndex + 1; index < openStrings.length; index += 1) {
     for (let fret = 0; fret <= 12; fret += 1) {
       const midi = openStrings[index] + fret;
       if (pitchClasses.includes(midi % 12) && !used.has(midi % 12)) { result.push({ string: 6 - index, fret, midi }); used.add(midi % 12); break; }
@@ -77,8 +88,8 @@ function guitarShape(label: string, pitchClasses: number[]): GuitarChordPosition
 function makeEvent(label: string, startSeconds: number, durationSeconds: number, inferred: boolean, confidence: number): HarmonicEvent | null {
   const parsed = parseChordLabel(label);
   if (!parsed) return null;
-  const pitchClasses = parsed.intervals.map((interval) => (parsed.root + interval) % 12);
-  return { id: `chord-${startSeconds.toFixed(4)}-${parsed.label}`, startSeconds, durationSeconds, label: parsed.label, pitches: voicing(parsed.root, parsed.intervals, parsed.bass), pitchClasses, bassPitchClass: parsed.bass, inferred, confidence, guitar: guitarShape(parsed.label, pitchClasses) };
+  const pitchClasses = [...new Set([...parsed.intervals.map((interval) => (parsed.root + interval) % 12), parsed.bass])];
+  return { id: `chord-${startSeconds.toFixed(4)}-${parsed.label}`, startSeconds, durationSeconds, label: parsed.label, pitches: voicing(parsed.root, parsed.intervals, parsed.bass), pitchClasses, bassPitchClass: parsed.bass, inferred, confidence, guitar: guitarShape(parsed.label, pitchClasses, parsed.bass) };
 }
 
 function inferWindow(notes: NoteEvent[]): { label: string; confidence: number } | null {

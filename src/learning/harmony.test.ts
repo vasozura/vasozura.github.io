@@ -15,6 +15,12 @@ describe("harmonic timeline", () => {
     expect(result[0]).toMatchObject({ label: "Am", inferred: false, confidence: 1 });
   });
 
+  it("keeps a slash-chord inversion bass lowest in piano and guitar voicings", () => {
+    const inversion = buildHarmonicTimeline(timeline([n("x", 64)]), [{ measureIndex: 0, relativePosition: 0, label: "C/E" }])[0];
+    expect(inversion.pitches[0] % 12).toBe(4);
+    expect([...inversion.guitar].sort((a, b) => a.midi - b.midi)[0].midi % 12).toBe(4);
+  });
+
   it("infers C then G7, ignores a short passing note, and sustains one voicing per change", () => {
     const result = buildHarmonicTimeline(timeline([n("c", 60), n("e", 64), n("g", 67), n("pass", 61, 0.25, 0.05), n("g2", 55, 1), n("b", 59, 1), n("d", 62, 1), n("f", 65, 1)]));
     expect(result.map((entry) => entry.label)).toEqual(["C", "G7"]);

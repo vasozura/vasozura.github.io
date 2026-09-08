@@ -4,6 +4,13 @@ import { SampleInstrumentEngine, type InstrumentName, type InstrumentPlayback } 
 import { selectPlaybackNotes, type PlaybackSelection } from "./playback-selection";
 import { activeHarmonyAt, type HarmonicEvent } from "./harmony";
 import { selectLaneNotes, type VoiceLane } from "./voice-lanes";
+import { resolveChordPatternFrame, type ChordPatternName, type PatternInstrument, type PatternRate } from "./chord-patterns";
+
+export interface ChordPatternStatus {
+  pattern: ChordPatternName;
+  rate: PatternRate;
+  step: string;
+}
 
 export class SchedulerAudioAdapter {
   private played = new Set<string>();
@@ -15,6 +22,13 @@ export class SchedulerAudioAdapter {
   private selectedLaneIds = new Set<string>();
   private harmonies: HarmonicEvent[] = [];
   private selected: NoteEvent[] = [];
+  private instrumentName: PatternInstrument = "piano";
+  private chordPattern: ChordPatternName = "block";
+  private patternRate: PatternRate = "1/8";
+  private pendingPattern: { pattern: ChordPatternName; rate: PatternRate } | null = null;
+  private lastPatternBoundary = "";
+  private lastHarmonyId = "";
+  private patternStatus: ChordPatternStatus = { pattern: "block", rate: "1/8", step: "Block" };
   private readonly frame = (event: Event): void => this.render((event as CustomEvent<SchedulerFrame>).detail);
 
   constructor(
@@ -27,15 +41,20 @@ export class SchedulerAudioAdapter {
   }
 
   setMetronome(enabled: boolean): void { this.metronome = enabled; }
-  setInstrument(instrument: InstrumentName): void { this.instrument.setInstrument(instrument); this.reset(); }
+  setInstrument(instrument: InstrumentName): void { this.instrumentName = instrument; this.instrument.setInstrument(instrument); this.reset(); }
   setSelection(selection: PlaybackSelection, lanes: VoiceLane[] = this.lanes, selectedLaneIds: ReadonlySet<string> = this.selectedLaneIds): void { this.selection = selection; this.lanes = lanes; this.selectedLaneIds = new Set(selectedLaneIds); this.reset(); }
   setHarmonicTimeline(harmonies: HarmonicEvent[]): void { this.harmonies = harmonies; this.reset(); }
+  setChordPattern(pattern: ChordPatternName, rate: PatternRate = this.patternRate): void {
+    if (this.scheduler.snapshot().playing) this.pendingPattern = { pattern, rate };
+    else { this.chordPattern = pattern; this.patternRate = rate; this.pendingPattern = null; this.reset(); }
+  }
+  getChordPatternStatus(): ChordPatternStatus { return { ...this.patternStatus }; }
   selectNotes(notes: NoteEvent[]): NoteEvent[] {
     if (this.selection.mode === "chords") return this.selected;
     if (this.lanes.length) return selectLaneNotes(notes, this.lanes, this.selectedLaneIds);
     return selectPlaybackNotes(notes, this.selection);
   }
-  reset(): void { this.played.clear(); this.lastBeat = -1; this.lastPosition = 0; this.instrument.releaseAll(); }
+  reset(): void { this.played.clear(); this.lastBeat = -1; this.lastPosition = 0; this.lastPatternBoundary = ""; this.lastHarmonyId = ""; this.instrument.releaseAll(); }
 
   destroy(): void {
     this.scheduler.removeEventListener("frame", this.frame);
@@ -47,7 +66,7 @@ export class SchedulerAudioAdapter {
       this.played.clear();
       this.instrument.releaseAll();
     }
-    this.selected = this.selection.mode === "chords" ? this.chordNotes(frame.position) : this.selectNotes(frame.active);
+    this.selected = this.selection.mode === "chords" ? this.chordNotes(frame) : this.selectNotes(frame.active);
     this.selected.forEach((note) => { if (!this.played.has(note.id)) { this.played.add(note.id); this.sound(note, frame.tempoPercent); } });
     const beatLength = 60 / (this.scheduler.timeline.tempos[0]?.bpm ?? 120);
     const beat = frame.measure ? frame.measure.index * frame.measure.beats + Math.floor(frame.beat) : Math.floor(frame.position / beatLength);
@@ -65,11 +84,39 @@ export class SchedulerAudioAdapter {
     this.instrument.metronome();
   }
 
-  private chordNotes(position: number): NoteEvent[] {
-    const harmony = activeHarmonyAt(this.harmonies, position);
+  private chordNotes(frame: SchedulerFrame): NoteEvent[] {
+    const harmony = activeHarmonyAt(this.harmonies, frame.position);
     if (!harmony) return [];
-    const guitar = this.instrument instanceof SampleInstrumentEngine && this.instrument.currentInstrument === "guitar";
-    const pitches = guitar && harmony.guitar.length ? harmony.guitar.map((entry) => entry.midi) : harmony.pitches;
-    return pitches.map((midi, index) => ({ id: `${harmony.id}-${midi}-${index}`, partId: "derived-harmony", measureIndex: this.scheduler.snapshot().measure?.index ?? 0, beat: this.scheduler.snapshot().beat, startSeconds: harmony.startSeconds, durationSeconds: Math.max(0.04, harmony.startSeconds + harmony.durationSeconds - position), midi, velocity: 0.72, hand: "unknown", ...(guitar && harmony.guitar[index] ? { string: harmony.guitar[index].string, fret: harmony.guitar[index].fret } : {}) }));
+    let patternFrame = resolveChordPatternFrame(this.scheduler.timeline, harmony, frame.position, this.chordPattern, this.patternRate, this.instrumentName, frame.tempoPercent);
+    if (this.pendingPattern && (!this.lastPatternBoundary || patternFrame.boundaryKey !== this.lastPatternBoundary)) {
+      this.chordPattern = this.pendingPattern.pattern;
+      this.patternRate = this.pendingPattern.rate;
+      this.pendingPattern = null;
+      this.played.clear();
+      this.instrument.releaseAll();
+      patternFrame = resolveChordPatternFrame(this.scheduler.timeline, harmony, frame.position, this.chordPattern, this.patternRate, this.instrumentName, frame.tempoPercent);
+    }
+    if (harmony.id !== this.lastHarmonyId) {
+      this.played.clear();
+      this.instrument.releaseAll();
+      this.lastHarmonyId = harmony.id;
+    }
+    this.lastPatternBoundary = patternFrame.boundaryKey;
+    this.patternStatus = { pattern: this.chordPattern, rate: this.patternRate, step: patternFrame.stepLabel };
+    const duration = this.chordPattern === "block"
+      ? Math.max(0.04, harmony.startSeconds + harmony.durationSeconds - frame.position)
+      : Math.max(0.04, patternFrame.canonicalStepSeconds * 0.88);
+    return patternFrame.tones.map((tone, index) => ({
+      id: `${patternFrame.eventKey}-${tone.midi}-${index}`,
+      partId: "derived-harmony",
+      measureIndex: frame.measure?.index ?? 0,
+      beat: frame.beat,
+      startSeconds: frame.position,
+      durationSeconds: duration,
+      midi: tone.midi,
+      velocity: tone.role === "Bass" ? 0.76 : 0.7,
+      hand: "unknown",
+      ...(tone.guitar ? { string: tone.guitar.string, fret: tone.guitar.fret } : {}),
+    }));
   }
 }

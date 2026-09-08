@@ -20,6 +20,7 @@ import { createActiveMelodyTimeline } from "./active-melody";
 import { activeHarmonyAt, buildHarmonicTimeline, type ExplicitHarmony } from "./harmony";
 import { SampleInstrumentEngine, type InstrumentName } from "../audio/sample-instrument";
 import { guitarCandidates } from "./instruments";
+import type { ChordPatternName, PatternRate } from "./chord-patterns";
 
 const noteNames = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
 const noteLabel = (midi: number): string => `${noteNames[midi % 12]}${Math.floor(midi / 12) - 1}`;
@@ -92,6 +93,8 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
         <button type="button" data-l="loop">${copy.setLoop}</button><button type="button" data-l="clear-loop">${copy.clearLoop}</button>
         <label>${copy.playbackMode} <select data-l="playback-mode"><option value="chords">${copy.chords}</option><option value="solo">${copy.solo}</option></select></label>
         <label>${copy.staffScope} <select data-l="staff-scope"><option value="both">${copy.both}</option><option value="treble">${copy.treble}</option><option value="bass">${copy.bass}</option></select></label>
+        <label data-l="pattern-control">${copy.pattern} <select data-l="chord-pattern"><option value="block">${copy.block}</option><option value="bass-12321">Bass · 1 2 3 2 1</option><option value="bass-123-bass-123">Bass · 1 2 3 · Bass · 1 2 3</option><option value="bass-1323">Bass · 1 3 2 3</option><option value="bass-321">Bass · 3 2 1</option><option value="up">Up</option><option value="down">Down</option><option value="up-down">Up / Down</option><option value="alberti">Alberti</option></select></label>
+        <label data-l="rate-control">${copy.rate} <select data-l="chord-rate"><option value="1/4">1/4</option><option value="1/8" selected>1/8</option><option value="1/16">1/16</option></select></label>
       </div>
       <div class="learning-vocal-controls" data-l="vocal-controls">
         <label class="learning-vocal-quick"><input type="checkbox" data-l="melody"> <strong>${copy.vocalMelody}</strong></label>
@@ -110,6 +113,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     </div>
     <div class="learning-view-options"><label><input type="checkbox" data-l="follow"> ${copy.follow}</label><label data-l="left-label" hidden><input type="checkbox" data-l="left"> ${copy.leftHanded}</label></div>
     <p data-l="harmony" class="learning-harmony">${copy.currentChord}: —</p>
+    <p data-l="pattern-status" class="learning-pattern-status" aria-live="polite">${copy.pattern}: ${copy.block} · ${copy.patternStep}: ${copy.block}</p>
     <p data-l="notes" class="learning-current">${copy.current}: — · ${copy.upcoming}: —</p>
     <div class="learning-visualizer-panel"><div data-l="visualizer" aria-live="off"></div></div>
     <section class="learning-practice" aria-labelledby="practice-title">
@@ -167,9 +171,12 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     let selectedLaneIds = new Set<string>(melodyLane ? [melodyLane.id] : lanes[0] ? [lanes[0].id] : []);
     const explicitHarmonies = (() => { try { return JSON.parse(root.dataset.scoreHarmonies || "[]") as ExplicitHarmony[]; } catch { return []; } })();
     const harmonies = buildHarmonicTimeline(canonicalTimeline, explicitHarmonies);
+    let chordPattern: ChordPatternName = "block";
+    let chordRate: PatternRate = "1/8";
     scheduler = new CanonicalScheduler(canonicalTimeline);
     audio = new SchedulerAudioAdapter(scheduler);
     audio.setHarmonicTimeline(harmonies);
+    audio.setChordPattern(chordPattern, chordRate);
     const transportId = `learning-${songId}`;
     unregisterTransport = playbackCoordinator.register(transportId, {
       canPlay: () => Boolean(scheduler?.timeline.notes.length),
@@ -192,6 +199,10 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     host.querySelector<HTMLOutputElement>('[data-l="time-value"]')!.value = `00:00 / ${formatClock(manifest.timeline.durationSeconds)}`;
     const playbackMode = host.querySelector<HTMLSelectElement>('[data-l="playback-mode"]')!;
     const staffScope = host.querySelector<HTMLSelectElement>('[data-l="staff-scope"]')!;
+    const patternControl = host.querySelector<HTMLElement>('[data-l="pattern-control"]')!;
+    const rateControl = host.querySelector<HTMLElement>('[data-l="rate-control"]')!;
+    const patternSelect = host.querySelector<HTMLSelectElement>('[data-l="chord-pattern"]')!;
+    const rateSelect = host.querySelector<HTMLSelectElement>('[data-l="chord-rate"]')!;
     const melodyToggle = host.querySelector<HTMLInputElement>('[data-l="melody"]')!;
     const melodySound = host.querySelector<HTMLSelectElement>('[data-l="melody-sound"]')!;
     if (!melodySound.options.length) melodySound.parentElement!.hidden = true;
@@ -215,6 +226,9 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     };
     const updatePlaybackSelection = (): void => {
       audio?.setSelection({ mode: playbackMode.value as PlaybackMode, voices: 1, scope: staffScope.value as StaffScope }, lanes, selectedLaneIds);
+      patternControl.hidden = playbackMode.value !== "chords";
+      rateControl.hidden = playbackMode.value !== "chords";
+      host.querySelector<HTMLElement>('[data-l="pattern-status"]')!.hidden = playbackMode.value !== "chords";
       updateLaneVisibility();
     };
     playbackMode.onchange = () => { if (playbackMode.value === "chords") melodyToggle.checked = false; updatePlaybackSelection(); };
@@ -233,6 +247,13 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       voiceList.querySelectorAll<HTMLInputElement>("[data-lane]").forEach((input) => { input.checked = selectedLaneIds.has(input.value); });
       updatePlaybackSelection();
     };
+    const updateChordPattern = (): void => {
+      chordPattern = patternSelect.value as ChordPatternName;
+      chordRate = rateSelect.value as PatternRate;
+      audio?.setChordPattern(chordPattern, chordRate);
+    };
+    patternSelect.onchange = updateChordPattern;
+    rateSelect.onchange = updateChordPattern;
     updatePlaybackSelection();
     host.querySelector<HTMLElement>('[data-l="staff-evidence"]')!.hidden = hasExplicitStaffIdentity(manifest.timeline);
     const mapping = (() => { try { return JSON.parse(root.dataset.learningMapping || "{}"); } catch { return {}; } })() as Record<string, unknown>;
@@ -507,6 +528,9 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       host.querySelector<HTMLElement>('[data-l="notes"]')!.textContent = `${prefix}${copy.current}: ${displayActive.map((note) => noteLabel(note.midi)).join(" ") || "—"}${instrumentDetail} · ${copy.upcoming}: ${displayUpcoming.slice(0, 7).map((note) => noteLabel(note.midi)).join(" ") || "—"}`;
       const harmony = activeHarmonyAt(harmonies, originalPosition);
       host.querySelector<HTMLElement>('[data-l="harmony"]')!.textContent = harmony ? `${copy.currentChord}: ${harmony.label} · ${harmony.pitches.map(noteLabel).join(" ")} · ${harmony.inferred ? copy.harmonyInferred : copy.harmonySource}` : `${copy.currentChord}: —`;
+      const pattern = audio?.getChordPatternStatus();
+      const patternName = [...patternSelect.options].find((option) => option.value === pattern?.pattern)?.text ?? copy.block;
+      host.querySelector<HTMLElement>('[data-l="pattern-status"]')!.textContent = `${copy.pattern}: ${patternName} · ${copy.rate}: ${pattern?.rate ?? chordRate} · ${copy.patternStep}: ${pattern?.step ?? "—"}`;
     };
     scheduler.addEventListener("frame", renderFrame);
 
@@ -533,6 +557,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       audio = new SchedulerAudioAdapter(scheduler);
       audio.setInstrument(selectedInstrument as InstrumentName);
       audio.setHarmonicTimeline(harmonies);
+      audio.setChordPattern(chordPattern, chordRate);
       updatePlaybackSelection();
       scheduler.addEventListener("frame", renderFrame);
       scheduler.seek(next === "active" ? activeTiming.originalToActive(canonicalPosition) : canonicalPosition);
