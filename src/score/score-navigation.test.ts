@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import fixture from "../learning/fixtures/complex-score.json";
 import type { ScoreManifest } from "../learning/contracts";
-import { clientToScorePoint, logicalPageState, nearestScorePosition, resolveCanonicalScoreLocation, resolveCanonicalScorePosition } from "./score-navigation";
+import { clientToScorePoint, learningMarkerTarget, logicalPageState, nearestScorePosition, resolveCanonicalScoreLocation, resolveCanonicalScorePosition } from "./score-navigation";
 
 describe("score navigation", () => {
   it("paginates a single tall OSMD surface logically", () => {
@@ -41,5 +41,16 @@ describe("score navigation", () => {
     const measure = timeline.measures.find((entry) => timeline.notes.some((note) => note.measureIndex === entry.index))!;
     const location = resolveCanonicalScoreLocation(timeline, { measureIndex: measure.index, relativePosition: 0.5 });
     expect([measure.startSeconds, ...timeline.notes.filter((note) => note.measureIndex === measure.index).map((note) => note.startSeconds)]).toContain(location.seconds);
+  });
+
+  it("anchors the learning marker to the exact staff entry and nearest notehead", () => {
+    const targets = [0, 1].map((staffIndex) => ({ measureIndex: 3, staffIndex, left: 0, right: 100, top: staffIndex * 50, bottom: staffIndex * 50 + 40, entries: [
+      { x: 20, y: staffIndex * 50 + 20, left: 16, right: 24, top: staffIndex * 50 + 14, bottom: staffIndex * 50 + 26, relativePosition: 0.25, midi: 60 },
+      { x: 60, y: staffIndex * 50 + 20, left: 56, right: 64, top: staffIndex * 50 + 14, bottom: staffIndex * 50 + 26, relativePosition: 0.75, midi: 67 },
+    ] }));
+    const target = learningMarkerTarget({ noteId: "learning-15", measureIndex: 3, staffIndex: 1, relativePosition: 0.72, midi: 67 }, targets);
+    expect(target?.measure.staffIndex).toBe(1);
+    expect(target?.entryIndex).toBe(1);
+    expect(target?.entry.midi).toBe(67);
   });
 });

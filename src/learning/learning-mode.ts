@@ -16,12 +16,14 @@ import { playbackCoordinator } from "../audio/playback-coordinator";
 import { resolveCanonicalScoreLocation, type ScorePositionRequest } from "../score/score-navigation";
 import { mountMidiLab } from "./midi-lab";
 import { hasExplicitStaffIdentity, type PlaybackMode, type StaffScope } from "./playback-selection";
-import { buildVoiceLanes, laneInScope, selectMelodyLane } from "./voice-lanes";
-import { createActiveMelodyTimeline } from "./active-melody";
+import { buildVoiceLanes, laneInScope, selectMelodyLane, type VoiceLane } from "./voice-lanes";
+import { compactLearningMelody, composeLearningMelody, replaceLearningSegmentSource, retainLearningSegmentRest, type LearningMelody } from "./learning-melody";
 import { activeHarmonyAt, buildHarmonicTimeline, type ExplicitHarmony } from "./harmony";
 import { SampleInstrumentEngine, type InstrumentName } from "../audio/sample-instrument";
 import { guitarCandidates } from "./instruments";
 import type { ChordPatternName, PatternRate } from "./chord-patterns";
+import type { InspectedMidiTrack } from "./midi-inspector";
+import { MelodyScoreView } from "./melody-score";
 
 const noteNames = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
 const noteLabel = (midi: number): string => `${noteNames[midi % 12]}${Math.floor(midi / 12) - 1}`;
@@ -92,19 +94,21 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
         <label>${copy.loopFrom} <input data-l="loop-a" type="number" min="1" value="1"></label>
         <label>${copy.to} <input data-l="loop-b" type="number" min="1" value="1"></label>
         <button type="button" data-l="loop">${copy.setLoop}</button><button type="button" data-l="clear-loop">${copy.clearLoop}</button>
-        <label>${copy.playbackMode} <select data-l="playback-mode"><option value="chords">${copy.chords}</option><option value="solo">${copy.solo}</option></select></label>
-        <label>${copy.staffScope} <select data-l="staff-scope"><option value="both">${copy.both}</option><option value="treble">${copy.treble}</option><option value="bass">${copy.bass}</option></select></label>
+        <label class="learning-legacy-control">${copy.playbackMode} <select data-l="playback-mode"><option value="solo">${copy.solo}</option><option value="chords">${copy.chords}</option></select></label>
+        <label class="learning-legacy-control">${copy.staffScope} <select data-l="staff-scope"><option value="both">${copy.both}</option><option value="treble">${copy.treble}</option><option value="bass">${copy.bass}</option></select></label>
         <label data-l="pattern-control">${copy.pattern} <select data-l="chord-pattern"><option value="block">${copy.block}</option><option value="bass-12321">Bass · 1 2 3 2 1</option><option value="bass-123-bass-123">Bass · 1 2 3 · Bass · 1 2 3</option><option value="bass-1323">Bass · 1 3 2 3</option><option value="bass-321">Bass · 3 2 1</option><option value="up">Up</option><option value="down">Down</option><option value="up-down">Up / Down</option><option value="alberti">Alberti</option></select></label>
         <label data-l="rate-control">${copy.rate} <select data-l="chord-rate"><option value="1/4">1/4</option><option value="1/8" selected>1/8</option><option value="1/16">1/16</option></select></label>
       </div>
       <div class="learning-vocal-controls" data-l="vocal-controls">
-        <label class="learning-vocal-quick"><input type="checkbox" data-l="melody"> <strong>${copy.vocalMelody}</strong></label>
-        <fieldset data-l="timing"><legend>${copy.timing}</legend><label><input type="radio" name="learning-timing" value="original" checked> ${copy.original}</label><label><input type="radio" name="learning-timing" value="active"> ${copy.active}</label></fieldset>
+        <fieldset class="learning-primary-modes"><legend>Playback layers</legend><label><input type="checkbox" data-l="melody" checked> <strong>Melody</strong></label><label><input type="checkbox" data-l="chords-layer"> <strong>Chords</strong></label></fieldset>
+        <fieldset data-l="timing"><legend>Study Gap</legend><label><input type="radio" name="learning-timing" value="original" checked> Normal</label><label><input type="radio" name="learning-timing" value="active"> Compact</label></fieldset>
         <label>${copy.restThreshold} <input data-l="rest-threshold" type="number" min="0.3" max="5" step="0.1" value="0.6"> s</label>
-        <label>${copy.activeGap} <input data-l="active-gap" type="number" min="0.05" max="0.5" step="0.05" value="0.2"> s</label>
+        <label>Compact gap <input data-l="active-gap" type="number" min="0.3" max="0.45" step="0.05" value="0.4"> s</label>
         <label>${copy.melodySound} <select data-l="melody-sound">${allowed.has("piano") ? `<option value="piano">${copy.piano}</option>` : ""}${allowed.has("guitar") ? `<option value="guitar">${copy.guitar}</option>` : ""}</select></label>
+        <div class="learning-mix-levels"><label>Melody <input data-l="melody-level" type="range" min="0" max="100" value="90"></label><label>Chords <input data-l="chords-level" type="range" min="0" max="100" value="62"></label><label>Metronome <input data-l="metronome-level" type="range" min="0" max="100" value="55"></label></div>
       </div>
-      <details class="learning-voice-picker"><summary>${copy.sourceVoices}</summary><div data-l="voice-list"></div></details>
+      <details class="learning-voice-picker"><summary>Advanced / source voices</summary><div data-l="voice-list"></div></details>
+      <details class="learning-segment-map"><summary>Learning Melody segment map</summary><div data-l="segment-map"></div><p data-l="continuity"></p></details>
       <p data-l="staff-evidence" class="learning-staff-evidence" hidden>${copy.inferredStaff}</p>
     </div>
     <div class="learning-instruments" role="tablist" aria-label="${copy.instrumentView}">
@@ -116,8 +120,9 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     <p data-l="harmony" class="learning-harmony">${copy.currentChord}: —</p>
     <p data-l="pattern-status" class="learning-pattern-status" aria-live="polite">${copy.pattern}: ${copy.block} · ${copy.patternStep}: ${copy.block}</p>
     <p data-l="notes" class="learning-current">${copy.current}: — · ${copy.upcoming}: —</p>
+    <section class="learning-melody-score" aria-labelledby="melody-score-title"><div class="learning-melody-score-heading"><h4 id="melody-score-title">LEARNING MELODY</h4><div><button type="button" data-l="score-melody" aria-pressed="true">Melody score</button><button type="button" data-l="score-full" aria-pressed="false">Full score</button><button type="button" data-l="marker" aria-pressed="true">Marker</button></div></div><div data-l="melody-score"></div></section>
     <div class="learning-visualizer-panel"><div data-l="visualizer" aria-live="off"></div></div>
-    <div data-l="midi-lab"></div>
+    <details class="learning-midi-advanced"><summary>Advanced / MIDI Lab</summary><div data-l="midi-lab"></div></details>
     <section class="learning-practice" aria-labelledby="practice-title">
       <h4 id="practice-title">${copy.practice}</h4>
       <div class="learning-exercise-options">
@@ -169,17 +174,19 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     const canonicalTimeline = manifest.timeline;
     const lanes = buildVoiceLanes(manifest);
     const melodyLane = selectMelodyLane(manifest, lanes);
-    let activeTiming = createActiveMelodyTimeline(canonicalTimeline, melodyLane?.notes ?? []);
+    let learningMelody = composeLearningMelody(canonicalTimeline, lanes, { primaryLane: melodyLane });
+    let activeTiming = compactLearningMelody(learningMelody);
     let timingMode: "original" | "active" = "original";
     let selectedLaneIds = new Set<string>(melodyLane ? [melodyLane.id] : lanes[0] ? [lanes[0].id] : []);
     const explicitHarmonies = (() => { try { return JSON.parse(root.dataset.scoreHarmonies || "[]") as ExplicitHarmony[]; } catch { return []; } })();
     const harmonies = buildHarmonicTimeline(canonicalTimeline, explicitHarmonies);
     let chordPattern: ChordPatternName = "block";
     let chordRate: PatternRate = "1/8";
-    scheduler = new CanonicalScheduler(canonicalTimeline);
+    scheduler = new CanonicalScheduler(learningMelody.timeline);
     audio = new SchedulerAudioAdapter(scheduler);
     audio.setHarmonicTimeline(harmonies);
     audio.setChordPattern(chordPattern, chordRate);
+    audio.setLearningLayers({ melody: true, chords: false }, learningMelody.notes);
     const transportId = `learning-${songId}`;
     unregisterTransport = playbackCoordinator.register(transportId, {
       canPlay: () => Boolean(scheduler?.timeline.notes.length),
@@ -193,10 +200,15 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     });
     const recorder = new MidiAttemptRecorder();
     const visualRoot = host.querySelector<HTMLElement>('[data-l="visualizer"]')!;
+    const melodyScore = new MelodyScoreView(host.querySelector<HTMLElement>('[data-l="melody-score"]')!, learningMelody.notes);
+    melodyScore.mount();
+    let applySessionMelody: (track: InspectedMidiTrack) => void = () => undefined;
+    let applyGapFill: (track: InspectedMidiTrack) => void = () => undefined;
     midiLabCleanup = await mountMidiLab(host.querySelector<HTMLElement>('[data-l="midi-lab"]')!, {
       canonicalUrl: midiUrl,
       canonicalTimeline: manifest.timeline,
-      onSessionMelody: (track) => { host.dataset.sessionMelody = `${track.sourceName}:${track.trackIndex}`; },
+      onSessionMelody: (track) => { host.dataset.sessionMelody = `${track.sourceName}:${track.trackIndex}`; applySessionMelody(track); },
+      onGapFill: (track) => { host.dataset.gapFillSource = `${track.sourceName}:${track.trackIndex}`; applyGapFill(track); },
     });
     const maxMeasure = Math.max(1, manifest.timeline.measures.length);
     host.querySelectorAll<HTMLInputElement>('[data-l="loop-a"],[data-l="loop-b"],[data-l="exercise-a"],[data-l="exercise-b"]').forEach((input) => { input.max = String(maxMeasure); });
@@ -212,9 +224,10 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     const patternSelect = host.querySelector<HTMLSelectElement>('[data-l="chord-pattern"]')!;
     const rateSelect = host.querySelector<HTMLSelectElement>('[data-l="chord-rate"]')!;
     const melodyToggle = host.querySelector<HTMLInputElement>('[data-l="melody"]')!;
+    const chordsToggle = host.querySelector<HTMLInputElement>('[data-l="chords-layer"]')!;
     const melodySound = host.querySelector<HTMLSelectElement>('[data-l="melody-sound"]')!;
     if (!melodySound.options.length) melodySound.parentElement!.hidden = true;
-    melodyToggle.disabled = !melodyLane;
+    melodyToggle.disabled = !learningMelody.notes.length;
     if (!melodyLane) host.querySelectorAll<HTMLInputElement>('[data-l="timing"] input,[data-l="rest-threshold"],[data-l="active-gap"]').forEach((input) => { input.disabled = true; });
     if (melodyLane) melodyToggle.parentElement!.append(document.createTextNode(` · ${melodyLane.label}`));
     const voiceList = host.querySelector<HTMLElement>('[data-l="voice-list"]')!;
@@ -234,27 +247,28 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     };
     const updatePlaybackSelection = (): void => {
       audio?.setSelection({ mode: playbackMode.value as PlaybackMode, voices: 1, scope: staffScope.value as StaffScope }, lanes, selectedLaneIds);
-      patternControl.hidden = playbackMode.value !== "chords";
-      rateControl.hidden = playbackMode.value !== "chords";
-      host.querySelector<HTMLElement>('[data-l="pattern-status"]')!.hidden = playbackMode.value !== "chords";
+      audio?.setLearningLayers({ melody: melodyToggle.checked, chords: chordsToggle.checked }, scheduler?.timeline.notes ?? learningMelody.notes);
+      patternControl.hidden = !chordsToggle.checked;
+      rateControl.hidden = !chordsToggle.checked;
+      host.querySelector<HTMLElement>('[data-l="pattern-status"]')!.hidden = !chordsToggle.checked;
       updateLaneVisibility();
     };
-    playbackMode.onchange = () => { if (playbackMode.value === "chords") melodyToggle.checked = false; updatePlaybackSelection(); };
+    playbackMode.onchange = updatePlaybackSelection;
     staffScope.onchange = updatePlaybackSelection;
     voiceList.onchange = () => {
       selectedLaneIds = new Set([...voiceList.querySelectorAll<HTMLInputElement>("[data-lane]:checked")].map((input) => input.value));
-      melodyToggle.checked = Boolean(melodyLane && selectedLaneIds.size === 1 && selectedLaneIds.has(melodyLane.id));
       updatePlaybackSelection();
     };
     melodyToggle.onchange = () => {
-      if (!melodyLane) return;
-      if (melodyToggle.checked) {
-        selectedLaneIds = new Set([melodyLane.id]);
-        playbackMode.value = "solo";
-      } else selectedLaneIds.delete(melodyLane.id);
-      voiceList.querySelectorAll<HTMLInputElement>("[data-lane]").forEach((input) => { input.checked = selectedLaneIds.has(input.value); });
       updatePlaybackSelection();
     };
+    chordsToggle.onchange = updatePlaybackSelection;
+    const updateMix = (): void => audio?.setLevels({
+      melody: Number(host.querySelector<HTMLInputElement>('[data-l="melody-level"]')!.value) / 100,
+      chords: Number(host.querySelector<HTMLInputElement>('[data-l="chords-level"]')!.value) / 100,
+      metronome: Number(host.querySelector<HTMLInputElement>('[data-l="metronome-level"]')!.value) / 100,
+    });
+    host.querySelectorAll<HTMLInputElement>('[data-l="melody-level"],[data-l="chords-level"],[data-l="metronome-level"]').forEach((input) => { input.oninput = updateMix; });
     const updateChordPattern = (): void => {
       chordPattern = patternSelect.value as ChordPatternName;
       chordRate = rateSelect.value as PatternRate;
@@ -263,6 +277,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     patternSelect.onchange = updateChordPattern;
     rateSelect.onchange = updateChordPattern;
     updatePlaybackSelection();
+    updateMix();
     host.querySelector<HTMLElement>('[data-l="staff-evidence"]')!.hidden = hasExplicitStaffIdentity(manifest.timeline);
     const mapping = (() => { try { return JSON.parse(root.dataset.learningMapping || "{}"); } catch { return {}; } })() as Record<string, unknown>;
     const accordionConfig = isVerifiedAccordionConfig(mapping.accordion) ? mapping.accordion : null;
@@ -298,7 +313,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       let next: TimelineVisualizer;
       if (name === "piano") {
         const { PianoRangeVisualizer } = await import("./piano-visualizer");
-        next = new PianoRangeVisualizer(visualRoot, manifest.timeline.notes, false, audition);
+        next = new PianoRangeVisualizer(visualRoot, learningMelody.notes, false, audition);
       } else if (name === "guitar") {
         const { GuitarVisualizer } = await import("./guitar-visualizer");
         next = new GuitarVisualizer(visualRoot, undefined, audition);
@@ -314,6 +329,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       if (name === "guitar") guitar = next as HandedVisualizer;
       if (name === "accordion") accordion = next as FollowVisualizer;
       visualizer.mount();
+      if (name === "piano" || name === "guitar") melodyScore.setInstrument(name);
       host.querySelectorAll<HTMLButtonElement>("[data-instrument]").forEach((button) => button.setAttribute("aria-selected", String(button.dataset.instrument === name)));
       host.querySelector<HTMLElement>('[data-l="left-label"]')!.hidden = name !== "guitar";
       if (name === "accordion") host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = "Accordion audio unavailable.";
@@ -347,23 +363,66 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     };
     host.querySelector<HTMLInputElement>('[data-l="left"]')!.onchange = (event) => guitar?.setLeftHanded((event.currentTarget as HTMLInputElement).checked);
 
+    const fullScore = root.querySelector<HTMLElement>(".score-canvas");
+    const melodyScoreContent = host.querySelector<HTMLElement>('[data-l="melody-score"]')!;
+    const setScoreView = (view: "melody" | "full"): void => {
+      if (fullScore) fullScore.hidden = view !== "full";
+      melodyScoreContent.hidden = view !== "melody";
+      host.querySelector<HTMLButtonElement>('[data-l="score-melody"]')!.setAttribute("aria-pressed", String(view === "melody"));
+      host.querySelector<HTMLButtonElement>('[data-l="score-full"]')!.setAttribute("aria-pressed", String(view === "full"));
+    };
+    setScoreView("melody");
+    host.querySelector<HTMLButtonElement>('[data-l="score-melody"]')!.onclick = () => setScoreView("melody");
+    host.querySelector<HTMLButtonElement>('[data-l="score-full"]')!.onclick = () => setScoreView("full");
+    host.querySelector<HTMLButtonElement>('[data-l="marker"]')!.onclick = (event) => {
+      const button = event.currentTarget as HTMLButtonElement;
+      const enabled = button.getAttribute("aria-pressed") !== "true";
+      button.setAttribute("aria-pressed", String(enabled));
+      root.classList.toggle("learning-marker-hidden", !enabled);
+    };
+
     host.querySelector<HTMLButtonElement>('[data-l="play"]')!.onclick = () => { void playbackCoordinator.play(transportId); };
     host.querySelector<HTMLButtonElement>('[data-l="pause"]')!.onclick = () => playbackCoordinator.pause(transportId);
     host.querySelector<HTMLButtonElement>('[data-l="stop"]')!.onclick = () => playbackCoordinator.stop(transportId);
     seek.oninput = () => { playbackCoordinator.activate(transportId); scheduler?.seek(Number(seek.value)); audio?.reset(); };
     host.querySelector<HTMLInputElement>('[data-l="tempo"]')!.oninput = (event) => { const input = event.currentTarget as HTMLInputElement; scheduler?.setTempo(Number(input.value)); host.querySelector<HTMLOutputElement>('[data-l="tempo-value"]')!.value = `${input.value}%`; };
+    const dispatchLearningMarker = (note: NoteEvent | null): void => {
+      if (!note || host.querySelector<HTMLButtonElement>('[data-l="marker"]')!.getAttribute("aria-pressed") !== "true") return;
+      const sourceId = "sourceNoteId" in note ? String(note.sourceNoteId) : note.id;
+      const original = learningMelody.notes.find((entry) => entry.sourceNoteId === sourceId || entry.id === note.id) ?? note;
+      const measure = canonicalTimeline.measures[original.measureIndex];
+      const relativePosition = measure ? Math.max(0, Math.min(1, (original.startSeconds - measure.startSeconds) / Math.max(0.001, measure.durationSeconds))) : 0;
+      root.dispatchEvent(new CustomEvent("learning-marker-request", { detail: { noteId: sourceId, measureIndex: original.measureIndex, staffIndex: original.staff == null ? undefined : original.staff - 1, relativePosition, midi: original.midi } }));
+    };
     const scorePositionRequest = (event: Event): void => {
       const detail = (event as CustomEvent<ScorePositionRequest>).detail;
       if (!Number.isInteger(detail?.measureIndex) || !Number.isFinite(detail.relativePosition)) return;
       const location = resolveCanonicalScoreLocation(canonicalTimeline, detail);
-      root.dispatchEvent(new CustomEvent("score-pointer-resolved", { detail: { ...detail, seconds: location.seconds, noteId: location.noteId } }));
+      const candidates = learningMelody.notes.filter((note) => note.measureIndex === detail.measureIndex);
+      const learningNote = learningMelody.notes.find((note) => note.sourceNoteId === location.noteId) ?? candidates.reduce<LearningMelody["notes"][number] | null>((closest, note) => {
+        if (!closest) return note;
+        const noteDistance = Math.abs(note.startSeconds - location.seconds) + (detail.midi == null ? 0 : Math.abs(note.midi - detail.midi) * 0.002);
+        const closestDistance = Math.abs(closest.startSeconds - location.seconds) + (detail.midi == null ? 0 : Math.abs(closest.midi - detail.midi) * 0.002);
+        return noteDistance < closestDistance ? note : closest;
+      }, null);
+      const originalSeconds = learningNote?.startSeconds ?? location.seconds;
+      root.dispatchEvent(new CustomEvent("score-pointer-resolved", { detail: { ...detail, seconds: originalSeconds, noteId: learningNote?.sourceNoteId ?? location.noteId } }));
       playbackCoordinator.activate(transportId);
-      scheduler?.seek(timingMode === "active" ? activeTiming.originalToActive(location.seconds) : location.seconds);
+      scheduler?.seek(timingMode === "active" ? activeTiming.originalToActive(originalSeconds) : originalSeconds);
       audio?.reset();
-      if (location.cursorStep != null) root.dispatchEvent(new CustomEvent("learning-score-cursor", { detail: { cursorStep: location.cursorStep } }));
+      dispatchLearningMarker(learningNote);
     };
     root.addEventListener("score-position-request", scorePositionRequest);
-    removeScorePositionListener = () => root.removeEventListener("score-position-request", scorePositionRequest);
+    const melodySeekRequest = (event: Event): void => {
+      const noteId = String((event as CustomEvent<{ noteId?: string }>).detail?.noteId ?? "");
+      const note = learningMelody.notes.find((entry) => entry.id === noteId);
+      if (!note) return;
+      playbackCoordinator.activate(transportId);
+      scheduler?.seek(timingMode === "active" ? activeTiming.originalToActive(note.startSeconds) : note.startSeconds);
+      audio?.reset(); dispatchLearningMarker(note);
+    };
+    root.addEventListener("learning-melody-seek", melodySeekRequest);
+    removeScorePositionListener = () => { root.removeEventListener("score-position-request", scorePositionRequest); root.removeEventListener("learning-melody-seek", melodySeekRequest); };
     host.querySelector<HTMLButtonElement>('[data-l="loop"]')!.onclick = () => scheduler?.setMeasureLoop(Number(host.querySelector<HTMLInputElement>('[data-l="loop-a"]')!.value) - 1, Number(host.querySelector<HTMLInputElement>('[data-l="loop-b"]')!.value) - 1);
     host.querySelector<HTMLButtonElement>('[data-l="clear-loop"]')!.onclick = () => scheduler?.setLoop(null, null);
     host.querySelector<HTMLButtonElement>('[data-l="metronome"]')!.onclick = (event) => { const button = event.currentTarget as HTMLButtonElement; const enabled = button.getAttribute("aria-pressed") !== "true"; button.setAttribute("aria-pressed", String(enabled)); audio?.setMetronome(enabled); };
@@ -511,13 +570,14 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     const renderFrame = (event: Event): void => {
       const frame = (event as CustomEvent<SchedulerFrame>).detail;
       reliable = reliable && frame.reliable;
-      const active = audio?.selectNotes(frame.active) ?? frame.active;
-      const upcoming = audio?.selectNotes(frame.upcoming) ?? frame.upcoming;
+      const active = frame.active;
+      const upcoming = frame.upcoming;
       visualizer?.render(active, upcoming);
       expectedMidi = new Set(active.map((note) => note.midi));
       if (practicing && exercise?.mode === "wait-for-note" && supportsWebMidi() && frame.playing && active.length) { waitingForMidi = true; scheduler?.pause(); }
       const cursorNote = active[0] ?? upcoming[0];
-      if (cursorNote) root.dispatchEvent(new CustomEvent("learning-score-cursor", { detail: { cursorStep: cursorNote.cursorStep ?? manifest.timeline.notes.indexOf(cursorNote) } }));
+      if (cursorNote) dispatchLearningMarker(cursorNote);
+      melodyScore.setActive(cursorNote?.id ?? null);
       const originalPosition = timingMode === "active" ? activeTiming.activeToOriginal(frame.position) : frame.position;
       const originalMeasure = canonicalTimeline.measures.find((measure) => originalPosition >= measure.startSeconds && originalPosition < measure.startSeconds + measure.durationSeconds) ?? canonicalTimeline.measures.at(-1) ?? null;
       const originalBeat = originalMeasure ? 1 + (originalPosition - originalMeasure.startSeconds) / Math.max(0.001, originalMeasure.durationSeconds / originalMeasure.beats) : 1;
@@ -526,14 +586,14 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
         ? `ACTIVE ${formatClock(frame.position)} / ${formatClock(frame.duration)} · ${copy.originalPosition}: ${formatClock(originalPosition)}`
         : `${copy.original.toUpperCase()} ${formatClock(frame.position)} / ${formatClock(frame.duration)}`;
       seek.value = String(frame.position);
-      const displayActive = timingMode === "active" ? frame.active : active;
-      const displayUpcoming = timingMode === "active" ? frame.upcoming : upcoming;
+      const displayActive = active;
+      const displayUpcoming = upcoming;
       let instrumentDetail = "";
       if (selectedInstrument === "guitar" && displayActive[0]) {
         const candidate = guitarCandidates(displayActive[0])[0];
         instrumentDetail = candidate ? ` · String ${candidate.string} · Fret ${candidate.fret}` : ` · ${copy.outOfGuitarRange}`;
       }
-      const prefix = melodyToggle.checked || timingMode === "active" ? `VOCAL MELODY\n` : "";
+      const prefix = `LEARNING MELODY\n`;
       host.querySelector<HTMLElement>('[data-l="notes"]')!.textContent = `${prefix}${copy.current}: ${displayActive.map((note) => noteLabel(note.midi)).join(" ") || "—"}${instrumentDetail} · ${copy.upcoming}: ${displayUpcoming.slice(0, 7).map((note) => noteLabel(note.midi)).join(" ") || "—"}`;
       const harmony = activeHarmonyAt(harmonies, originalPosition);
       host.querySelector<HTMLElement>('[data-l="harmony"]')!.textContent = harmony ? `${copy.currentChord}: ${harmony.label} · ${harmony.pitches.map(noteLabel).join(" ")} · ${harmony.inferred ? copy.harmonyInferred : copy.harmonySource}` : `${copy.currentChord}: —`;
@@ -554,13 +614,10 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       scheduler.destroy();
       timingMode = next;
       if (next === "active") {
-        if (!melodyLane) return;
+        if (!learningMelody.notes.length) return;
         melodyToggle.checked = true;
-        playbackMode.value = "solo";
-        selectedLaneIds = new Set([melodyLane.id]);
-        voiceList.querySelectorAll<HTMLInputElement>("[data-lane]").forEach((input) => { input.checked = selectedLaneIds.has(input.value); });
       }
-      const timeline = next === "active" ? activeTiming.timeline : canonicalTimeline;
+      const timeline = next === "active" ? activeTiming.timeline : learningMelody.timeline;
       playbackCoordinator.activate(transportId);
       scheduler = new CanonicalScheduler(timeline);
       audio = new SchedulerAudioAdapter(scheduler);
@@ -568,16 +625,69 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       audio.setHarmonicTimeline(harmonies);
       audio.setChordPattern(chordPattern, chordRate);
       updatePlaybackSelection();
+      updateMix();
       scheduler.addEventListener("frame", renderFrame);
       scheduler.seek(next === "active" ? activeTiming.originalToActive(canonicalPosition) : canonicalPosition);
       seek.max = String(timeline.durationSeconds);
       if (wasPlaying) { try { await audio.enable(); scheduler.play(); } catch (error) { host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = errorMessage(error); } }
     };
+    const segmentMap = host.querySelector<HTMLElement>('[data-l="segment-map"]')!;
+    const renderSegmentMap = (): void => {
+      segmentMap.replaceChildren();
+      for (const segment of learningMelody.segments) {
+        const row = document.createElement("label");
+        row.className = "learning-segment-row";
+        const text = document.createElement("span");
+        text.textContent = `${formatClock(segment.startSeconds)}–${formatClock(segment.endSeconds)} · ${segment.provenance}${segment.retainedRest ? " · retained rest" : ""}`;
+        const select = document.createElement("select");
+        select.setAttribute("aria-label", `Source for ${text.textContent}`);
+        select.append(new Option("Retain musical rest", ""), ...lanes.map((lane) => new Option(lane.label, lane.id, false, lane.id === segment.sourceLaneId)));
+        select.value = segment.sourceLaneId ?? "";
+        select.onchange = () => {
+          const lane = lanes.find((entry) => entry.id === select.value);
+          void installLearningMelody(lane ? replaceLearningSegmentSource(learningMelody, segment.id, lane) : retainLearningSegmentRest(learningMelody, segment.id));
+        };
+        row.append(text, select); segmentMap.append(row);
+      }
+      const d = learningMelody.diagnostics;
+      host.querySelector<HTMLElement>('[data-l="continuity"]')!.textContent = `Duration ${formatClock(d.durationSeconds)} · notes ${d.noteCount} · range ${d.pitchMin == null ? "—" : noteLabel(d.pitchMin)}–${d.pitchMax == null ? "—" : noteLabel(d.pitchMax)} · median gap ${d.medianSilentGapSeconds.toFixed(2)}s · longest unintended gap ${d.longestUnintendedGapSeconds.toFixed(2)}s · monophony ${Math.round(d.monophonyRatio * 100)}% · ${d.continuityWarning ? "review long gaps" : "continuous"}`;
+    };
+    const installLearningMelody = async (next: LearningMelody): Promise<void> => {
+      if (!scheduler || !audio) return;
+      const snapshot = scheduler.snapshot();
+      const originalPosition = timingMode === "active" ? activeTiming.activeToOriginal(snapshot.position) : snapshot.position;
+      scheduler.removeEventListener("frame", renderFrame);
+      scheduler.pause(); audio.destroy(); scheduler.destroy();
+      learningMelody = next;
+      activeTiming = compactLearningMelody(learningMelody, Number(host.querySelector<HTMLInputElement>('[data-l="active-gap"]')!.value), Number(host.querySelector<HTMLInputElement>('[data-l="rest-threshold"]')!.value));
+      melodyScore.setNotes(learningMelody.notes);
+      const timeline = timingMode === "active" ? activeTiming.timeline : learningMelody.timeline;
+      scheduler = new CanonicalScheduler(timeline);
+      audio = new SchedulerAudioAdapter(scheduler);
+      audio.setInstrument(selectedInstrument as InstrumentName);
+      audio.setHarmonicTimeline(harmonies);
+      audio.setChordPattern(chordPattern, chordRate);
+      updatePlaybackSelection(); updateMix();
+      scheduler.addEventListener("frame", renderFrame);
+      scheduler.seek(timingMode === "active" ? activeTiming.originalToActive(originalPosition) : originalPosition);
+      seek.max = String(timeline.durationSeconds);
+      renderSegmentMap();
+      if (snapshot.playing) { await audio.enable(); scheduler.play(); }
+    };
+    applySessionMelody = (track) => {
+      const manualLane: VoiceLane = { id: `session:${track.sourceId}:${track.trackIndex}`, label: `${track.sourceName} · Track ${track.trackIndex + 1} · manual`, partId: `session-${track.trackIndex}`, partName: track.name || "Manual reference", staff: null, voice: String(track.trackIndex + 1), inferred: false, notes: track.notes.map((note) => ({ ...note, partId: `session-${track.trackIndex}` })) };
+      void installLearningMelody(composeLearningMelody(canonicalTimeline, [manualLane, ...lanes], { primaryLane: manualLane, manualPrimary: true }));
+    };
+    applyGapFill = (track) => {
+      const gapLane: VoiceLane = { id: `gap:${track.sourceId}:${track.trackIndex}`, label: `${track.sourceName} · Track ${track.trackIndex + 1} · gap fill`, partId: `gap-${track.trackIndex}`, partName: track.name || "Gap-fill reference", staff: null, voice: String(track.trackIndex + 1), inferred: false, notes: track.notes.map((note) => ({ ...note, partId: `gap-${track.trackIndex}` })) };
+      void installLearningMelody(composeLearningMelody(canonicalTimeline, [gapLane, ...lanes], { primaryLane: melodyLane, gapFillLane: gapLane }));
+    };
+    renderSegmentMap();
     host.querySelectorAll<HTMLInputElement>('input[name="learning-timing"]').forEach((input) => { input.onchange = () => { if (input.checked) void switchTiming(input.value as "original" | "active"); }; });
     const rebuildActiveTiming = (): void => {
       const options = { restThresholdSeconds: Number(host.querySelector<HTMLInputElement>('[data-l="rest-threshold"]')!.value), compressedGapSeconds: Number(host.querySelector<HTMLInputElement>('[data-l="active-gap"]')!.value) };
-      if (timingMode === "active") void switchTiming("original").then(() => { activeTiming = createActiveMelodyTimeline(canonicalTimeline, melodyLane?.notes ?? [], options); return switchTiming("active"); });
-      else activeTiming = createActiveMelodyTimeline(canonicalTimeline, melodyLane?.notes ?? [], options);
+      if (timingMode === "active") void switchTiming("original").then(() => { activeTiming = compactLearningMelody(learningMelody, options.compressedGapSeconds, options.restThresholdSeconds); return switchTiming("active"); });
+      else activeTiming = compactLearningMelody(learningMelody, options.compressedGapSeconds, options.restThresholdSeconds);
     };
     host.querySelector<HTMLInputElement>('[data-l="rest-threshold"]')!.onchange = rebuildActiveTiming;
     host.querySelector<HTMLInputElement>('[data-l="active-gap"]')!.onchange = rebuildActiveTiming;

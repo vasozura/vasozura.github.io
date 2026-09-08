@@ -2,7 +2,7 @@ import { getInitialLanguage, type Language } from "../i18n";
 import { MidiPlayback } from "./midi-playback";
 import { PianoVisualizer } from "./instrument-visualizer";
 import { playbackCoordinator } from "../audio/playback-coordinator";
-import { clientToScorePoint, logicalPageState, nearestScorePosition, scoreClickRatio, type ScoreCoordinateTransform, type ScoreMeasureTarget, type ScorePositionRequest } from "./score-navigation";
+import { clientToScorePoint, learningMarkerTarget, logicalPageState, nearestScorePosition, scoreClickRatio, type LearningMarkerRequest, type ScoreCoordinateTransform, type ScoreMeasureTarget, type ScorePositionRequest } from "./score-navigation";
 
 interface GraphicalEntryLike {
   PositionAndShape?: { AbsolutePosition?: { x: number; y: number }; BorderLeft?: number; BorderRight?: number; BorderTop?: number; BorderBottom?: number; Size?: { width?: number; height?: number } };
@@ -101,6 +101,7 @@ export async function mountScoreViewer(
     const osmd = new OpenSheetMusicDisplay(surface, osmdViewerOptions);
     await osmd.load(await fetchScoreSource(musicXmlUrl));
     let scoreTargets: ScoreMeasureTarget[] = [];
+    let learningMarker: HTMLSpanElement | null = null;
     let renderFrame = 0;
     let lastWidth = surface.clientWidth;
     const renderScore = (): void => {
@@ -113,6 +114,7 @@ export async function mountScoreViewer(
       canvas.style.setProperty("--score-stable-height", `${stableHeight}px`);
       canvas.classList.add("is-rendering");
       osmd.render();
+      if (learningMarker && !learningMarker.isConnected) surface.append(learningMarker);
       const graphical = (osmd as unknown as { GraphicSheet?: { MeasureList?: GraphicalMeasureLike[][] } }).GraphicSheet?.MeasureList ?? [];
       const mapped = scoreTargetsFromGraphicalMeasures(graphical);
       scoreTargets = mapped.targets;
@@ -129,7 +131,8 @@ export async function mountScoreViewer(
       });
     };
     renderScore();
-    osmd.cursor.show();
+    const dedicatedLearningMarker = root.dataset.learningEnabled === "true";
+    if (dedicatedLearningMarker) osmd.cursor.hide(); else osmd.cursor.show();
     let learningCursorStep = -1;
     const moveLearningCursor = (event: Event): void => {
       const target = Number((event as CustomEvent<{ cursorStep: number }>).detail.cursorStep);
@@ -159,6 +162,7 @@ export async function mountScoreViewer(
       showPage();
     };
     controls.innerHTML = `<div class="score-control-group"><button type="button" data-score-action="zoom-out" aria-label="${copy.zoomOut}">−</button><output data-zoom-label>100%</output><button type="button" data-score-action="zoom-in" aria-label="${copy.zoomIn}">+</button></div><div class="score-control-group"><label>${copy.layout} <select data-score-layout><option value="page">${copy.page}</option><option value="continuous">${copy.continuous}</option></select></label><button type="button" data-score-action="cursor" aria-pressed="true">${copy.cursor}</button></div><div class="score-control-group" data-score-pages><button type="button" data-score-action="prev-page" aria-label="${copy.previousPage}">← ${copy.page.toLowerCase()}</button><output data-page-label>1 / 1</output><button type="button" data-score-action="next-page" aria-label="${copy.nextPage}">${copy.page.toLowerCase()} →</button></div><div class="score-control-group"><button type="button" data-score-action="prev-measure" aria-label="${copy.previousMeasure}">← ${copy.measure.toLowerCase()}</button><output data-measure-label>${copy.measure} 1</output><button type="button" data-score-action="next-measure" aria-label="${copy.nextMeasure}">${copy.measure.toLowerCase()} →</button></div>`;
+    if (dedicatedLearningMarker) controls.querySelector<HTMLElement>('[data-score-action="cursor"]')!.hidden = true;
     controls.querySelector('[data-score-action="zoom-out"]')?.addEventListener("click", () => { zoom = Math.max(0.5, zoom - 0.1); osmd.Zoom = zoom; renderScore(); controls.querySelector<HTMLElement>("[data-zoom-label]")!.textContent = `${Math.round(zoom * 100)}%`; showPage(); });
     controls.querySelector('[data-score-action="zoom-in"]')?.addEventListener("click", () => { zoom = Math.min(1.8, zoom + 0.1); osmd.Zoom = zoom; renderScore(); controls.querySelector<HTMLElement>("[data-zoom-label]")!.textContent = `${Math.round(zoom * 100)}%`; showPage(); });
     controls.querySelector('[data-score-action="prev-page"]')?.addEventListener("click", () => changePage(-1));
@@ -191,6 +195,33 @@ export async function mountScoreViewer(
     let debugOverlay: HTMLElement | null = null;
     let debugTimer = 0;
     const osmdToClient = (point: { x: number; y: number }): { x: number; y: number } => sheet.svgToDom({ x: point.x * 10, y: point.y * 10 });
+    learningMarker = document.createElement("span");
+    learningMarker.className = "learning-note-marker";
+    learningMarker.setAttribute("aria-hidden", "true");
+    surface.append(learningMarker);
+    const moveLearningMarker = (event: Event): void => {
+      const marker = learningMarker;
+      if (!marker) return;
+      const request = (event as CustomEvent<LearningMarkerRequest>).detail;
+      const resolved = learningMarkerTarget(request, scoreTargets);
+      if (!resolved) return;
+      const client = osmdToClient({ x: resolved.entry.x, y: resolved.entry.y });
+      const surfaceRect = surface.getBoundingClientRect();
+      marker.style.left = `${client.x - surfaceRect.left}px`;
+      marker.style.top = `${client.y - surfaceRect.top}px`;
+      marker.dataset.noteId = request.noteId;
+      marker.dataset.measure = String(request.measureIndex + 1);
+      marker.dataset.staff = String(resolved.measure.staffIndex + 1);
+      marker.classList.add("is-visible");
+      const canvasRect = canvas.getBoundingClientRect();
+      const margin = 48;
+      if (client.y < canvasRect.top + margin || client.y > canvasRect.bottom - margin) {
+        const targetY = canvas.scrollTop + client.y - (canvasRect.top + canvasRect.height / 2);
+        canvas.scrollTo({ top: Math.max(0, targetY), left: canvas.scrollLeft, behavior: "smooth" });
+      }
+    };
+    root.addEventListener("learning-marker-request", moveLearningMarker);
+    cleanups.push(() => { root.removeEventListener("learning-marker-request", moveLearningMarker); learningMarker?.remove(); learningMarker = null; });
     const showPointerDebug = (event: MouseEvent, detail: ScorePositionRequest): void => {
       if (!pointerDebug || !detail.target) return;
       window.clearTimeout(debugTimer);

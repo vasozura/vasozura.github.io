@@ -799,6 +799,10 @@ img {
 }
 
 @media (max-width: 760px) {
+  .learning-segment-row { grid-template-columns: 1fr; }
+  .learning-vocal-controls { align-items: stretch; }
+  .learning-primary-modes { width: 100%; justify-content: space-between; }
+  .learning-melody-score-heading > div { display: flex; flex-wrap: wrap; gap: 6px; }
   :root {
     --shell: calc(100% - 32px);
   }
@@ -1372,6 +1376,8 @@ img {
 .score-pointer-crosshair::before { width: 30px; height: 1px; left: -6px; top: 9px; }
 .score-pointer-crosshair::after { width: 1px; height: 30px; left: 9px; top: -6px; }
 .score-pointer-label { position: sticky; top: 8px; left: 8px; display: block; width: max-content; max-width: calc(100% - 16px); padding: 6px 9px; background: #fff5c2; border: 1px solid #080808; }
+.learning-note-marker { position: absolute; z-index: 18; width: 1.45rem; height: 1.45rem; border: 3px solid #ffb800; border-radius: 50%; background: rgb(255 184 0 / 22%); box-shadow: 0 0 0 3px rgb(8 8 8 / 65%), 0 0 18px #ffb800; transform: translate(-50%, -50%) scale(.72); opacity: 0; pointer-events: none; transition: left 70ms linear, top 70ms linear, opacity 80ms, transform 80ms; }
+.learning-note-marker.is-visible { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
 .midi-lab { margin-top: 1.5rem; padding: clamp(1rem, 2vw, 1.5rem); border: 1px solid var(--line); background: #0b0b0b; }
 .midi-lab-heading, .midi-lab-source, .midi-lab-toolbar { display: flex; align-items: center; gap: .65rem; flex-wrap: wrap; }
@@ -1853,6 +1859,12 @@ img {
 .learning-vocal-controls legend { margin-right: 8px; color: var(--muted); }
 .learning-vocal-controls input[type="number"] { width: 64px; }
 .learning-vocal-quick { color: var(--acid); }
+.learning-primary-modes { padding: 7px 10px !important; border: 1px solid var(--acid) !important; }
+.learning-primary-modes input:checked { accent-color: var(--acid); }
+.learning-mix-levels { display: flex; flex-wrap: wrap; gap: 8px 14px; width: 100%; }
+.learning-mix-levels label { min-width: min(180px, 100%); flex: 1 1 160px; }
+.learning-mix-levels input { width: 100%; }
+.learning-legacy-control { display: none !important; }
 .learning-voice-picker { margin-top: 10px; color: var(--muted); }
 .learning-voice-picker [data-l="voice-list"] { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 7px; margin-top: 9px; }
 .learning-voice-picker label { color: var(--paper); }
@@ -1862,6 +1874,28 @@ img {
   color: var(--paper);
   font-variant-numeric: tabular-nums;
 }
+
+.learning-mode button[aria-pressed="true"],
+.learning-mode button[aria-selected="true"],
+.learning-mode [role="tab"][aria-selected="true"] {
+  border-color: var(--acid);
+  background: var(--acid);
+  color: #080808;
+  box-shadow: 0 0 0 2px rgb(255 184 0 / 18%);
+}
+
+.learning-segment-map,
+.learning-midi-advanced { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 10px; }
+.learning-segment-row { display: grid; grid-template-columns: minmax(210px, 1fr) minmax(180px, 1fr); gap: 10px; align-items: center; margin: 7px 0; }
+.learning-segment-row select { min-width: 0; width: 100%; }
+.learning-melody-score { margin-top: 16px; border: 1px solid var(--line); padding: 12px; }
+.learning-melody-score-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
+.learning-melody-score-heading h4 { margin: 0; }
+.melody-score-strip { display: flex; align-items: stretch; gap: 2px; height: 180px; min-width: max-content; padding: 12px; background: repeating-linear-gradient(to bottom, transparent 0 34px, rgb(255 255 255 / 13%) 35px 36px); }
+[data-l="melody-score"] { overflow-x: auto; max-width: 100%; }
+.melody-score-note { align-self: flex-start; margin-top: calc(var(--melody-y) * 125px); min-width: 30px; height: 28px; padding: 2px 5px !important; border-radius: 999px; font-size: 10px; }
+.melody-score-note[aria-current="true"] { background: var(--acid); color: #050505; transform: scale(1.16); }
+.learning-marker-hidden .learning-note-marker { display: none; }
 
 .learning-admin-options,
 .learning-instruments,
@@ -2002,8 +2036,13 @@ img {
 .learning-key.wrong { background: #dc6262; }
 
 .learning-fretboard { min-width: 0; }
-.learning-fretboard.left-handed .guitar-string { direction: rtl; }
-.guitar-string { display: grid; min-width: 760px; grid-template-columns: repeat(21, minmax(28px, 1fr)); border-top: 1px solid #aaa; }
+.learning-fretboard.left-handed .guitar-string,
+.learning-fretboard.left-handed .guitar-fret-header { direction: rtl; }
+.guitar-string { display: grid; min-width: 760px; grid-template-columns: repeat(21, minmax(28px, 1fr)); }
+.guitar-fret-header { display: grid; min-width: 760px; grid-template-columns: repeat(21, minmax(28px, 1fr)); }
+.guitar-fret-header { color: var(--muted); font-size: .72rem; text-align: center; border-bottom: 1px solid var(--line); }
+.guitar-fret-header span { padding: .25rem 0; }
+.guitar-string { border-top: 1px solid #aaa; }
 .guitar-string button,
 .learning-accordion span { min-height: 28px; padding: 4px; border-right: 1px solid var(--line); text-align: center; }
 .guitar-string button { border-top: 0; border-bottom: 0; border-left: 0; background: transparent; color: var(--muted); }

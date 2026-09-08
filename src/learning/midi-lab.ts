@@ -2,7 +2,7 @@ import { MidiPlayback } from "../score/midi-playback";
 import { inspectMidiSource, parseMidiFiles, activeTimelineForTrack, chooseSessionMelody, compareTrack, melodyContourPoints, type InspectedMidiSource, type InspectedMidiTrack, type MidiLike } from "./midi-inspector";
 import type { NoteEvent, Timeline } from "./contracts";
 
-export interface MidiLabOptions { canonicalUrl?: string; canonicalTimeline: Timeline; onSessionMelody?: (track: InspectedMidiTrack) => void; }
+export interface MidiLabOptions { canonicalUrl?: string; canonicalTimeline: Timeline; onSessionMelody?: (track: InspectedMidiTrack) => void; onGapFill?: (track: InspectedMidiTrack) => void; }
 
 const noteName = (midi: number): string => `${["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"][midi % 12]}${Math.floor(midi / 12) - 1}`;
 const clock = (seconds: number): string => `${Math.floor(seconds / 60).toString().padStart(2, "0")}:${Math.floor(seconds % 60).toString().padStart(2, "0")}`;
@@ -14,7 +14,7 @@ export async function mountMidiLab(root: HTMLElement, options: MidiLabOptions): 
     <div class="midi-lab-source"><button type="button" data-midi-lab="previous">← Previous source</button><select data-midi-lab="source" aria-label="MIDI source"></select><button type="button" data-midi-lab="next">Next source →</button><select data-midi-lab="relation"><option value="independent">Independent</option><option value="aligned">Aligned</option></select></div>
     <p data-midi-lab="alignment" class="midi-lab-message"></p>
     <div class="midi-lab-selection"><span>VOCAL / MELODY SOURCE</span><strong data-midi-lab="selection">No verified vocal MIDI track selected.</strong><small data-midi-lab="selection-kind"></small></div>
-    <div class="midi-lab-toolbar"><label>Track <select data-midi-lab="track"></select></label><label>Sound <select data-midi-lab="sound"><option value="piano">Piano</option><option value="guitar">Guitar</option></select></label><button type="button" data-midi-lab="solo">▶ Solo</button><button type="button" data-midi-lab="stop">■ Stop</button><button type="button" data-midi-lab="active">Active</button><button type="button" data-midi-lab="use">Use as session melody</button></div>
+    <div class="midi-lab-toolbar"><label>Track <select data-midi-lab="track"></select></label><label>Sound <select data-midi-lab="sound"><option value="piano">Piano</option><option value="guitar">Guitar</option></select></label><button type="button" data-midi-lab="solo">▶ Solo</button><button type="button" data-midi-lab="stop">■ Stop</button><button type="button" data-midi-lab="active">Active</button><button type="button" data-midi-lab="use">Use as session melody</button><button type="button" data-midi-lab="gap-fill">Use for gap-fill segments</button></div>
     <div class="midi-contour"><svg data-midi-lab="contour" role="img" aria-label="Selected MIDI melody pitch contour"></svg><p data-midi-lab="current">Current note: — · Next: —</p></div>
     <p data-midi-lab="duration"></p><p data-midi-lab="diagnostics"></p>
     <div class="midi-track-scroll"><table class="midi-track-table"><thead><tr><th>Source</th><th>Track</th><th>Name</th><th>Instrument</th><th>Channel</th><th>Notes</th><th>Duration</th><th>Range</th><th>Texture</th><th>Avg gap</th><th>Suggestion</th><th>Actions</th></tr></thead><tbody data-midi-lab="tracks"></tbody></table></div>
@@ -130,6 +130,7 @@ export async function mountMidiLab(root: HTMLElement, options: MidiLabOptions): 
   root.querySelector<HTMLButtonElement>('[data-midi-lab="active"]')!.onclick = () => { const track = manual ?? selectedTrack(); if (track) { loadTrack(track, true); void player.play(); } };
   root.querySelector<HTMLButtonElement>('[data-midi-lab="stop"]')!.onclick = () => player.stop();
   root.querySelector<HTMLButtonElement>('[data-midi-lab="use"]')!.onclick = () => { const track = selectedTrack(); if (track) selectManual(track); };
+  root.querySelector<HTMLButtonElement>('[data-midi-lab="gap-fill"]')!.onclick = () => { const track = selectedTrack(); if (track) options.onGapFill?.(track); };
 
   if (options.canonicalUrl) try {
     const [{ Midi }, response] = await Promise.all([import("@tonejs/midi"), fetch(options.canonicalUrl, { credentials: "omit" })]);

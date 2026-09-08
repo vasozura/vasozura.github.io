@@ -4,6 +4,8 @@ export interface LogicalPageState { index: number; count: number; top: number; }
 export interface ScoreEntryTarget { x: number; y: number; left: number; right: number; top: number; bottom: number; relativePosition: number; sourceTimestamp?: number; midi?: number; }
 export interface ScoreMeasureTarget { measureIndex: number; staffIndex: number; left: number; right: number; top: number; bottom: number; entries: ScoreEntryTarget[]; }
 export interface ScorePositionRequest { measureIndex: number; relativePosition: number; sourceTimestamp?: number; staffIndex?: number; midi?: number; entryIndex?: number; target?: ScoreMeasureTarget; }
+export interface LearningMarkerRequest { noteId: string; measureIndex: number; relativePosition: number; staffIndex?: number; midi: number; }
+export interface LearningMarkerTarget { measure: ScoreMeasureTarget; entry: ScoreEntryTarget; entryIndex: number; }
 export interface ScoreCoordinateTransform {
   domToSvg(point: { x: number; y: number }): { x: number; y: number };
   svgToOsmd(point: { x: number; y: number }): { x: number; y: number };
@@ -53,6 +55,20 @@ export function nearestScorePosition(x: number, y: number, targets: ScoreMeasure
     : null;
   const relativePosition = entry?.relativePosition ?? Math.max(0, Math.min(1, (x - target.left) / Math.max(1, target.right - target.left)));
   return { measureIndex: target.measureIndex, relativePosition, sourceTimestamp: entry?.sourceTimestamp, staffIndex: target.staffIndex, midi: entry?.midi, entryIndex: entry ? target.entries.indexOf(entry) : undefined, target };
+}
+
+export function learningMarkerTarget(request: LearningMarkerRequest, targets: ScoreMeasureTarget[]): LearningMarkerTarget | null {
+  const measures = targets.filter((target) => target.measureIndex === request.measureIndex && (request.staffIndex == null || target.staffIndex === request.staffIndex));
+  const candidates = (measures.length ? measures : targets.filter((target) => target.measureIndex === request.measureIndex))
+    .flatMap((measure) => measure.entries.map((entry, entryIndex) => ({ measure, entry, entryIndex })));
+  return candidates.sort((a, b) => {
+    const aTime = Math.abs(a.entry.relativePosition - request.relativePosition);
+    const bTime = Math.abs(b.entry.relativePosition - request.relativePosition);
+    if (aTime !== bTime) return aTime - bTime;
+    const aPitch = a.entry.midi == null ? 128 : Math.abs(a.entry.midi - request.midi);
+    const bPitch = b.entry.midi == null ? 128 : Math.abs(b.entry.midi - request.midi);
+    return aPitch - bPitch || a.entryIndex - b.entryIndex;
+  })[0] ?? null;
 }
 
 export function resolveCanonicalScoreLocation(timeline: Timeline, request: ScorePositionRequest): { seconds: number; noteId: string | null; cursorStep: number | null } {

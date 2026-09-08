@@ -22,6 +22,9 @@ export class SchedulerAudioAdapter {
   private selectedLaneIds = new Set<string>();
   private harmonies: HarmonicEvent[] = [];
   private selected: NoteEvent[] = [];
+  private layers = { melody: true, chords: false };
+  private levels = { melody: 0.9, chords: 0.62, metronome: 0.55 };
+  private learningMelodyIds = new Set<string>();
   private instrumentName: PatternInstrument = "piano";
   private chordPattern: ChordPatternName = "block";
   private patternRate: PatternRate = "1/8";
@@ -41,6 +44,12 @@ export class SchedulerAudioAdapter {
   }
 
   setMetronome(enabled: boolean): void { this.metronome = enabled; }
+  setLearningLayers(layers: Partial<typeof this.layers>, melodyNotes: readonly NoteEvent[] = []): void {
+    this.layers = { ...this.layers, ...layers };
+    if (melodyNotes.length) this.learningMelodyIds = new Set(melodyNotes.map((note) => note.id));
+    this.reset();
+  }
+  setLevels(levels: Partial<typeof this.levels>): void { this.levels = { ...this.levels, ...levels }; }
   setInstrument(instrument: InstrumentName): void { this.instrumentName = instrument; this.instrument.setInstrument(instrument); this.reset(); }
   setSelection(selection: PlaybackSelection, lanes: VoiceLane[] = this.lanes, selectedLaneIds: ReadonlySet<string> = this.selectedLaneIds): void { this.selection = selection; this.lanes = lanes; this.selectedLaneIds = new Set(selectedLaneIds); this.reset(); }
   setHarmonicTimeline(harmonies: HarmonicEvent[]): void { this.harmonies = harmonies; this.reset(); }
@@ -66,7 +75,11 @@ export class SchedulerAudioAdapter {
       this.played.clear();
       this.instrument.releaseAll();
     }
-    this.selected = this.selection.mode === "chords" ? this.chordNotes(frame) : this.selectNotes(frame.active);
+    const melody = this.learningMelodyIds.size
+      ? frame.active.filter((note) => this.learningMelodyIds.has(note.id))
+      : this.selectNotes(frame.active);
+    const chords = this.layers.chords ? this.chordNotes(frame) : [];
+    this.selected = [...(this.layers.melody ? melody : []), ...chords];
     this.selected.forEach((note) => { if (!this.played.has(note.id)) { this.played.add(note.id); this.sound(note, frame.tempoPercent); } });
     const beatLength = 60 / (this.scheduler.timeline.tempos[0]?.bpm ?? 120);
     const beat = frame.measure ? frame.measure.index * frame.measure.beats + Math.floor(frame.beat) : Math.floor(frame.position / beatLength);
@@ -77,11 +90,12 @@ export class SchedulerAudioAdapter {
 
   private sound(note: NoteEvent, tempoPercent: number): void {
     const duration = Math.max(0.04, note.durationSeconds / Math.max(0.5, tempoPercent / 100));
-    this.instrument.play({ midi: note.midi, velocity: note.velocity, durationSeconds: duration });
+    const level = note.partId === "derived-harmony" ? this.levels.chords : this.levels.melody;
+    this.instrument.play({ midi: note.midi, velocity: note.velocity * level, durationSeconds: duration });
   }
 
   private click(): void {
-    this.instrument.metronome();
+    this.instrument.metronome(this.levels.metronome);
   }
 
   private chordNotes(frame: SchedulerFrame): NoteEvent[] {

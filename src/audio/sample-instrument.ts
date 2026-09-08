@@ -11,7 +11,7 @@ export interface InstrumentPlayback {
   enable(midiNotes?: readonly number[]): Promise<void>;
   play(note: InstrumentNote): void;
   releaseAll(): void;
-  metronome(): void;
+  metronome(volume?: number): void;
   setInstrument(instrument: InstrumentName): void;
   destroy(): void;
 }
@@ -172,7 +172,7 @@ export class SampleInstrumentEngine implements InstrumentPlayback {
     this.voices.clear();
   }
 
-  metronome(): void {
+  metronome(volume = 1): void {
     const context = this.context;
     if (!context) return;
     const oscillator = context.createOscillator();
@@ -180,7 +180,7 @@ export class SampleInstrumentEngine implements InstrumentPlayback {
     const now = context.currentTime;
     oscillator.type = "sine";
     oscillator.frequency.value = 880;
-    gain.gain.setValueAtTime(0.018, now);
+    gain.gain.setValueAtTime(0.018 * Math.max(0, Math.min(1, volume)), now);
     gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
     oscillator.connect(gain).connect(context.destination);
     oscillator.start(now);

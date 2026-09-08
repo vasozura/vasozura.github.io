@@ -57,6 +57,7 @@ describe("learning audio adapter", () => {
     const output = instrument();
     const adapter = new SchedulerAudioAdapter(scheduler, output);
     adapter.setHarmonicTimeline(buildHarmonicTimeline(source, [{ measureIndex: 0, relativePosition: 0, label: "Am" }]));
+    adapter.setLearningLayers({ melody: false, chords: true });
     scheduler.seek(0);
     expect(vi.mocked(output.play).mock.calls.length).toBeGreaterThanOrEqual(3);
     expect(vi.mocked(output.play).mock.calls.length).toBeLessThanOrEqual(4);
@@ -70,6 +71,7 @@ describe("learning audio adapter", () => {
     const adapter = new SchedulerAudioAdapter(scheduler, output);
     const harmonies = buildHarmonicTimeline(source, [{ measureIndex: 0, relativePosition: 0, label: "Am" }]);
     adapter.setHarmonicTimeline(harmonies);
+    adapter.setLearningLayers({ melody: false, chords: true });
     adapter.setInstrument("guitar");
     adapter.setChordPattern("up", "1/8");
     const step = 60 / source.tempos[0].bpm / 2;
@@ -90,6 +92,7 @@ describe("learning audio adapter", () => {
     const output = instrument();
     const adapter = new SchedulerAudioAdapter(scheduler, output);
     adapter.setHarmonicTimeline(buildHarmonicTimeline(source, [{ measureIndex: 0, relativePosition: 0, label: "Am" }]));
+    adapter.setLearningLayers({ melody: false, chords: true });
     scheduler.seek(0.05);
     scheduler.play();
     const before = scheduler.snapshot().position;
@@ -101,6 +104,45 @@ describe("learning audio adapter", () => {
     expect(adapter.getChordPatternStatus().pattern).toBe("bass-12321");
     expect(scheduler.snapshot().position).toBeCloseTo(0.45, 4);
     expect(output.releaseAll).toHaveBeenCalled();
+    adapter.destroy(); scheduler.destroy();
+  });
+
+  it("mixes melody and chords independently without changing transport position", () => {
+    const source = (fixture as ScoreManifest).timeline;
+    const scheduler = new CanonicalScheduler(source, () => 0);
+    const output = instrument();
+    const adapter = new SchedulerAudioAdapter(scheduler, output);
+    adapter.setHarmonicTimeline(buildHarmonicTimeline(source, [{ measureIndex: 0, relativePosition: 0, label: "Am" }]));
+    adapter.setLearningLayers({ melody: true, chords: true }, source.notes);
+    scheduler.seek(0);
+    const mixed = vi.mocked(output.play).mock.calls.length;
+    const position = scheduler.snapshot().position;
+    adapter.setLearningLayers({ melody: true, chords: false }, source.notes);
+    scheduler.seek(0);
+    expect(mixed).toBeGreaterThan(1);
+    expect(scheduler.snapshot().position).toBe(position);
+    adapter.destroy(); scheduler.destroy();
+  });
+
+  it("mixes Melody and Chords as independent layers without changing the timeline", () => {
+    const source = (fixture as ScoreManifest).timeline;
+    const scheduler = new CanonicalScheduler(source, () => 0);
+    const output = instrument();
+    const adapter = new SchedulerAudioAdapter(scheduler, output);
+    adapter.setHarmonicTimeline(buildHarmonicTimeline(source, [{ measureIndex: 0, relativePosition: 0, label: "Am" }]));
+    adapter.setLearningLayers({ melody: true, chords: false }, source.notes);
+    scheduler.seek(source.notes[0].startSeconds);
+    const melodyOnly = vi.mocked(output.play).mock.calls.map(([played]) => played.midi);
+    expect(melodyOnly).toContain(source.notes[0].midi);
+    vi.mocked(output.play).mockClear();
+    adapter.setLearningLayers({ melody: false, chords: true }, source.notes);
+    scheduler.seek(0);
+    expect(vi.mocked(output.play).mock.calls.length).toBeGreaterThanOrEqual(3);
+    vi.mocked(output.play).mockClear();
+    adapter.setLearningLayers({ melody: true, chords: true }, source.notes);
+    scheduler.seek(0);
+    expect(vi.mocked(output.play).mock.calls.map(([played]) => played.midi)).toContain(source.notes[0].midi);
+    expect(scheduler.timeline).toBe(source);
     adapter.destroy(); scheduler.destroy();
   });
 });

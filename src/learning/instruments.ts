@@ -12,6 +12,13 @@ export interface AuditionCallbacks {
 }
 
 export interface GuitarConfig { tuning: number[]; frets: number; leftHanded?: boolean; }
+export interface GuitarPosition { string: number; fret: number; }
+
+export function guitarStringLayout(config: GuitarConfig = { tuning: [40, 45, 50, 55, 59, 64], frets: 20 }): Array<{ string: number; openMidi: number }> {
+  return config.tuning.map((openMidi, index) => ({ string: config.tuning.length - index, openMidi })).sort((a, b) => a.string - b.string);
+}
+
+export function guitarFretLabels(frets = 20): number[] { return Array.from({ length: frets + 1 }, (_, index) => index); }
 
 export function guitarCandidates(note: NoteEvent, config: GuitarConfig = { tuning: [40, 45, 50, 55, 59, 64], frets: 20 }): FingeringCandidate[] {
   if (note.string && note.fret !== undefined) {
@@ -21,6 +28,17 @@ export function guitarCandidates(note: NoteEvent, config: GuitarConfig = { tunin
     .filter((candidate) => candidate.fret >= 0 && candidate.fret <= config.frets)
     .sort((a, b) => a.fret - b.fret)
     .map((candidate, index) => ({ instrument: "guitar", noteId: note.id, rank: index + 1, confidence: "suggestion", ...candidate, reason: "Playable candidate; not authoritative" }));
+}
+
+export function chooseContinuousGuitarPosition(note: NoteEvent, previous: GuitarPosition | null, config: GuitarConfig = { tuning: [40, 45, 50, 55, 59, 64], frets: 20 }): (FingeringCandidate & GuitarPosition) | null {
+  const candidates = guitarCandidates(note, config).filter((candidate): candidate is FingeringCandidate & GuitarPosition => candidate.string != null && candidate.fret != null);
+  if (!candidates.length) return null;
+  if (candidates[0].confidence === "explicit" || !previous) return candidates[0];
+  return [...candidates].sort((a, b) => {
+    const aCost = Math.abs((a.fret ?? 0) - previous.fret) + Math.abs((a.string ?? 0) - previous.string) * 0.35;
+    const bCost = Math.abs((b.fret ?? 0) - previous.fret) + Math.abs((b.string ?? 0) - previous.string) * 0.35;
+    return aCost - bCost || a.rank - b.rank;
+  })[0];
 }
 
 export type AccordionSystem = "piano_accordion" | "chromatic_button" | "stradella" | "free_bass" | "custom";

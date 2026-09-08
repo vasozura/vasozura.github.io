@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import fixture from "./fixtures/complex-score.json";
-import { guitarCandidates, isVerifiedAccordionConfig } from "./instruments";
+import { chooseContinuousGuitarPosition, guitarCandidates, guitarFretLabels, guitarStringLayout, isVerifiedAccordionConfig } from "./instruments";
 import type { ScoreManifest } from "./contracts";
 
 const manifest = fixture as ScoreManifest;
@@ -25,6 +25,19 @@ describe("instrument adapters", () => {
   it("uses conventional guitar string numbering for exact playable pitches", () => {
     const e4 = { ...manifest.timeline.notes[0], midi: 64, string: undefined, fret: undefined };
     expect(guitarCandidates(e4)[0]).toMatchObject({ string: 1, fret: 0, confidence: "suggestion" });
+  });
+
+  it("renders string 1 high E first, string 6 low E last, with one fret header", () => {
+    const layout = guitarStringLayout();
+    expect(layout[0]).toEqual({ string: 1, openMidi: 64 });
+    expect(layout.at(-1)).toEqual({ string: 6, openMidi: 40 });
+    expect(guitarFretLabels()).toEqual(Array.from({ length: 21 }, (_, index) => index));
+  });
+
+  it("prefers a continuous playable fingering path instead of independently minimizing every fret", () => {
+    const previous = { string: 1, fret: 10 };
+    const position = chooseContinuousGuitarPosition({ ...manifest.timeline.notes[0], id: "continuity", midi: 69, string: undefined, fret: undefined }, previous);
+    expect(position).toMatchObject({ string: 2, fret: 10 });
   });
 
   it("accepts only an explicitly verified accordion mapping", () => {
