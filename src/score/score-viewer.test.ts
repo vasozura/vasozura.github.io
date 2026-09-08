@@ -37,8 +37,8 @@ describe("score viewer MIDI controls", () => {
       ParentMusicSystem: { Parent: { PositionAndShape: { AbsolutePosition: { x: 0, y: 20 } } } },
       parentSourceMeasure: { measureListIndex: 4, Duration: { RealValue: 1 } },
       staffEntries: [{ PositionAndShape: { AbsolutePosition: { x: 7, y: 3 } }, relInMeasureTimestamp: { RealValue: 0.5 }, graphicalChordContainers: [{ GraphicalLabel: { Label: { text: "Am" } } }] }],
-    }]], 10);
-    expect(result.targets[0]).toMatchObject({ measureIndex: 4, left: 20, right: 140, top: 230, bottom: 280 });
+    }]]);
+    expect(result.targets[0]).toMatchObject({ measureIndex: 4, staffIndex: 0, left: 2, right: 14, top: 3, bottom: 8 });
     expect(result.harmonies).toEqual([{ measureIndex: 4, relativePosition: 0.5, label: "Am" }]);
   });
 });

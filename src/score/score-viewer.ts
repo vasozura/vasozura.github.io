@@ -2,12 +2,13 @@ import { getInitialLanguage, type Language } from "../i18n";
 import { MidiPlayback } from "./midi-playback";
 import { PianoVisualizer } from "./instrument-visualizer";
 import { playbackCoordinator } from "../audio/playback-coordinator";
-import { logicalPageState, nearestScorePosition, type ScoreMeasureTarget, type ScorePositionRequest } from "./score-navigation";
+import { clientToScorePoint, logicalPageState, nearestScorePosition, scoreClickRatio, type ScoreCoordinateTransform, type ScoreMeasureTarget, type ScorePositionRequest } from "./score-navigation";
 
 interface GraphicalEntryLike {
-  PositionAndShape?: { AbsolutePosition?: { x: number; y: number } };
+  PositionAndShape?: { AbsolutePosition?: { x: number; y: number }; BorderLeft?: number; BorderRight?: number; BorderTop?: number; BorderBottom?: number; Size?: { width?: number; height?: number } };
   relInMeasureTimestamp?: { RealValue?: number };
   graphicalChordContainers?: Array<{ GraphicalLabel?: { Label?: { text?: string } } }>;
+  graphicalVoiceEntries?: Array<{ notes?: Array<{ sourceNote?: { halfTone?: number } }> }>;
 }
 interface GraphicalMeasureLike {
   PositionAndShape?: { AbsolutePosition?: { x: number; y: number }; BorderLeft?: number; BorderRight?: number; BorderTop?: number; BorderBottom?: number; Size?: { width?: number; height?: number } };
@@ -16,27 +17,41 @@ interface GraphicalMeasureLike {
   staffEntries?: GraphicalEntryLike[];
 }
 
-export function scoreTargetsFromGraphicalMeasures(measureList: GraphicalMeasureLike[][], scale = 10): { targets: ScoreMeasureTarget[]; harmonies: Array<{ measureIndex: number; relativePosition: number; label: string }> } {
+export function scoreTargetsFromGraphicalMeasures(measureList: GraphicalMeasureLike[][]): { targets: ScoreMeasureTarget[]; harmonies: Array<{ measureIndex: number; relativePosition: number; label: string }> } {
   const targets: ScoreMeasureTarget[] = [];
   const harmonies: Array<{ measureIndex: number; relativePosition: number; label: string }> = [];
-  for (const measureRow of measureList) for (const measure of measureRow) {
+  for (const measureRow of measureList) for (const [staffIndex, measure] of measureRow.entries()) {
     const box = measure.PositionAndShape;
     const position = box?.AbsolutePosition;
     const measureIndex = measure.parentSourceMeasure?.measureListIndex;
     if (!position || measureIndex == null) continue;
     const duration = measure.parentSourceMeasure?.Duration?.RealValue || 1;
-    const page = measure.ParentMusicSystem?.Parent?.PositionAndShape?.AbsolutePosition ?? { x: 0, y: 0 };
-    const entries = (measure.staffEntries ?? []).map((entry) => ({ x: (page.x + (entry.PositionAndShape?.AbsolutePosition?.x ?? position.x)) * scale, relativePosition: Math.max(0, Math.min(1, (entry.relInMeasureTimestamp?.RealValue ?? 0) / duration)) }));
+    const entries = (measure.staffEntries ?? []).map((entry) => {
+      const shape = entry.PositionAndShape;
+      const point = shape?.AbsolutePosition ?? position;
+      return {
+        x: point.x,
+        y: point.y,
+        left: point.x + (shape?.BorderLeft ?? -0.75),
+        right: point.x + (shape?.BorderRight ?? shape?.Size?.width ?? 0.75),
+        top: point.y + (shape?.BorderTop ?? -4),
+        bottom: point.y + (shape?.BorderBottom ?? shape?.Size?.height ?? 4),
+        relativePosition: Math.max(0, Math.min(1, (entry.relInMeasureTimestamp?.RealValue ?? 0) / duration)),
+        sourceTimestamp: entry.relInMeasureTimestamp?.RealValue ?? 0,
+        midi: entry.graphicalVoiceEntries?.flatMap((voice) => voice.notes ?? []).map((note) => note.sourceNote?.halfTone).find((value): value is number => Number.isFinite(value)),
+      };
+    });
     for (const entry of measure.staffEntries ?? []) for (const chord of entry.graphicalChordContainers ?? []) {
       const label = chord.GraphicalLabel?.Label?.text?.trim();
       if (label) harmonies.push({ measureIndex, relativePosition: Math.max(0, Math.min(1, (entry.relInMeasureTimestamp?.RealValue ?? 0) / duration)), label });
     }
     targets.push({
       measureIndex,
-      left: (page.x + position.x + (box?.BorderLeft ?? 0)) * scale,
-      right: (page.x + position.x + (box?.BorderRight ?? box?.Size?.width ?? 1)) * scale,
-      top: (page.y + position.y + (box?.BorderTop ?? 0)) * scale,
-      bottom: (page.y + position.y + (box?.BorderBottom ?? box?.Size?.height ?? 1)) * scale,
+      staffIndex,
+      left: position.x + (box?.BorderLeft ?? 0),
+      right: position.x + (box?.BorderRight ?? box?.Size?.width ?? 1),
+      top: position.y + (box?.BorderTop ?? 0),
+      bottom: position.y + (box?.BorderBottom ?? box?.Size?.height ?? 1),
       entries,
     });
   }
@@ -99,7 +114,7 @@ export async function mountScoreViewer(
       canvas.classList.add("is-rendering");
       osmd.render();
       const graphical = (osmd as unknown as { GraphicSheet?: { MeasureList?: GraphicalMeasureLike[][] } }).GraphicSheet?.MeasureList ?? [];
-      const mapped = scoreTargetsFromGraphicalMeasures(graphical, 10 * osmd.Zoom);
+      const mapped = scoreTargetsFromGraphicalMeasures(graphical);
       scoreTargets = mapped.targets;
       root.dataset.scoreHarmonies = JSON.stringify(mapped.harmonies);
       renderFrame = window.requestAnimationFrame(() => {
@@ -171,10 +186,66 @@ export async function mountScoreViewer(
     const updatePageOnScroll = (): void => showPage();
     canvas.addEventListener("scroll", updatePageOnScroll, { passive: true });
     cleanups.push(() => canvas.removeEventListener("scroll", updatePageOnScroll));
+    const sheet = (osmd as unknown as { GraphicSheet: ScoreCoordinateTransform & { svgToDom(point: { x: number; y: number }): { x: number; y: number } }; Sheet?: { SourceMeasures?: unknown[] } }).GraphicSheet;
+    const pointerDebug = import.meta.env.DEV && new URLSearchParams(window.location.search).has("scorePointerDebug");
+    let debugOverlay: HTMLElement | null = null;
+    let debugTimer = 0;
+    const osmdToClient = (point: { x: number; y: number }): { x: number; y: number } => sheet.svgToDom({ x: point.x * 10, y: point.y * 10 });
+    const showPointerDebug = (event: MouseEvent, detail: ScorePositionRequest): void => {
+      if (!pointerDebug || !detail.target) return;
+      window.clearTimeout(debugTimer);
+      debugOverlay?.remove();
+      const surfaceRect = surface.getBoundingClientRect();
+      const overlay = document.createElement("div");
+      overlay.className = "score-pointer-debug";
+      overlay.dataset.measure = String(detail.measureIndex + 1);
+      overlay.dataset.staff = String((detail.staffIndex ?? 0) + 1);
+      const measureBox = document.createElement("span");
+      measureBox.className = "score-pointer-measure";
+      const measureStart = osmdToClient({ x: detail.target.left, y: detail.target.top });
+      const measureEnd = osmdToClient({ x: detail.target.right, y: detail.target.bottom });
+      Object.assign(measureBox.style, { left: `${measureStart.x - surfaceRect.left}px`, top: `${measureStart.y - surfaceRect.top}px`, width: `${Math.max(1, measureEnd.x - measureStart.x)}px`, height: `${Math.max(1, measureEnd.y - measureStart.y)}px` });
+      const crosshair = document.createElement("span");
+      crosshair.className = "score-pointer-crosshair";
+      Object.assign(crosshair.style, { left: `${event.clientX - surfaceRect.left}px`, top: `${event.clientY - surfaceRect.top}px` });
+      const selectedEntry = detail.entryIndex == null ? null : detail.target.entries[detail.entryIndex];
+      const entryMarker = document.createElement("span");
+      entryMarker.className = "score-pointer-entry";
+      if (selectedEntry) {
+        const entryStart = osmdToClient({ x: selectedEntry.left, y: selectedEntry.top });
+        const entryEnd = osmdToClient({ x: selectedEntry.right, y: selectedEntry.bottom });
+        Object.assign(entryMarker.style, { left: `${entryStart.x - surfaceRect.left}px`, top: `${entryStart.y - surfaceRect.top}px`, width: `${Math.max(4, entryEnd.x - entryStart.x)}px`, height: `${Math.max(4, entryEnd.y - entryStart.y)}px` });
+      }
+      const label = document.createElement("output");
+      label.className = "score-pointer-label";
+      label.textContent = `Measure ${detail.measureIndex + 1} · Staff ${(detail.staffIndex ?? 0) + 1} · Beat ${(1 + (detail.sourceTimestamp ?? detail.relativePosition) * 4).toFixed(2)} · MIDI ${detail.midi ?? "—"} · resolving…`;
+      overlay.append(measureBox, entryMarker, crosshair, label);
+      surface.append(overlay);
+      debugOverlay = overlay;
+      debugTimer = window.setTimeout(() => { overlay.remove(); if (debugOverlay === overlay) debugOverlay = null; }, 3500);
+    };
+    const updatePointerDebug = (event: Event): void => {
+      const detail = (event as CustomEvent<{ seconds?: number; noteId?: string | null }>).detail;
+      const label = debugOverlay?.querySelector<HTMLOutputElement>(".score-pointer-label");
+      if (label && Number.isFinite(detail?.seconds)) label.textContent = `${label.textContent?.replace(/ · resolving…$/, "")} · ${detail.seconds!.toFixed(3)}s · ${detail.noteId ?? "measure"}`;
+    };
+    root.addEventListener("score-pointer-resolved", updatePointerDebug);
+    cleanups.push(() => { root.removeEventListener("score-pointer-resolved", updatePointerDebug); window.clearTimeout(debugTimer); debugOverlay?.remove(); });
     const seekFromScore = (event: MouseEvent): void => {
-      const rect = surface.getBoundingClientRect();
-      const detail = nearestScorePosition(event.clientX - rect.left, event.clientY - rect.top, scoreTargets);
-      if (detail) root.dispatchEvent(new CustomEvent<ScorePositionRequest>("score-position-request", { detail }));
+      let detail: ScorePositionRequest | null = null;
+      if (scoreTargets.length) {
+        const point = clientToScorePoint(event.clientX, event.clientY, sheet);
+        detail = nearestScorePosition(point.x, point.y, scoreTargets);
+      }
+      if (!detail) {
+        console.warn("OSMD graphical hit targets unavailable; using emergency approximate score seeking.");
+        const ratio = scoreClickRatio(event, surface);
+        const sourceMeasureCount = Math.max(1, (osmd as unknown as { Sheet?: { SourceMeasures?: unknown[] } }).Sheet?.SourceMeasures?.length ?? Number(root.dataset.measureCount) ?? 1);
+        const position = ratio * sourceMeasureCount;
+        detail = { measureIndex: Math.min(sourceMeasureCount - 1, Math.floor(position)), relativePosition: position % 1 };
+      }
+      showPointerDebug(event, detail);
+      root.dispatchEvent(new CustomEvent<ScorePositionRequest>("score-position-request", { detail }));
     };
     surface.addEventListener("click", seekFromScore);
     cleanups.push(() => surface.removeEventListener("click", seekFromScore));

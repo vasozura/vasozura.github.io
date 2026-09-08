@@ -14,6 +14,7 @@ import { connectWebMidi, supportsWebMidi } from "./web-midi";
 import { getLearningCopy } from "./copy";
 import { playbackCoordinator } from "../audio/playback-coordinator";
 import { resolveCanonicalScoreLocation, type ScorePositionRequest } from "../score/score-navigation";
+import { mountMidiLab } from "./midi-lab";
 import { hasExplicitStaffIdentity, type PlaybackMode, type StaffScope } from "./playback-selection";
 import { buildVoiceLanes, laneInScope, selectMelodyLane } from "./voice-lanes";
 import { createActiveMelodyTimeline } from "./active-melody";
@@ -116,6 +117,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     <p data-l="pattern-status" class="learning-pattern-status" aria-live="polite">${copy.pattern}: ${copy.block} · ${copy.patternStep}: ${copy.block}</p>
     <p data-l="notes" class="learning-current">${copy.current}: — · ${copy.upcoming}: —</p>
     <div class="learning-visualizer-panel"><div data-l="visualizer" aria-live="off"></div></div>
+    <div data-l="midi-lab"></div>
     <section class="learning-practice" aria-labelledby="practice-title">
       <h4 id="practice-title">${copy.practice}</h4>
       <div class="learning-exercise-options">
@@ -143,6 +145,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
   let auditionEngine: SampleInstrumentEngine | null = null;
   let unregisterTransport = (): void => {};
   let removeScorePositionListener = (): void => {};
+  let midiLabCleanup = (): void => {};
   try {
     let api: LearningApi;
     let manifest: ScoreManifest;
@@ -190,6 +193,11 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     });
     const recorder = new MidiAttemptRecorder();
     const visualRoot = host.querySelector<HTMLElement>('[data-l="visualizer"]')!;
+    midiLabCleanup = await mountMidiLab(host.querySelector<HTMLElement>('[data-l="midi-lab"]')!, {
+      canonicalUrl: midiUrl,
+      canonicalTimeline: manifest.timeline,
+      onSessionMelody: (track) => { host.dataset.sessionMelody = `${track.sourceName}:${track.trackIndex}`; },
+    });
     const maxMeasure = Math.max(1, manifest.timeline.measures.length);
     host.querySelectorAll<HTMLInputElement>('[data-l="loop-a"],[data-l="loop-b"],[data-l="exercise-a"],[data-l="exercise-b"]').forEach((input) => { input.max = String(maxMeasure); });
     host.querySelector<HTMLInputElement>('[data-l="loop-b"]')!.value = String(maxMeasure);
@@ -348,6 +356,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       const detail = (event as CustomEvent<ScorePositionRequest>).detail;
       if (!Number.isInteger(detail?.measureIndex) || !Number.isFinite(detail.relativePosition)) return;
       const location = resolveCanonicalScoreLocation(canonicalTimeline, detail);
+      root.dispatchEvent(new CustomEvent("score-pointer-resolved", { detail: { ...detail, seconds: location.seconds, noteId: location.noteId } }));
       playbackCoordinator.activate(transportId);
       scheduler?.seek(timingMode === "active" ? activeTiming.originalToActive(location.seconds) : location.seconds);
       audio?.reset();
@@ -587,6 +596,6 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
   }
 
   return () => {
-    controller.abort(); disconnectMidi(); unregisterTransport(); removeScorePositionListener(); audio?.destroy(); scheduler?.destroy(); visualizer?.destroy(); auditionEngine?.destroy(); scoreCleanup(); host.remove();
+    controller.abort(); disconnectMidi(); unregisterTransport(); removeScorePositionListener(); midiLabCleanup(); audio?.destroy(); scheduler?.destroy(); visualizer?.destroy(); auditionEngine?.destroy(); scoreCleanup(); host.remove();
   };
 }

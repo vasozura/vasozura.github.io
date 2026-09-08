@@ -1358,9 +1358,40 @@ img {
 }
 
 .score-render-surface {
+  position: relative;
   width: 100%;
   min-width: 0;
 }
+
+.score-pointer-debug { position: absolute; inset: 0; z-index: 20; pointer-events: none; color: #080808; font: 700 12px/1.3 system-ui, sans-serif; }
+.score-pointer-measure, .score-pointer-entry { position: absolute; box-sizing: border-box; }
+.score-pointer-measure { border: 2px solid #00a8ff; background: rgb(0 168 255 / 8%); }
+.score-pointer-entry { border: 2px solid #ffb800; background: rgb(255 184 0 / 18%); }
+.score-pointer-crosshair { position: absolute; width: 22px; height: 22px; border: 2px solid #e6002d; border-radius: 50%; transform: translate(-50%, -50%); }
+.score-pointer-crosshair::before, .score-pointer-crosshair::after { content: ""; position: absolute; background: #e6002d; }
+.score-pointer-crosshair::before { width: 30px; height: 1px; left: -6px; top: 9px; }
+.score-pointer-crosshair::after { width: 1px; height: 30px; left: 9px; top: -6px; }
+.score-pointer-label { position: sticky; top: 8px; left: 8px; display: block; width: max-content; max-width: calc(100% - 16px); padding: 6px 9px; background: #fff5c2; border: 1px solid #080808; }
+
+.midi-lab { margin-top: 1.5rem; padding: clamp(1rem, 2vw, 1.5rem); border: 1px solid var(--line); background: #0b0b0b; }
+.midi-lab-heading, .midi-lab-source, .midi-lab-toolbar { display: flex; align-items: center; gap: .65rem; flex-wrap: wrap; }
+.midi-lab-heading { justify-content: space-between; }
+.midi-lab-heading h4 { margin: 0; font-size: clamp(1.35rem, 3vw, 2rem); }
+.midi-file-button { position: relative; overflow: hidden; cursor: pointer; }
+.midi-file-button input { position: absolute; inline-size: 1px; block-size: 1px; opacity: 0; }
+.midi-lab-privacy, .midi-lab-message, .midi-lab-selection small { color: var(--muted); }
+.midi-lab-source select, .midi-lab-toolbar select { min-height: 2.7rem; background: #111; color: inherit; border: 1px solid var(--line); padding: .5rem; }
+.midi-lab-selection { display: grid; gap: .2rem; margin: 1rem 0; padding: .8rem; border-left: 3px solid var(--accent); }
+.midi-lab-selection span { color: var(--accent); letter-spacing: .16em; font-size: .75rem; }
+.midi-contour { margin-top: 1rem; overflow: hidden; }
+.midi-contour svg { display: block; width: 100%; min-height: 150px; border: 1px solid var(--line); background: #050505; }
+.midi-contour rect { fill: #9b9b9b; }
+.midi-contour rect[data-active="true"] { fill: var(--accent); height: 8px; }
+.midi-track-scroll { overflow-x: auto; max-width: 100%; }
+.midi-track-table { min-width: 1000px; border-collapse: collapse; font-size: .8rem; }
+.midi-track-table th, .midi-track-table td { padding: .5rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.midi-track-table td:last-child { display: flex; gap: .35rem; }
+.midi-track-table button { padding: .4rem .55rem; white-space: nowrap; }
 
 .score-render-surface .osmd-page {
   margin-inline: auto;

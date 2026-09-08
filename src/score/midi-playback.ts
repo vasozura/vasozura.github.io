@@ -1,6 +1,6 @@
 import { SampleInstrumentEngine, type InstrumentPlayback } from "../audio/sample-instrument";
 
-interface MidiNoteEvent { time: number; duration: number; midi: number; velocity: number; }
+export interface MidiNoteEvent { time: number; duration: number; midi: number; velocity: number; }
 
 export class MidiPlayback {
   private notes: MidiNoteEvent[] = [];
@@ -29,12 +29,20 @@ export class MidiPlayback {
     const [{ Midi }, response] = await Promise.all([import("@tonejs/midi"), fetch(url)]);
     if (!response.ok) throw new Error(`Unable to load MIDI (${response.status}).`);
     const midi = new Midi(await response.arrayBuffer());
-    this.notes = midi.tracks.flatMap((track) => track.notes.map((note) => ({ time: note.time, duration: note.duration, midi: note.midi, velocity: note.velocity }))).sort((a, b) => a.time - b.time);
-    this.duration = midi.duration;
-    this.bpm = midi.header.tempos[0]?.bpm ?? fallbackBpm;
+    this.loadEvents(midi.tracks.flatMap((track) => track.notes.map((note) => ({ time: note.time, duration: note.duration, midi: note.midi, velocity: note.velocity }))), midi.duration, midi.header.tempos[0]?.bpm ?? fallbackBpm);
+  }
+
+  loadEvents(notes: MidiNoteEvent[], duration: number, bpm = 120): void {
+    this.stop();
+    this.notes = notes.map((note) => ({ ...note })).sort((a, b) => a.time - b.time || a.midi - b.midi);
+    this.duration = Math.max(0, duration);
+    this.bpm = bpm;
     this.offset = 0;
+    this.lastPosition = 0;
     this.onPosition(0, this.duration);
   }
+
+  setInstrument(name: "piano" | "guitar"): void { this.instrument.setInstrument(name); }
 
   async play(): Promise<void> {
     if (!this.notes.length || this.playing) return;
@@ -93,6 +101,7 @@ export class MidiPlayback {
   isPlaying(): boolean { return this.playing; }
   canPlay(): boolean { return this.notes.length > 0; }
   getDuration(): number { return this.duration; }
+  getPosition(): number { return this.position(); }
 
   destroy(): void {
     this.pause();

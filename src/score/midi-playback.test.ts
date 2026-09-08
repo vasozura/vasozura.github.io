@@ -59,4 +59,15 @@ describe("MIDI playback seeking", () => {
     vi.unstubAllGlobals();
     vi.useRealTimers();
   });
+
+  it("loads a derived local track by value and routes piano or guitar timbre without mutating its source", () => {
+    const audio = instrument();
+    const playback = new MidiPlayback(vi.fn(), vi.fn(), audio);
+    const notes = [{ time: 0, duration: 1, midi: 64, velocity: 0.8 }];
+    playback.loadEvents(notes, 1, 100);
+    playback.setInstrument("guitar");
+    notes[0].midi = 1;
+    expect((playback as unknown as { notes: Array<{ midi: number }> }).notes[0].midi).toBe(64);
+    expect(audio.setInstrument).toHaveBeenCalledWith("guitar");
+  });
 });
