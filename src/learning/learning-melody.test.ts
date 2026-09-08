@@ -54,6 +54,14 @@ describe("complete Learning Melody", () => {
     expect(melody.diagnostics.monophonyRatio).toBe(1);
   });
 
+  it("fills source-backed gaps exposed when overlapping source durations are normalized", () => {
+    const vocal = lane("vocal", "Vocal", [note("v1", 0, 60, 5), note("v2", 1, 62, 0.2), note("v3", 8, 64, 0.4)]);
+    const lead = lane("lead", "Lead guitar", [note("l1", 2, 65), note("l2", 3, 67), note("l3", 4, 69), note("l4", 6, 71)]);
+    const melody = composeLearningMelody({ ...timeline, durationSeconds: 9 }, [vocal, lead], { primaryLane: vocal });
+    expect(melody.notes.map((event) => event.sourceNoteId)).toEqual(["v1", "v2", "l1", "l2", "l3", "l4", "v3"]);
+    expect(melody.diagnostics.monophonyRatio).toBe(1);
+  });
+
   it("chooses a principal melodic source for gaps and never defaults to bass ordering", () => {
     const bass = lane("bass", "Bass", [40, 41, 43, 45].map((midi, index) => note(`b${index}`, index, midi)));
     const guitar = lane("guitar", "Guitar lead", [64, 65, 67, 69].map((midi, index) => note(`g${index}`, index, midi)));

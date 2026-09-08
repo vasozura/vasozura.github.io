@@ -122,7 +122,39 @@ export function composeLearningMelody(canonical: Timeline, lanes: VoiceLane[], o
     sourceNotes.forEach((note) => notes.push(learningEvent(note, lane!, source, notes.length)));
     segments.push({ id: segmentId, startSeconds: interval.start, endSeconds: interval.end, sourceLaneId: unresolvedGap ? null : lane!.id, sourceLabel: unresolvedGap ? (retainedRest ? "Retained musical rest" : "Unresolved source gap") : lane!.label, provenance: unresolvedGap ? "Musical rest" : source, noteCount: sourceNotes.length, retainedRest });
   }
-  const ordered = enforceMonophonicLine(notes);
+  let ordered = enforceMonophonicLine(notes);
+  const occupiedSources = new Set(ordered.map((note) => `${note.sourceLaneId}:${note.sourceNoteId}`));
+  const supplemental: LearningMelodyEvent[] = [];
+  let lineCursor = 0;
+  for (const note of ordered) {
+    if (note.startSeconds - lineCursor > threshold) {
+      const availableFillLanes = candidates.filter((candidate) => candidate.notes.some((candidateNote) => candidateNote.startSeconds >= lineCursor - 0.01 && candidateNote.startSeconds < note.startSeconds - 0.01));
+      const lane = options.gapFillLane ?? selectGapFillLane(availableFillLanes);
+      if (lane) {
+        const source = provenance(lane, Boolean(options.gapFillLane));
+        oneContinuousLine(lane.notes)
+          .filter((candidateNote) => candidateNote.startSeconds >= lineCursor - 0.01 && candidateNote.startSeconds < note.startSeconds - 0.01)
+          .filter((candidateNote) => !occupiedSources.has(`${lane.id}:${candidateNote.id}`))
+          .forEach((candidateNote) => {
+            occupiedSources.add(`${lane.id}:${candidateNote.id}`);
+            supplemental.push(learningEvent(candidateNote, lane, source, notes.length + supplemental.length));
+          });
+      }
+    }
+    lineCursor = Math.max(lineCursor, note.startSeconds + note.durationSeconds);
+  }
+  if (canonical.durationSeconds - lineCursor > threshold) {
+    const availableFillLanes = candidates.filter((candidate) => candidate.notes.some((candidateNote) => candidateNote.startSeconds >= lineCursor - 0.01 && candidateNote.startSeconds < canonical.durationSeconds));
+    const lane = options.gapFillLane ?? selectGapFillLane(availableFillLanes);
+    if (lane) {
+      const source = provenance(lane, Boolean(options.gapFillLane));
+      oneContinuousLine(lane.notes)
+        .filter((candidateNote) => candidateNote.startSeconds >= lineCursor - 0.01 && candidateNote.startSeconds < canonical.durationSeconds)
+        .filter((candidateNote) => !occupiedSources.has(`${lane.id}:${candidateNote.id}`))
+        .forEach((candidateNote) => supplemental.push(learningEvent(candidateNote, lane, source, notes.length + supplemental.length)));
+    }
+  }
+  if (supplemental.length) ordered = enforceMonophonicLine([...ordered, ...supplemental]);
   const timeline = { ...canonical, notes: ordered.map((note, cursorStep) => ({ ...note, cursorStep })) };
   return { timeline, notes: timeline.notes as LearningMelodyEvent[], segments, diagnostics: diagnostics(timeline.notes as LearningMelodyEvent[], canonical.durationSeconds, segments), primaryLaneId: primary.id };
 }
