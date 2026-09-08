@@ -17,7 +17,7 @@ export function guitarCandidates(note: NoteEvent, config: GuitarConfig = { tunin
   if (note.string && note.fret !== undefined) {
     return [{ instrument: "guitar", noteId: note.id, rank: 1, confidence: "explicit", string: note.string, fret: note.fret, reason: "Source-authored score position" }];
   }
-  return config.tuning.map((open, index) => ({ string: index + 1, fret: note.midi - open }))
+  return config.tuning.map((open, index) => ({ string: config.tuning.length - index, fret: note.midi - open }))
     .filter((candidate) => candidate.fret >= 0 && candidate.fret <= config.frets)
     .sort((a, b) => a.fret - b.fret)
     .map((candidate, index) => ({ instrument: "guitar", noteId: note.id, rank: index + 1, confidence: "suggestion", ...candidate, reason: "Playable candidate; not authoritative" }));

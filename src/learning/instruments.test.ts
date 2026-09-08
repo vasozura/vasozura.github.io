@@ -22,6 +22,11 @@ describe("instrument adapters", () => {
     expect(high.midi).toBe(108);
   });
 
+  it("uses conventional guitar string numbering for exact playable pitches", () => {
+    const e4 = { ...manifest.timeline.notes[0], midi: 64, string: undefined, fret: undefined };
+    expect(guitarCandidates(e4)[0]).toMatchObject({ string: 1, fret: 0, confidence: "suggestion" });
+  });
+
   it("accepts only an explicitly verified accordion mapping", () => {
     expect(isVerifiedAccordionConfig({
       schema_version: "zura-accordion-mapping/v1",

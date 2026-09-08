@@ -12,7 +12,10 @@ export class GuitarVisualizer implements TimelineVisualizer {
   mount(): void {
     this.root.classList.add("learning-fretboard");
     this.root.classList.toggle("left-handed", Boolean(this.config.leftHanded));
-    this.root.innerHTML = this.config.tuning.map((open, stringIndex) => `<div class="guitar-string" data-string="${stringIndex + 1}" aria-label="String ${stringIndex + 1}">${Array.from({ length: this.config.frets + 1 }, (_, fret) => `<button type="button" data-fret="${fret}" data-midi="${open + fret}" aria-label="String ${stringIndex + 1}, fret ${fret}">${fret}</button>`).join("")}</div>`).join("");
+    this.root.innerHTML = this.config.tuning.map((open, stringIndex) => {
+      const string = this.config.tuning.length - stringIndex;
+      return `<div class="guitar-string" data-string="${string}" aria-label="String ${string}">${Array.from({ length: this.config.frets + 1 }, (_, fret) => `<button type="button" data-fret="${fret}" data-midi="${open + fret}" aria-label="String ${string}, fret ${fret}">${fret}</button>`).join("")}</div>`;
+    }).join("");
     this.root.querySelectorAll<HTMLButtonElement>("[data-midi]").forEach((fret) => {
       const start = (event: PointerEvent): void => { event.preventDefault(); fret.setPointerCapture?.(event.pointerId); this.audition?.noteOn(Number(fret.dataset.midi)); };
       const stop = (): void => this.audition?.noteOff();
