@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { NoteEvent } from "./contracts";
 import { buildMelodyScore } from "./melody-score";
+import { readFile } from "node:fs/promises";
 
 const notes = [60, 64, 67, 69].map((midi, index): NoteEvent => ({ id: `n${index}`, partId: "melody", measureIndex: 0, beat: index + 1, startSeconds: index, durationSeconds: 0.5, midi, velocity: 0.8, hand: "unknown" }));
 
@@ -10,5 +11,11 @@ describe("independent Learning Melody score", () => {
     expect(score.map((entry) => entry.id)).toEqual(notes.map((note) => note.id));
     expect(score.map((entry) => entry.midi)).toEqual([60, 64, 67, 69]);
     expect(score.every((entry) => entry.guitar != null)).toBe(true);
+  });
+
+  it("renders the primary score with direct learning IDs instead of reverse lookup", async () => {
+    const source = await readFile(new URL("./melody-score.ts", import.meta.url), "utf8");
+    expect(source).toContain("note.dataset.learningId = entry.id");
+    expect(source).toContain('detail: { noteId: entry.id }');
   });
 });

@@ -23,8 +23,9 @@ describe("learning integration guards", () => {
     expect(css).toContain("max-width: 100%");
     expect(css).toContain("min-width: 0");
     expect(css).toContain("overflow-x: auto");
-    expect(css).toContain(".learning-fretboard { min-width: 0; }");
-    expect(css).toContain(".guitar-string { display: grid; min-width: 760px;");
+    expect(css).toContain(".learning-fretboard { min-width: 0; overflow-x: auto;");
+    expect(css).toContain(".guitar-neck { min-width: 820px;");
+    expect(css).toContain(".guitar-string { display: grid; grid-template-columns: 26px repeat(21");
     expect(css).not.toContain("overflow-x: visible");
   });
 

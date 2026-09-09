@@ -49,6 +49,7 @@ export class MelodyScoreView {
       note.type = "button";
       note.className = "melody-score-note";
       note.dataset.melodyNote = entry.id;
+      note.dataset.learningId = entry.id;
       note.setAttribute("aria-current", String(entry.id === this.activeId));
       note.style.setProperty("--melody-y", String((max - entry.midi) / Math.max(1, max - min)));
       const name = `${["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"][entry.midi % 12]}${Math.floor(entry.midi / 12) - 1}`;

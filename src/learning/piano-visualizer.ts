@@ -22,8 +22,8 @@ export class PianoRangeVisualizer implements TimelineVisualizer {
       return `<button type="button" class="learning-key ${isBlack(midi) ? "black" : "white"}" data-note="${midi}" aria-label="MIDI note ${midi}"></button>`;
     }).join("");
     this.root.querySelectorAll<HTMLButtonElement>("[data-note]").forEach((key) => {
-      const start = (event: PointerEvent): void => { event.preventDefault(); key.setPointerCapture?.(event.pointerId); this.audition?.noteOn(Number(key.dataset.note)); };
-      const stop = (): void => this.audition?.noteOff();
+      const start = (event: PointerEvent): void => { event.preventDefault(); key.classList.add("manual-audition"); key.setPointerCapture?.(event.pointerId); this.audition?.noteOn(Number(key.dataset.note)); };
+      const stop = (): void => { key.classList.remove("manual-audition"); this.audition?.noteOff(); };
       key.addEventListener("pointerdown", start);
       key.addEventListener("pointerup", stop);
       key.addEventListener("pointercancel", stop);

@@ -145,6 +145,12 @@ export class SampleInstrumentEngine implements InstrumentPlayback {
     const peak = Math.max(0.018, Math.min(0.42, 0.035 + Math.pow(note.velocity, 1.35) * 0.31));
     source.buffer = buffer;
     source.playbackRate.value = 2 ** ((note.midi - sample.midi) / 12);
+    const audibleBufferSeconds = buffer.duration / source.playbackRate.value;
+    if (heldFor > audibleBufferSeconds * 0.92 && buffer.duration > 0.3) {
+      source.loop = true;
+      source.loopStart = Math.min(buffer.duration * 0.38, Math.max(0.08, buffer.duration - 0.2));
+      source.loopEnd = Math.max(source.loopStart + 0.08, buffer.duration * 0.88);
+    }
     gain.gain.setValueAtTime(0.0001, now);
     gain.gain.exponentialRampToValueAtTime(peak, now + attack);
     gain.gain.setValueAtTime(peak, now + heldFor);

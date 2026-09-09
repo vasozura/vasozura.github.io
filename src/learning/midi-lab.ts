@@ -11,10 +11,10 @@ export async function mountMidiLab(root: HTMLElement, options: MidiLabOptions): 
   root.innerHTML = `<section class="midi-lab" aria-labelledby="midi-lab-title">
     <div class="midi-lab-heading"><div><p class="eyebrow">LOCAL SESSION REFERENCES</p><h4 id="midi-lab-title">MIDI LAB</h4></div><label class="button midi-file-button">Load reference MIDI files<input data-midi-lab="files" type="file" multiple accept=".mid,.midi,audio/midi,audio/x-midi"></label></div>
     <p class="midi-lab-privacy">Files stay in this browser session. Nothing is uploaded or saved.</p>
-    <div class="midi-lab-source"><button type="button" data-midi-lab="previous">← Previous source</button><select data-midi-lab="source" aria-label="MIDI source"></select><button type="button" data-midi-lab="next">Next source →</button><select data-midi-lab="relation"><option value="independent">Independent</option><option value="aligned">Aligned</option></select></div>
+    <div class="midi-lab-source midi-lab-source-card" data-midi-lab="source-card"><strong>ACTIVE SOURCE</strong><button type="button" data-midi-lab="previous">← Previous</button><select data-midi-lab="source" aria-label="MIDI source"></select><button type="button" data-midi-lab="next">Next →</button><select data-midi-lab="relation"><option value="independent">Independent</option><option value="aligned">Aligned</option></select></div>
     <p data-midi-lab="alignment" class="midi-lab-message"></p>
     <div class="midi-lab-selection"><span>VOCAL / MELODY SOURCE</span><strong data-midi-lab="selection">No verified vocal MIDI track selected.</strong><small data-midi-lab="selection-kind"></small></div>
-    <div class="midi-lab-toolbar"><label>Track <select data-midi-lab="track"></select></label><label>Sound <select data-midi-lab="sound"><option value="piano">Piano</option><option value="guitar">Guitar</option></select></label><button type="button" data-midi-lab="solo">▶ Solo</button><button type="button" data-midi-lab="stop">■ Stop</button><button type="button" data-midi-lab="active">Active</button><button type="button" data-midi-lab="use">Use as session melody</button><button type="button" data-midi-lab="gap-fill">Use for gap-fill segments</button></div>
+    <div class="midi-lab-toolbar"><label>Track <select data-midi-lab="track"></select></label><label>Sound <select data-midi-lab="sound"><option value="piano">Piano</option><option value="guitar">Guitar</option></select></label><button type="button" data-midi-lab="solo" aria-pressed="false">▶ Audition</button><button type="button" data-midi-lab="stop">■ Stop</button><button type="button" data-midi-lab="active" aria-pressed="false">Active timing</button><button type="button" data-midi-lab="use" aria-pressed="false">Use as Melody</button><button type="button" data-midi-lab="gap-fill" aria-pressed="false">Use as Gap Fill</button></div>
     <div class="midi-contour"><svg data-midi-lab="contour" role="img" aria-label="Selected MIDI melody pitch contour"></svg><p data-midi-lab="current">Current note: — · Next: —</p></div>
     <p data-midi-lab="duration"></p><p data-midi-lab="diagnostics"></p>
     <div class="midi-track-scroll"><table class="midi-track-table"><thead><tr><th>Source</th><th>Track</th><th>Name</th><th>Instrument</th><th>Channel</th><th>Notes</th><th>Duration</th><th>Range</th><th>Texture</th><th>Avg gap</th><th>Suggestion</th><th>Actions</th></tr></thead><tbody data-midi-lab="tracks"></tbody></table></div>
@@ -30,9 +30,13 @@ export async function mountMidiLab(root: HTMLElement, options: MidiLabOptions): 
   let sourceIndex = 0;
   let manual: InspectedMidiTrack | null = null;
   let currentTrack: InspectedMidiTrack | null = null;
+  let gapFill: InspectedMidiTrack | null = null;
   let activeResult: ReturnType<typeof activeTimelineForTrack> | null = null;
   let activeMode = false;
+  let auditioning = false;
   let playbackNotes: NoteEvent[] = [];
+
+  let updateMidiLabState = (): void => undefined;
 
   const player = new MidiPlayback((active) => {
     const position = player.getPosition();
@@ -40,7 +44,31 @@ export async function mountMidiLab(root: HTMLElement, options: MidiLabOptions): 
     root.querySelector<HTMLElement>('[data-midi-lab="current"]')!.textContent = `Current note: ${active.map(noteName).join(" ") || "—"} · Next: ${nextNote ? noteName(nextNote.midi) : "—"} · Track: ${currentTrack ? `${currentTrack.name} · Track ${currentTrack.trackIndex + 1}` : "—"}`;
     contour.querySelectorAll<SVGElement>("[data-active]").forEach((node) => node.removeAttribute("data-active"));
     playbackNotes.forEach((note, index) => { if (active.includes(note.midi) && Math.abs(note.startSeconds - position) < 1) contour.querySelector<SVGElement>(`[data-note-index="${index}"]`)?.setAttribute("data-active", "true"); });
-  }, () => undefined);
+  }, () => { auditioning = false; updateMidiLabState(); });
+
+  updateMidiLabState = (): void => {
+    const source = selectedSource();
+    const sourceCard = root.querySelector<HTMLElement>('[data-midi-lab="source-card"]');
+    if (sourceCard) sourceCard.dataset.activeSource = source?.id ?? "";
+    sourceSelect.dataset.activeSource = source?.id ?? "";
+    trackSelect.dataset.activeTrack = currentTrack ? `${currentTrack.sourceId}:${currentTrack.trackIndex}` : "";
+    root.querySelectorAll<HTMLTableRowElement>("[data-midi-track]").forEach((row) => {
+      row.dataset.activeTrack = String(row.dataset.midiTrack === trackSelect.dataset.activeTrack);
+    });
+    root.querySelectorAll<HTMLButtonElement>("[data-midi-action]").forEach((button) => {
+      const key = button.dataset.trackKey;
+      const action = button.dataset.midiAction;
+      const pressed = action === "melody" ? key === (manual ? `${manual.sourceId}:${manual.trackIndex}` : "")
+        : action === "gap-fill" ? key === (gapFill ? `${gapFill.sourceId}:${gapFill.trackIndex}` : "")
+          : action === "audition" ? auditioning && key === trackSelect.dataset.activeTrack
+            : false;
+      button.setAttribute("aria-pressed", String(pressed));
+    });
+    root.querySelector<HTMLButtonElement>('[data-midi-lab="solo"]')?.setAttribute("aria-pressed", String(auditioning && !activeMode));
+    root.querySelector<HTMLButtonElement>('[data-midi-lab="active"]')?.setAttribute("aria-pressed", String(auditioning && activeMode));
+    root.querySelector<HTMLButtonElement>('[data-midi-lab="use"]')?.setAttribute("aria-pressed", String(Boolean(manual && manual.sourceId === currentTrack?.sourceId && manual.trackIndex === currentTrack.trackIndex)));
+    root.querySelector<HTMLButtonElement>('[data-midi-lab="gap-fill"]')?.setAttribute("aria-pressed", String(Boolean(gapFill && gapFill.sourceId === currentTrack?.sourceId && gapFill.trackIndex === currentTrack.trackIndex)));
+  };
 
   const renderContour = (track: InspectedMidiTrack): void => {
     contour.replaceChildren();
@@ -75,6 +103,7 @@ export async function mountMidiLab(root: HTMLElement, options: MidiLabOptions): 
     const comparison = compareTrack(track, options.canonicalTimeline, source.bpm);
     root.querySelector<HTMLElement>('[data-midi-lab="diagnostics"]')!.textContent = `Duration Δ ${comparison.durationDifferenceSeconds.toFixed(2)}s · Tempo Δ ${comparison.tempoDifferenceBpm.toFixed(1)} BPM · Density Δ ${comparison.noteDensityDifference.toFixed(2)}/s · Contour ${(comparison.contourSimilarity * 100).toFixed(0)}%`;
     root.querySelector<HTMLElement>('[data-midi-lab="alignment"]')!.textContent = relation.value === "aligned" && !comparison.aligned ? "Reference MIDI is not aligned to canonical score." : "";
+    updateMidiLabState();
   };
 
   const renderSource = (): void => {
@@ -84,16 +113,19 @@ export async function mountMidiLab(root: HTMLElement, options: MidiLabOptions): 
     rows.replaceChildren();
     for (const track of source?.tracks ?? []) {
       const row = rows.insertRow();
+      const trackKey = `${track.sourceId}:${track.trackIndex}`;
+      row.dataset.midiTrack = trackKey;
       [track.sourceName, String(track.trackIndex + 1), track.name, track.instrument, track.channel?.toString() ?? "—", String(track.notes.length), clock(track.durationSeconds), track.pitchMin == null ? "—" : `${noteName(track.pitchMin)}–${noteName(track.pitchMax!)}`, track.texture, `${track.averageGapSeconds.toFixed(2)}s`, track.rank].forEach((value) => { const cell = row.insertCell(); cell.textContent = value; });
       const actions = row.insertCell();
-      const solo = document.createElement("button"); solo.type = "button"; solo.textContent = "▶ Solo"; solo.onclick = () => { trackSelect.value = String(track.trackIndex); loadTrack(track, false); void player.play(); };
-      const stop = document.createElement("button"); stop.type = "button"; stop.textContent = "■ Stop"; stop.onclick = () => player.stop();
-      const active = document.createElement("button"); active.type = "button"; active.textContent = "Active"; active.onclick = () => { trackSelect.value = String(track.trackIndex); loadTrack(track, true); void player.play(); };
-      const use = document.createElement("button"); use.type = "button"; use.textContent = "Use as Vocal/Melody"; use.onclick = () => selectManual(track);
-      actions.append(solo, stop, active, use);
+      const solo = document.createElement("button"); solo.type = "button"; solo.textContent = "▶ Audition"; solo.dataset.midiAction = "audition"; solo.dataset.trackKey = trackKey; solo.setAttribute("aria-pressed", "false"); solo.onclick = () => { trackSelect.value = String(track.trackIndex); loadTrack(track, false); auditioning = true; updateMidiLabState(); void player.play(); };
+      const stop = document.createElement("button"); stop.type = "button"; stop.textContent = "■ Stop"; stop.onclick = () => { auditioning = false; player.stop(); updateMidiLabState(); };
+      const use = document.createElement("button"); use.type = "button"; use.textContent = "Use as Melody"; use.dataset.midiAction = "melody"; use.dataset.trackKey = trackKey; use.setAttribute("aria-pressed", "false"); use.onclick = () => selectManual(track);
+      const useGap = document.createElement("button"); useGap.type = "button"; useGap.textContent = "Use as Gap Fill"; useGap.dataset.midiAction = "gap-fill"; useGap.dataset.trackKey = trackKey; useGap.setAttribute("aria-pressed", "false"); useGap.onclick = () => selectGapFill(track);
+      actions.append(solo, stop, use, useGap);
     }
     const track = source?.tracks[0];
     if (track) loadTrack(track, false);
+    updateMidiLabState();
   };
 
   const selectManual = (track: InspectedMidiTrack): void => {
@@ -104,6 +136,13 @@ export async function mountMidiLab(root: HTMLElement, options: MidiLabOptions): 
     options.onSessionMelody?.(track);
     const index = sources.findIndex((source) => source.id === track.sourceId);
     if (index >= 0) { sourceIndex = index; renderSource(); trackSelect.value = String(track.trackIndex); loadTrack(track, activeMode); }
+    updateMidiLabState();
+  };
+
+  const selectGapFill = (track: InspectedMidiTrack): void => {
+    gapFill = track;
+    options.onGapFill?.(track);
+    updateMidiLabState();
   };
 
   const addSources = (next: InspectedMidiSource[]): void => {
@@ -126,11 +165,11 @@ export async function mountMidiLab(root: HTMLElement, options: MidiLabOptions): 
   trackSelect.onchange = () => { const track = selectedTrack(); if (track) loadTrack(track, false); };
   sound.onchange = () => player.setInstrument(sound.value as "piano" | "guitar");
   relation.onchange = () => { const track = selectedTrack(); if (track) loadTrack(track, activeMode); };
-  root.querySelector<HTMLButtonElement>('[data-midi-lab="solo"]')!.onclick = () => { const track = selectedTrack(); if (track) { loadTrack(track, false); void player.play(); } };
-  root.querySelector<HTMLButtonElement>('[data-midi-lab="active"]')!.onclick = () => { const track = manual ?? selectedTrack(); if (track) { loadTrack(track, true); void player.play(); } };
-  root.querySelector<HTMLButtonElement>('[data-midi-lab="stop"]')!.onclick = () => player.stop();
+  root.querySelector<HTMLButtonElement>('[data-midi-lab="solo"]')!.onclick = () => { const track = selectedTrack(); if (track) { loadTrack(track, false); auditioning = true; updateMidiLabState(); void player.play(); } };
+  root.querySelector<HTMLButtonElement>('[data-midi-lab="active"]')!.onclick = () => { const track = manual ?? selectedTrack(); if (track) { loadTrack(track, true); auditioning = true; updateMidiLabState(); void player.play(); } };
+  root.querySelector<HTMLButtonElement>('[data-midi-lab="stop"]')!.onclick = () => { auditioning = false; player.stop(); updateMidiLabState(); };
   root.querySelector<HTMLButtonElement>('[data-midi-lab="use"]')!.onclick = () => { const track = selectedTrack(); if (track) selectManual(track); };
-  root.querySelector<HTMLButtonElement>('[data-midi-lab="gap-fill"]')!.onclick = () => { const track = selectedTrack(); if (track) options.onGapFill?.(track); };
+  root.querySelector<HTMLButtonElement>('[data-midi-lab="gap-fill"]')!.onclick = () => { const track = selectedTrack(); if (track) selectGapFill(track); };
 
   if (options.canonicalUrl) try {
     const [{ Midi }, response] = await Promise.all([import("@tonejs/midi"), fetch(options.canonicalUrl, { credentials: "omit" })]);

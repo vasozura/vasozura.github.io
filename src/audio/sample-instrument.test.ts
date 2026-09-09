@@ -14,6 +14,9 @@ function audioContext() {
   const bufferSource = {
     buffer: null as AudioBuffer | null,
     playbackRate: { value: 1 },
+    loop: false,
+    loopStart: 0,
+    loopEnd: 0,
     connect: vi.fn().mockReturnThis(),
     start: vi.fn(),
     stop: vi.fn(),
@@ -72,6 +75,17 @@ describe("sample instrument", () => {
 
     expect(oscillator.type).toBe("triangle");
     expect(oscillator.start).toHaveBeenCalledWith(2);
+    vi.unstubAllGlobals();
+  });
+
+  it("loops the same-pitch sample tail for extended Continuous learning notes", async () => {
+    const { context, bufferSource } = audioContext();
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(new Uint8Array([1]))));
+    const engine = new SampleInstrumentEngine(() => context);
+    await engine.enable([60]);
+    engine.play({ midi: 60, velocity: .7, durationSeconds: 8 });
+    expect(bufferSource.loop).toBe(true);
+    expect(bufferSource.loopEnd).toBeGreaterThan(bufferSource.loopStart);
     vi.unstubAllGlobals();
   });
 
