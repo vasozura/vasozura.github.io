@@ -735,7 +735,7 @@ export async function runImport(
     }
     const { data: storedParts, error: partsError } = await supabase.from("instrument_parts").select("id,instrument,musicxml_url,midi_url").eq("song_id", songId);
     if (partsError) throw partsError;
-    report.instrumentParts = (storedParts ?? []).map((data) => ({ id: String(data.id), instrument: data.instrument as Instrument, musicxmlUrl: data.musicxml_url ? String(data.musicxml_url) : null, midiUrl: data.midi_url ? String(data.midi_url) : null }));
+    report.instrumentParts = (storedParts ?? []).map((data: Record<string, unknown>) => ({ id: String(data.id), instrument: data.instrument as Instrument, musicxmlUrl: data.musicxml_url ? String(data.musicxml_url) : null, midiUrl: data.midi_url ? String(data.midi_url) : null }));
     report.phase = "complete";
     report.readiness = { ready: true, checks: [...report.readiness.checks, "staged uploads", "transactional database finalization", "draft status"] };
     return report;

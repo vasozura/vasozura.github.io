@@ -18,6 +18,11 @@ function formatDuration(seconds: number | null): string | null {
 
 export interface SongDetailOptions { privateDraftPreview?: boolean; }
 
+function karaokeManifestUrl(song: Song): string {
+  const value = song.learningMapping?.karaokeManifestUrl;
+  return typeof value === "string" ? value : "";
+}
+
 export function renderSongDetail(song: Song, language: Language, options: SongDetailOptions = {}): string {
   const title = escapeHtml(localize(song.title, language) ?? song.id);
   const credit = localize(song.displayCredit, language);
@@ -77,6 +82,7 @@ export function renderSongDetail(song: Song, language: Language, options: SongDe
       </article>
       ${song.audioUrl ? `<section class="song-resource" aria-labelledby="audio-title"><h2 id="audio-title">${labels.audio}</h2><audio controls preload="metadata" src="${escapeHtml(song.audioUrl)}">${labels.audio}</audio></section>` : ""}
       ${lyrics ? `<section class="song-resource lyrics-panel" aria-labelledby="lyrics-title"><h2 id="lyrics-title">${labels.lyrics}</h2><p>${escapeHtml(lyrics)}</p></section>` : ""}
+      ${song.audioUrl && lyrics ? `<section class="song-resource karaoke-panel" id="vocal-karaoke" data-slug="${escapeHtml(song.slug)}" data-song-id="${escapeHtml(song.id)}" data-audio-url="${escapeHtml(song.audioUrl)}" data-lyrics="${escapeHtml(lyrics)}" data-manifest-url="${escapeHtml(karaokeManifestUrl(song))}" data-duration-seconds="${song.durationSeconds ?? ""}" data-bpm="${song.bpm ?? 120}" data-musical-key="${escapeHtml(song.musicalKey ?? "")}" aria-labelledby="karaoke-title"><h2 id="karaoke-title">VOCAL / KARAOKE</h2><button class="learning-open" type="button" data-open-karaoke>${language === "ka" ? "ვოკალისა და კარაოკეს გახსნა" : "Open Vocal / Karaoke"}</button><p data-karaoke-status aria-live="polite">${language === "ka" ? "თუ სასწავლო არტეფაქტები ჯერ არ მომზადებულა, ჩვეულებრივი MP3 და ტექსტი კვლავ მუშაობს." : "The normal MP3 and lyrics remain available when learning artifacts are not prepared."}</p></section>` : ""}
         ${song.musicXmlUrl || song.midiUrl ? `<section class="song-resource score-panel score-panel-wide" id="interactive-score" data-song-id="${escapeHtml(song.id)}" data-learning-enabled="${song.learningEnabled === true}" data-learning-instruments="${escapeHtml((song.learningInstruments ?? []).join(","))}" data-learning-mapping="${escapeHtml(JSON.stringify(song.learningMapping ?? {}))}" data-private-preview="${options.privateDraftPreview === true}" data-musicxml-url="${escapeHtml(song.musicXmlUrl ?? "")}" data-midi-url="${escapeHtml(song.midiUrl ?? "")}" data-bpm="${song.bpm ?? 120}" data-musical-key="${escapeHtml(song.musicalKey ?? "")}" aria-labelledby="score-title"><h2 id="score-title">${labels.score}</h2><button class="learning-open" type="button" data-open-learning>${labels.openLearning}</button><p class="score-status" aria-live="polite">${labels.ready}</p><div class="score-controls"></div><div class="score-canvas"><div class="score-render-surface"></div></div><div class="midi-controls"></div><div class="piano-keyboard" aria-label="Piano visualization"></div></section>` : ""}
       ${song.scorePdfUrl ? `<section class="song-resource pdf-panel" aria-labelledby="pdf-title"><h2 id="pdf-title">${labels.pdf}</h2><details><summary>${labels.pdfPreview}</summary><iframe src="${escapeHtml(song.scorePdfUrl)}#view=FitH" title="${labels.pdf}: ${title}" loading="lazy"></iframe></details></section>` : ""}
       ${resourceLinks ? `<section class="song-resource"><h2>${labels.resources}</h2><div class="resource-links">${resourceLinks}</div></section>` : ""}

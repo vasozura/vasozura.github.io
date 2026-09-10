@@ -1288,6 +1288,58 @@ img {
   margin-bottom: 18px;
 }
 
+.karaoke-panel { overflow: hidden; }
+.karaoke-heading { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; }
+.karaoke-heading h2, .karaoke-heading p { margin: 0; }
+.karaoke-source { color: var(--muted); font-size: 12px; }
+.karaoke-source strong { color: var(--paper); }
+.karaoke-availability { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 12px; color: var(--muted); font-size: 12px; }
+.karaoke-availability strong { color: var(--acid); }
+.karaoke-controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+.karaoke-controls fieldset,
+.karaoke-controls > label { display: flex; flex: 1 1 180px; align-items: center; gap: 6px; min-width: 0; margin: 0; padding: 8px; border: 1px solid var(--line); color: var(--muted); }
+.karaoke-controls fieldset { flex-wrap: wrap; }
+.karaoke-controls legend { padding: 0 4px; font-size: 10px; letter-spacing: .13em; text-transform: uppercase; }
+.karaoke-controls button { min-height: 34px; padding: 6px 9px; }
+.karaoke-controls button[aria-pressed="true"] { border-color: var(--acid); background: var(--acid); color: #050505; }
+.karaoke-controls button:disabled { opacity: .4; }
+.karaoke-controls input, .karaoke-controls select { min-width: 0; max-width: 100%; }
+.karaoke-panel > audio { width: 100%; }
+.karaoke-viewer { position: relative; min-height: 300px; margin-top: 16px; overflow: hidden; border: 1px solid var(--line); background: radial-gradient(circle at 50% 45%, #222 0, #090909 60%); padding: 54px 18px; }
+.karaoke-lines { display: grid; align-content: center; min-height: 190px; gap: 24px; text-align: center; }
+.karaoke-line { display: none; opacity: .38; font-size: clamp(18px, 2.1vw, 31px); line-height: 1.8; transition: opacity .18s, transform .18s; }
+.karaoke-line.is-previous, .karaoke-line.is-active, .karaoke-line.is-next { display: block; }
+.karaoke-line.is-active { opacity: 1; transform: scale(1.04); }
+.karaoke-word { position: relative; display: inline-block; min-height: 0; border: 0; padding: 14px 2px 0; color: inherit; font: inherit; background: transparent; }
+.karaoke-word:hover, .karaoke-word:focus-visible { color: var(--acid); outline: 1px solid var(--acid); }
+.karaoke-word.is-active, .karaoke-word [data-syllable-id].is-active { color: var(--acid); text-shadow: 0 0 16px rgb(255 184 0 / 45%); }
+.karaoke-viewer[data-lyric-display="line"] .karaoke-line.is-active { color: var(--acid); }
+.karaoke-chord { position: absolute; top: -7px; left: 50%; color: var(--acid); font-family: var(--sans); font-size: 11px; font-weight: 800; transform: translateX(-50%); }
+.karaoke-viewer.chords-off .karaoke-chord { display: none; }
+.karaoke-note-status { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.karaoke-note-status span { flex: 1 1 180px; border: 1px solid var(--line); padding: 8px; color: var(--muted); }
+.karaoke-note-status strong { color: var(--paper); }
+.karaoke-visualizer { margin-top: 10px; min-width: 0; overflow-x: auto; }
+.karaoke-diagnostics, .karaoke-timing-editor { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 10px; }
+.karaoke-diagnostics dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 6px; }
+.karaoke-diagnostics dl > div { border: 1px solid var(--line); padding: 8px; }
+.karaoke-diagnostics dt { color: var(--muted); font-size: 10px; text-transform: uppercase; }
+.karaoke-diagnostics dd { margin: 4px 0 0; }
+.karaoke-timing-editor[open] { display: flex; flex-wrap: wrap; align-items: end; gap: 8px; }
+.karaoke-timing-editor summary { width: 100%; }
+.karaoke-timing-editor label { display: grid; flex: 1 1 150px; gap: 4px; }
+.karaoke-timing-editor p { width: 100%; color: var(--muted); }
+.karaoke-exports { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
+.karaoke-exports a { border: 1px solid var(--line); padding: 7px 10px; }
+
+@media (max-width: 520px) {
+  .karaoke-controls { display: grid; grid-template-columns: 1fr; }
+  .karaoke-controls fieldset, .karaoke-controls > label { width: 100%; }
+  .karaoke-viewer { min-height: 260px; padding: 38px 8px; }
+  .karaoke-line { font-size: 18px; }
+  .karaoke-note-status { display: grid; }
+}
+
 .score-panel-wide {
   overflow: clip;
 }

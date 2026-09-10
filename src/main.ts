@@ -29,6 +29,7 @@ playbackCoordinator.register("global", player, true);
 player.setBeforePlay(() => playbackCoordinator.activate("global"));
 document.addEventListener("keydown", (event) => playbackCoordinator.handleKeydown(event));
 let learningCleanup: (() => void) | null = null;
+let karaokeCleanup: (() => void) | null = null;
 let draftPreview: { slug: string; result: DraftPreviewResult | null; error: string | null } | null = null;
 let catalogRequest: AbortController | null = null;
 let catalogTimer = 0;
@@ -83,6 +84,22 @@ function bindInteractions(playableSongs: Song[] = songs): void {
       score.dataset.mounted = "false";
       openLearning.disabled = false;
       if (status) status.textContent = error instanceof Error ? error.message : "Learning could not be opened.";
+    }
+  });
+  const karaoke = document.querySelector<HTMLElement>("#vocal-karaoke");
+  const openKaraoke = karaoke?.querySelector<HTMLButtonElement>("[data-open-karaoke]");
+  if (karaoke && openKaraoke) openKaraoke.addEventListener("click", async () => {
+    if (karaoke.dataset.mounted === "true") return;
+    karaoke.dataset.mounted = "true";
+    openKaraoke.disabled = true;
+    try {
+      const cleanup = await import("./karaoke/karaoke-mode").then(({ mountKaraokeMode }) => mountKaraokeMode(karaoke));
+      if (karaoke.isConnected) karaokeCleanup = cleanup; else cleanup();
+    } catch (error) {
+      karaoke.dataset.mounted = "false";
+      openKaraoke.disabled = false;
+      const status = karaoke.querySelector<HTMLElement>("[data-karaoke-status]");
+      if (status) status.textContent = error instanceof Error ? error.message : "Karaoke could not be opened.";
     }
   });
 }
@@ -175,6 +192,8 @@ function scrollToRouteTop(): void {
 function render(): void {
   learningCleanup?.();
   learningCleanup = null;
+  karaokeCleanup?.();
+  karaokeCleanup = null;
   const route = isPasswordRecovery() ? { name: "admin" as const } : parseRoute(window.location.hash);
   if (route.name !== "home") { catalogRequest?.abort(); catalogRequest = null; window.clearTimeout(catalogTimer); }
   const routeChanged = lastRenderedHash !== window.location.hash;

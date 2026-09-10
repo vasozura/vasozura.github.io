@@ -16,3 +16,4 @@ uploads/
 *.musicxml
 *.mxl
 *.mscz
+/public/karaoke/
