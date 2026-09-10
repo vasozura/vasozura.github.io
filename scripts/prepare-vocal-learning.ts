@@ -10,6 +10,8 @@ import { buildKaraokeFfmpegArgs } from "../src/karaoke/video-render";
 import { encodeWav, guideSampleMidis, renderGuideTrack, type GuideSample } from "../src/karaoke/guide-audio";
 import { instrumentSampleBank, instrumentSampleDirectory } from "../src/audio/sample-instrument";
 import { cleanVocalNotes, createContinuousLearningNotes, createLearningNotes, maximumInternalSilenceMs } from "../src/karaoke/vocal-midi";
+import { resolveMelodySource } from "../src/karaoke/melody-source";
+import type { KaraokeRenderSummary } from "../src/karaoke/contracts";
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const argument = (name: string): string | null => process.argv.find((item) => item.startsWith(`--${name}=`))?.slice(name.length + 3) ?? null;
@@ -77,9 +79,9 @@ async function prepare(): Promise<void> {
   const rawNotesFile = path.join(output, "raw-vocal-notes.json");
   if (process.argv.includes("--force-analysis") || !(await readFile(rawNotesFile).then(() => true, () => false))) {
     const pythonArgs = python.toLowerCase().endsWith("py.exe") || path.basename(python).toLowerCase() === "py" ? ["-3.11"] : [];
-    run(python, [...pythonArgs, path.join(scriptDirectory, "audio-to-vocal-notes.py"), "--audio", audio, "--output", output, "--ffmpeg", ffmpeg]);
+    run(python, [...pythonArgs, path.join(scriptDirectory, "audio-to-vocal-notes.py"), "--audio", audio, "--output", output, "--ffmpeg", ffmpeg, "--stems", argument("stems") ?? "auto"]);
   }
-  const raw = JSON.parse(await readFile(rawNotesFile, "utf8")) as { sourceAudioSha256: string; notes: ExtractedVocalNote[] };
+  const raw = JSON.parse(await readFile(rawNotesFile, "utf8")) as { sourceAudioSha256: string; notes: ExtractedVocalNote[]; stemSeparation?: boolean; analysis?: string };
   const sourceChecksum = await sha256(audio);
   if (raw.sourceAudioSha256 !== sourceChecksum) throw new Error("Cached vocal analysis does not match the canonical MP3 checksum.");
   const authoritativeText = (await readFile(lyricsFile, "utf8")).replace(/\r\n/g, "\n").trim();
@@ -134,12 +136,29 @@ async function prepare(): Promise<void> {
   ]);
   const artifactExports: Partial<Record<KaraokeExportKey, string>> = Object.fromEntries(Object.entries(exportNames).map(([key, value]) => [key, `./exports/${value}`]));
   for (const preset of presets) artifactExports[presetKey("ass", preset)] = `./exports/${assName(preset)}`;
+  // The melody lane is decided once, here, and recorded in the manifest: the browser reads the
+  // decision instead of making it, so the lane cannot change while a student is playing.
+  const melody = resolveMelodySource([{ lane: "mp3-vocal", available: originalNotes.length > 0, noteCount: originalNotes.length, diagnostics: cleaned.diagnostics }]);
   const manifest: KaraokeArtifactManifest = {
     version: 1, songId, slug, generatedAt: new Date().toISOString(), sourceAudioSha256: sourceChecksum,
-    melodySource: "MP3 Vocal Extraction", sourceConfidence: cleaned.diagnostics.status === "verified" ? "verified" : "review",
-    audio: { originalUrl: null, instrumentalUrl: "./instrumental.mp3", vocalUrl: "./vocal.mp3" },
+    melodySource: melody.label, sourceConfidence: melody.confidence,
+    // originalUrl stays null on purpose: the canonical MP3 is served through a signed archive URL
+    // that must never be written into a generated file. The browser supplies it at mount time.
+    audio: { originalUrl: null, instrumentalUrl: null, vocalUrl: null },
     originalNotes, continuousNotes, alignment: aligned.alignment, chords, diagnostics: cleaned.diagnostics,
     exports: artifactExports,
+    melody,
+    guide: { instruments: originalNotes.length ? ["piano", "guitar"] : [], renderedInstrument: null, audioUrl: null },
+    renders: [],
+    provenance: {
+      tool: "scripts/prepare-vocal-learning.ts",
+      analysis: raw.analysis ?? "cached analysis",
+      stemSeparation: raw.stemSeparation ?? true,
+      lyricsSource: "song.lyrics",
+      status: cleaned.diagnostics.status,
+      notes: "Canonical audio is referenced by checksum only; its signed archive URL is supplied by the browser at mount time.",
+    },
+    timeline: { canonicalDurationSeconds: null, maxInternalSilenceMs: maximumInternalSilenceMs(continuousNotes) },
   };
   // manifest.json is written once at the end, after every render has contributed its export key.
   await Promise.all([
@@ -148,11 +167,16 @@ async function prepare(): Promise<void> {
     writeFile(path.join(output, "lyrics-alignment.json"), `${JSON.stringify(aligned.alignment, null, 2)}\n`, "utf8"),
     writeFile(path.join(output, "chords.json"), `${JSON.stringify({ version: 1, chords }, null, 2)}\n`, "utf8"),
   ]);
-  const instrumental = path.join(output, "instrumental.mp3");
+  // Without stem separation there is no instrumental, so the canonical MP3 carries the video and
+  // the guide mix. The manifest records which one was used rather than implying an instrumental.
+  const instrumentalFile = path.join(output, "instrumental.mp3");
+  const hasInstrumental = await readFile(instrumentalFile).then(() => true, () => false);
+  const instrumental = hasInstrumental ? instrumentalFile : audio;
+  const renderAudioKind = hasInstrumental ? "instrumental" as const : "original" as const;
   const renders = presets.map((preset) => ({
     preset,
     file: path.join(exportDirectory, mp4Name(preset)),
-    manifest: createRenderManifest(manifest, { preset, audioSource: instrumental, audioKind: "instrumental", backgroundKind: background, backgroundSource: cover, subtitleSource: path.join(exportDirectory, assName(preset)) }),
+    manifest: createRenderManifest(manifest, { preset, audioSource: instrumental, audioKind: renderAudioKind, backgroundKind: background, backgroundSource: cover, subtitleSource: path.join(exportDirectory, assName(preset)) }),
   }));
   const primary = renders.find((render) => render.preset === "youtube-16:9") ?? renders[0];
   await Promise.all([
@@ -176,11 +200,15 @@ async function prepare(): Promise<void> {
     artifactExports.guideAudio = `./${path.basename(guideAudio)}`;
     guideReport = { instrument: guide, samples: samples.length, missingSamples: track.missingSamples, normalizedBy: Number(track.normalizedBy.toFixed(4)), peakAmplitude: Number(track.peakAmplitude.toFixed(4)) };
   }
+  const renderSummaries: KaraokeRenderSummary[] = [];
+  const summarise = (render: KaraokeRenderManifest, exportKey: KaraokeExportKey, file: string): KaraokeRenderSummary =>
+    ({ preset: render.preset, width: render.width, height: render.height, background: render.background.kind, audio: render.audio.kind, guide: render.audio.guide ?? null, exportKey, file: `./exports/${path.basename(file)}` });
   const rendered: string[] = [];
   if (!process.argv.includes("--skip-video")) {
     for (const render of renders) {
       run(ffmpeg, buildKaraokeFfmpegArgs(render.manifest, { outputFile: render.file }));
       artifactExports[presetKey("mp4", render.preset)] = `./exports/${path.basename(render.file)}`;
+      renderSummaries.push(summarise(render.manifest, presetKey("mp4", render.preset), render.file));
       rendered.push(path.basename(render.file));
     }
     if (guide && guideAudio) {
@@ -189,12 +217,21 @@ async function prepare(): Promise<void> {
         const guideManifest: KaraokeRenderManifest = { ...render.manifest, audio: { kind: "instrumental-guide", source: guideAudio, guide } };
         run(ffmpeg, buildKaraokeFfmpegArgs(guideManifest, { outputFile: file }));
         artifactExports[presetKey("mp4Guide", render.preset)] = `./exports/${path.basename(file)}`;
+        renderSummaries.push(summarise(guideManifest, presetKey("mp4Guide", render.preset), file));
         rendered.push(path.basename(file));
       }
     }
   }
-  await writeFile(path.join(output, "manifest.json"), `${JSON.stringify({ ...manifest, exports: artifactExports }, null, 2)}\n`, "utf8");
-  console.log(JSON.stringify({ slug, notes: cleaned.diagnostics.noteCount, confidence: cleaned.diagnostics.pitchConfidence, status: cleaned.diagnostics.status, maxInternalSilenceMs: maximumInternalSilenceMs(continuousNotes), lyricsPreserved: manifest.alignment.authoritativeText === authoritativeText, background, presets, guide: guideReport, rendered, output }));
+  const completed: KaraokeArtifactManifest = {
+    ...manifest,
+    exports: artifactExports,
+    audio: { ...manifest.audio, instrumentalUrl: hasInstrumental ? "./instrumental.mp3" : null, vocalUrl: (raw.stemSeparation ?? true) ? "./vocal.mp3" : null },
+    guide: { instruments: originalNotes.length ? ["piano", "guitar"] : [], renderedInstrument: guide, audioUrl: guideAudio ? `./${path.basename(guideAudio)}` : null },
+    renders: renderSummaries,
+    timeline: { canonicalDurationSeconds: Number(mediaSeconds(ffprobe, audio).toFixed(3)), maxInternalSilenceMs: maximumInternalSilenceMs(continuousNotes) },
+  };
+  await writeFile(path.join(output, "manifest.json"), `${JSON.stringify(completed, null, 2)}\n`, "utf8");
+  console.log(JSON.stringify({ slug, melody: melody.lane, stemSeparation: completed.provenance!.stemSeparation, instrumental: hasInstrumental, notes: cleaned.diagnostics.noteCount, confidence: cleaned.diagnostics.pitchConfidence, status: cleaned.diagnostics.status, maxInternalSilenceMs: maximumInternalSilenceMs(continuousNotes), lyricsPreserved: manifest.alignment.authoritativeText === authoritativeText, background, presets, guide: guideReport, rendered, output }));
 }
 
 prepare().catch((error: unknown) => { console.error(error instanceof Error ? error.message : error); process.exitCode = 1; });

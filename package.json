@@ -17,7 +17,10 @@
     "import:batch:dry-run": "tsx scripts/import-batch.ts --dry-run",
     "prepare:phase6": "tsx scripts/prepare-phase6-suno-packages.ts",
     "prepare:vocal": "tsx scripts/prepare-vocal-learning.ts",
-    "verify:karaoke": "tsx scripts/verify-karaoke-render.ts"
+    "verify:karaoke": "tsx scripts/verify-karaoke-render.ts",
+    "verify:karaoke:browser": "tsx scripts/verify-karaoke-browser.ts",
+    "publish:karaoke": "tsx scripts/publish-karaoke-artifacts.ts",
+    "publish:karaoke:dry-run": "tsx scripts/publish-karaoke-artifacts.ts --dry-run"
   },
   "devDependencies": {
     "@types/node": "^26.3.0",

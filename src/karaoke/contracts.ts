@@ -87,6 +87,59 @@ export type KaraokeExportKey =
   | "mp4" | "mp4Shorts" | "mp4Square"
   | "guideAudio" | "mp4Guide" | "mp4GuideShorts" | "mp4GuideSquare";
 
+/** Which lane the study melody was taken from. The order here is the resolution priority:
+ *  a manually approved melody always wins, an inferred one is the last resort. */
+export type KaraokeMelodyLane = "manual" | "mp3-vocal" | "vocal-midi" | "inferred";
+
+export interface KaraokeMelodySource {
+  lane: KaraokeMelodyLane;
+  /** Human label; the same string the browser has always shown as "Melody source". */
+  label: string;
+  confidence: KaraokeConfidence;
+  /** Why this lane won, so a reviewer can see the decision without rerunning it. */
+  reason: string;
+}
+
+/** What the browser needs to offer Piano/Guitar guide playback, and which guide (if any) was
+ *  baked into an offline mix. */
+export interface KaraokeGuideInfo {
+  /** Guide instruments the browser can play from the prepared melody. */
+  instruments: Array<"piano" | "guitar">;
+  /** Instrument of the rendered `instrumental + guide` audio, when one was generated. */
+  renderedInstrument: "piano" | "guitar" | null;
+  audioUrl: string | null;
+}
+
+/** One generated video, described well enough to reproduce or audit it without the render file. */
+export interface KaraokeRenderSummary {
+  preset: KaraokeRenderManifest["preset"];
+  width: number;
+  height: number;
+  background: KaraokeRenderManifest["background"]["kind"];
+  audio: KaraokeRenderManifest["audio"]["kind"];
+  guide: "piano" | "guitar" | null;
+  exportKey: KaraokeExportKey;
+  file: string;
+}
+
+/** How the artifacts were produced. `stemSeparation: false` means pitch tracking ran on the
+ *  canonical mix, which is supported but always review-grade. */
+export interface KaraokeProvenance {
+  tool: string;
+  analysis: string;
+  stemSeparation: boolean;
+  lyricsSource: "song.lyrics";
+  status: "verified" | "review";
+  notes: string | null;
+}
+
+/** The one shared timeline. Canonical MP3 seconds are the reference clock; continuous study time
+ *  is derived from it by originalTimeFromLearningTime/learningTimeFromOriginalTime. */
+export interface KaraokeTimelineInfo {
+  canonicalDurationSeconds: number | null;
+  maxInternalSilenceMs: number;
+}
+
 export interface KaraokeArtifactManifest {
   version: 1;
   songId: string;
@@ -106,6 +159,14 @@ export interface KaraokeArtifactManifest {
   chords: KaraokeChord[];
   diagnostics: VocalMidiDiagnostics;
   exports: Partial<Record<KaraokeExportKey, string>>;
+  /* Everything below is written by every current preparation run and is optional only so that
+     manifests generated before these fields existed still load. The browser must treat an absent
+     field as "not prepared", never as an error. */
+  melody?: KaraokeMelodySource;
+  guide?: KaraokeGuideInfo;
+  renders?: KaraokeRenderSummary[];
+  provenance?: KaraokeProvenance;
+  timeline?: KaraokeTimelineInfo;
 }
 
 export interface KaraokeRenderManifest {

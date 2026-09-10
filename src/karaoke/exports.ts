@@ -50,7 +50,9 @@ export function createMidi(notesInput: readonly LearningVocalNote[], alignment: 
   const trackParts: Uint8Array[] = [];
   for (const event of events) { trackParts.push(new Uint8Array(variableLength(event.tick - previous)), event.data); previous = event.tick; }
   trackParts.push(new Uint8Array([0x00, 0xff, 0x2f, 0x00]));
-  const header = chunk("MThd", new Uint8Array([0, 0, 0, 0, 0, 1, (ppq >>> 8) & 255, ppq & 255]));
+  // MThd data is exactly six bytes - format, track count, division. Two extra leading zeroes here
+  // produced a self-consistent but non-standard header that no conforming parser would read.
+  const header = chunk("MThd", new Uint8Array([0, 0, 0, 1, (ppq >>> 8) & 255, ppq & 255]));
   return bytes(header, chunk("MTrk", bytes(...trackParts)));
 }
 
@@ -96,10 +98,23 @@ export function createAss(alignment: LyricAlignment, chords: readonly KaraokeCho
   return `${header}${events.join("\n")}\n`;
 }
 
+/** Chord-over-lyric text in the usual songbook shape: each symbol starts at the character column of
+ *  the word it is anchored to, so a player reads the change where it happens rather than guessing
+ *  from a row of symbols at the start of the line. */
 export function createChordedLyrics(alignment: LyricAlignment, chords: readonly KaraokeChord[]): string {
   return `${alignment.lines.map((line) => {
-    const chordLine = chords.filter((chord) => chord.wordId && line.words.some((word) => word.id === chord.wordId)).map((chord) => chord.symbol).join("     ");
-    return chordLine ? `${chordLine}\n${line.text}` : line.text;
+    const anchored = chords.filter((chord) => chord.wordId && line.words.some((word) => word.id === chord.wordId));
+    if (!anchored.length) return line.text;
+    let row = "";
+    for (const chord of anchored) {
+      const index = line.words.findIndex((word) => word.id === chord.wordId);
+      // Character column of that word inside the line, counting the single spaces between words.
+      const column = line.words.slice(0, index).reduce((sum, word) => sum + [...word.text].length + 1, 0);
+      // Never let two symbols touch: a chord that would collide is pushed one space to the right.
+      const start = Math.max(row.length ? [...row].length + 1 : 0, column);
+      row += " ".repeat(start - [...row].length) + chord.symbol;
+    }
+    return `${row}\n${line.text}`;
   }).join("\n\n")}\n`;
 }
 

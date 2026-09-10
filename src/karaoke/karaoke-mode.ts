@@ -5,6 +5,7 @@ import { GuitarVisualizer } from "../learning/guitar-visualizer";
 import { PianoRangeVisualizer } from "../learning/piano-visualizer";
 import type { KaraokeArtifactManifest, KaraokeAudioMode, KaraokeChord, KaraokeGuide, KaraokeLyricMode, LearningVocalNote, LyricAlignment } from "./contracts";
 import { applyTimingEdits } from "./lyrics-alignment";
+import { canonicalSecondsFor, resolveTimeline, type TimelineInput } from "./timeline";
 import { createBasicLyricsAlignment, editChordTiming, transposeChordSymbol, transposeForTargetKey } from "./presentation";
 
 const escapeHtml = (value: string): string => value.replace(/[&<>'"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character]!);
@@ -12,10 +13,6 @@ const noteName = (midi: number): string => `${["C", "C♯", "D", "D♯", "E", "F
 
 function noteEvent(note: LearningVocalNote, transpose = 0): NoteEvent {
   return { id: note.learningId, partId: "vocal-melody", measureIndex: 0, beat: 0, startSeconds: note.originalStartSeconds, durationSeconds: note.originalDurationSeconds, midi: note.midi + transpose, velocity: note.velocity, hand: "unknown" };
-}
-
-function activeAt(notes: readonly LearningVocalNote[], time: number): LearningVocalNote | null {
-  return notes.find((note) => note.originalStartSeconds <= time && note.originalStartSeconds + note.originalDurationSeconds > time) ?? null;
 }
 
 function lyricMarkup(alignment: LyricAlignment, chords: readonly KaraokeChord[]): string {
@@ -61,14 +58,18 @@ export async function mountKaraokeMode(root: HTMLElement): Promise<() => void> {
   const originalUrl = root.dataset.audioUrl ?? "";
   const instrumentalUrl = resolveAsset(manifest.audio.instrumentalUrl, loaded.baseUrl);
   const hasInstrumental = Boolean(instrumentalUrl);
-  const hasGuide = manifest.originalNotes.length > 0;
+  // A prepared manifest states which guides it supports; older ones only imply it by having notes.
+  const guideInstruments: ReadonlyArray<"piano" | "guitar"> = manifest.guide?.instruments?.length
+    ? manifest.guide.instruments
+    : manifest.originalNotes.length > 0 ? ["piano", "guitar"] : [];
+  const hasGuide = guideInstruments.length > 0 && manifest.originalNotes.length > 0;
   const exportLinks = Object.entries(manifest.exports).filter((entry): entry is [string, string] => Boolean(entry[1]));
-  root.innerHTML = `<div class="karaoke-heading"><div><p class="eyebrow">VOCAL / KARAOKE</p><h2>Lyrics, melody and chords</h2></div><p class="karaoke-source">Melody source: <strong>${escapeHtml(manifest.melodySource)}</strong> · ${manifest.sourceConfidence}</p></div>
-    <div class="karaoke-availability" aria-live="polite"><strong>Karaoke: AVAILABLE</strong>${loaded.basic ? `<span>Vocal MIDI: Not prepared · Instrumental: Not prepared · Syllable alignment: Review required</span>` : "<span>Prepared vocal-learning artifacts loaded</span>"}${loaded.warning ? `<span>${escapeHtml(loaded.warning)}</span>` : ""}</div>
+  root.innerHTML = `<div class="karaoke-heading"><div><p class="eyebrow">VOCAL / KARAOKE</p><h2>Lyrics, melody and chords</h2></div><p class="karaoke-source">Melody source: <strong>${escapeHtml(manifest.melody?.label ?? manifest.melodySource)}</strong> · ${escapeHtml(manifest.melody?.confidence ?? manifest.sourceConfidence)}${manifest.melody ? `<span class="karaoke-source-reason"> ${escapeHtml(manifest.melody.reason)}</span>` : ""}</p></div>
+    <div class="karaoke-availability" aria-live="polite"><strong>Karaoke: AVAILABLE</strong><span>Vocal MIDI: ${manifest.originalNotes.length ? "Prepared" : "Not prepared"} · Instrumental: ${hasInstrumental ? "Prepared" : "Not prepared"} · Guide: ${hasGuide ? guideInstruments.map((item) => `${item[0].toUpperCase()}${item.slice(1)}`).join("/") : "Not prepared"} · Syllable alignment: ${manifest.alignment.confidence === "verified" ? "Verified" : "Review required"}</span>${manifest.provenance ? `<span>Prepared by ${escapeHtml(manifest.provenance.tool)} · ${escapeHtml(manifest.provenance.analysis)}${manifest.provenance.stemSeparation ? "" : " · no stem separation"}</span>` : ""}${loaded.warning ? `<span>${escapeHtml(loaded.warning)}</span>` : ""}</div>
     <div class="karaoke-controls" role="group" aria-label="Karaoke controls">
       <fieldset><legend>Audio</legend><button type="button" data-audio-mode="original" aria-pressed="true">Original</button><button type="button" data-audio-mode="instrumental" aria-pressed="false" ${hasInstrumental ? "" : "disabled title=\"Not prepared\""}>Instrumental</button><button type="button" data-audio-mode="guide" aria-pressed="false" ${hasInstrumental && hasGuide ? "" : "disabled title=\"Not prepared\""}>Instrumental + Guide</button></fieldset>
       <fieldset><legend>Lyrics</legend>${(["line", "word", "syllable"] as const).map((mode) => `<button type="button" data-lyric-mode="${mode}" aria-pressed="${mode === "word"}">${mode[0].toUpperCase()}${mode.slice(1)}</button>`).join("")}</fieldset>
-      <fieldset><legend>Guide</legend>${(["off", "piano", "guitar"] as const).map((value) => `<button type="button" data-guide="${value}" aria-pressed="${value === (hasGuide ? "piano" : "off")}" ${hasGuide || value === "off" ? "" : "disabled"}>${value[0].toUpperCase()}${value.slice(1)}</button>`).join("")}</fieldset>
+      <fieldset><legend>Guide</legend>${(["off", "piano", "guitar"] as const).map((value) => { const enabled = value === "off" || (hasGuide && guideInstruments.includes(value)); return `<button type="button" data-guide="${value}" aria-pressed="${value === (hasGuide ? guideInstruments[0] : "off")}" ${enabled ? "" : "disabled title=\"Not prepared\""}>${value[0].toUpperCase()}${value.slice(1)}</button>`; }).join("")}</fieldset>
       <fieldset><legend>Chords</legend><button type="button" data-chords aria-pressed="true">On</button><button type="button" data-chords-off aria-pressed="false">Off</button></fieldset>
       <label>Guide volume <input data-guide-volume type="range" min="0" max="100" value="32"></label>
       <label>Tempo <input data-tempo type="range" min="50" max="150" value="100"><output>100%</output></label>
@@ -90,7 +91,7 @@ export async function mountKaraokeMode(root: HTMLElement): Promise<() => void> {
   let visualizer: PianoRangeVisualizer | GuitarVisualizer | null = null;
   let lyricMode: KaraokeLyricMode = "word";
   let audioMode: KaraokeAudioMode = "original";
-  let guide: KaraokeGuide = hasGuide ? "piano" : "off";
+  let guide: KaraokeGuide = hasGuide ? guideInstruments[0] : "off";
   let lastNoteId = "";
   let raf = 0;
   let sessionAlignment = structuredClone(manifest.alignment);
@@ -108,15 +109,15 @@ export async function mountKaraokeMode(root: HTMLElement): Promise<() => void> {
     engine.setInstrument(guide); visualizer.mount();
   };
 
+  const timelineInput = (): TimelineInput => ({ alignment: sessionAlignment, originalNotes: manifest.originalNotes, continuousNotes: manifest.continuousNotes, chords: sessionChords });
+
   const paint = (): void => {
     const time = audio.currentTime;
-    const note = activeAt(manifest.originalNotes, time);
-    const noteIndex = note ? manifest.originalNotes.findIndex((item) => item.learningId === note.learningId) : -1;
-    const nextNote = noteIndex >= 0 ? manifest.originalNotes[noteIndex + 1] : manifest.originalNotes.find((item) => item.originalStartSeconds > time);
-    const line = sessionAlignment.lines.find((item) => item.startSeconds <= time && item.endSeconds > time) ?? sessionAlignment.lines.find((item) => item.startSeconds > time) ?? sessionAlignment.lines.at(-1) ?? null;
+    // One resolution per frame drives the lyric highlight, the marker and the visualizer together,
+    // so no view can disagree with another about where the playhead is.
+    const position = resolveTimeline(timelineInput(), time);
+    const { note, nextNote, line, word, syllable } = position;
     const lineIndex = line ? sessionAlignment.lines.findIndex((item) => item.id === line.id) : -1;
-    const word = line?.words.find((item) => item.startSeconds <= time && item.endSeconds > time) ?? null;
-    const syllable = word?.syllables.find((item) => item.startSeconds <= time && item.endSeconds > time) ?? null;
     root.querySelectorAll<HTMLElement>("[data-line-id]").forEach((element) => { const index = sessionAlignment.lines.findIndex((item) => item.id === element.dataset.lineId); element.classList.toggle("is-previous", index === lineIndex - 1); element.classList.toggle("is-active", index === lineIndex); element.classList.toggle("is-next", index === lineIndex + 1); });
     root.querySelectorAll<HTMLElement>("[data-word-id]").forEach((element) => element.classList.toggle("is-active", lyricMode === "word" && element.dataset.wordId === word?.id));
     root.querySelectorAll<HTMLElement>("[data-syllable-id]").forEach((element) => element.classList.toggle("is-active", lyricMode === "syllable" && element.dataset.syllableId === syllable?.id));
@@ -142,7 +143,19 @@ export async function mountKaraokeMode(root: HTMLElement): Promise<() => void> {
   root.querySelector<HTMLInputElement>("[data-tempo]")!.addEventListener("input", (event) => { const input = event.currentTarget as HTMLInputElement; audio.playbackRate = Number(input.value) / 100; input.nextElementSibling!.textContent = `${input.value}%`; lastNoteId = ""; });
   transposeInput.addEventListener("input", () => { transposeInput.value = String(transpose()); transposeInput.nextElementSibling!.textContent = `${transpose()} st`; rebuildVisualizer(); lastNoteId = ""; paint(); });
   root.querySelector<HTMLSelectElement>("[data-target-key]")!.addEventListener("change", (event) => { const target = (event.currentTarget as HTMLSelectElement).value; const value = target ? transposeForTargetKey(root.dataset.musicalKey, target) : 0; if (value === null) { (event.currentTarget as HTMLSelectElement).value = ""; return; } transposeInput.value = String(value); transposeInput.dispatchEvent(new Event("input")); });
-  viewer.addEventListener("click", (event) => { const target = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-start]") : null; if (!target || !viewer.contains(target)) return; event.preventDefault(); audio.currentTime = Number(target.dataset.start); lastNoteId = ""; engine.releaseAll(); paint(); });
+  // Seeking from a lyric keeps the transport state it found: playing stays playing, paused stays
+  // paused. The id is resolved against the session alignment, so an edited timing seeks correctly.
+  viewer.addEventListener("click", (event) => {
+    const target = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-start]") : null;
+    if (!target || !viewer.contains(target)) return;
+    event.preventDefault();
+    const anchor = target.dataset.syllableId ? { type: "syllable" as const, id: target.dataset.syllableId } : target.dataset.wordId ? { type: "word" as const, id: target.dataset.wordId } : target.dataset.lineId ? { type: "line" as const, id: target.dataset.lineId } : null;
+    const seconds = anchor ? canonicalSecondsFor(timelineInput(), anchor) : null;
+    audio.currentTime = seconds ?? Number(target.dataset.start);
+    lastNoteId = "";
+    engine.releaseAll();
+    paint();
+  });
 
   const entity = root.querySelector<HTMLSelectElement>("[data-edit-entity]")!;
   const editStart = root.querySelector<HTMLInputElement>("[data-edit-start]")!;

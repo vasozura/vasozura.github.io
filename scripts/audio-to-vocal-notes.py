@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Offline MP3 preparation: Demucs stems, librosa pYIN notes and chord candidates."""
+"""Offline MP3 preparation: Demucs stems, librosa pYIN notes and chord candidates.
+
+Stem separation is optional. With Demucs installed the vocal stem is tracked and a real
+instrumental is produced; without it (--stems=skip, or --stems=auto on a machine that has no
+Demucs) pitch tracking runs on the canonical mix instead. The mix path is fully supported but
+always review-grade, because accompaniment leaks into the pitch track - the manifest records
+which path was taken so a reviewer can see it."""
 
 from __future__ import annotations
 
@@ -24,10 +30,22 @@ def stem_paths(output: Path, audio: Path) -> dict[str, Path]:
     return {name: folder / f"{name}.wav" for name in ("vocals", "bass", "drums", "other")}
 
 
-def ensure_stems(audio: Path, output: Path, python: str) -> dict[str, Path]:
+def demucs_available(python: str) -> bool:
+    probe = subprocess.run([python, "-c", "import demucs"], check=False, capture_output=True)
+    return probe.returncode == 0
+
+
+def ensure_stems(audio: Path, output: Path, python: str, mode: str) -> dict[str, Path] | None:
+    """Four stems, or None when the caller allows running on the canonical mix instead."""
     paths = stem_paths(output, audio)
-    if not all(path.exists() for path in paths.values()):
-        run([python, "-m", "demucs", "-n", "htdemucs", "--device", "cpu", "--out", str(output / "stems"), str(audio)])
+    if all(path.exists() for path in paths.values()):
+        return paths
+    if mode == "skip":
+        return None
+    if mode == "auto" and not demucs_available(python):
+        print("Demucs is not installed: pitch tracking will run on the canonical mix.", file=sys.stderr)
+        return None
+    run([python, "-m", "demucs", "-n", "htdemucs", "--device", "cpu", "--out", str(output / "stems"), str(audio)])
     if not all(path.exists() for path in paths.values()):
         raise RuntimeError("Demucs did not produce the expected four stems")
     return paths
@@ -146,16 +164,26 @@ def main() -> int:
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--ffmpeg", default=shutil.which("ffmpeg") or "ffmpeg")
     parser.add_argument("--python", default=sys.executable)
+    parser.add_argument("--stems", default="auto", choices=("auto", "require", "skip"), help="auto uses Demucs when it is installed, require fails without it, skip always uses the canonical mix")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
-    stems = ensure_stems(args.audio.resolve(), args.output.resolve(), args.python)
-    make_audio_outputs(stems, args.output, args.ffmpeg)
-    notes = extract_notes(stems["vocals"])
-    chords = analyze_chords(stems["other"])
+    audio = args.audio.resolve()
+    stems = ensure_stems(audio, args.output.resolve(), args.python, args.stems)
+    if stems is not None:
+        make_audio_outputs(stems, args.output, args.ffmpeg)
+        pitch_source, chord_source = stems["vocals"], stems["other"]
+        analysis = "demucs htdemucs stems + librosa pYIN"
+    else:
+        # No separated vocal: the canonical mix carries the melody and the harmony alike.
+        pitch_source, chord_source = audio, audio
+        analysis = "librosa pYIN on the canonical mix (no stem separation)"
+    notes = extract_notes(pitch_source)
+    chords = analyze_chords(chord_source)
     checksum = hashlib.sha256(args.audio.read_bytes()).hexdigest()
-    (args.output / "raw-vocal-notes.json").write_text(json.dumps({"version": 1, "sourceAudioSha256": checksum, "notes": notes}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    (args.output / "raw-chords.json").write_text(json.dumps({"version": 1, "chords": chords}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({"notes": len(notes), "chords": len(chords), "sourceAudioSha256": checksum}))
+    summary = {"version": 1, "sourceAudioSha256": checksum, "stemSeparation": stems is not None, "analysis": analysis}
+    (args.output / "raw-vocal-notes.json").write_text(json.dumps({**summary, "notes": notes}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (args.output / "raw-chords.json").write_text(json.dumps({**summary, "chords": chords}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps({"notes": len(notes), "chords": len(chords), "stemSeparation": stems is not None, "analysis": analysis, "sourceAudioSha256": checksum}))
     return 0
 
 

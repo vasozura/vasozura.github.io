@@ -5,12 +5,13 @@ The Vocal and Karaoke feature uses the archive MP3 and `song.lyrics` as its auth
 ## Local requirements
 
 - Python 3.11.
-- Demucs for four-stem separation. Demucs source is MIT licensed; model weights retain their published model terms.
-- librosa for pYIN pitch tracking and chroma analysis. librosa is ISC licensed.
+- librosa for pYIN pitch tracking and chroma analysis. **Required.** librosa is ISC licensed.
+- Demucs for four-stem separation. **Optional** — see "Preparing without stem separation" below. Demucs source is MIT licensed; model weights retain their published model terms.
 - FFmpeg and ffprobe for derived audio and MP4 rendering. The applicable FFmpeg license depends on the installed build and enabled codecs.
 - Project dependencies installed with `pnpm install --frozen-lockfile`.
+- Playwright, only for the optional browser check: `pnpm add -D playwright && pnpm exec playwright install chromium`. Playwright is Apache-2.0 licensed and is not a dependency of the app.
 
-No service-role key, user token, or database password is required. Temporary Demucs stems stay under the chosen ignored output directory. Only explicitly reviewed final artifacts should be uploaded or committed.
+No service-role key, user token, or database password is required to prepare a song; credentials are needed only to publish the result (see "Delivery"). Temporary Demucs stems stay under the chosen ignored output directory. Analysis results are cached as `raw-vocal-notes.json` and `raw-chords.json` in that directory and reused on the next run unless `--force-analysis` is passed. Only explicitly reviewed final artifacts should be uploaded or committed.
 
 ## Prepare one song
 
@@ -24,8 +25,15 @@ Optional render flags, all defaulting to the previous single-video behaviour whe
 - `--background=cover-blur|image|dark-gradient` chooses the backdrop. `cover-blur` keeps the whole artwork visible inside a portrait or square frame by filling the edges with a blurred, darkened copy; `image` crops the artwork to the frame; `dark-gradient` needs no cover at all and is used automatically when `--cover` is absent.
 - `--guide=piano|guitar` additionally renders an offline guide mix, and `--guide-gain=<0..1>` sets how loud the guide sits under the instrumental.
 - `--ffprobe="C:\ffmpeg\bin\ffprobe.exe"` when ffprobe is not beside the resolved `--ffmpeg` binary.
+- `--stems=auto|require|skip` controls stem separation; see below.
 
 The command verifies the canonical MP3 checksum, separates `vocals`, `bass`, `drums`, and `other`, creates a non-vocal instrumental, tracks vocal pitch with pYIN, removes short glitches and low-confidence octave errors, and writes both authentic and continuous melody representations. The continuous representation begins at study time zero and retains no internal gap over 30 ms. It never modifies the canonical audio or source note timing.
+
+### Preparing without stem separation
+
+`--stems=auto` (the default) uses Demucs when it is installed and otherwise tracks pitch on the canonical mix; `--stems=require` fails rather than falling back; `--stems=skip` always uses the mix. Without stems there is no `vocal.mp3` and no `instrumental.mp3`, so the browser marks Instrumental and Instrumental + Guide as not prepared, the rendered videos carry the canonical audio, and `manifest.provenance.stemSeparation` is `false`.
+
+The mix path is fully supported but always review-grade: accompaniment leaks into the pitch track and pYIN can lock onto an octave of the accompaniment rather than the voice, which shows up as a low `pitchConfidence`, a `review` diagnostics status and a `review` melody confidence. Prefer stems for anything that will be published as verified.
 
 Generated artifacts include:
 
@@ -39,6 +47,19 @@ Generated artifacts include:
 - `karaoke-render.json` for the 16:9 render, unchanged in shape, and `karaoke-renders.json` listing every deterministic render manifest.
 
 Subtitle type size and margins scale with the narrow edge of the frame, so a 9:16 or 1:1 export carries the same optical weight as 16:9; the 1920x1080 defaults are byte-identical to the original header. Every artifact is recorded in `manifest.json` under its own export key, and the browser lists those keys generically, so a new layout appears as a download without any UI change. The guide mix is synthesised from the same sample banks and the same envelope the browser guide uses, and lands on the original vocal timing rather than the continuous study timing.
+
+## The manifest
+
+`manifest.json` is the one file the browser reads, and it carries everything a session needs without re-running analysis: song identity and the canonical audio checksum; the authoritative lyric text with line, word and syllable timing and stable ids; the chord timeline anchored to word ids; both melody representations (`originalNotes` on canonical MP3 time, `continuousNotes` on study time); `diagnostics`; and one entry per generated artifact under `exports`.
+
+Four fields describe the preparation itself:
+
+- `melody` — the resolved melody lane (`manual`, `mp3-vocal`, `vocal-midi` or `inferred`), its confidence and the reason it won. The lane is decided once here, so the browser reads the decision rather than making it and a lane can never change mid-playback.
+- `guide` — which guide instruments the browser can offer, and which one (if any) was baked into an offline `instrumental + guide` mix.
+- `renders` — one summary per generated video: preset, pixel size, background kind, audio kind and its export key.
+- `provenance` — the tool, the analysis path, whether stems were used, that lyrics came from `song.lyrics`, and the review status.
+
+`audio.originalUrl` is deliberately `null`: the canonical MP3 is served through a signed archive URL that must never be written into a generated file, so the browser supplies it at mount time. These fields are optional in the type only so that manifests generated before they existed still load; every current run writes all of them.
 
 The displayed lyric text is copied from the supplied `song.lyrics` export. Audio analysis contributes timing only. Automatic word and syllable timing and audio-derived chords are labelled for review until an owner saves corrections. MusicXML lyrics/harmony or MIDI lyric/harmony data should replace automatic timing when verified.
 
@@ -60,3 +81,22 @@ pnpm verify:karaoke -- --output=tmp\check --keep-frames --ffmpeg="C:\ffmpeg\bin\
 ```
 
 `scripts/verify-karaoke-render.ts` renders one short MP4 for each of the nine layout/background combinations from synthetic inputs, probes what FFmpeg actually produced, and confirms with a Goertzel filter that a guide track built from the real sample bank sounds at the pitches it was asked for. It touches no song, no Supabase record and no published artifact, writes only into the ignored `tmp/` directory, and exits non-zero on any mismatch. `--keep-frames` also writes one PNG per combination for visual review.
+
+```powershell
+pnpm verify:karaoke:browser -- --input="tmp\karaoke\song-slug" --audio="C:\path\canonical.mp3"
+```
+
+`scripts/verify-karaoke-browser.ts` is the browser end-to-end check. It serves the repository through Vite, mounts the real karaoke module against a real prepared directory, plays the canonical MP3 and asserts what a person would otherwise watch for by hand: lyrics following playback, a seek that moves every view together, a lyric click that seeks without changing whether the song is playing, chords above the right word, guide instruments driving the piano and guitar visualizers, visibly distinct selected controls, and a page that never scrolls itself. It writes a screenshot of the panel to `tmp/karaoke-browser-check/karaoke.png`. Add `--headed` to watch it. Playwright must be installed; the check exits non-zero on any failed assertion.
+
+## Delivery
+
+```powershell
+pnpm publish:karaoke:dry-run -- --input="tmp\karaoke\song-slug"
+pnpm publish:karaoke -- --input="tmp\karaoke\song-slug" --include-video
+```
+
+`scripts/publish-karaoke-artifacts.ts` uploads one prepared directory to the `karaoke` Storage bucket under `<slug>/<canonical checksum prefix>/`, and writes the resulting manifest URL to `songs.learning_mapping.karaokeManifestUrl` — the single reference the song page reads. Rendered MP4s are excluded unless `--include-video` is passed, because the browser does not need them. The stored manifest lists only the artifacts that were actually uploaded, so no download link can point at a missing object.
+
+The bucket is public for reads and admin-only for writes (`supabase/migrations/202609100001_karaoke_delivery.sql`). It has to be: the browser fetches `manifest.json` with a plain fetch and resolves every artifact inside it relative to that URL, which a signed URL cannot provide. The script therefore refuses to publish for a song that is not itself published, and verifies that the prepared alignment was built from the lyrics the song row currently holds. It never changes a song's publication state, files or lyrics.
+
+Credentials come from the environment and never from an argument: **`SUPABASE_URL`** and **`SUPABASE_SERVICE_ROLE_KEY`** — a server-only service-role credential, the same pair `scripts/import-song.ts` uses. `--dry-run` needs neither and prints exactly what a real run would upload.
