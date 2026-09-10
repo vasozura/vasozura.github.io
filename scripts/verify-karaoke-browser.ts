@@ -14,7 +14,7 @@
  *
  * Nothing here touches Supabase or a published song: it serves the repository through Vite and
  * reads one prepared directory. Exits non-zero if any assertion fails. */
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { KaraokeArtifactManifest } from "../src/karaoke/contracts";
@@ -25,26 +25,40 @@ const headed = process.argv.includes("--headed");
 
 interface Check { name: string; ok: boolean; detail: string }
 const checks: Check[] = [];
-const record = (name: string, ok: boolean, detail: unknown = ""): void => { checks.push({ name, ok, detail: String(detail) }); };
+const verbose = process.argv.includes("--verbose");
+const record = (name: string, ok: boolean, detail: unknown = ""): void => { checks.push({ name, ok, detail: String(detail) }); if (verbose) console.log(`${ok ? "ok  " : "FAIL"} ${name} — ${String(detail)}`); };
 
-/** The song page renders this markup around the karaoke panel; the harness reproduces it exactly so
- *  the module under test sees what it sees in production. */
+/** The real song page, rendered by the real component, with the real prepared manifest behind it.
+ *  Anything the owner sees on the live page - the heading, the metadata, the lyrics disclosure and
+ *  the workstation - is present here in the same order and at the same widths. */
 function harnessPage(options: { manifestUrl: string; audioUrl: string; manifest: KaraokeArtifactManifest; lyrics: string; bpm: number }): string {
-  const attribute = (value: string): string => value.replace(/[&<>"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character]!);
+  const song = {
+    id: options.manifest.songId, slug: options.manifest.slug,
+    title: { ka: "თაფლის თვალი", en: "Taflis Tvali" },
+    displayCredit: { ka: "მურმან ლებანიძე", en: "Murman Lebanidze" },
+    composer: null, lyricistOrPoet: null, translator: null, language: "ka",
+    description: null, coverUrl: null, audioUrl: options.audioUrl,
+    midiUrl: null, musicXmlUrl: null, scorePdfUrl: null, sourceProjectUrl: null,
+    lyrics: { ka: options.lyrics, en: options.lyrics },
+    sunoUrl: null, youtubeUrl: null, youtubeVideoId: null,
+    durationSeconds: options.manifest.timeline?.canonicalDurationSeconds ?? null,
+    bpm: options.bpm, musicalKey: "G", timeSignature: "4/4", difficulty: "intermediate",
+    publicationStatus: "published", publicationDate: null,
+    learningEnabled: false, learningInstruments: [], learningSource: "musicxml",
+    learningMapping: { karaokeManifestUrl: options.manifestUrl }, learningFingering: {},
+  };
   return `<!doctype html>
-<html lang="ka"><head><meta charset="utf-8"><title>Karaoke browser check</title><link rel="stylesheet" href="/src/styles.css"></head>
-<body class="karaoke-browser-check">
-<main>
-<section class="song-resource karaoke-panel" id="vocal-karaoke"
-  data-slug="${attribute(options.manifest.slug)}" data-song-id="${attribute(options.manifest.songId)}"
-  data-audio-url="${attribute(options.audioUrl)}" data-manifest-url="${attribute(options.manifestUrl)}"
-  data-lyrics="${attribute(options.lyrics)}" data-duration-seconds="${options.manifest.timeline?.canonicalDurationSeconds ?? ""}"
-  data-bpm="${options.bpm}" data-musical-key="G" aria-labelledby="karaoke-title"><h2 id="karaoke-title">VOCAL / KARAOKE</h2></section>
-</main>
+<html lang="ka"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Karaoke browser check</title><link rel="stylesheet" href="/src/styles.css"></head>
+<body><div id="app"></div>
 <script type="module">
+  import { renderSongDetail } from "/src/components/song-detail.ts";
   import { mountKaraokeMode } from "/src/karaoke/karaoke-mode.ts";
+  const song = ${JSON.stringify(song)};
+  document.querySelector("#app").innerHTML = renderSongDetail(song, "ka");
   const root = document.querySelector("#vocal-karaoke");
   root.querySelector("h2").remove();
+  root.querySelector("[data-open-karaoke]")?.remove();
+  root.querySelector("[data-karaoke-status]")?.remove();
   mountKaraokeMode(root).then(() => { document.body.dataset.karaokeReady = "true"; }, (error) => { document.body.dataset.karaokeError = String(error); });
 </script>
 </body></html>`;
@@ -67,9 +81,17 @@ async function main(): Promise<number> {
   const output = path.join(repository, "tmp", "karaoke-browser-check");
   mkdirSync(output, { recursive: true });
   const served = (file: string): string => `/${path.relative(repository, file).split(path.sep).map(encodeURIComponent).join("/")}`;
+  // Vite only serves what is under the repository root, so anything outside it is copied in first.
+  const inside = (file: string): string => {
+    const resolved = path.resolve(file);
+    if (!path.relative(repository, resolved).startsWith("..")) return resolved;
+    const copy = path.join(output, path.basename(resolved));
+    copyFileSync(resolved, copy);
+    return copy;
+  };
   writeFileSync(path.join(output, "index.html"), harnessPage({
-    manifestUrl: served(path.join(directory, "manifest.json")),
-    audioUrl: served(path.resolve(audio)),
+    manifestUrl: served(inside(path.join(directory, "manifest.json"))),
+    audioUrl: served(inside(path.resolve(audio))),
     manifest,
     lyrics: manifest.alignment.authoritativeText,
     bpm: 96,
@@ -128,7 +150,8 @@ async function main(): Promise<number> {
   });
 
   try {
-    await page.goto(url, { waitUntil: "load" });
+    // domcontentloaded, not load: a full song MP3 is several megabytes and would hold "load" open.
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
     await page.waitForSelector("body[data-karaoke-ready='true']", { timeout: 20000 });
     record("Karaoke mounts on the song panel", true, await page.locator(".karaoke-heading h2").innerText());
 
@@ -141,7 +164,7 @@ async function main(): Promise<number> {
 
     const audioReady = await inPage<{ source: boolean; duration: number }>(`
       ${audioElement}
-      if (!isFinite(audio.duration) || !audio.duration) await new Promise((r) => audio.addEventListener("loadedmetadata", r, { once: true }));
+      if (!isFinite(audio.duration) || !audio.duration) await Promise.race([new Promise((r) => audio.addEventListener("loadedmetadata", r, { once: true })), new Promise((r) => setTimeout(r, 15000))]);
       return { source: Boolean(audio.currentSrc), duration: audio.duration };`);
     record("Canonical MP3 loads with a real duration", audioReady.source && audioReady.duration > 1, `${audioReady.duration.toFixed(2)}s`);
 
@@ -207,16 +230,17 @@ async function main(): Promise<number> {
     record("Chords render above a timed word, not at the line start", chords.before > 0 && chords.inWord, `${chords.before} chords, first "${chords.symbol}"`);
     record("The chord toggle hides and restores them", chords.off === 0 && chords.on === chords.before, `${chords.before} -> ${chords.off} -> ${chords.on}`);
 
-    const availability = await inPage<{ banner: string; instrumental: boolean; guides: string }>(`
+    const availability = await inPage<{ banner: string; badges: number; instrumental: boolean; guides: string }>(`
       const button = (mode) => document.querySelector('[data-audio-mode="' + mode + '"]');
       return {
-        banner: document.querySelector(".karaoke-availability").innerText,
+        banner: (document.querySelector(".karaoke-badges").innerText || "").replace(/\s+/g, " ").trim(),
+        badges: document.querySelectorAll(".karaoke-badge").length,
         instrumental: button("instrumental").disabled,
         guides: [...document.querySelectorAll("[data-guide]")].map((item) => item.dataset.guide + ":" + (item.disabled ? "off" : "on")).join(" "),
       };`);
     const instrumentalPrepared = Boolean(manifest.audio.instrumentalUrl);
     record("Unprepared audio modes are disabled rather than broken", availability.instrumental !== instrumentalPrepared, `instrumental ${availability.instrumental ? "disabled" : "enabled"}`);
-    record("Availability is stated on the panel", availability.banner.includes("Karaoke: AVAILABLE"), availability.banner.split("\n").slice(0, 2).join(" | "));
+    record("Availability is stated as compact badges", availability.badges >= 3 && /lyrics/i.test(availability.banner) && availability.banner.length < 150, `${availability.badges} badges: ${availability.banner}`);
     record("Guide instruments are offered", availability.guides.includes("piano:on") && availability.guides.includes("guitar:on"), availability.guides);
 
     const guide = await inPage<{ keys: number; frets: number; offText: string }>(`
@@ -257,10 +281,50 @@ async function main(): Promise<number> {
     record("The page never scrolls itself during playback", scrolled.maximum === 0, `max scrollY ${scrolled.maximum}`);
     record("The lyric viewport stays a compact few lines", scrolled.visibleLines > 0 && scrolled.visibleLines <= 3, `${scrolled.visibleLines} of ${lines} lines visible, overflow ${scrolled.overflow}`);
 
+    // The page-structure corrections the owner asked for.
+    const structure = await inPage<{ karaokeBefore: boolean; disclosures: number; open: number; visibleLyricBlocks: number; advancedOpen: number }>(`
+      const nodes = [...document.querySelectorAll("#vocal-karaoke, .lyrics-panel, .lyrics-disclosure")];
+      const karaoke = nodes.indexOf(document.querySelector("#vocal-karaoke"));
+      const disclosure = nodes.indexOf(document.querySelector(".lyrics-disclosure"));
+      // A closed <details> still reports a box in Chromium, so being inside one counts as hidden.
+      const shown = (element) => element && !element.closest("details:not([open])") && element.offsetParent !== null && element.getBoundingClientRect().height > 120;
+      return {
+        karaokeBefore: disclosure === -1 || karaoke < disclosure,
+        disclosures: document.querySelectorAll(".lyrics-disclosure").length,
+        open: document.querySelectorAll(".lyrics-disclosure[open]").length,
+        visibleLyricBlocks: [...document.querySelectorAll(".lyrics-panel p")].filter(shown).length,
+        advancedOpen: document.querySelectorAll(".karaoke-advanced[open]").length,
+      };`);
+    record("Karaoke sits where the static lyrics block used to", structure.karaokeBefore && structure.disclosures === 1, `karaoke first, ${structure.disclosures} lyrics disclosure`);
+    record("Full lyrics are collapsed, not a second visible block", structure.open === 0 && structure.visibleLyricBlocks === 0, `${structure.open} open, ${structure.visibleLyricBlocks} large lyric blocks visible`);
+    record("Engineering diagnostics are collapsed by default", structure.advancedOpen === 0, "Advanced closed");
+
     const shot = path.join(output, "karaoke.png");
     await inPage(`${audioElement} audio.currentTime = 4.2; ${wait(400)} return true;`);
     await page.locator("#vocal-karaoke").screenshot({ path: shot });
     record("Karaoke preview captured", true, path.relative(repository, shot));
+
+    // Desktop and mobile, measured and photographed rather than assumed.
+    const shots: string[] = [];
+    for (const [width, height, label] of [[1440, 960, "1440"], [1280, 900, "1280"], [390, 844, "390"]] as Array<[number, number, string]>) {
+      await page.setViewportSize({ width, height });
+      await inPage(`${wait(350)} window.scrollTo(0, 0); return true;`);
+      const layout = await inPage<{ panel: number; viewer: number; visualizer: number; overflow: number; stage: number }>(`
+        const panel = document.querySelector("#vocal-karaoke").getBoundingClientRect();
+        const viewer = document.querySelector(".karaoke-viewer").getBoundingClientRect();
+        const visual = document.querySelector("[data-karaoke-visualizer]").getBoundingClientRect();
+        return { panel: Math.round(panel.width), viewer: Math.round(viewer.width), visualizer: Math.round(visual.width), overflow: Math.round(document.documentElement.scrollWidth - document.documentElement.clientWidth), stage: Math.round(viewer.height) };`);
+      const expected = Math.min(1400, width * 0.94);
+      const wideEnough = width >= 1024 ? layout.panel >= expected - 24 : layout.panel <= width;
+      record(`${label}px: Karaoke uses the width it should`, wideEnough, `panel ${layout.panel}px of ${width}px viewport (target ${Math.round(expected)}px)`);
+      record(`${label}px: no horizontal page overflow`, layout.overflow <= 0, `scroll overshoot ${layout.overflow}px`);
+      record(`${label}px: the lyric stage is the dominant element`, layout.stage >= (width >= 1024 ? 300 : 220) && layout.visualizer > 0, `stage ${layout.stage}px tall, visualizer ${layout.visualizer}px wide`);
+      const file = path.join(output, `song-page-${label}.png`);
+      await page.screenshot({ path: file, fullPage: true });
+      shots.push(path.relative(repository, file));
+    }
+    await page.setViewportSize({ width: 1280, height: 900 });
+    record("Responsive screenshots captured", true, shots.join(", "));
     const browserErrors = [...httpErrors, ...requestErrors, ...consoleErrors];
     record(
       "No console or page errors",

@@ -18,6 +18,8 @@
     "prepare:phase6": "tsx scripts/prepare-phase6-suno-packages.ts",
     "prepare:vocal": "tsx scripts/prepare-vocal-learning.ts",
     "verify:karaoke": "tsx scripts/verify-karaoke-render.ts",
+    "realign:karaoke": "tsx scripts/realign-karaoke.ts",
+    "verify:karaoke:sync": "tsx scripts/verify-karaoke-sync.ts",
     "verify:karaoke:browser": "tsx scripts/verify-karaoke-browser.ts",
     "publish:karaoke": "tsx scripts/publish-karaoke-artifacts.ts",
     "publish:karaoke:dry-run": "tsx scripts/publish-karaoke-artifacts.ts --dry-run"

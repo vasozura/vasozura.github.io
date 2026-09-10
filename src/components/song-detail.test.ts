@@ -61,3 +61,35 @@ describe("song resource rendering", () => {
     expect(html).toContain('href="#/admin"');
   });
 });
+
+describe("karaoke as the primary lyrics experience", () => {
+  const singable: Song = { ...song, audioUrl: "https://example.com/a.mp3", lyrics: { ka: "პირველი ხაზი\nმეორე ხაზი", en: "first line\nsecond line" } };
+
+  it("puts the karaoke workstation where the static lyrics block used to be", () => {
+    const html = renderSongDetail(singable, "en");
+    expect(html).toContain('id="vocal-karaoke"');
+    expect(html.indexOf('id="vocal-karaoke"')).toBeLessThan(html.indexOf("lyrics-disclosure"));
+  });
+
+  it("keeps the full lyrics on the page, collapsed, exactly once", () => {
+    const html = renderSongDetail(singable, "en");
+    expect(html).toContain("lyrics-disclosure");
+    expect(html).toContain("Full lyrics");
+    // A <details> with no open attribute is collapsed; the text appears once, not twice.
+    expect(html).not.toContain("lyrics-disclosure\" open");
+    expect(html.split("first line").length - 1).toBe(2); // once in the karaoke data attribute, once in the disclosure
+    expect(html).not.toContain('id="lyrics-title"');
+  });
+
+  it("still shows a plain lyrics section when there is no audio to sing along to", () => {
+    const html = renderSongDetail({ ...song, lyrics: { ka: "ტექსტი", en: "text only" } }, "en");
+    expect(html).toContain('id="lyrics-title"');
+    expect(html).not.toContain("lyrics-disclosure");
+    expect(html).not.toContain('id="vocal-karaoke"');
+  });
+
+  it("passes the prepared manifest reference through to the panel", () => {
+    const html = renderSongDetail({ ...singable, learningMapping: { karaokeManifestUrl: "https://cdn.example.com/karaoke/one/manifest.json" } }, "en");
+    expect(html).toContain('data-manifest-url="https://cdn.example.com/karaoke/one/manifest.json"');
+  });
+});

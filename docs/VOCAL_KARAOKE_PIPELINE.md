@@ -48,6 +48,29 @@ Generated artifacts include:
 
 Subtitle type size and margins scale with the narrow edge of the frame, so a 9:16 or 1:1 export carries the same optical weight as 16:9; the 1920x1080 defaults are byte-identical to the original header. Every artifact is recorded in `manifest.json` under its own export key, and the browser lists those keys generically, so a new layout appears as a download without any UI change. The guide mix is synthesised from the same sample banks and the same envelope the browser guide uses, and lands on the original vocal timing rather than the continuous study timing.
 
+## Lyric timing
+
+Lyric timing is built from the singing, not from the extracted melody. `scripts/vocal-phrases.py` reads the isolated vocal stem and reports the sung phrases - the stretches where a voice is present - and the onsets inside them; `src/karaoke/phrase-alignment.ts` then lays the authoritative text over sung time only, matching text to phrasing as a whole so that one phrase can carry several lines the singer ran together and one line can span several phrases when a rest breaks it at a caesura. Because every block starts at a real phrase start, an error cannot travel past the next breath, which is what stops timing drifting through a song.
+
+Instrumental gaps are skipped rather than filled, and a line stops when its own phrase stops, so nothing stays highlighted over a rest. Word starts are snapped to detected onsets where one sits close to the proportional estimate. Syllable timing remains an estimate inside a word and is always marked review-grade.
+
+`pnpm prepare:vocal` uses this automatically when a vocal stem is present, and falls back to the note-based aligner when a song was prepared without stems (`--skip-phrases` forces the fallback, `--vocal-stem=` points at a stem elsewhere). To correct an already prepared song without re-running the analysis:
+
+```powershell
+pnpm realign:karaoke -- --input="tmp\karaoke\song-slug" --stem="tmp\karaoke\song-slug\stems\htdemucs\audio\vocals.wav"
+```
+
+Only timing changes: the lyric text is never rewritten, and the run fails if it differs by so much as a character. Chords keep their own times and are re-anchored to the word sounding at that moment; a chord that plays during an instrumental passage stays in the timeline but is left unanchored instead of being piled onto the nearest lyric.
+
+### Checking it against the recording
+
+```powershell
+pnpm verify:karaoke:sync -- --phrases="tmp\song-vocal-phrases.json" --lyrics="C:\path\lyrics.txt"
+pnpm verify:karaoke:sync -- --phrases="..." --manifest="tmp\karaoke\song-slug\manifest.json"
+```
+
+`scripts/verify-karaoke-sync.ts` scores an alignment against the audio rather than against itself. It fails a song whose lines start while nobody is singing, whose line starts sit more than 250 ms from the nearest sung attack, whose error grows between the first and last quarter of the song, whose syllable rate varies more than 3.5x across lines, or whose per-line syllable counts do not correlate with the attacks inside those lines. That last figure is the one that catches text sitting over the wrong singing while every other statistic looks tidy. **The browser QA proves the views agree with the timeline; only this proves the timeline agrees with the singer.**
+
 ## The manifest
 
 `manifest.json` is the one file the browser reads, and it carries everything a session needs without re-running analysis: song identity and the canonical audio checksum; the authoritative lyric text with line, word and syllable timing and stable ids; the chord timeline anchored to word ids; both melody representations (`originalNotes` on canonical MP3 time, `continuousNotes` on study time); `diagnostics`; and one entry per generated artifact under `exports`.

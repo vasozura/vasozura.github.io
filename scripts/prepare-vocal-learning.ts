@@ -1,6 +1,7 @@
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { alignLyricsToNotes } from "../src/karaoke/lyrics-alignment";
@@ -11,6 +12,7 @@ import { encodeWav, guideSampleMidis, renderGuideTrack, type GuideSample } from 
 import { instrumentSampleBank, instrumentSampleDirectory } from "../src/audio/sample-instrument";
 import { cleanVocalNotes, createContinuousLearningNotes, createLearningNotes, maximumInternalSilenceMs } from "../src/karaoke/vocal-midi";
 import { resolveMelodySource } from "../src/karaoke/melody-source";
+import { alignLyricsToPhrases, type VocalPhrase } from "../src/karaoke/phrase-alignment";
 import type { KaraokeRenderSummary } from "../src/karaoke/contracts";
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
@@ -88,7 +90,31 @@ async function prepare(): Promise<void> {
   const cleaned = cleanVocalNotes(raw.notes);
   const originals = createLearningNotes(cleaned.notes);
   const continuous = createContinuousLearningNotes(originals, 0.03);
-  const aligned = alignLyricsToNotes(authoritativeText, originals, "deterministic-review");
+  // Lyric timing comes from the singing when there is a vocal stem to read it from. Note onsets are
+  // a poor clock for text - extraction invents and drops notes, and the error accumulates - so the
+  // note-based aligner is only the fallback for a song prepared without stems.
+  const vocalStem = ((): string | null => {
+    const explicit = argument("vocal-stem");
+    if (explicit) return path.resolve(explicit);
+    const candidates = [path.join(output, "stems", "htdemucs", path.basename(audio, path.extname(audio)), "vocals.wav"), path.join(output, "vocal.mp3")];
+    return candidates.find((file) => existsSync(file)) ?? null;
+  })();
+  let phraseAnalysis: { phrases: VocalPhrase[]; onsets: number[]; durationSeconds: number } | null = null;
+  if (vocalStem && !process.argv.includes("--skip-phrases")) {
+    const phrasesFile = path.join(output, "vocal-phrases.json");
+    if (process.argv.includes("--force-analysis") || !existsSync(phrasesFile)) {
+      const pythonArgs = python.toLowerCase().endsWith("py.exe") || path.basename(python).toLowerCase() === "py" ? ["-3.11"] : [];
+      run(python, [...pythonArgs, path.join(scriptDirectory, "vocal-phrases.py"), "--audio", vocalStem, "--output", phrasesFile]);
+    }
+    phraseAnalysis = JSON.parse(await readFile(phrasesFile, "utf8")) as { phrases: VocalPhrase[]; onsets: number[]; durationSeconds: number };
+  }
+  const aligned = phraseAnalysis
+    ? (() => {
+        const built = alignLyricsToPhrases({ authoritativeText, phrases: phraseAnalysis!.phrases, onsets: phraseAnalysis!.onsets, durationSeconds: phraseAnalysis!.durationSeconds });
+        // The melody keeps its own timing; only the text is placed by the singing.
+        return { alignment: built.alignment, notes: originals, phraseDiagnostics: built.diagnostics };
+      })()
+    : { ...alignLyricsToNotes(authoritativeText, originals, "deterministic-review"), phraseDiagnostics: null };
   const alignedById = new Map(aligned.notes.map((note) => [note.learningId, note]));
   const originalNotes = originals.map((note) => ({ ...note, ...alignedById.get(note.learningId) }));
   const continuousNotes = continuous.map((note) => ({ ...note, lyricLineId: alignedById.get(note.learningId)?.lyricLineId ?? null, wordId: alignedById.get(note.learningId)?.wordId ?? null, syllableId: alignedById.get(note.learningId)?.syllableId ?? null }));
@@ -152,7 +178,7 @@ async function prepare(): Promise<void> {
     renders: [],
     provenance: {
       tool: "scripts/prepare-vocal-learning.ts",
-      analysis: raw.analysis ?? "cached analysis",
+      analysis: `${raw.analysis ?? "cached analysis"}${phraseAnalysis ? " + vocal-phrase lyric alignment" : ""}`,
       stemSeparation: raw.stemSeparation ?? true,
       lyricsSource: "song.lyrics",
       status: cleaned.diagnostics.status,
@@ -231,7 +257,7 @@ async function prepare(): Promise<void> {
     timeline: { canonicalDurationSeconds: Number(mediaSeconds(ffprobe, audio).toFixed(3)), maxInternalSilenceMs: maximumInternalSilenceMs(continuousNotes) },
   };
   await writeFile(path.join(output, "manifest.json"), `${JSON.stringify(completed, null, 2)}\n`, "utf8");
-  console.log(JSON.stringify({ slug, melody: melody.lane, stemSeparation: completed.provenance!.stemSeparation, instrumental: hasInstrumental, notes: cleaned.diagnostics.noteCount, confidence: cleaned.diagnostics.pitchConfidence, status: cleaned.diagnostics.status, maxInternalSilenceMs: maximumInternalSilenceMs(continuousNotes), lyricsPreserved: manifest.alignment.authoritativeText === authoritativeText, background, presets, guide: guideReport, rendered, output }));
+  console.log(JSON.stringify({ slug, melody: melody.lane, lyricAlignment: phraseAnalysis ? "vocal-phrase" : "note-based", phrases: aligned.phraseDiagnostics, stemSeparation: completed.provenance!.stemSeparation, instrumental: hasInstrumental, notes: cleaned.diagnostics.noteCount, confidence: cleaned.diagnostics.pitchConfidence, status: cleaned.diagnostics.status, maxInternalSilenceMs: maximumInternalSilenceMs(continuousNotes), lyricsPreserved: manifest.alignment.authoritativeText === authoritativeText, background, presets, guide: guideReport, rendered, output }));
 }
 
 prepare().catch((error: unknown) => { console.error(error instanceof Error ? error.message : error); process.exitCode = 1; });

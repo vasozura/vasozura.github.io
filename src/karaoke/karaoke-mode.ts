@@ -64,25 +64,48 @@ export async function mountKaraokeMode(root: HTMLElement): Promise<() => void> {
     : manifest.originalNotes.length > 0 ? ["piano", "guitar"] : [];
   const hasGuide = guideInstruments.length > 0 && manifest.originalNotes.length > 0;
   const exportLinks = Object.entries(manifest.exports).filter((entry): entry is [string, string] => Boolean(entry[1]));
-  root.innerHTML = `<div class="karaoke-heading"><div><p class="eyebrow">VOCAL / KARAOKE</p><h2>Lyrics, melody and chords</h2></div><p class="karaoke-source">Melody source: <strong>${escapeHtml(manifest.melody?.label ?? manifest.melodySource)}</strong> · ${escapeHtml(manifest.melody?.confidence ?? manifest.sourceConfidence)}${manifest.melody ? `<span class="karaoke-source-reason"> ${escapeHtml(manifest.melody.reason)}</span>` : ""}</p></div>
-    <div class="karaoke-availability" aria-live="polite"><strong>Karaoke: AVAILABLE</strong><span>Vocal MIDI: ${manifest.originalNotes.length ? "Prepared" : "Not prepared"} · Instrumental: ${hasInstrumental ? "Prepared" : "Not prepared"} · Guide: ${hasGuide ? guideInstruments.map((item) => `${item[0].toUpperCase()}${item.slice(1)}`).join("/") : "Not prepared"} · Syllable alignment: ${manifest.alignment.confidence === "verified" ? "Verified" : "Review required"}</span>${manifest.provenance ? `<span>Prepared by ${escapeHtml(manifest.provenance.tool)} · ${escapeHtml(manifest.provenance.analysis)}${manifest.provenance.stemSeparation ? "" : " · no stem separation"}</span>` : ""}${loaded.warning ? `<span>${escapeHtml(loaded.warning)}</span>` : ""}</div>
+  const badge = (label: string, ready: boolean, detail = ""): string =>
+    `<span class="karaoke-badge${ready ? " is-ready" : ""}"${detail ? ` title="${escapeHtml(detail)}"` : ""}>${escapeHtml(label)} <b aria-hidden="true">${ready ? "✓" : "—"}</b><span class="visually-hidden">${ready ? "available" : "not prepared"}</span></span>`;
+  const group = (legend: string, body: string, extra = ""): string =>
+    `<div class="karaoke-group${extra ? ` ${extra}` : ""}" role="group" aria-label="${escapeHtml(legend)}"><span class="karaoke-group-label">${escapeHtml(legend)}</span><div class="karaoke-segmented">${body}</div></div>`;
+
+  // The workstation: a compact header, one control bar, the lyric stage, a one-line status strip,
+  // the guide, and everything an engineer needs folded away behind Advanced.
+  root.innerHTML = `<div class="karaoke-heading"><h2>VOCAL / KARAOKE</h2>
+      <div class="karaoke-availability karaoke-badges" aria-live="polite">${[
+        badge("Lyrics", true, `${manifest.alignment.lines.length} lines`),
+        badge("Instrumental", hasInstrumental, hasInstrumental ? "Prepared" : "Not prepared"),
+        badge("Guide", hasGuide, hasGuide ? guideInstruments.join(" / ") : "Not prepared"),
+        badge("Karaoke", true, "Karaoke: AVAILABLE"),
+      ].join("")}</div></div>
     <div class="karaoke-controls" role="group" aria-label="Karaoke controls">
-      <fieldset><legend>Audio</legend><button type="button" data-audio-mode="original" aria-pressed="true">Original</button><button type="button" data-audio-mode="instrumental" aria-pressed="false" ${hasInstrumental ? "" : "disabled title=\"Not prepared\""}>Instrumental</button><button type="button" data-audio-mode="guide" aria-pressed="false" ${hasInstrumental && hasGuide ? "" : "disabled title=\"Not prepared\""}>Instrumental + Guide</button></fieldset>
-      <fieldset><legend>Lyrics</legend>${(["line", "word", "syllable"] as const).map((mode) => `<button type="button" data-lyric-mode="${mode}" aria-pressed="${mode === "word"}">${mode[0].toUpperCase()}${mode.slice(1)}</button>`).join("")}</fieldset>
-      <fieldset><legend>Guide</legend>${(["off", "piano", "guitar"] as const).map((value) => { const enabled = value === "off" || (hasGuide && guideInstruments.includes(value)); return `<button type="button" data-guide="${value}" aria-pressed="${value === (hasGuide ? guideInstruments[0] : "off")}" ${enabled ? "" : "disabled title=\"Not prepared\""}>${value[0].toUpperCase()}${value.slice(1)}</button>`; }).join("")}</fieldset>
-      <fieldset><legend>Chords</legend><button type="button" data-chords aria-pressed="true">On</button><button type="button" data-chords-off aria-pressed="false">Off</button></fieldset>
-      <label>Guide volume <input data-guide-volume type="range" min="0" max="100" value="32"></label>
-      <label>Tempo <input data-tempo type="range" min="50" max="150" value="100"><output>100%</output></label>
-      <label>Transpose <input data-transpose type="number" min="-12" max="12" value="0"><output>0 st</output></label>
-      <label>Target key <select data-target-key><option value="">Original</option>${["C","C♯","D","E♭","E","F","F♯","G","A♭","A","B♭","B"].map((key) => `<option value="${key}">${key}</option>`).join("")}</select></label>
+      ${group("Audio", `<button type="button" data-audio-mode="original" aria-pressed="true">Original</button><button type="button" data-audio-mode="instrumental" aria-pressed="false" ${hasInstrumental ? "" : "disabled title=\"Not prepared\""}>Instrumental</button><button type="button" data-audio-mode="guide" aria-pressed="false" ${hasInstrumental && hasGuide ? "" : "disabled title=\"Not prepared\""}>+ Guide</button>`)}
+      ${group("Lyrics", (["line", "word", "syllable"] as const).map((mode) => `<button type="button" data-lyric-mode="${mode}" aria-pressed="${mode === "word"}">${mode[0].toUpperCase()}${mode.slice(1)}</button>`).join(""))}
+      ${group("Guide", (["off", "piano", "guitar"] as const).map((value) => { const enabled = value === "off" || (hasGuide && guideInstruments.includes(value)); return `<button type="button" data-guide="${value}" aria-pressed="${value === (hasGuide ? guideInstruments[0] : "off")}" ${enabled ? "" : "disabled title=\"Not prepared\""}>${value[0].toUpperCase()}${value.slice(1)}</button>`; }).join(""))}
+      ${group("Chords", `<button type="button" data-chords aria-pressed="true">On</button><button type="button" data-chords-off aria-pressed="false">Off</button>`)}
+      <div class="karaoke-group karaoke-sliders">
+        <label>Guide vol <input data-guide-volume type="range" min="0" max="100" value="32"></label>
+        <label>Tempo <input data-tempo type="range" min="50" max="150" value="100"><output>100%</output></label>
+        <label>Transpose <input data-transpose type="number" min="-12" max="12" value="0"><output>0 st</output></label>
+        <label>Key <select data-target-key><option value="">Original</option>${["C","C♯","D","E♭","E","F","F♯","G","A♭","A","B♭","B"].map((key) => `<option value="${key}">${key}</option>`).join("")}</select></label>
+      </div>
     </div>
-    <audio data-karaoke-audio controls preload="metadata" src="${escapeHtml(originalUrl)}"></audio>
+    <audio class="karaoke-transport" data-karaoke-audio controls preload="metadata" src="${escapeHtml(originalUrl)}"></audio>
     <div class="karaoke-viewer" data-lyric-display="word"><div class="karaoke-lines">${lyricMarkup(manifest.alignment, manifest.chords)}</div></div>
-    <div class="karaoke-note-status"><span>Current note: <strong data-current-note>—</strong></span><span>Current lyric: <strong data-current-lyric>—</strong></span><span>Next: <strong data-next>—</strong></span></div>
+    <p class="karaoke-note-status"><span>Note <strong data-current-note>—</strong></span><span>Lyric <strong data-current-lyric>—</strong></span><span>Next <strong data-next>—</strong></span></p>
     <div class="karaoke-visualizer" data-karaoke-visualizer></div>
-    <details class="karaoke-diagnostics"><summary>Source status and diagnostics</summary><dl><div><dt>Notes</dt><dd>${manifest.diagnostics.noteCount}</dd></div><div><dt>Pitch range</dt><dd>${manifest.diagnostics.pitchMin ?? "—"}–${manifest.diagnostics.pitchMax ?? "—"}</dd></div><div><dt>Longest silence</dt><dd>${manifest.diagnostics.longestSilenceMs} ms</dd></div><div><dt>Pitch confidence</dt><dd>${Math.round(manifest.diagnostics.pitchConfidence * 100)}%</dd></div><div><dt>Status</dt><dd>${manifest.diagnostics.status === "review" ? "Review required" : "Verified"}</dd></div></dl></details>
-    <details class="karaoke-timing-editor"><summary>Admin / Advanced timing editor</summary><p>Preview changes are temporary until Save timing is selected.</p><label>Entity <select data-edit-entity>${manifest.alignment.lines.flatMap((line) => [`<option value="line:${line.id}">Line · ${escapeHtml(line.text)}</option>`, ...line.words.flatMap((word) => [`<option value="word:${word.id}">Word · ${escapeHtml(word.text)}</option>`, ...word.syllables.map((syllable) => `<option value="syllable:${syllable.id}">Syllable · ${escapeHtml(syllable.text)}</option>`)])]).join("")}${manifest.chords.map((chord) => `<option value="chord:${chord.id}">Chord · ${escapeHtml(chord.symbol)}</option>`).join("")}</select></label><label>Start <input data-edit-start type="number" min="0" step="0.01"></label><label>End <input data-edit-end type="number" min="0" step="0.01"></label><label>Mapped note IDs <input data-edit-notes type="text" placeholder="note-id, note-id"></label><button type="button" data-preview-word>Preview selection</button><button type="button" data-save-timing>Save timing in this session</button><button type="button" data-export-timing>Download timing JSON</button><p data-edit-status></p></details>
-    ${exportLinks.length ? `<div class="karaoke-exports"><strong>Exports</strong>${exportLinks.map(([key, url]) => `<a href="${escapeHtml(resolveAsset(url, loaded.baseUrl) ?? "#")}" download>${escapeHtml(key)}</a>`).join("")}</div>` : ""}`;
+    <details class="karaoke-advanced"><summary>Advanced</summary>
+      <div class="karaoke-advanced-body">
+        <section class="karaoke-diagnostics"><h3>Source and diagnostics</h3>
+          <p class="karaoke-source">Melody source: <strong>${escapeHtml(manifest.melody?.label ?? manifest.melodySource)}</strong> · ${escapeHtml(manifest.melody?.confidence ?? manifest.sourceConfidence)}${manifest.melody ? `<span class="karaoke-source-reason"> ${escapeHtml(manifest.melody.reason)}</span>` : ""}</p>
+          ${manifest.provenance ? `<p class="karaoke-source">Prepared by ${escapeHtml(manifest.provenance.tool)} · ${escapeHtml(manifest.provenance.analysis)}${manifest.provenance.stemSeparation ? "" : " · no stem separation"}</p>` : ""}
+          ${loaded.warning ? `<p class="karaoke-source">${escapeHtml(loaded.warning)}</p>` : ""}
+          <dl><div><dt>Notes</dt><dd>${manifest.diagnostics.noteCount}</dd></div><div><dt>Pitch range</dt><dd>${manifest.diagnostics.pitchMin ?? "—"}–${manifest.diagnostics.pitchMax ?? "—"}</dd></div><div><dt>Longest silence</dt><dd>${manifest.diagnostics.longestSilenceMs} ms</dd></div><div><dt>Pitch confidence</dt><dd>${Math.round(manifest.diagnostics.pitchConfidence * 100)}%</dd></div><div><dt>Alignment</dt><dd>${manifest.alignment.source}</dd></div><div><dt>Status</dt><dd>${manifest.diagnostics.status === "review" ? "Review required" : "Verified"}</dd></div></dl>
+        </section>
+        <section class="karaoke-timing-editor"><h3>Timing editor</h3><p>Preview changes are temporary until Save timing is selected.</p><label>Entity <select data-edit-entity>${manifest.alignment.lines.flatMap((line) => [`<option value="line:${line.id}">Line · ${escapeHtml(line.text)}</option>`, ...line.words.flatMap((word) => [`<option value="word:${word.id}">Word · ${escapeHtml(word.text)}</option>`, ...word.syllables.map((syllable) => `<option value="syllable:${syllable.id}">Syllable · ${escapeHtml(syllable.text)}</option>`)])]).join("")}${manifest.chords.map((chord) => `<option value="chord:${chord.id}">Chord · ${escapeHtml(chord.symbol)}</option>`).join("")}</select></label><label>Start <input data-edit-start type="number" min="0" step="0.01"></label><label>End <input data-edit-end type="number" min="0" step="0.01"></label><label>Mapped note IDs <input data-edit-notes type="text" placeholder="note-id, note-id"></label><div class="karaoke-editor-actions"><button type="button" data-preview-word>Preview selection</button><button type="button" data-save-timing>Save timing in this session</button><button type="button" data-export-timing>Download timing JSON</button></div><p data-edit-status></p></section>
+        ${exportLinks.length ? `<section class="karaoke-exports"><h3>Exports</h3><div class="karaoke-export-links">${exportLinks.map(([key, url]) => `<a href="${escapeHtml(resolveAsset(url, loaded.baseUrl) ?? "#")}" download>${escapeHtml(key)}</a>`).join("")}</div></section>` : ""}
+      </div>
+    </details>`;
 
   const audio = root.querySelector<HTMLAudioElement>("[data-karaoke-audio]")!;
   const engine = new SampleInstrumentEngine();
