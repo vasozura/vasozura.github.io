@@ -14,6 +14,7 @@ pnpm typecheck
 pnpm build
 pnpm preview
 pnpm audit:secrets
+pnpm verify:karaoke
 ```
 
 Copy `.env.example` to the ignored `.env.local` and supply only local public frontend configuration. Never commit secrets or run browser code with a service-role key.
@@ -43,7 +44,9 @@ The Karaoke implementation is intentionally a handoff checkpoint, not a complete
 
 Implemented: authoritative `song.lyrics`, basic MP3 fallback, cached offline Demucs/librosa analysis, original and continuous Vocal MIDI models, line/word/syllable alignment with melisma, word-anchored chords, MIDI lyric events, LRC/SRT/ASS/TXT generation, Original/Instrumental/Guide controls, Piano/Guitar guide routing, lyric seek, transpose/target-key display, compact three-line viewport, and a session-only timing editor.
 
-Still unfinished or needing fresh QA: regenerate reviewed per-song Karaoke artifacts outside Git, complete/verify multi-preset FFmpeg MP4 rendering (16:9, 9:16, square and optional guide mix), run a real browser end-to-end playback/seek/guide test, validate a short real MP4 export visually and audibly, and decide the production object-storage delivery path for generated manifests/media. Generated stems, MP3/MIDI/subtitle files, and test videos are ignored and must not be committed.
+Also implemented since the checkpoint: multi-preset FFmpeg rendering for all three declared layouts (16:9, 9:16, 1:1) with per-layout ASS subtitles that scale to the frame, `image` / `cover-blur` / `dark-gradient` backdrops so a song without artwork still renders, an offline guide mix that reproduces the browser guide engine sample-for-sample and is muxed under the instrumental at unity level, and `pnpm verify:karaoke` as a repeatable release gate covering all nine layout/background combinations plus a Goertzel pitch check of the guide. `docs/VOCAL_KARAOKE_PIPELINE.md` documents the new flags and outputs. All of this is additive: `karaoke-render.json` and the 16:9 export key keep their previous shape.
+
+Still unfinished: regenerate reviewed per-song Karaoke artifacts outside Git from a real song (needs Demucs and librosa on the owner machine), run a real browser end-to-end playback/seek/guide test, and decide the production object-storage delivery path for generated manifests/media — there is still no karaoke Storage bucket, no upload path, and nothing yet writes `learning_mapping.karaokeManifestUrl`. Generated stems, MP3/MIDI/subtitle files, and test videos are ignored and must not be committed.
 
 ## Important paths
 
@@ -57,6 +60,6 @@ Still unfinished or needing fresh QA: regenerate reviewed per-song Karaoke artif
 
 ## Known blockers and next task
 
-The installed `@supabase/supabase-js` 2.112.4 package may be missing its declared `dist/index.d.mts` file in a fresh local install; if TypeScript reports that exact package-export error, refresh the package store or pin a corrected upstream release before changing app types. Do not add an `any` shim.
+The `@supabase/supabase-js` 2.112.4 missing-`dist/index.d.mts` blocker did **not** reproduce on 2026-09-10: `pnpm install --frozen-lockfile` succeeded and `pnpm typecheck` was clean. If the error does return, refresh the package store or pin a corrected upstream release before changing app types. Do not add an `any` shim.
 
-Next recommended task: finish only the Vocal/Karaoke release gate—repair/confirm the dependency install, run the existing real-song preparation into ignored `tmp/`, perform browser playback/seek/Piano/Guitar QA, render and inspect one short FFmpeg MP4 for each layout implementation, then upload reviewed artifacts through an approved owner-only Storage workflow without changing song publication state.
+Next recommended task: run the existing real-song preparation into ignored `tmp/` on a machine with Demucs and librosa, perform browser playback/seek/Piano/Guitar QA against those artifacts, then design the owner-only Storage delivery path (bucket, upload step, `learning_mapping.karaokeManifestUrl`) and upload reviewed artifacts through it without changing song publication state.

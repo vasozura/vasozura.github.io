@@ -75,8 +75,17 @@ export function createSrt(alignment: LyricAlignment): string {
 
 function assEscape(value: string): string { return value.replace(/[{}]/g, "").replace(/\n/g, "\\N"); }
 
-export function createAss(alignment: LyricAlignment, chords: readonly KaraokeChord[] = [], width = 1920, height = 1080): string {
-  const header = `[Script Info]\nScriptType: v4.00+\nPlayResX: ${width}\nPlayResY: ${height}\nWrapStyle: 0\n\n[V4+ Styles]\nFormat: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\nStyle: Karaoke,Arial,64,&H00FFFFFF,&H0000B8FF,&H00101010,&H70000000,-1,0,0,0,100,100,0,0,1,3,1,2,120,120,110,1\nStyle: Chord,Arial,34,&H0000B8FF,&H0000B8FF,&H00101010,&H50000000,-1,0,0,0,100,100,0,0,1,2,0,8,120,120,190,1\n\n[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n`;
+/** Type size and margins are tied to the narrow edge so a 9:16 or 1:1 frame keeps the same
+ *  optical weight as 16:9. The defaults reproduce the original 1920x1080 header exactly. */
+export function assLayout(width: number, height: number, safeMargin: number): { karaokeFontSize: number; chordFontSize: number; marginLR: number; karaokeMarginV: number; chordMarginV: number } {
+  const scale = Math.min(width, height) / 1080;
+  const karaokeFontSize = Math.round(64 * scale);
+  return { karaokeFontSize, chordFontSize: Math.round(34 * scale), marginLR: Math.round(safeMargin * 1.25), karaokeMarginV: safeMargin + Math.round(karaokeFontSize * 0.22), chordMarginV: safeMargin + karaokeFontSize + Math.round(30 * scale) };
+}
+
+export function createAss(alignment: LyricAlignment, chords: readonly KaraokeChord[] = [], width = 1920, height = 1080, safeMargin = 96): string {
+  const layout = assLayout(width, height, safeMargin);
+  const header = `[Script Info]\nScriptType: v4.00+\nPlayResX: ${width}\nPlayResY: ${height}\nWrapStyle: 0\n\n[V4+ Styles]\nFormat: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\nStyle: Karaoke,Arial,${layout.karaokeFontSize},&H00FFFFFF,&H0000B8FF,&H00101010,&H70000000,-1,0,0,0,100,100,0,0,1,3,1,2,${layout.marginLR},${layout.marginLR},${layout.karaokeMarginV},1\nStyle: Chord,Arial,${layout.chordFontSize},&H0000B8FF,&H0000B8FF,&H00101010,&H50000000,-1,0,0,0,100,100,0,0,1,2,0,8,${layout.marginLR},${layout.marginLR},${layout.chordMarginV},1\n\n[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n`;
   const events: string[] = [];
   for (const line of alignment.lines) {
     const karaoke = line.words.map((word) => `{\\k${Math.max(1, Math.round((word.endSeconds - word.startSeconds) * 100))}}${assEscape(word.text)} `).join("").trimEnd();
@@ -94,10 +103,26 @@ export function createChordedLyrics(alignment: LyricAlignment, chords: readonly 
   }).join("\n\n")}\n`;
 }
 
+export const karaokePresets = ["youtube-16:9", "shorts-9:16", "square-1:1"] as const satisfies readonly KaraokeRenderManifest["preset"][];
+
 export function karaokePreset(preset: KaraokeRenderManifest["preset"]): Pick<KaraokeRenderManifest, "width" | "height" | "safeMargin"> {
   if (preset === "shorts-9:16") return { width: 1080, height: 1920, safeMargin: 108 };
   if (preset === "square-1:1") return { width: 1080, height: 1080, safeMargin: 86 };
   return { width: 1920, height: 1080, safeMargin: 96 };
+}
+
+/** Stable file-name suffix per preset. 16:9 keeps its original name so previously
+ *  generated artifacts and manifest keys stay valid. */
+export function karaokePresetSlug(preset: KaraokeRenderManifest["preset"]): string {
+  if (preset === "shorts-9:16") return "9x16";
+  if (preset === "square-1:1") return "1x1";
+  return "16x9";
+}
+
+/** ASS is generated per preset: PlayRes and margins must match the frame it is burned into. */
+export function createPresetAss(alignment: LyricAlignment, chords: readonly KaraokeChord[], preset: KaraokeRenderManifest["preset"]): string {
+  const { width, height, safeMargin } = karaokePreset(preset);
+  return createAss(alignment, chords, width, height, safeMargin);
 }
 
 export function createRenderManifest(manifest: KaraokeArtifactManifest, options: { preset: KaraokeRenderManifest["preset"]; audioSource: string; audioKind: KaraokeRenderManifest["audio"]["kind"]; backgroundKind: KaraokeRenderManifest["background"]["kind"]; backgroundSource?: string | null; subtitleSource: string; guide?: "piano" | "guitar" }): KaraokeRenderManifest {

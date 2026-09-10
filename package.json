@@ -16,7 +16,8 @@
     "import:batch": "tsx scripts/import-batch.ts",
     "import:batch:dry-run": "tsx scripts/import-batch.ts --dry-run",
     "prepare:phase6": "tsx scripts/prepare-phase6-suno-packages.ts",
-    "prepare:vocal": "tsx scripts/prepare-vocal-learning.ts"
+    "prepare:vocal": "tsx scripts/prepare-vocal-learning.ts",
+    "verify:karaoke": "tsx scripts/verify-karaoke-render.ts"
   },
   "devDependencies": {
     "@types/node": "^26.3.0",

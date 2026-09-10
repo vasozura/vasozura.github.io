@@ -78,6 +78,15 @@ export interface VocalMidiDiagnostics {
   status: "verified" | "review";
 }
 
+/** One key per generated artifact. The browser lists these generically, so adding a key adds a
+ *  download link without any UI change. 16:9 keeps the unsuffixed key it has always used. */
+export type KaraokeExportKey =
+  | "vocalMidi" | "learningMidi" | "lyricsMidi" | "chordMidi" | "studyMidi"
+  | "lrc" | "srt" | "chordedText"
+  | "ass" | "assShorts" | "assSquare"
+  | "mp4" | "mp4Shorts" | "mp4Square"
+  | "guideAudio" | "mp4Guide" | "mp4GuideShorts" | "mp4GuideSquare";
+
 export interface KaraokeArtifactManifest {
   version: 1;
   songId: string;
@@ -96,7 +105,7 @@ export interface KaraokeArtifactManifest {
   alignment: LyricAlignment;
   chords: KaraokeChord[];
   diagnostics: VocalMidiDiagnostics;
-  exports: Partial<Record<"vocalMidi" | "learningMidi" | "lyricsMidi" | "chordMidi" | "studyMidi" | "lrc" | "srt" | "ass" | "chordedText" | "mp4", string>>;
+  exports: Partial<Record<KaraokeExportKey, string>>;
 }
 
 export interface KaraokeRenderManifest {

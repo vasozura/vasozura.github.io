@@ -16,7 +16,7 @@ export interface InstrumentPlayback {
   destroy(): void;
 }
 
-interface SampleDefinition { midi: number; file: string; }
+export interface SampleDefinition { midi: number; file: string; }
 interface Voice { source: AudioBufferSourceNode | OscillatorNode; gain: GainNode; }
 
 const pianoSamples: readonly SampleDefinition[] = [
@@ -61,6 +61,14 @@ const sampleBanks: Partial<Record<InstrumentName, readonly SampleDefinition[]>> 
   piano: pianoSamples,
   guitar: guitarSamples,
 };
+
+/** Single source of truth for where each bank lives under public/audio, shared with the
+ *  offline guide renderer so a browser guide and a rendered guide use the same samples. */
+export const instrumentSampleDirectory = { piano: "salamander", guitar: "guitar-acoustic" } as const satisfies Record<"piano" | "guitar", string>;
+
+export function instrumentSampleBank(instrument: "piano" | "guitar"): readonly SampleDefinition[] {
+  return instrument === "guitar" ? guitarSamples : pianoSamples;
+}
 
 const decodedBuffers = new Map<string, Promise<AudioBuffer>>();
 
@@ -209,7 +217,7 @@ export class SampleInstrumentEngine implements InstrumentPlayback {
 
   private sampleUrl(file: string, instrument: InstrumentName = this.instrument): string {
     const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
-    const directory = instrument === "guitar" ? "guitar-acoustic" : "salamander";
+    const directory = instrument === "guitar" ? instrumentSampleDirectory.guitar : instrumentSampleDirectory.piano;
     return `${base}audio/${directory}/${file}`;
   }
 
