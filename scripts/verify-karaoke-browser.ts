@@ -79,11 +79,53 @@ async function main(): Promise<number> {
   await server.listen();
   const url = `http://localhost:5199${served(path.join(output, "index.html"))}`;
   // Autoplay is blocked without a gesture in a normal browser; the harness drives playback directly.
-  const browser = await playwright.chromium.launch({ headless: !headed, args: ["--autoplay-policy=no-user-gesture-required", "--mute-audio"] });
+  const executablePath = process.env.PLAYWRIGHT_EXECUTABLE_PATH?.trim() || undefined;
+  const browser = await playwright.chromium.launch({
+    headless: !headed,
+    executablePath,
+    args: ["--autoplay-policy=no-user-gesture-required", "--mute-audio"],
+  });
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+
   const consoleErrors: string[] = [];
-  page.on("pageerror", (error: Error) => consoleErrors.push(error.message));
-  page.on("console", (message: { type: () => string; text: () => string }) => { if (message.type() === "error") consoleErrors.push(message.text()); });
+  const httpErrors: string[] = [];
+  const requestErrors: string[] = [];
+
+  page.on("pageerror", (error: Error) => {
+    consoleErrors.push(`pageerror: ${error.message}`);
+  });
+
+  page.on("console", (message: { type: () => string; text: () => string }) => {
+    if (message.type() !== "error") return;
+
+    const text = message.text();
+
+    // Chromium emits a generic console error for failed resources. The exact
+    // URL/status is captured by the response/requestfailed handlers below.
+    if (text.startsWith("Failed to load resource:")) return;
+
+    consoleErrors.push(`console: ${text}`);
+  });
+
+  page.on("response", (response: any) => {
+    if (response.status() >= 400) {
+      httpErrors.push(`${response.status()} ${response.url()}`);
+    }
+  });
+
+  page.on("requestfailed", (request: any) => {
+    const failure = request.failure?.();
+    const errorText = failure?.errorText ?? "";
+
+    // Chromium routinely aborts in-flight media range requests when the
+    // <audio> element seeks, reloads metadata, or changes playback state.
+    // That is not a broken resource and must not fail the browser QA gate.
+    if (errorText === "net::ERR_ABORTED") return;
+
+    requestErrors.push(
+      `requestfailed ${request.url()}${errorText ? ` (${errorText})` : ""}`,
+    );
+  });
 
   try {
     await page.goto(url, { waitUntil: "load" });
@@ -219,7 +261,12 @@ async function main(): Promise<number> {
     await inPage(`${audioElement} audio.currentTime = 4.2; ${wait(400)} return true;`);
     await page.locator("#vocal-karaoke").screenshot({ path: shot });
     record("Karaoke preview captured", true, path.relative(repository, shot));
-    record("No console or page errors", consoleErrors.length === 0, consoleErrors.slice(0, 2).join(" | ") || "none");
+    const browserErrors = [...httpErrors, ...requestErrors, ...consoleErrors];
+    record(
+      "No console or page errors",
+      browserErrors.length === 0,
+      browserErrors.slice(0, 6).join(" | ") || "none",
+    );
   } finally {
     await browser.close();
     if (!process.argv.includes("--keep-server")) await server.close();
