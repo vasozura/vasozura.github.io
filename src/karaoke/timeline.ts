@@ -12,7 +12,13 @@ export interface TimelinePosition {
   canonicalSeconds: number;
   /** Continuous study time, interpolated from the continuous melody. */
   learningSeconds: number;
+  /** The line being sung now. Null during an instrumental passage - see `isInstrumental`. */
   line: LyricLine | null;
+  /** Shown subdued before it starts; never highlighted as active. */
+  upcomingLine: LyricLine | null;
+  previousLine: LyricLine | null;
+  /** True when nobody is singing: no line, word, syllable or lyric highlight belongs on screen. */
+  isInstrumental: boolean;
   word: LyricWord | null;
   syllable: LyricSyllable | null;
   note: LearningVocalNote | null;
@@ -35,13 +41,29 @@ export function noteAt(notes: readonly LearningVocalNote[], canonicalSeconds: nu
   return notes.find((note) => within(note.originalStartSeconds, note.originalStartSeconds + note.originalDurationSeconds, canonicalSeconds)) ?? null;
 }
 
-/** The line shown when the playhead sits between lines: the upcoming one, or the last one at the
- *  end of the song, so the viewport is never blank. */
+/** The line being sung at this instant, or null.
+ *
+ * Null is a real answer, not a gap to paper over: during an instrumental introduction, a solo or the
+ * rest between two verses nobody is singing, and nothing may be highlighted as if they were. The
+ * upcoming line is reported separately so the stage can show it, subdued, without ever marking it
+ * active before its own start time. */
 export function lineAt(alignment: LyricAlignment, canonicalSeconds: number): LyricLine | null {
-  return alignment.lines.find((line) => within(line.startSeconds, line.endSeconds, canonicalSeconds))
-    ?? alignment.lines.find((line) => line.startSeconds > canonicalSeconds)
-    ?? alignment.lines.at(-1)
-    ?? null;
+  return alignment.lines.find((line) => within(line.startSeconds, line.endSeconds, canonicalSeconds)) ?? null;
+}
+
+/** The next line that will be sung, for the subdued preview. */
+export function upcomingLineAt(alignment: LyricAlignment, canonicalSeconds: number): LyricLine | null {
+  return alignment.lines.find((line) => line.startSeconds > canonicalSeconds) ?? null;
+}
+
+/** The line most recently finished, for the subdued trail behind the active one. */
+export function previousLineAt(alignment: LyricAlignment, canonicalSeconds: number): LyricLine | null {
+  let found: LyricLine | null = null;
+  for (const line of alignment.lines) {
+    if (line.endSeconds <= canonicalSeconds) found = line;
+    else if (line.startSeconds <= canonicalSeconds) return found;
+  }
+  return found;
 }
 
 export function resolveTimeline(input: TimelineInput, canonicalSeconds: number): TimelinePosition {
@@ -55,7 +77,11 @@ export function resolveTimeline(input: TimelineInput, canonicalSeconds: number):
   return {
     canonicalSeconds: time,
     learningSeconds: input.continuousNotes?.length ? learningTimeFromOriginalTime(time, input.continuousNotes) : time,
-    line, word, syllable, note, nextNote,
+    line,
+    upcomingLine: upcomingLineAt(input.alignment, time),
+    previousLine: previousLineAt(input.alignment, time),
+    isInstrumental: line === null,
+    word, syllable, note, nextNote,
     chords: (input.chords ?? []).filter((chord) => within(chord.startSeconds, chord.endSeconds, time)),
     learningId: note?.learningId ?? null,
   };

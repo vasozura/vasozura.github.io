@@ -91,7 +91,7 @@ export async function mountKaraokeMode(root: HTMLElement): Promise<() => void> {
       </div>
     </div>
     <audio class="karaoke-transport" data-karaoke-audio controls preload="metadata" src="${escapeHtml(originalUrl)}"></audio>
-    <div class="karaoke-viewer" data-lyric-display="word"><div class="karaoke-lines">${lyricMarkup(manifest.alignment, manifest.chords)}</div></div>
+    <div class="karaoke-viewer" data-lyric-display="word"><p class="karaoke-instrumental-cue" aria-hidden="true">Instrumental</p><div class="karaoke-lines">${lyricMarkup(manifest.alignment, manifest.chords)}</div></div>
     <p class="karaoke-note-status"><span>Note <strong data-current-note>—</strong></span><span>Lyric <strong data-current-lyric>—</strong></span><span>Next <strong data-next>—</strong></span></p>
     <div class="karaoke-visualizer" data-karaoke-visualizer></div>
     <details class="karaoke-advanced"><summary>Advanced</summary>
@@ -140,14 +140,25 @@ export async function mountKaraokeMode(root: HTMLElement): Promise<() => void> {
     // so no view can disagree with another about where the playhead is.
     const position = resolveTimeline(timelineInput(), time);
     const { note, nextNote, line, word, syllable } = position;
-    const lineIndex = line ? sessionAlignment.lines.findIndex((item) => item.id === line.id) : -1;
-    root.querySelectorAll<HTMLElement>("[data-line-id]").forEach((element) => { const index = sessionAlignment.lines.findIndex((item) => item.id === element.dataset.lineId); element.classList.toggle("is-previous", index === lineIndex - 1); element.classList.toggle("is-active", index === lineIndex); element.classList.toggle("is-next", index === lineIndex + 1); });
+    // Three states, and the middle one is real: a line is being sung, nobody is singing, or the next
+    // line has not started yet. An upcoming line is shown subdued and is never marked active, so an
+    // instrumental introduction or a rest between verses highlights nothing at all.
+    const activeId = line?.id ?? null;
+    const previousId = position.previousLine?.id ?? null;
+    const upcomingId = position.upcomingLine?.id ?? null;
+    root.querySelectorAll<HTMLElement>("[data-line-id]").forEach((element) => {
+      const id = element.dataset.lineId;
+      element.classList.toggle("is-previous", id === previousId && id !== activeId);
+      element.classList.toggle("is-active", id === activeId);
+      element.classList.toggle("is-next", id === upcomingId && id !== activeId);
+    });
+    viewer.classList.toggle("is-instrumental", position.isInstrumental);
     root.querySelectorAll<HTMLElement>("[data-word-id]").forEach((element) => element.classList.toggle("is-active", lyricMode === "word" && element.dataset.wordId === word?.id));
     root.querySelectorAll<HTMLElement>("[data-syllable-id]").forEach((element) => element.classList.toggle("is-active", lyricMode === "syllable" && element.dataset.syllableId === syllable?.id));
     viewer.dataset.lyricDisplay = lyricMode;
     root.querySelectorAll<HTMLElement>("[data-chord-id]").forEach((element) => { const chord = sessionChords.find((item) => item.id === element.dataset.chordId); if (chord) element.textContent = transposeChordSymbol(chord.symbol, transpose()); });
     root.querySelector<HTMLElement>("[data-current-note]")!.textContent = note ? noteName(note.midi + transpose()) : "—";
-    root.querySelector<HTMLElement>("[data-current-lyric]")!.textContent = lyricMode === "syllable" ? syllable?.text ?? word?.text ?? line?.text ?? "—" : word?.text ?? line?.text ?? "—";
+    root.querySelector<HTMLElement>("[data-current-lyric]")!.textContent = position.isInstrumental ? "Instrumental" : lyricMode === "syllable" ? syllable?.text ?? word?.text ?? line?.text ?? "—" : word?.text ?? line?.text ?? "—";
     root.querySelector<HTMLElement>("[data-next]")!.textContent = nextNote ? `${noteName(nextNote.midi + transpose())} · ${sessionAlignment.lines.flatMap((item) => item.words).find((item) => item.id === nextNote.wordId)?.text ?? ""}` : "—";
     visualizer?.render(note ? [noteEvent(note, transpose())] : [], nextNote ? [noteEvent(nextNote, transpose())] : []);
     if (audioMode === "guide" && guide !== "off" && note && note.learningId !== lastNoteId) { lastNoteId = note.learningId; const volume = Number(root.querySelector<HTMLInputElement>("[data-guide-volume]")!.value) / 100; engine.play({ midi: note.midi + transpose(), velocity: note.velocity * volume, durationSeconds: note.originalDurationSeconds / audio.playbackRate }); }

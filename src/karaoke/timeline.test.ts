@@ -32,17 +32,43 @@ describe("shared karaoke timeline", () => {
     expect(position.nextNote?.midi).toBe(62);
   });
 
-  it("keeps a line on screen before, between and after the sung material", () => {
+  it("highlights nothing while nobody is singing", () => {
     const input = fixture();
-    // Before the first line starts, the upcoming line is shown rather than nothing.
-    expect(lineAt(input.alignment, 0.2)?.id).toBe(input.alignment.lines[0].id);
+    // Before the first line starts there is no active lyric, only an upcoming one to show subdued.
+    const before = resolveTimeline(input, 0.2);
+    expect(before.line).toBeNull();
+    expect(before.isInstrumental).toBe(true);
+    expect(before.upcomingLine?.id).toBe(input.alignment.lines[0].id);
+    expect(lineAt(input.alignment, 0.2)).toBeNull();
     // Inside a line but between two of its words: the line stays, the word highlight clears.
     const gap = resolveTimeline(input, 4);
     expect(gap.line?.id).toBe(input.alignment.lines[0].id);
+    expect(gap.isInstrumental).toBe(false);
     expect(gap.word).toBeNull();
     expect(gap.note).toBeNull();
-    // Past the end of the song the last line stays on screen.
-    expect(lineAt(input.alignment, 999)?.id).toBe(input.alignment.lines[1].id);
+    // Past the end of the song nothing is active either, and there is nothing left to come.
+    const after = resolveTimeline(input, 999);
+    expect(after.line).toBeNull();
+    expect(after.upcomingLine).toBeNull();
+    expect(after.previousLine?.id).toBe(input.alignment.lines[1].id);
+  });
+
+  it("does not promote the next line to active during a rest between lines", () => {
+    const input = fixture();
+    const first = input.alignment.lines[0];
+    const second = input.alignment.lines[1];
+    // Exactly in the rest between the two lines.
+    const between = (first.endSeconds + second.startSeconds) / 2;
+    const rest = resolveTimeline(input, between);
+    expect(rest.line).toBeNull();
+    expect(rest.word).toBeNull();
+    expect(rest.syllable).toBeNull();
+    expect(rest.isInstrumental).toBe(true);
+    expect(rest.upcomingLine?.id).toBe(second.id);
+    expect(rest.previousLine?.id).toBe(first.id);
+    // And it becomes active exactly at its own start, not before.
+    expect(resolveTimeline(input, second.startSeconds - 0.01).line).toBeNull();
+    expect(resolveTimeline(input, second.startSeconds + 0.01).line?.id).toBe(second.id);
   });
 
   it("reports continuous study time alongside canonical time", () => {

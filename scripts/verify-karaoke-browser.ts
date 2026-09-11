@@ -171,7 +171,10 @@ async function main(): Promise<number> {
     const lines = await page.locator(".karaoke-line").count();
     record("Every authoritative lyric line is rendered", lines === manifest.alignment.lines.length, `${lines} lines`);
 
+    // A line late enough to be a real move from the opening, and sung rather than instrumental.
+    const seekLine = manifest.alignment.lines[Math.min(manifest.alignment.lines.length - 1, 3)];
     const followed = await inPage<{ moved: boolean; first: string; afterSeek: string; playing: boolean; at: number }>(`
+      const SEEK_TARGET = ${(seekLine.startSeconds + Math.min(0.5, (seekLine.endSeconds - seekLine.startSeconds) / 2)).toFixed(3)};
       ${audioElement} ${activeLine}
       const first = activeLine();
       audio.currentTime = 0;
@@ -179,11 +182,13 @@ async function main(): Promise<number> {
       const start = audio.currentTime;
       ${wait(2500)}
       const moved = audio.currentTime > start + 1;
-      audio.currentTime = Math.min(audio.duration - 1, 9);
+      // Seek into a line that is actually sung: a time in an instrumental passage correctly
+      // highlights nothing, which would say nothing about whether seeking works.
+      audio.currentTime = SEEK_TARGET;
       ${wait(400)}
       return { moved, first, afterSeek: activeLine(), playing: !audio.paused, at: audio.currentTime };`);
     record("Playback advances the canonical clock", followed.moved, `at ${followed.at.toFixed(2)}s`);
-    record("Seeking moves the highlighted lyric line", Boolean(followed.afterSeek) && followed.afterSeek !== followed.first, `${followed.first} -> ${followed.afterSeek}`);
+    record("Seeking moves the highlighted lyric line", followed.afterSeek === seekLine.id, `${followed.first || "(none)"} -> ${followed.afterSeek || "(none)"}, wanted ${seekLine.id}`);
 
     const whilePlaying = await inPage<{ target: number; at: number; playing: boolean; wordId: string }>(`
       ${audioElement}
@@ -206,7 +211,7 @@ async function main(): Promise<number> {
       return { before, target: Number(word.dataset.start), at: audio.currentTime, paused: audio.paused };`);
     record("A click while paused seeks and stays paused", whilePaused.paused && Math.abs(whilePaused.at - whilePaused.target) < 1.2, `${whilePaused.before.toFixed(2)}s -> ${whilePaused.at.toFixed(2)}s, paused`);
 
-    const resumed = await inPage<{ moving: boolean; reset: number; line: string }>(`
+    const resumed = await inPage<{ moving: boolean; reset: number; line: string; next: string }>(`
       ${audioElement} ${activeLine}
       const from = audio.currentTime;
       await audio.play();
@@ -215,9 +220,11 @@ async function main(): Promise<number> {
       audio.pause();
       audio.currentTime = 0;
       ${wait(300)}
-      return { moving, reset: audio.currentTime, line: activeLine() };`);
+      const next = document.querySelector(".karaoke-line.is-next");
+      return { moving, reset: audio.currentTime, line: activeLine(), next: next ? next.dataset.lineId : "" };`);
     record("Resume continues from the clicked position", resumed.moving, "clock advanced after resume");
-    record("Stopping returns to the first line", resumed.reset === 0 && resumed.line === "line-0", `line ${resumed.line}`);
+    // At zero the song has not started: nothing is active, and the first line waits as upcoming.
+    record("Stopping returns to the start with nothing highlighted", resumed.reset === 0 && resumed.line === "" && resumed.next === "line-0", `active "${resumed.line || "none"}", upcoming "${resumed.next}"`);
 
     const chords = await inPage<{ before: number; off: number; on: number; inWord: boolean; symbol: string }>(`
       const visible = () => [...document.querySelectorAll(".karaoke-chord")].filter((element) => element.offsetParent !== null).length;
@@ -280,6 +287,39 @@ async function main(): Promise<number> {
       return { maximum, overflow: getComputedStyle(viewer).overflow, visibleLines: [...document.querySelectorAll(".karaoke-line")].filter((line) => line.offsetParent !== null).length };`);
     record("The page never scrolls itself during playback", scrolled.maximum === 0, `max scrollY ${scrolled.maximum}`);
     record("The lyric viewport stays a compact few lines", scrolled.visibleLines > 0 && scrolled.visibleLines <= 3, `${scrolled.visibleLines} of ${lines} lines visible, overflow ${scrolled.overflow}`);
+
+    // Three states at exact timestamps: sung, instrumental, and the next line starting on time.
+    const introLine = manifest.alignment.lines[0];
+    const firstCanonical = manifest.alignment.lines.find((line) => line.origin !== "performance");
+    if (firstCanonical) {
+      const probes = [
+        [introLine.startSeconds + 0.4, introLine.text, "intro phrase"],
+        [(introLine.endSeconds + firstCanonical.startSeconds) / 2, "", "instrumental gap"],
+        [Math.max(0, firstCanonical.startSeconds - 0.3), "", "just before the first verse"],
+        [firstCanonical.startSeconds + 0.3, firstCanonical.text, "first canonical line"],
+      ] as Array<[number, string, string]>;
+      for (const [seconds, expected, label] of probes) {
+        const state = await inPage<{ active: string; instrumental: boolean; cue: boolean; words: number }>(`
+          ${audioElement}
+          audio.pause();
+          audio.currentTime = ${seconds};
+          ${wait(320)}
+          const line = document.querySelector(".karaoke-line.is-active");
+          const viewer = document.querySelector(".karaoke-viewer");
+          const cue = document.querySelector(".karaoke-instrumental-cue");
+          return {
+            active: line ? line.innerText.replace(/\s+/g, " ").trim() : "",
+            instrumental: viewer.classList.contains("is-instrumental"),
+            cue: cue ? getComputedStyle(cue).opacity !== "0" : false,
+            words: document.querySelectorAll(".karaoke-word.is-active, [data-syllable-id].is-active").length,
+          };`);
+        if (expected) {
+          record(`${seconds.toFixed(2)}s: ${label} is the active lyric`, state.active.replace(/\s+/g, " ").includes(expected.split(" ")[0]) && !state.instrumental, state.active.slice(0, 40) || "(none)");
+        } else {
+          record(`${seconds.toFixed(2)}s: ${label} highlights nothing`, state.active === "" && state.instrumental && state.words === 0, `active "${state.active}", cue ${state.cue ? "shown" : "hidden"}`);
+        }
+      }
+    }
 
     // The page-structure corrections the owner asked for.
     const structure = await inPage<{ karaokeBefore: boolean; disclosures: number; open: number; visibleLyricBlocks: number; advancedOpen: number }>(`
