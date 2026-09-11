@@ -1332,6 +1332,8 @@ img {
 .karaoke-word { position: relative; display: inline-block; min-height: 0; border: 0; padding: 20px 3px 0; color: inherit; font: inherit; background: transparent; }
 .karaoke-word:hover, .karaoke-word:focus-visible { color: var(--acid); outline: 1px solid var(--acid); }
 .karaoke-word.is-active, .karaoke-word [data-syllable-id].is-active { color: var(--acid); text-shadow: 0 0 22px rgb(255 184 0 / 55%); }
+.karaoke-line.is-performance { font-style: italic; }
+.karaoke-line[data-needs-confirmation="true"]::after { display: block; margin-top: 6px; color: var(--muted); font-family: var(--sans); font-size: 11px; font-style: normal; letter-spacing: .12em; text-transform: uppercase; content: "sung intro · wording to confirm"; }
 .karaoke-viewer[data-lyric-display="line"] .karaoke-line.is-active { color: var(--acid); }
 .karaoke-chord { position: absolute; top: 0; left: 50%; color: var(--acid); font-family: var(--sans); font-size: clamp(11px, .9vw, 15px); font-weight: 800; letter-spacing: .04em; transform: translateX(-50%); }
 .karaoke-viewer.chords-off .karaoke-chord { display: none; }

@@ -46,10 +46,20 @@ export interface LyricLine {
   startSeconds: number;
   endSeconds: number;
   words: LyricWord[];
+  /** Where this line came from. `canonical` is the authored song text; `performance` is something
+   *  sung in this particular recording - an intro phrase, an ad-lib, a repeat - that is not part of
+   *  the authored poem. A performance line is timed and highlighted like any other, but it is never
+   *  written back into the song's lyrics. Absent means canonical. */
+  origin?: "canonical" | "performance";
+  /** Set on a performance line whose wording could not be established from the recording. The line
+   *  still carries real timing; only its text is a placeholder awaiting the owner. */
+  needsOwnerConfirmation?: boolean;
 }
 
 export interface LyricAlignment {
   version: 1;
+  /** The authored song text, exactly as the song record holds it. Performance-only lines are never
+   *  added here: `lines` may contain more than this text does, never the other way round. */
   authoritativeText: string;
   source: "musicxml" | "midi" | "forced-alignment" | "deterministic-review" | "manual";
   confidence: KaraokeConfidence;

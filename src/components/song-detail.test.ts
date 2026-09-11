@@ -88,6 +88,19 @@ describe("karaoke as the primary lyrics experience", () => {
     expect(html).not.toContain('id="vocal-karaoke"');
   });
 
+  it("shows one player, not two: karaoke owns the transport", () => {
+    const html = renderSongDetail(singable, "en");
+    // The standalone audio section is gone; the karaoke panel carries the only player.
+    expect(html).not.toContain('id="audio-title"');
+    expect(html.split("<audio").length - 1).toBe(0); // karaoke mounts its own player at runtime
+  });
+
+  it("keeps the standalone player for a song with no karaoke", () => {
+    const html = renderSongDetail({ ...song, audioUrl: "https://example.com/a.mp3" }, "en");
+    expect(html).toContain('id="audio-title"');
+    expect(html).toContain("<audio");
+  });
+
   it("passes the prepared manifest reference through to the panel", () => {
     const html = renderSongDetail({ ...singable, learningMapping: { karaokeManifestUrl: "https://cdn.example.com/karaoke/one/manifest.json" } }, "en");
     expect(html).toContain('data-manifest-url="https://cdn.example.com/karaoke/one/manifest.json"');

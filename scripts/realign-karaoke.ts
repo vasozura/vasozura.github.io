@@ -60,14 +60,42 @@ function main(): number {
   }
   const analysis = JSON.parse(readFileSync(path.resolve(phrasesFile), "utf8")) as PhraseFile;
 
+  // A recording can sing something the authored poem does not contain - an intro phrase, an ad-lib.
+  // It is added as a performance line so Karaoke follows the performance, while the canonical
+  // lyrics stay exactly as the song record holds them.
+  const introText = argument("intro-text");
+  const introPlaceholder = process.argv.includes("--intro-unknown");
+  const introLines = introText
+    ? [{ text: introText }]
+    : introPlaceholder
+      // With no wording to count, the singing itself says how much text the intro holds: one attack
+      // is about one syllable. Counting the placeholder's own words instead would let invented text
+      // compete for real sung time and push every canonical line off its phrase.
+      ? [{
+          text: argument("intro-placeholder") ?? "♪ სამღერი შესავალი — ტექსტი დასადასტურებელია",
+          needsOwnerConfirmation: true,
+          syllableWeight: analysis.phrases.length
+            ? Math.max(1, analysis.onsets.filter((onset) => onset >= analysis.phrases[0].start && onset <= analysis.phrases[0].end).length)
+            : undefined,
+        }]
+      : [];
+
   const rebuilt = alignLyricsToPhrases({
     authoritativeText: manifest.alignment.authoritativeText,
+    introLines,
     phrases: analysis.phrases,
     onsets: analysis.onsets,
     durationSeconds: analysis.durationSeconds,
   });
   if (rebuilt.alignment.authoritativeText !== manifest.alignment.authoritativeText) throw new Error("The authoritative lyric text changed, which must never happen.");
 
+  // Every canonical line, in order, must still be exactly the authored text - blank separator lines
+  // in the stored lyrics aside. A performance line may be added; a canonical one may never change.
+  const canonicalLines = rebuilt.alignment.lines.filter((line) => line.origin !== "performance").map((line) => line.text);
+  const authored = rebuilt.alignment.authoritativeText.split("\n").map((line) => line.trim()).filter(Boolean);
+  if (canonicalLines.join("\u0000") !== authored.join("\u0000")) {
+    throw new Error("The canonical lines no longer match the authoritative text, which must never happen.");
+  }
   const words = rebuilt.alignment.lines.flatMap((line) => line.words);
   const corrected: KaraokeArtifactManifest = {
     ...manifest,

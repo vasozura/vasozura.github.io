@@ -106,3 +106,51 @@ describe("matching lines to phrases", () => {
     }
   });
 });
+
+describe("a performance intro the authored poem does not contain", () => {
+  const intro = [{ text: "oh oh oh", needsOwnerConfirmation: true, syllableWeight: 6 }];
+  // One phrase per line: the intro takes the first, so each canonical line still gets its own.
+  const sungWithIntro: VocalPhrase[] = [...sung, phrase(55, 61)];
+
+  it("takes the first sung phrase and pushes the canonical text to the singing that follows", () => {
+    const plain = alignLyricsToPhrases({ authoritativeText: text, phrases: sung, onsets, durationSeconds: 60 });
+    const withIntro = alignLyricsToPhrases({ authoritativeText: text, introLines: intro, phrases: sungWithIntro, onsets, durationSeconds: 60 });
+    expect(withIntro.alignment.lines[0].origin).toBe("performance");
+    expect(withIntro.alignment.lines[0].startSeconds).toBeCloseTo(sung[0].start, 1);
+    // The first canonical line is no longer at the top of the song, and it did not simply shift by
+    // a fixed amount: it was re-matched to the phrase the singer actually starts it on.
+    const first = withIntro.alignment.lines.find((line) => line.origin !== "performance")!;
+    expect(first.text).toBe(plain.alignment.lines[0].text);
+    expect(first.startSeconds).toBeGreaterThan(plain.alignment.lines[0].startSeconds);
+    expect(sungWithIntro.some((item) => Math.abs(item.start - first.startSeconds) < 0.05)).toBe(true);
+  });
+
+  it("never writes performance text into the authoritative lyrics", () => {
+    const result = alignLyricsToPhrases({ authoritativeText: text, introLines: intro, phrases: sungWithIntro, onsets, durationSeconds: 60 });
+    expect(result.alignment.authoritativeText).toBe(text);
+    expect(result.alignment.authoritativeText).not.toContain("oh oh oh");
+    expect(result.diagnostics.performanceLines).toBe(1);
+    // The canonical lines are still the authored text, in order and unchanged.
+    expect(result.alignment.lines.filter((line) => line.origin !== "performance").map((line) => line.text)).toEqual(text.split("\n"));
+  });
+
+  it("marks a placeholder intro as needing the owner's wording", () => {
+    const result = alignLyricsToPhrases({ authoritativeText: text, introLines: intro, phrases: sungWithIntro, onsets, durationSeconds: 60 });
+    expect(result.alignment.lines[0].needsOwnerConfirmation).toBe(true);
+    expect(result.alignment.lines[1].needsOwnerConfirmation).toBeUndefined();
+  });
+
+  it("uses the supplied syllable weight instead of counting placeholder words", () => {
+    const light = alignLyricsToPhrases({ authoritativeText: text, introLines: [{ text: "aaa", syllableWeight: 1 }], phrases: sungWithIntro, onsets, durationSeconds: 60 });
+    const heavy = alignLyricsToPhrases({ authoritativeText: text, introLines: [{ text: "aaa", syllableWeight: 40 }], phrases: sungWithIntro, onsets, durationSeconds: 60 });
+    expect(heavy.alignment.lines[0].endSeconds).toBeGreaterThan(light.alignment.lines[0].endSeconds);
+  });
+
+  it("still times and highlights the intro like any other line", () => {
+    const { alignment } = alignLyricsToPhrases({ authoritativeText: text, introLines: intro, phrases: sungWithIntro, onsets, durationSeconds: 60 });
+    const line = alignment.lines[0];
+    expect(line.endSeconds).toBeGreaterThan(line.startSeconds);
+    expect(line.words.length).toBeGreaterThan(0);
+    expect(resolveTimeline({ alignment, originalNotes: [] }, line.startSeconds + 0.05).line?.id).toBe(line.id);
+  });
+});

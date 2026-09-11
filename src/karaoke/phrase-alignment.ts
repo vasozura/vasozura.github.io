@@ -26,8 +26,22 @@ export interface VocalPhrase {
   end: number;
 }
 
+export interface PerformanceLine {
+  /** What is sung. A placeholder is allowed when the wording is not yet established. */
+  text: string;
+  /** True when the text is a placeholder and an owner still has to supply the real wording. */
+  needsOwnerConfirmation?: boolean;
+  /** How much singing this line is worth, in syllables. Supply it when the text is a placeholder:
+   *  counting a placeholder's syllables would let invented words compete for real sung time. */
+  syllableWeight?: number;
+}
+
 export interface PhraseAlignmentInput {
   authoritativeText: string;
+  /** Sung before the first canonical line - an intro phrase this recording has and the authored
+   *  poem does not. These are matched and timed exactly like canonical lines, which is why adding
+   *  one re-times everything after it instead of shifting the timeline. */
+  introLines?: readonly PerformanceLine[];
   phrases: readonly VocalPhrase[];
   /** Onset times from the vocal stem, used to place words inside a line. */
   onsets?: readonly number[];
@@ -46,6 +60,8 @@ export interface PhraseAlignmentDiagnostics {
   /** Words placed on a detected onset rather than on a proportional estimate. */
   wordsOnOnsets: number;
   wordCount: number;
+  /** Performance-only lines carried by this alignment but not by the authored text. */
+  performanceLines: number;
   /** Syllables per sung second implied by the match; a sanity figure for a reviewer. */
   syllablesPerSecond: number;
   /** Syllable timing is only ever an estimate inside a word, so it is always review-grade. */
@@ -184,9 +200,17 @@ export function matchLinesToPhrases(weights: readonly number[], phrases: readonl
 
 export function alignLyricsToPhrases(input: PhraseAlignmentInput): PhraseAlignmentResult {
   const phrases = normalisePhrases(input.phrases);
-  const texts = input.authoritativeText.replace(/\r\n/g, "\n").split("\n").map((line) => line.trim()).filter(Boolean);
+  const canonical = input.authoritativeText.replace(/\r\n/g, "\n").split("\n").map((line) => line.trim()).filter(Boolean);
+  // A performance intro is part of the sequence, not an offset applied to it: it takes its own
+  // phrase, and every canonical line after it is matched to the singing that actually follows.
+  const performance = (input.introLines ?? []).filter((line) => line.text.trim().length > 0);
+  const texts = [...performance.map((line) => line.text.trim()), ...canonical];
+  const performanceCount = performance.length;
   const onsets = [...(input.onsets ?? [])].sort((left, right) => left - right);
-  const weights = texts.map((line) => wordsOf(line).reduce((sum, word) => sum + syllableWeight(word), 0));
+  const weights = texts.map((line, index) => {
+    const supplied = index < performanceCount ? performance[index].syllableWeight : undefined;
+    return supplied && supplied > 0 ? supplied : wordsOf(line).reduce((sum, word) => sum + syllableWeight(word), 0);
+  });
   const whole = new SungClock(phrases);
   const blocks = phrases.length ? matchLinesToPhrases(weights, phrases) : [];
 
@@ -277,13 +301,19 @@ export function alignLyricsToPhrases(input: PhraseAlignmentInput): PhraseAlignme
       return { id: `line-${index}-word-${position}`, text: word, startSeconds: Number(start.toFixed(3)), endSeconds: Number(end.toFixed(3)), syllables };
     });
 
-    return { id: `line-${index}`, text, startSeconds: Number(lineStart.toFixed(3)), endSeconds: Number(lineEnd.toFixed(3)), words: built };
+    const isPerformance = index < performanceCount;
+    return {
+      id: `line-${index}`, text, startSeconds: Number(lineStart.toFixed(3)), endSeconds: Number(lineEnd.toFixed(3)), words: built,
+      origin: isPerformance ? "performance" as const : "canonical" as const,
+      ...(isPerformance && performance[index].needsOwnerConfirmation ? { needsOwnerConfirmation: true } : {}),
+    };
   });
 
   const totalSyllables = weights.reduce((sum, weight) => sum + weight, 0);
   return {
     alignment: {
       version: 1,
+      // The authored text, untouched. A performance line lives in `lines`, never here.
       authoritativeText: input.authoritativeText.replace(/\r\n/g, "\n").trim(),
       source: "forced-alignment",
       // Line and word timing come from the recording; syllable timing is still an estimate inside
@@ -294,6 +324,7 @@ export function alignLyricsToPhrases(input: PhraseAlignmentInput): PhraseAlignme
     diagnostics: {
       lineCount: lines.length,
       phraseCount: phrases.length,
+      performanceLines: performanceCount,
       linesOnPhraseStart,
       linesSpanningPhrases,
       phrasesWithSeveralLines,

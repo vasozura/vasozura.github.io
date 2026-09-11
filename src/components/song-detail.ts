@@ -28,7 +28,9 @@ export function renderSongDetail(song: Song, language: Language, options: SongDe
   const credit = localize(song.displayCredit, language);
   const lyrics = localize(song.lyrics, language);
   // Karaoke is the live lyrics experience, so it takes the place the static text block used to
-  // occupy. The full text stays on the page, one disclosure below, and is never rendered twice.
+  // occupy, and it owns the transport: Original / Instrumental / Instrumental + Guide all play
+  // through its own player, so a second standalone one would be a duplicate. The full text stays on
+  // the page, one disclosure below, and is never rendered twice.
   const karaoke = Boolean(song.audioUrl && lyrics);
   const labels = language === "ka"
     ? { back: "კატალოგში დაბრუნება", composer: "კომპოზიტორი", poet: "ტექსტი / პოეტი", translator: "მთარგმნელი", language: "ენა", duration: "ხანგრძლივობა", bpm: "BPM", key: "ტონალობა", signature: "ზომა", difficulty: "სირთულე", fullLyrics: "სრული ტექსტი", youtube: "YouTube", suno: "Suno", play: "MP3 დაკვრა", lyrics: "ტექსტი", audio: "აუდიო", resources: "რესურსები", midi: "MIDI", score: "ინტერაქტიული ნოტები", openLearning: "გახსენით ინტერაქტიული სწავლა", ready: "ნოტები და სასწავლო რესურსები მზადაა — ჩამოიტვირთება მხოლოდ გახსნისას.", pdf: "PDF ნოტები", source: "MuseScore წყარო", pdfPreview: "PDF-ის ნახვა", availability: "რესურსების ხელმისაწვდომობა" }
@@ -83,7 +85,7 @@ export function renderSongDetail(song: Song, language: Language, options: SongDe
           ${metadata}
         </div>
       </article>
-      ${song.audioUrl ? `<section class="song-resource" aria-labelledby="audio-title"><h2 id="audio-title">${labels.audio}</h2><audio controls preload="metadata" src="${escapeHtml(song.audioUrl)}">${labels.audio}</audio></section>` : ""}
+      ${song.audioUrl && !karaoke ? `<section class="song-resource" aria-labelledby="audio-title"><h2 id="audio-title">${labels.audio}</h2><audio controls preload="metadata" src="${escapeHtml(song.audioUrl)}">${labels.audio}</audio></section>` : ""}
       ${karaoke ? `<section class="song-resource karaoke-panel" id="vocal-karaoke" data-slug="${escapeHtml(song.slug)}" data-song-id="${escapeHtml(song.id)}" data-audio-url="${escapeHtml(song.audioUrl ?? "")}" data-lyrics="${escapeHtml(lyrics ?? "")}" data-manifest-url="${escapeHtml(karaokeManifestUrl(song))}" data-duration-seconds="${song.durationSeconds ?? ""}" data-bpm="${song.bpm ?? 120}" data-musical-key="${escapeHtml(song.musicalKey ?? "")}" aria-labelledby="karaoke-title"><h2 id="karaoke-title">VOCAL / KARAOKE</h2><button class="learning-open" type="button" data-open-karaoke>${language === "ka" ? "ვოკალისა და კარაოკეს გახსნა" : "Open Vocal / Karaoke"}</button><p data-karaoke-status aria-live="polite">${language === "ka" ? "თუ სასწავლო არტეფაქტები ჯერ არ მომზადებულა, ჩვეულებრივი MP3 და ტექსტი კვლავ მუშაობს." : "The normal MP3 and lyrics remain available when learning artifacts are not prepared."}</p></section>` : ""}
       ${lyrics ? (karaoke
         ? `<details class="song-resource lyrics-panel lyrics-disclosure"><summary>${labels.fullLyrics}</summary><p>${escapeHtml(lyrics ?? "")}</p></details>`

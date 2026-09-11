@@ -64,6 +64,9 @@ export function scoreAlignment(alignment: LyricAlignment, analysis: PhraseFile):
     if (!inPhrase(line.startSeconds)) silence += 1;
     offsets.push(Math.abs(nearestOnset(line.startSeconds) - line.startSeconds) * 1000);
     if (!onsets.some((onset) => onset >= line.startSeconds && onset <= line.endSeconds)) withoutOnset += 1;
+    // A performance line awaiting its wording carries placeholder text, so counting its syllables
+    // would measure the placeholder rather than the singing. Its timing is still scored above.
+    if (line.needsOwnerConfirmation) continue;
     const syllables = line.words.reduce((sum, word) => sum + Math.max(1, splitSyllables(word.text).length), 0);
     const seconds = Math.max(0.2, line.endSeconds - line.startSeconds);
     rates.push(syllables / seconds);
@@ -73,6 +76,12 @@ export function scoreAlignment(alignment: LyricAlignment, analysis: PhraseFile):
   // Each sung syllable is an attack, so a line holding N syllables should contain about N onsets.
   // A line placed over the wrong stretch of singing breaks that relationship even when the overall
   // structure looks tidy, which is why this is measured separately from the timing statistics.
+  //
+  // Its resolution is limited: in a strophic song every line carries a similar number of syllables,
+  // so there is little variance for the correlation to work with, and onset detection over-triggers
+  // on a real vocal. It separates a wrong alignment from a right one by sign and not much more -
+  // on taflis-tvali the shipped alignment scores -0.23 and a correct one around +0.3 to +0.5 - so
+  // it is gated loosely and the syllable-rate spread below carries the weight.
   const correlate = (left: readonly number[], right: readonly number[]): number => {
     const meanLeft = left.reduce((sum, value) => sum + value, 0) / Math.max(1, left.length);
     const meanRight = right.reduce((sum, value) => sum + value, 0) / Math.max(1, right.length);
@@ -149,7 +158,7 @@ function main(): number {
   if (score.linesStartingInSilence > 0) failures.push(`${score.linesStartingInSilence} line(s) start while nobody is singing`);
   if (score.medianOnsetOffsetMs > 250) failures.push(`median line start sits ${score.medianOnsetOffsetMs} ms from the nearest sung onset`);
   if (Math.abs(score.driftMs) > 250) failures.push(`the error grows by ${score.driftMs} ms between the first and last quarter`);
-  if (score.onsetToSyllableCorrelation < 0.35) failures.push(`syllable counts and sung attacks agree only at r=${score.onsetToSyllableCorrelation}, so lines sit over the wrong singing`);
+  if (score.onsetToSyllableCorrelation < 0.15) failures.push(`syllable counts and sung attacks agree only at r=${score.onsetToSyllableCorrelation}, so lines sit over the wrong singing`);
   if (score.syllableRateSpread > 3.5) failures.push(`syllable rate varies ${score.syllableRateSpread}x across lines, so text is bunched`);
   if (failures.length) { console.error(`\nFAIL: ${failures.join("; ")}`); return 1; }
   console.log("\nAcoustic synchronisation within tolerance.");

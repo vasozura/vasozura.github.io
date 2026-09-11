@@ -16,7 +16,7 @@ function noteEvent(note: LearningVocalNote, transpose = 0): NoteEvent {
 }
 
 function lyricMarkup(alignment: LyricAlignment, chords: readonly KaraokeChord[]): string {
-  return alignment.lines.map((line) => `<div class="karaoke-line" data-line-id="${line.id}" data-start="${line.startSeconds}">${line.words.map((word) => {
+  return alignment.lines.map((line) => `<div class="karaoke-line${line.origin === "performance" ? " is-performance" : ""}" data-line-id="${line.id}" data-origin="${line.origin ?? "canonical"}"${line.needsOwnerConfirmation ? ' data-needs-confirmation="true"' : ""} data-start="${line.startSeconds}">${line.words.map((word) => {
     const anchored = chords.filter((item) => item.wordId === word.id);
     const chord = anchored.length ? `<span class="karaoke-chord">${anchored.map((item) => `<span data-chord-id="${item.id}">${escapeHtml(item.symbol)}</span>`).join(" · ")}</span>` : "";
     return `<button type="button" class="karaoke-word" data-word-id="${word.id}" data-start="${word.startSeconds}">${chord}${word.syllables.map((syllable) => `<span data-syllable-id="${syllable.id}" data-start="${syllable.startSeconds}">${escapeHtml(syllable.text)}</span>`).join("")}</button>`;
