@@ -289,14 +289,19 @@ async function main(): Promise<number> {
     record("The lyric viewport stays a compact few lines", scrolled.visibleLines > 0 && scrolled.visibleLines <= 3, `${scrolled.visibleLines} of ${lines} lines visible, overflow ${scrolled.overflow}`);
 
     // Three states at exact timestamps: sung, instrumental, and the next line starting on time.
-    const introLine = manifest.alignment.lines[0];
-    const firstCanonical = manifest.alignment.lines.find((line) => line.origin !== "performance");
-    if (firstCanonical) {
+    // The moments are taken from the alignment itself - the first line that is sung, and the first
+    // real rest between two lines - so the check follows whatever timing the song was prepared with.
+    const sungLines = manifest.alignment.lines.filter((line) => line.endSeconds > line.startSeconds);
+    const restIndex = sungLines.findIndex((line, index) => index > 0 && line.startSeconds - sungLines[index - 1].endSeconds >= 1);
+    if (sungLines.length && restIndex > 0) {
+      const first = sungLines[0];
+      const afterRest = sungLines[restIndex];
+      const beforeRest = sungLines[restIndex - 1];
       const probes = [
-        [introLine.startSeconds + 0.4, introLine.text, "intro phrase"],
-        [(introLine.endSeconds + firstCanonical.startSeconds) / 2, "", "instrumental gap"],
-        [Math.max(0, firstCanonical.startSeconds - 0.3), "", "just before the first verse"],
-        [firstCanonical.startSeconds + 0.3, firstCanonical.text, "first canonical line"],
+        [first.startSeconds + 0.3, first.text, "the first sung line"],
+        [(beforeRest.endSeconds + afterRest.startSeconds) / 2, "", "the instrumental rest"],
+        [Math.max(0, afterRest.startSeconds - 0.3), "", "just before the next line"],
+        [afterRest.startSeconds + 0.3, afterRest.text, "the line after the rest"],
       ] as Array<[number, string, string]>;
       for (const [seconds, expected, label] of probes) {
         const state = await inPage<{ active: string; instrumental: boolean; cue: boolean; words: number }>(`

@@ -61,7 +61,7 @@ export interface LyricAlignment {
   /** The authored song text, exactly as the song record holds it. Performance-only lines are never
    *  added here: `lines` may contain more than this text does, never the other way round. */
   authoritativeText: string;
-  source: "musicxml" | "midi" | "forced-alignment" | "deterministic-review" | "manual";
+  source: "musicxml" | "midi" | "forced-alignment" | "suno-aligned-lyrics" | "deterministic-review" | "manual";
   confidence: KaraokeConfidence;
   lines: LyricLine[];
 }

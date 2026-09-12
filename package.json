@@ -19,6 +19,7 @@
     "prepare:vocal": "tsx scripts/prepare-vocal-learning.ts",
     "verify:karaoke": "tsx scripts/verify-karaoke-render.ts",
     "realign:karaoke": "tsx scripts/realign-karaoke.ts",
+    "import:suno": "tsx scripts/import-suno-timeline.ts",
     "verify:karaoke:sync": "tsx scripts/verify-karaoke-sync.ts",
     "verify:karaoke:browser": "tsx scripts/verify-karaoke-browser.ts",
     "publish:karaoke": "tsx scripts/publish-karaoke-artifacts.ts",
