@@ -50,7 +50,28 @@ Subtitle type size and margins scale with the narrow edge of the frame, so a 9:1
 
 ## Lyric timing
 
-Lyric timing is built from the singing, not from the extracted melody. `scripts/vocal-phrases.py` reads the isolated vocal stem and reports the sung phrases - the stretches where a voice is present - and the onsets inside them; `src/karaoke/phrase-alignment.ts` then lays the authoritative text over sung time only, matching text to phrasing as a whole so that one phrase can carry several lines the singer ran together and one line can span several phrases when a rest breaks it at a caesura. Because every block starts at a real phrase start, an error cannot travel past the next breath, which is what stops timing drifting through a song.
+Timing has two sources, in this order.
+
+### 1. The generator's own alignment (preferred)
+
+A song rendered by Suno can be timed by Suno. The generation's `aligned_lyrics` endpoint returns the written lyric one token per word, each with the seconds it is sung in that exact render - a measurement of the recording rather than a guess about it - and `src/karaoke/suno-timeline.ts` turns that payload into the shared timeline.
+
+Two things are derived and nothing else. Line grouping, because the payload carries no line field: the newlines and `[section]` markers Suno embedded inside the token text are put back together and cut into lines, with markers and `---` separators kept out of the sung text and recorded as sections. And the end of a highlight, when a vocal-phrase file is supplied: a word may then be cut back to the end of the singing instead of held across a silence. A word whose Suno onset falls outside verified singing keeps its text and its place in the line but is given no duration, so nothing is ever lit while nobody is singing. A local acoustic window never moves or invents a Suno onset; it may only shorten an ending.
+
+The authored poem is untouched. It stays in `alignment.authoritativeText`, and a sung line is marked `canonical` only when it is that poem's line word for word; every repeat, answer, hold and ad-lib the performance adds is carried as a `performance` line and written to `performance-lyrics.txt` beside the manifest. Karaoke follows the performance; the Full lyrics disclosure shows the poem.
+
+```powershell
+pnpm import:suno -- --input="tmp\karaoke\song-slug" --aligned="tmp\suno\aligned_lyrics.json" `
+                    --phrases="tmp\song-vocal-phrases.json" --output="tmp\suno\corrected"
+```
+
+The run fails if the authored text changed by so much as a character, or if any authored line is absent from the aligned lyrics - which is what catches an alignment fetched for the wrong generation. Chords are re-anchored and melody notes re-attached to the line, word and syllable sounding at their own start.
+
+Fetching the payload is a manual step and stays outside this repository: `aligned_lyrics` needs a signed-in session token, and no credential is read, logged or stored by any script here. Save the response to a file and pass that file.
+
+### 2. Phrase alignment from the vocal stem (fallback)
+
+When there is no generator alignment, lyric timing is built from the singing, not from the extracted melody. `scripts/vocal-phrases.py` reads the isolated vocal stem and reports the sung phrases - the stretches where a voice is present - and the onsets inside them; `src/karaoke/phrase-alignment.ts` then lays the authoritative text over sung time only, matching text to phrasing as a whole so that one phrase can carry several lines the singer ran together and one line can span several phrases when a rest breaks it at a caesura. Because every block starts at a real phrase start, an error cannot travel past the next breath, which is what stops timing drifting through a song.
 
 Instrumental gaps are skipped rather than filled, and a line stops when its own phrase stops, so nothing stays highlighted over a rest. Word starts are snapped to detected onsets where one sits close to the proportional estimate. Syllable timing remains an estimate inside a word and is always marked review-grade.
 

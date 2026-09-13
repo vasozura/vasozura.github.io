@@ -15,6 +15,18 @@ function noteEvent(note: LearningVocalNote, transpose = 0): NoteEvent {
   return { id: note.learningId, partId: "vocal-melody", measureIndex: 0, beat: 0, startSeconds: note.originalStartSeconds, durationSeconds: note.originalDurationSeconds, midi: note.midi + transpose, velocity: note.velocity, hand: "unknown" };
 }
 
+/** A readable name for the timing source, so the diagnostics read as prose rather than as an
+ *  identifier. A source with no entry keeps its own name. */
+const ALIGNMENT_LABELS: Partial<Record<LyricAlignment["source"], string>> = {
+  "suno-aligned-lyrics": "Suno aligned lyrics",
+  "forced-alignment": "Forced alignment",
+  "deterministic-review": "Deterministic analysis",
+  musicxml: "MusicXML",
+  midi: "MIDI",
+  manual: "Manual",
+};
+const alignmentLabel = (source: LyricAlignment["source"]): string => ALIGNMENT_LABELS[source] ?? source;
+
 function lyricMarkup(alignment: LyricAlignment, chords: readonly KaraokeChord[]): string {
   return alignment.lines.map((line) => `<div class="karaoke-line${line.origin === "performance" ? " is-performance" : ""}" data-line-id="${line.id}" data-origin="${line.origin ?? "canonical"}"${line.needsOwnerConfirmation ? ' data-needs-confirmation="true"' : ""} data-start="${line.startSeconds}">${line.words.map((word) => {
     const anchored = chords.filter((item) => item.wordId === word.id);
@@ -100,7 +112,7 @@ export async function mountKaraokeMode(root: HTMLElement): Promise<() => void> {
           <p class="karaoke-source">Melody source: <strong>${escapeHtml(manifest.melody?.label ?? manifest.melodySource)}</strong> · ${escapeHtml(manifest.melody?.confidence ?? manifest.sourceConfidence)}${manifest.melody ? `<span class="karaoke-source-reason"> ${escapeHtml(manifest.melody.reason)}</span>` : ""}</p>
           ${manifest.provenance ? `<p class="karaoke-source">Prepared by ${escapeHtml(manifest.provenance.tool)} · ${escapeHtml(manifest.provenance.analysis)}${manifest.provenance.stemSeparation ? "" : " · no stem separation"}</p>` : ""}
           ${loaded.warning ? `<p class="karaoke-source">${escapeHtml(loaded.warning)}</p>` : ""}
-          <dl><div><dt>Notes</dt><dd>${manifest.diagnostics.noteCount}</dd></div><div><dt>Pitch range</dt><dd>${manifest.diagnostics.pitchMin ?? "—"}–${manifest.diagnostics.pitchMax ?? "—"}</dd></div><div><dt>Longest silence</dt><dd>${manifest.diagnostics.longestSilenceMs} ms</dd></div><div><dt>Pitch confidence</dt><dd>${Math.round(manifest.diagnostics.pitchConfidence * 100)}%</dd></div><div><dt>Alignment</dt><dd>${manifest.alignment.source}</dd></div><div><dt>Status</dt><dd>${manifest.diagnostics.status === "review" ? "Review required" : "Verified"}</dd></div></dl>
+          <dl><div><dt>Notes</dt><dd>${manifest.diagnostics.noteCount}</dd></div><div><dt>Pitch range</dt><dd>${manifest.diagnostics.pitchMin ?? "—"}–${manifest.diagnostics.pitchMax ?? "—"}</dd></div><div><dt>Longest silence</dt><dd>${manifest.diagnostics.longestSilenceMs} ms</dd></div><div><dt>Pitch confidence</dt><dd>${Math.round(manifest.diagnostics.pitchConfidence * 100)}%</dd></div><div><dt>Alignment</dt><dd>${alignmentLabel(manifest.alignment.source)}</dd></div><div><dt>Status</dt><dd>${manifest.diagnostics.status === "review" ? "Review required" : "Verified"}</dd></div></dl>
         </section>
         <section class="karaoke-timing-editor"><h3>Timing editor</h3><p>Preview changes are temporary until Save timing is selected.</p><label>Entity <select data-edit-entity>${manifest.alignment.lines.flatMap((line) => [`<option value="line:${line.id}">Line · ${escapeHtml(line.text)}</option>`, ...line.words.flatMap((word) => [`<option value="word:${word.id}">Word · ${escapeHtml(word.text)}</option>`, ...word.syllables.map((syllable) => `<option value="syllable:${syllable.id}">Syllable · ${escapeHtml(syllable.text)}</option>`)])]).join("")}${manifest.chords.map((chord) => `<option value="chord:${chord.id}">Chord · ${escapeHtml(chord.symbol)}</option>`).join("")}</select></label><label>Start <input data-edit-start type="number" min="0" step="0.01"></label><label>End <input data-edit-end type="number" min="0" step="0.01"></label><label>Mapped note IDs <input data-edit-notes type="text" placeholder="note-id, note-id"></label><div class="karaoke-editor-actions"><button type="button" data-preview-word>Preview selection</button><button type="button" data-save-timing>Save timing in this session</button><button type="button" data-export-timing>Download timing JSON</button></div><p data-edit-status></p></section>
         ${exportLinks.length ? `<section class="karaoke-exports"><h3>Exports</h3><div class="karaoke-export-links">${exportLinks.map(([key, url]) => `<a href="${escapeHtml(resolveAsset(url, loaded.baseUrl) ?? "#")}" download>${escapeHtml(key)}</a>`).join("")}</div></section>` : ""}
