@@ -32,6 +32,11 @@ describe("reading the aligned_lyrics payload", () => {
     expect(() => parseSunoAlignedLyrics({ data: [[], 1] })).toThrow(/aligned_lyrics/);
   });
 
+  it("refuses invalid or backwards timing instead of exposing a malformed timeline", () => {
+    expect(() => parseSunoAlignedLyrics([token("bad", -1, 2)])).toThrow(/aligned_lyrics/);
+    expect(() => parseSunoAlignedLyrics([token("bad", 2, 1)])).toThrow(/aligned_lyrics/);
+  });
+
   it("returns the tokens in sung order", () => {
     const shuffled = [tokens[3], tokens[0], tokens[1], tokens[2], ...tokens.slice(4)];
     expect(parseSunoAlignedLyrics(shuffled).map((item) => item.start_s)).toEqual([...tokens].map((item) => item.start_s).sort((a, b) => a - b));
@@ -93,7 +98,7 @@ describe("the timeline Suno measured", () => {
   });
 
   it("reports what it built", () => {
-    expect(built.diagnostics).toMatchObject({ tokenCount: 10, lineCount: 3, sectionCount: 3, clampedWordCount: 0, heldWordCount: 0, silentWordCount: 0 });
+    expect(built.diagnostics).toMatchObject({ tokenCount: 10, lineCount: 3, sectionCount: 3, clampedWordCount: 0, silentWordCount: 0 });
     expect(built.diagnostics.firstSungSeconds).toBe(0.5);
     expect(built.diagnostics.lastSungSeconds).toBe(6.8);
   });
@@ -129,15 +134,13 @@ describe("a highlight is not held across a silence", () => {
     }
   });
 
-  it("holds a word opened a fraction early to the attack that follows", () => {
-    // 2.85s is 50ms before the singing resumes: that is the aligner being early, not a rest.
+  it("never moves a Suno onset to a locally detected attack", () => {
     const stray = [...tokens.slice(0, 3), token("aaa...\n", 2.6, 3.6), ...tokens.slice(3)];
     const built = buildSunoTimeline({ data: [stray] }, { authoritativeText, sungWindows });
     const line = built.alignment.lines[1];
-    expect(line.startSeconds).toBe(2.9);
-    expect(line.endSeconds).toBe(3.6);
-    expect(built.diagnostics.heldWordCount).toBe(1);
-    expect(built.diagnostics.silentWordCount).toBe(0);
+    expect(line.startSeconds).toBe(2.6);
+    expect(line.endSeconds).toBe(2.6);
+    expect(built.diagnostics.silentWordCount).toBe(1);
   });
 
   it("changes nothing when the singing covers what Suno measured", () => {

@@ -38,10 +38,6 @@ export interface SunoTimelineInput {
   sungWindows?: readonly SungWindow[];
   /** How far outside a sung window a word may start and still count as sung. */
   toleranceSeconds?: number;
-  /** How long a word may wait for the singing to arrive before it is treated as unsung. A word the
-   *  aligner opened a fraction early is held to the attack that follows; one opened across a real
-   *  instrumental passage is not, because a line may not stay lit while nobody is singing. */
-  holdToleranceSeconds?: number;
 }
 
 /** A `[...]` marker in the prompt - an arrangement note, not a lyric. Kept for provenance. */
@@ -55,8 +51,6 @@ export interface SunoTimelineDiagnostics {
   sectionCount: number;
   /** Words whose Suno end was cut back to a silence rather than held across it. */
   clampedWordCount: number;
-  /** Words the aligner opened a fraction before the attack, held back to it. */
-  heldWordCount: number;
   /** Words that begin where the stem has no voice and never reach any. They keep their text and
    *  their place in the line, and are never highlighted. */
   silentWordCount: number;
@@ -76,7 +70,11 @@ const isToken = (value: unknown): value is SunoAlignedWord =>
   typeof value === "object" && value !== null
   && typeof (value as SunoAlignedWord).word === "string"
   && typeof (value as SunoAlignedWord).start_s === "number"
-  && typeof (value as SunoAlignedWord).end_s === "number";
+  && Number.isFinite((value as SunoAlignedWord).start_s)
+  && (value as SunoAlignedWord).start_s >= 0
+  && typeof (value as SunoAlignedWord).end_s === "number"
+  && Number.isFinite((value as SunoAlignedWord).end_s)
+  && (value as SunoAlignedWord).end_s >= (value as SunoAlignedWord).start_s;
 
 /** Pull the token list out of an `aligned_lyrics` response.
  *
@@ -139,7 +137,6 @@ const sliceText = (slices: readonly Slice[]): string => slices.map((slice) => sl
 export function buildSunoTimeline(payload: unknown, input: SunoTimelineInput): SunoTimelineResult {
   const tokens = parseSunoAlignedLyrics(payload);
   const tolerance = input.toleranceSeconds ?? 0.15;
-  const holdTolerance = input.holdToleranceSeconds ?? 0.8;
   const windows = [...(input.sungWindows ?? [])].sort((a, b) => a.start - b.start);
   const windowAt = (seconds: number): SungWindow | null =>
     windows.find((item) => seconds >= item.start - tolerance && seconds < item.end + tolerance) ?? null;
@@ -161,7 +158,6 @@ export function buildSunoTimeline(payload: unknown, input: SunoTimelineInput): S
   }
 
   let clampedWordCount = 0;
-  let heldWordCount = 0;
   let silentWordCount = 0;
   const lines: LyricLine[] = rows.map((row, index) => {
     const words: LyricWord[] = row.slices.map((slice, position) => {
@@ -173,13 +169,11 @@ export function buildSunoTimeline(payload: unknown, input: SunoTimelineInput): S
         if (window) {
           if (end > window.end) { clampedWordCount += 1; end = window.end; }
         } else {
-          // Suno opened this word in a silence. If the singing it was given still starts inside the
-          // word's own span, the word is held back to that singing; the span is Suno's either way,
-          // only narrowed to where there is a voice. If no voice arrives before the word ends, it
-          // keeps its text and its place in the line with no duration, and is never highlighted.
-          const later = windows.find((item) => item.start >= start - tolerance && item.start < end && item.start - start <= holdTolerance);
-          if (later) { heldWordCount += 1; start = later.start; end = Math.min(end, later.end); }
-          else { silentWordCount += 1; end = start; }
+          // A local acoustic window is never allowed to move or invent a Suno onset. If that onset
+          // is outside the verified singing, retain the token in the performance text but give it
+          // no highlight duration. The optional window may only shorten an ending.
+          silentWordCount += 1;
+          end = start;
         }
       }
       end = Math.max(start, end);
@@ -231,7 +225,6 @@ export function buildSunoTimeline(payload: unknown, input: SunoTimelineInput): S
       performanceLineCount: lines.filter((line) => line.origin === "performance").length,
       sectionCount: sections.length,
       clampedWordCount,
-      heldWordCount,
       silentWordCount,
       firstSungSeconds: sung.length ? sung[0].startSeconds : 0,
       lastSungSeconds: sung.reduce((latest, line) => Math.max(latest, line.endSeconds), 0),
