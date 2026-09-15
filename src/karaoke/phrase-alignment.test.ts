@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { alignLyricsToPhrases, matchLinesToPhrases, type VocalPhrase } from "./phrase-alignment";
+import { alignLyricsToPhrases, clampLineEndToContainingPhrase, matchLinesToPhrases, type VocalPhrase } from "./phrase-alignment";
 import { resolveTimeline } from "./timeline";
 
 const phrase = (start: number, end: number): VocalPhrase => ({ start, end });
@@ -10,6 +10,32 @@ const text = "mze da mta gvaqvs\nsheni guli chemtan\nqari da tsvima modis\ndila 
 const onsets = sung.flatMap((item) => [0, 1.4, 2.9, 4.3].map((offset) => item.start + offset));
 
 describe("lyric timing built from sung phrases", () => {
+  it("assigns a shared boundary to the following guarded unit without collapsing the line", () => {
+    const units = [phrase(52.744, 64.412), phrase(64.412, 75.651), phrase(75.651, 87.632)];
+    const proposed = { start: 64.412, end: 68.158333 };
+    const clamped = clampLineEndToContainingPhrase(units, proposed.start, proposed.end);
+
+    expect(clamped.phraseIndex).toBe(1);
+    expect(clamped.end).toBe(proposed.end);
+    expect(clamped.end).toBeGreaterThan(proposed.start);
+    expect(proposed.start).toBeGreaterThanOrEqual(units[0].end);
+    expect(clamped.end).toBeLessThanOrEqual(units[1].end);
+
+    const guarded = alignLyricsToPhrases({
+      authoritativeText: "[Intro]\neight syllable ordinary line one\neight syllable ordinary line two\n[Verse]\neight syllable ordinary line three\neight syllable ordinary line four",
+      phrases: [phrase(0, 30), phrase(31, 32), phrase(33, 39)],
+      onsets: [1, 4, 7, 10, 10.1, 13, 16, 19, 22, 25, 28, 33.2, 35, 37],
+      durationSeconds: 40,
+    });
+    expect(guarded.alignment.authoritativeText).toContain("[Intro]");
+    expect(guarded.alignment.lines.some((line) => line.text.startsWith("["))).toBe(false);
+    for (let index = 0; index < guarded.alignment.lines.length; index += 1) {
+      const line = guarded.alignment.lines[index];
+      expect(line.endSeconds - line.startSeconds).toBeGreaterThan(0.35);
+      if (index) expect(line.startSeconds).toBeGreaterThanOrEqual(guarded.alignment.lines[index - 1].endSeconds);
+    }
+  });
+
   it("starts the first line where the singing starts, not at zero", () => {
     const { alignment } = alignLyricsToPhrases({ authoritativeText: text, phrases: sung, onsets, durationSeconds: 60 });
     expect(alignment.lines[0].startSeconds).toBeCloseTo(2, 1);

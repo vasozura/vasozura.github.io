@@ -86,6 +86,38 @@ function normalisePhrases(phrases: readonly VocalPhrase[]): VocalPhrase[] {
   return merged;
 }
 
+const maximumAllocationSeconds = 12;
+const minimumLineSeconds = 0.75;
+
+function guardedPhrases(phrases: readonly VocalPhrase[], onsets: readonly number[]): VocalPhrase[] {
+  if (!onsets.length || !phrases.some((phrase) => phrase.end - phrase.start > maximumAllocationSeconds)) return [...phrases];
+  const guarded: VocalPhrase[] = [];
+  for (const phrase of phrases) {
+    const inside = onsets.filter((onset) => onset >= phrase.start && onset <= phrase.end);
+    if (!inside.length) continue;
+    let start = phrase.start;
+    while (phrase.end - start > maximumAllocationSeconds) {
+      const cut = inside.filter((onset) => onset > start + minimumLineSeconds && onset <= start + maximumAllocationSeconds).at(-1);
+      if (cut === undefined || phrase.end - cut < minimumLineSeconds) break;
+      guarded.push({ start, end: cut });
+      start = cut;
+    }
+    guarded.push({ start, end: phrase.end });
+  }
+  return guarded;
+}
+
+/** Split units are half-open. At a shared boundary the following unit owns the line start; only
+ * the final unit accepts its end. Return the clamp decision so the boundary rule is testable. */
+export function clampLineEndToContainingPhrase(phrases: readonly VocalPhrase[], start: number, end: number): { phraseIndex: number; end: number } {
+  const phraseIndex = phrases.findIndex((phrase, index) => start >= phrase.start - 0.01 && (index === phrases.length - 1 ? start <= phrase.end + 0.01 : start < phrase.end));
+  if (phraseIndex < 0) return { phraseIndex, end };
+  const own = phrases[phraseIndex];
+  if (end <= own.end) return { phraseIndex, end };
+  const spans = end > own.end + 0.5 && phrases.some((phrase, index) => index > phraseIndex && phrase.start >= own.end - 0.01 && phrase.start < end && phrase.end <= end + 0.01);
+  return { phraseIndex, end: spans ? end : own.end };
+}
+
 /** Real seconds with the gaps between a set of phrases removed, so text can be spread across the
  *  singing without ever landing in a rest. */
 class SungClock {
@@ -139,7 +171,7 @@ export interface AlignmentBlock {
  * A block costs the difference between the syllables it holds and the syllables its sung seconds
  * can carry at the song's own average rate, plus a small penalty for grouping, so a plain
  * one-line-per-phrase reading wins unless the audio really does not support it. */
-export function matchLinesToPhrases(weights: readonly number[], phrases: readonly VocalPhrase[], maxLines = 4, maxPhrases = 4): AlignmentBlock[] {
+export function matchLinesToPhrases(weights: readonly number[], phrases: readonly VocalPhrase[], maxLines = 4, maxPhrases = 4, onsets?: readonly number[]): AlignmentBlock[] {
   const lines = weights.length;
   const count = phrases.length;
   if (!lines || !count) return [];
@@ -167,6 +199,12 @@ export function matchLinesToPhrases(weights: readonly number[], phrases: readonl
         for (let takenPhrases = 1; takenPhrases <= Math.min(maxPhrases, count - phrase); takenPhrases += 1) {
           const syllables = prefixWeight[line + takenLines] - prefixWeight[line];
           const seconds = prefixSung[phrase + takenPhrases] - prefixSung[phrase];
+          if (onsets) {
+            const first = phrases[phrase];
+            const last = phrases[phrase + takenPhrases - 1];
+            const evidence = onsets.filter((onset) => onset >= first.start && onset <= last.end).length;
+            if (!evidence || seconds > maximumAllocationSeconds || evidence < takenLines || seconds < minimumLineSeconds * takenLines) continue;
+          }
           // How many syllables this much singing should hold, against how many it was given.
           const mismatch = Math.abs(syllables - rate * seconds) / Math.max(1, rate);
           const rest = prefixRest[phrase + takenPhrases] - prefixRest[phrase + 1] + 0;
@@ -188,6 +226,9 @@ export function matchLinesToPhrases(weights: readonly number[], phrases: readonl
     line += takenLines;
     phrase += takenPhrases;
   }
+  if (onsets && (line < lines || phrase < count)) {
+    throw new Error(`Insufficient onset-backed phrase evidence to allocate ${lines - line} lyric line(s) and ${count - phrase} phrase unit(s) safely.`);
+  }
   // Nothing may be dropped: any remainder joins the last block rather than losing its timing.
   if (blocks.length && (line < lines || phrase < count)) {
     const last = blocks.at(-1)!;
@@ -199,20 +240,22 @@ export function matchLinesToPhrases(weights: readonly number[], phrases: readonl
 }
 
 export function alignLyricsToPhrases(input: PhraseAlignmentInput): PhraseAlignmentResult {
-  const phrases = normalisePhrases(input.phrases);
-  const canonical = input.authoritativeText.replace(/\r\n/g, "\n").split("\n").map((line) => line.trim()).filter(Boolean);
+  const onsets = [...(input.onsets ?? [])].sort((left, right) => left - right);
+  const normalised = normalisePhrases(input.phrases);
+  const phrases = guardedPhrases(normalised, onsets);
+  const guarded = phrases.length !== normalised.length;
+  const canonical = input.authoritativeText.replace(/\r\n/g, "\n").split("\n").map((line) => line.trim()).filter((line) => line.length > 0 && !/^\[[^\]\n]+\]$/.test(line));
   // A performance intro is part of the sequence, not an offset applied to it: it takes its own
   // phrase, and every canonical line after it is matched to the singing that actually follows.
   const performance = (input.introLines ?? []).filter((line) => line.text.trim().length > 0);
   const texts = [...performance.map((line) => line.text.trim()), ...canonical];
   const performanceCount = performance.length;
-  const onsets = [...(input.onsets ?? [])].sort((left, right) => left - right);
   const weights = texts.map((line, index) => {
     const supplied = index < performanceCount ? performance[index].syllableWeight : undefined;
     return supplied && supplied > 0 ? supplied : wordsOf(line).reduce((sum, word) => sum + syllableWeight(word), 0);
   });
   const whole = new SungClock(phrases);
-  const blocks = phrases.length ? matchLinesToPhrases(weights, phrases) : [];
+  const blocks = phrases.length ? matchLinesToPhrases(weights, phrases, 4, 4, guarded ? onsets : undefined) : [];
 
   const starts = new Array<number>(texts.length).fill(0);
   const ends = new Array<number>(texts.length).fill(0);
@@ -230,39 +273,43 @@ export function alignLyricsToPhrases(input: PhraseAlignmentInput): PhraseAlignme
     if (lineCount > 1 && own.length === 1) phrasesWithSeveralLines += 1;
     if (lineCount === 1 && own.length > 1) linesSpanningPhrases += 1;
 
+    const boundaries = [own[0].start];
     let used = 0;
+    for (let position = 1; position < lineCount; position += 1) {
+      used += held[position - 1];
+      const estimate = clock.realTime((used / heldWeight) * clock.total);
+      const earliest = boundaries.at(-1)! + minimumLineSeconds;
+      const latest = own.at(-1)!.end - minimumLineSeconds * (lineCount - position);
+      if (earliest > latest) throw new Error(`Allocation block ${block.lineFrom + 1}-${block.lineTo} has insufficient non-overlapping duration.`);
+      const candidates = [...own.map((phrase) => phrase.start), ...onsets.filter((onset) => onset > own[0].start && onset < own.at(-1)!.end)]
+        .filter((candidate) => candidate >= earliest && candidate <= latest)
+        .sort((left, right) => Math.abs(left - estimate) - Math.abs(right - estimate));
+      const boundary = candidates[0] !== undefined && Math.abs(candidates[0] - estimate) <= 0.6 ? candidates[0] : Math.max(earliest, Math.min(latest, estimate));
+      boundaries.push(boundary);
+    }
+    boundaries.push(own.at(-1)!.end);
     for (let position = 0; position < lineCount; position += 1) {
       const index = block.lineFrom + position;
-      const estimate = clock.realTime((used / heldWeight) * clock.total);
-      used += held[position];
-      ends[index] = clock.realTime((used / heldWeight) * clock.total);
-      // A line boundary landing close to a phrase start belongs on it: that is where the singer
-      // actually breathes, and it keeps the split inside a block honest.
-      const nearest = own.reduce((bestPhrase, phrase) => Math.abs(phrase.start - estimate) < Math.abs(bestPhrase.start - estimate) ? phrase : bestPhrase, own[0]);
-      starts[index] = Math.abs(nearest.start - estimate) <= 0.6 ? nearest.start : estimate;
+      starts[index] = boundaries[position];
+      ends[index] = boundaries[position + 1];
       if (own.some((phrase) => Math.abs(phrase.start - starts[index]) < 0.01)) linesOnPhraseStart += 1;
     }
-    // A block ends when its singing ends, so nothing stays lit through the rest that follows.
-    ends[block.lineTo - 1] = own.at(-1)!.end;
   }
 
   for (let index = 0; index < starts.length; index += 1) {
-    if (index > 0 && starts[index] <= starts[index - 1]) starts[index] = starts[index - 1] + 0.12;
-    if (index > 0 && ends[index - 1] > starts[index]) ends[index - 1] = Math.max(starts[index - 1] + 0.2, starts[index] - 0.02);
+    if (index > 0 && starts[index] < ends[index - 1] - 0.001) throw new Error(`Lyric allocation overlaps between lines ${index} and ${index + 1}.`);
+    if (phrases.length && ends[index] - starts[index] < minimumLineSeconds - 0.001) throw new Error(`Lyric line ${index + 1} has only ${(ends[index] - starts[index]).toFixed(3)} seconds of supported timing.`);
     // Whatever the block arithmetic produced, a line stops when the phrase it started in stops.
     // Otherwise one line stays highlighted straight through an instrumental break.
-    const own = phrases.find((phrase) => starts[index] >= phrase.start - 0.01 && starts[index] < phrase.end + 0.01);
-    if (own && ends[index] > own.end) {
-      const spans = ends[index] > own.end + 0.5 && phrases.some((phrase) => phrase.start > own.end && phrase.start < ends[index] && phrase.end <= ends[index] + 0.01);
-      if (!spans) ends[index] = own.end;
-    }
+    ends[index] = clampLineEndToContainingPhrase(phrases, starts[index], ends[index]).end;
+    if (phrases.length && ends[index] <= starts[index]) throw new Error(`Lyric line ${index + 1} has no positive allocation window.`);
   }
 
   let wordsOnOnsets = 0;
   let wordCount = 0;
   const lines: LyricLine[] = texts.map((text, index) => {
     const lineStart = starts[index];
-    const lineEnd = Math.max(lineStart + 0.35, ends[index] || lineStart + 0.5);
+    const lineEnd = phrases.length ? ends[index] : lineStart + 0.5;
     const words = wordsOf(text);
     const wordWeights = words.map(syllableWeight);
     const lineWeight = wordWeights.reduce((sum, weight) => sum + weight, 0) || 1;
