@@ -99,7 +99,10 @@ export function parseSunoVocalMidi(
   const notes = midi.tracks.flatMap((track) => track.notes).sort((left, right) => left.time - right.time);
   if (!notes.length) throw new Error("The selected Suno Vocal MIDI contains no notes.");
 
-  const durationSeconds = Math.max(midi.duration, ...midi.header.tempos.map((tempo) => tempo.time));
+  const durationSeconds = Math.max(
+    midi.duration,
+    ...midi.header.tempos.map((tempo) => tempo.time ?? 0),
+  );
   const drift = Math.abs(options.audioDurationSeconds - durationSeconds);
   if (drift > Math.max(2, options.audioDurationSeconds * 0.01)) {
     throw new Error(`Suno Vocal MIDI duration differs from the canonical audio by ${drift.toFixed(3)} seconds.`);
