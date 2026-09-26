@@ -341,7 +341,9 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       host.querySelector<HTMLButtonElement>('[data-l="score-melody"]')!.setAttribute("aria-pressed", String(view === "melody"));
       host.querySelector<HTMLButtonElement>('[data-l="score-full"]')!.setAttribute("aria-pressed", String(view === "full"));
     };
-    setScoreView("melody");
+    // The canonical notation (including the selected instrument part) is the
+    // primary Learning score. The derived melody strip remains opt-in.
+    setScoreView("full");
     host.querySelector<HTMLButtonElement>('[data-l="score-melody"]')!.onclick = () => setScoreView("melody");
     host.querySelector<HTMLButtonElement>('[data-l="score-full"]')!.onclick = () => setScoreView("full");
     host.querySelector<HTMLButtonElement>('[data-l="marker"]')!.onclick = (event) => {

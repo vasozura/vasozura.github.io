@@ -3,6 +3,8 @@ import { MidiPlayback } from "./midi-playback";
 import { PianoVisualizer } from "./instrument-visualizer";
 import { playbackCoordinator } from "../audio/playback-coordinator";
 import { clientToScorePoint, learningMarkerTarget, logicalPageState, nearestScorePosition, scoreClickRatio, type LearningMarkerRequest, type ScoreCoordinateTransform, type ScoreMeasureTarget, type ScorePositionRequest } from "./score-navigation";
+import { FULL_SCORE_PART_ID, attemptScorePartSwitch, chooseDefaultMusicXmlPart, filterMusicXmlToPart, parseMusicXmlParts, rememberScorePart, restoreScorePart } from "./musicxml-parts";
+import "./score-parts.css";
 
 interface GraphicalEntryLike {
   PositionAndShape?: { AbsolutePosition?: { x: number; y: number }; BorderLeft?: number; BorderRight?: number; BorderTop?: number; BorderBottom?: number; Size?: { width?: number; height?: number } };
@@ -17,10 +19,13 @@ interface GraphicalMeasureLike {
   staffEntries?: GraphicalEntryLike[];
 }
 
-export function scoreTargetsFromGraphicalMeasures(measureList: GraphicalMeasureLike[][]): { targets: ScoreMeasureTarget[]; harmonies: Array<{ measureIndex: number; relativePosition: number; label: string }> } {
+export function scoreTargetsFromGraphicalMeasures(measureList: Array<Array<GraphicalMeasureLike | undefined>>): { targets: ScoreMeasureTarget[]; harmonies: Array<{ measureIndex: number; relativePosition: number; label: string }> } {
   const targets: ScoreMeasureTarget[] = [];
   const harmonies: Array<{ measureIndex: number; relativePosition: number; label: string }> = [];
   for (const measureRow of measureList) for (const [staffIndex, measure] of measureRow.entries()) {
+    // OSMD keeps sparse staff slots in MeasureList when only one part from a
+    // multi-part score is loaded. Those holes are layout metadata, not errors.
+    if (!measure) continue;
     const box = measure.PositionAndShape;
     const position = box?.AbsolutePosition;
     const measureIndex = measure.parentSourceMeasure?.measureListIndex;
@@ -75,9 +80,9 @@ export const osmdViewerOptions = { autoResize: false, backend: "svg", drawTitle:
 
 export function getScoreCopy(language: Language) {
   return language === "ka" ? {
-    zoomOut: "დაპატარავება", zoomIn: "გადიდება", layout: "განლაგება", page: "გვერდი", continuous: "უწყვეტი", previousPage: "წინა გვერდი", nextPage: "შემდეგი გვერდი", previousMeasure: "წინა ზომა", nextMeasure: "შემდეგი ზომა", measure: "ზომა", cursor: "კურსორი", loaded: "MusicXML ნოტები ჩაიტვირთა.", scoreFailed: "ნოტების ჩატვირთვა ვერ მოხერხდა.", notationUnavailable: "ნოტები მიუწვდომელია; MIDI სწავლა კვლავ ხელმისაწვდომია.", midiUnavailable: "ამ ნოტებისთვის MIDI დაკვრა მიუწვდომელია.", playPause: "დაკვრა / პაუზა", stop: "გაჩერება", tempo: "ტემპი", metronome: "მეტრონომი", position: "პოზიცია", seconds: "წამი", setLoop: "A–B ციკლის დაყენება", clearLoop: "ციკლის გაუქმება", midiFailed: "MIDI-ს ჩატვირთვა ვერ მოხერხდა.",
+    zoomOut: "დაპატარავება", zoomIn: "გადიდება", layout: "განლაგება", page: "გვერდი", continuous: "უწყვეტი", previousPage: "წინა გვერდი", nextPage: "შემდეგი გვერდი", previousMeasure: "წინა ზომა", nextMeasure: "შემდეგი ზომა", measure: "ზომა", cursor: "კურსორი", loaded: "MusicXML ნოტები ჩაიტვირთა.", scoreFailed: "ნოტების ჩატვირთვა ვერ მოხერხდა.", notationUnavailable: "ნოტები მიუწვდომელია; MIDI სწავლა კვლავ ხელმისაწვდომია.", midiUnavailable: "ამ ნოტებისთვის MIDI დაკვრა მიუწვდომელია.", playPause: "დაკვრა / პაუზა", stop: "გაჩერება", tempo: "ტემპი", metronome: "მეტრონომი", position: "პოზიცია", seconds: "წამი", setLoop: "A–B ციკლის დაყენება", clearLoop: "ციკლის გაუქმება", midiFailed: "MIDI-ს ჩატვირთვა ვერ მოხერხდა.", currentPart: "მიმდინარე პარტია", fullScore: "სრული პარტიტურა", part: "პარტია", partFailed: "არჩეული პარტიის ჩვენება ვერ მოხერხდა", noPartMetadata: "პარტიების მეტამონაცემები არ მოიძებნა; ნაჩვენებია არსებული სრული პარტიტურა.",
   } : {
-    zoomOut: "Zoom out", zoomIn: "Zoom in", layout: "Layout", page: "Page", continuous: "Continuous", previousPage: "Previous page", nextPage: "Next page", previousMeasure: "Previous measure", nextMeasure: "Next measure", measure: "Measure", cursor: "Cursor", loaded: "MusicXML score loaded.", scoreFailed: "The score could not be loaded.", notationUnavailable: "Notation is unavailable; MIDI learning remains available.", midiUnavailable: "MIDI playback is not available for this score.", playPause: "Play / pause", stop: "Stop", tempo: "Tempo", metronome: "Metronome", position: "Position", seconds: "seconds", setLoop: "Set A–B loop", clearLoop: "Clear loop", midiFailed: "MIDI could not be loaded.",
+    zoomOut: "Zoom out", zoomIn: "Zoom in", layout: "Layout", page: "Page", continuous: "Continuous", previousPage: "Previous page", nextPage: "Next page", previousMeasure: "Previous measure", nextMeasure: "Next measure", measure: "Measure", cursor: "Cursor", loaded: "MusicXML score loaded.", scoreFailed: "The score could not be loaded.", notationUnavailable: "Notation is unavailable; MIDI learning remains available.", midiUnavailable: "MIDI playback is not available for this score.", playPause: "Play / pause", stop: "Stop", tempo: "Tempo", metronome: "Metronome", position: "Position", seconds: "seconds", setLoop: "Set A–B loop", clearLoop: "Clear loop", midiFailed: "MIDI could not be loaded.", currentPart: "Current part", fullScore: "Full score", part: "Score part", partFailed: "The selected score part could not be displayed", noPartMetadata: "No score-part metadata was found; the existing full score is shown.",
   };
 }
 
@@ -98,8 +103,22 @@ export async function mountScoreViewer(
 
   if (musicXmlUrl) try {
     const { OpenSheetMusicDisplay } = await import("opensheetmusicdisplay");
+    const canonicalSource = await fetchScoreSource(musicXmlUrl);
+    const canonicalText = await canonicalSource.text();
+    const scoreParts = parseMusicXmlParts(canonicalText);
+    const songId = root.dataset.songId || musicXmlUrl;
+    let selectedPartId = (() => { try { return restoreScorePart(window.localStorage, songId, scoreParts); } catch { return chooseDefaultMusicXmlPart(scoreParts); } })();
+    const explicitPartResources = (() => { try { return JSON.parse(root.dataset.musicxmlPartResources || "{}") as Record<string, string>; } catch { return {}; } })();
+    const sourceForPart = async (partId: string | null): Promise<{ source: Blob | string; dedicated: boolean }> => {
+      if (!partId || partId === FULL_SCORE_PART_ID) return { source: canonicalSource, dedicated: false };
+      const dedicatedUrl = explicitPartResources[partId];
+      if (dedicatedUrl) return { source: await fetchScoreSource(dedicatedUrl), dedicated: true };
+      return { source: filterMusicXmlToPart(canonicalText, partId), dedicated: false };
+    };
+    let activeSource = await sourceForPart(selectedPartId);
     const osmd = new OpenSheetMusicDisplay(surface, osmdViewerOptions);
-    await osmd.load(await fetchScoreSource(musicXmlUrl));
+    await osmd.load(activeSource.source);
+    root.dataset.scorePartSource = activeSource.dedicated ? "dedicated" : selectedPartId === FULL_SCORE_PART_ID || !selectedPartId ? "full-score" : "filtered-full-score";
     let scoreTargets: ScoreMeasureTarget[] = [];
     let learningMarker: HTMLSpanElement | null = null;
     let renderFrame = 0;
@@ -130,9 +149,7 @@ export async function mountScoreViewer(
         showPage();
       });
     };
-    renderScore();
     const dedicatedLearningMarker = root.dataset.learningEnabled === "true";
-    if (dedicatedLearningMarker) osmd.cursor.hide(); else osmd.cursor.show();
     let learningCursorStep = -1;
     const moveLearningCursor = (event: Event): void => {
       const target = Number((event as CustomEvent<{ cursorStep: number }>).detail.cursorStep);
@@ -161,7 +178,7 @@ export async function mountScoreViewer(
       canvas.scrollTo({ top: index * canvas.clientHeight, left: canvas.scrollLeft });
       showPage();
     };
-    controls.innerHTML = `<div class="score-control-group"><button type="button" data-score-action="zoom-out" aria-label="${copy.zoomOut}">−</button><output data-zoom-label>100%</output><button type="button" data-score-action="zoom-in" aria-label="${copy.zoomIn}">+</button></div><div class="score-control-group"><label>${copy.layout} <select data-score-layout><option value="page">${copy.page}</option><option value="continuous">${copy.continuous}</option></select></label><button type="button" data-score-action="cursor" aria-pressed="true">${copy.cursor}</button></div><div class="score-control-group" data-score-pages><button type="button" data-score-action="prev-page" aria-label="${copy.previousPage}">← ${copy.page.toLowerCase()}</button><output data-page-label>1 / 1</output><button type="button" data-score-action="next-page" aria-label="${copy.nextPage}">${copy.page.toLowerCase()} →</button></div><div class="score-control-group"><button type="button" data-score-action="prev-measure" aria-label="${copy.previousMeasure}">← ${copy.measure.toLowerCase()}</button><output data-measure-label>${copy.measure} 1</output><button type="button" data-score-action="next-measure" aria-label="${copy.nextMeasure}">${copy.measure.toLowerCase()} →</button></div>`;
+    controls.innerHTML = `<div class="score-part-picker" data-score-part-picker></div><div class="score-control-group"><button type="button" data-score-action="zoom-out" aria-label="${copy.zoomOut}">−</button><output data-zoom-label>100%</output><button type="button" data-score-action="zoom-in" aria-label="${copy.zoomIn}">+</button></div><div class="score-control-group"><label>${copy.layout} <select data-score-layout><option value="page">${copy.page}</option><option value="continuous">${copy.continuous}</option></select></label><button type="button" data-score-action="cursor" aria-pressed="true">${copy.cursor}</button></div><div class="score-control-group" data-score-pages><button type="button" data-score-action="prev-page" aria-label="${copy.previousPage}">← ${copy.page.toLowerCase()}</button><output data-page-label>1 / 1</output><button type="button" data-score-action="next-page" aria-label="${copy.nextPage}">${copy.page.toLowerCase()} →</button></div><div class="score-control-group"><button type="button" data-score-action="prev-measure" aria-label="${copy.previousMeasure}">← ${copy.measure.toLowerCase()}</button><output data-measure-label>${copy.measure} 1</output><button type="button" data-score-action="next-measure" aria-label="${copy.nextMeasure}">${copy.measure.toLowerCase()} →</button></div>`;
     if (dedicatedLearningMarker) controls.querySelector<HTMLElement>('[data-score-action="cursor"]')!.hidden = true;
     controls.querySelector('[data-score-action="zoom-out"]')?.addEventListener("click", () => { zoom = Math.max(0.5, zoom - 0.1); osmd.Zoom = zoom; renderScore(); controls.querySelector<HTMLElement>("[data-zoom-label]")!.textContent = `${Math.round(zoom * 100)}%`; showPage(); });
     controls.querySelector('[data-score-action="zoom-in"]')?.addEventListener("click", () => { zoom = Math.min(1.8, zoom + 0.1); osmd.Zoom = zoom; renderScore(); controls.querySelector<HTMLElement>("[data-zoom-label]")!.textContent = `${Math.round(zoom * 100)}%`; showPage(); });
@@ -176,6 +193,42 @@ export async function mountScoreViewer(
       button.setAttribute("aria-pressed", String(visible));
       if (visible) osmd.cursor.show(); else osmd.cursor.hide();
     });
+    const restoreScoreCursor = (): void => {
+      if (learningCursorStep < 0) return;
+      osmd.cursor.reset();
+      for (let step = 0; step <= learningCursorStep; step += 1) osmd.cursor.next();
+      osmd.cursor.show();
+    };
+    const partPicker = controls.querySelector<HTMLElement>("[data-score-part-picker]")!;
+    if (scoreParts.length) {
+      const label = document.createElement("label"); label.textContent = `${copy.part} `;
+      const select = document.createElement("select"); select.setAttribute("aria-label", copy.part);
+      for (const part of scoreParts) select.append(new Option(part.abbreviation ? `${part.name} (${part.abbreviation})` : part.name, part.id));
+      select.append(new Option(copy.fullScore, FULL_SCORE_PART_ID)); select.value = selectedPartId ?? scoreParts[0].id;
+      const current = document.createElement("strong"); current.className = "score-part-current";
+      const partName = (id: string | null): string => id === FULL_SCORE_PART_ID ? copy.fullScore : scoreParts.find((part) => part.id === id)?.name ?? copy.fullScore;
+      const updateCurrentPart = (): void => { current.textContent = `${copy.currentPart}: ${partName(selectedPartId)}`; };
+      label.append(select); partPicker.append(label, current); updateCurrentPart();
+      select.addEventListener("change", async () => {
+        const previousPartId = selectedPartId ?? FULL_SCORE_PART_ID; const previousSource = activeSource; const nextPartId = select.value;
+        select.disabled = true;
+        const result = await attemptScorePartSwitch(previousPartId, nextPartId, async (partId) => {
+          const nextSource = await sourceForPart(partId);
+          try { await osmd.load(nextSource.source); activeSource = nextSource; renderScore(); restoreScoreCursor(); }
+          catch (error) { await osmd.load(previousSource.source); activeSource = previousSource; renderScore(); restoreScoreCursor(); throw error; }
+        });
+        selectedPartId = result.selectedPartId; select.value = selectedPartId; select.disabled = false; updateCurrentPart();
+        if (result.error) { status.textContent = `${copy.partFailed}: ${result.error}`; return; }
+        root.dataset.scorePartSource = activeSource.dedicated ? "dedicated" : selectedPartId === FULL_SCORE_PART_ID ? "full-score" : "filtered-full-score";
+        try { rememberScorePart(window.localStorage, songId, selectedPartId); } catch { /* Selection remains active for this session. */ }
+        status.textContent = `${copy.loaded} ${copy.currentPart}: ${partName(selectedPartId)}.`;
+      });
+    } else partPicker.hidden = true;
+    // Build the selector before rendering so a malformed individual part can
+    // report its own error without removing the available part choices.
+    renderScore();
+    // Cursor geometry is only valid after OSMD has completed layout/render.
+    if (dedicatedLearningMarker) osmd.cursor.hide(); else osmd.cursor.show();
     if ("ResizeObserver" in window) {
       const observer = new ResizeObserver((entries) => {
         const width = entries[0]?.contentRect.width ?? surface.clientWidth;
@@ -190,11 +243,11 @@ export async function mountScoreViewer(
     const updatePageOnScroll = (): void => showPage();
     canvas.addEventListener("scroll", updatePageOnScroll, { passive: true });
     cleanups.push(() => canvas.removeEventListener("scroll", updatePageOnScroll));
-    const sheet = (osmd as unknown as { GraphicSheet: ScoreCoordinateTransform & { svgToDom(point: { x: number; y: number }): { x: number; y: number } }; Sheet?: { SourceMeasures?: unknown[] } }).GraphicSheet;
+    const currentSheet = (): ScoreCoordinateTransform & { svgToDom(point: { x: number; y: number }): { x: number; y: number } } => (osmd as unknown as { GraphicSheet: ScoreCoordinateTransform & { svgToDom(point: { x: number; y: number }): { x: number; y: number } } }).GraphicSheet;
     const pointerDebug = import.meta.env.DEV && new URLSearchParams(window.location.search).has("scorePointerDebug");
     let debugOverlay: HTMLElement | null = null;
     let debugTimer = 0;
-    const osmdToClient = (point: { x: number; y: number }): { x: number; y: number } => sheet.svgToDom({ x: point.x * 10, y: point.y * 10 });
+    const osmdToClient = (point: { x: number; y: number }): { x: number; y: number } => currentSheet().svgToDom({ x: point.x * 10, y: point.y * 10 });
     learningMarker = document.createElement("span");
     learningMarker.className = "learning-note-marker";
     learningMarker.setAttribute("aria-hidden", "true");
@@ -265,7 +318,7 @@ export async function mountScoreViewer(
     const seekFromScore = (event: MouseEvent): void => {
       let detail: ScorePositionRequest | null = null;
       if (scoreTargets.length) {
-        const point = clientToScorePoint(event.clientX, event.clientY, sheet);
+        const point = clientToScorePoint(event.clientX, event.clientY, currentSheet());
         detail = nearestScorePosition(point.x, point.y, scoreTargets);
       }
       if (!detail) {
@@ -282,8 +335,9 @@ export async function mountScoreViewer(
     cleanups.push(() => surface.removeEventListener("click", seekFromScore));
     cleanups.push(() => window.cancelAnimationFrame(renderFrame));
     showPage();
-    status.textContent = copy.loaded;
+    status.textContent = scoreParts.length ? `${copy.loaded} ${copy.currentPart}: ${scoreParts.find((part) => part.id === selectedPartId)?.name ?? copy.fullScore}.` : `${copy.loaded} ${copy.noPartMetadata}`;
   } catch (error) {
+    console.error("[score-viewer] MusicXML rendering failed", error);
     status.textContent = error instanceof Error ? error.message : copy.scoreFailed;
   } else { status.textContent = copy.notationUnavailable; canvas.hidden = true; controls.hidden = true; }
 
