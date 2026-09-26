@@ -41,6 +41,16 @@ describe("score viewer MIDI controls", () => {
     expect(result.targets[0]).toMatchObject({ measureIndex: 4, staffIndex: 0, left: 2, right: 14, top: 3, bottom: 8 });
     expect(result.harmonies).toEqual([{ measureIndex: 4, relativePosition: 0.5, label: "Am" }]);
   });
+
+  it("ignores sparse OSMD measure slots instead of reading PositionAndShape from undefined", () => {
+    const result = scoreTargetsFromGraphicalMeasures([[undefined, {
+      PositionAndShape: { AbsolutePosition: { x: 4, y: 5 }, BorderRight: 10, BorderBottom: 4 },
+      parentSourceMeasure: { measureListIndex: 2, Duration: { RealValue: 1 } },
+      staffEntries: [],
+    }]]);
+
+    expect(result.targets).toEqual([expect.objectContaining({ measureIndex: 2, staffIndex: 1, left: 4, right: 14, top: 5, bottom: 9 })]);
+  });
 });
 
 describe("score viewer MusicXML loading", () => {
