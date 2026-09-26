@@ -1,0 +1,11 @@
+.score-part-picker { display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; overflow-x: auto; padding: 6px 0; }
+.score-part-picker label { display: flex; align-items: center; gap: 6px; min-width: 0; white-space: nowrap; }
+.score-part-picker select { min-width: 0; max-width: min(320px, 70vw); }
+.score-part-current { flex: 0 0 auto; color: var(--muted); font-size: 12px; white-space: nowrap; }
+.score-canvas { min-width: 0; max-width: 100%; height: var(--score-stable-height, clamp(360px, 62vh, 720px)); overflow: auto; overscroll-behavior: contain; }
+.score-render-surface { min-width: 0; }
+@media (max-width: 720px) {
+  .score-part-picker { align-items: stretch; flex-direction: column; overflow-x: hidden; }
+  .score-part-picker label, .score-part-picker select { width: 100%; max-width: 100%; }
+  .score-part-current { white-space: normal; }
+}
