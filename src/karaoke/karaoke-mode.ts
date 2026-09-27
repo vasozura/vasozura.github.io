@@ -5,6 +5,7 @@ import { GuitarVisualizer } from "../learning/guitar-visualizer";
 import { PianoRangeVisualizer } from "../learning/piano-visualizer";
 import type { KaraokeArtifactManifest, KaraokeAudioMode, KaraokeChord, KaraokeGuide, KaraokeLyricMode, LearningVocalNote, LyricAlignment } from "./contracts";
 import { applyTimingEdits } from "./lyrics-alignment";
+import { analyzeSyncLyrics, applyManualSyncPreview, approveManualSync, createManualSyncSession, discardManualSyncDraft, exportManualSyncDraft, finishManualSync, fixManualSyncLine, isManualSyncShortcut, manualSyncProgress, restoreManualSyncDraft, reviewLineTarget, saveManualSyncDraft, sungLines, syncDisplayText, syncLyricLine, undoManualSync } from "./manual-lyric-sync";
 import { canonicalSecondsFor, resolveTimeline, type TimelineInput } from "./timeline";
 import { createBasicLyricsAlignment, editChordTiming, transposeChordSymbol, transposeForTargetKey } from "./presentation";
 
@@ -103,7 +104,14 @@ export async function mountKaraokeMode(root: HTMLElement): Promise<() => void> {
       </div>
     </div>
     <audio class="karaoke-transport" data-karaoke-audio controls preload="metadata" src="${escapeHtml(originalUrl)}"></audio>
-    <div class="karaoke-viewer" data-lyric-display="word"><p class="karaoke-instrumental-cue" aria-hidden="true">Instrumental</p><div class="karaoke-lines">${lyricMarkup(manifest.alignment, manifest.chords)}</div></div>
+    <section class="karaoke-manual-sync" aria-label="Manual lyric synchronization">
+      <div data-sync-start-panel><button type="button" data-start-sync>Start synchronization</button><button type="button" data-resume-sync hidden>Resume saved synchronization</button><button type="button" data-discard-sync hidden>Discard local draft</button></div>
+      <div data-sync-capture-panel hidden><p class="karaoke-sync-progress" data-sync-progress>Synced 0 of 0 lines</p><p class="karaoke-sync-prompt">Press SYNC when this line begins:</p><strong class="karaoke-sync-line" data-sync-current>—</strong><button class="karaoke-sync-button" type="button" data-sync-line-button>SYNC <kbd>S</kbd></button><div class="karaoke-editor-actions"><button type="button" data-undo-sync disabled>Undo last sync</button><button type="button" data-finish-sync>Finish and review</button></div></div>
+      <div data-sync-review-panel hidden><p class="karaoke-sync-progress"><strong>Review mode</strong></p><strong class="karaoke-sync-line" data-review-current>—</strong><div class="karaoke-editor-actions"><button type="button" data-review-previous>Previous line</button><button type="button" data-review-replay>Replay current line</button><button type="button" data-review-next>Next line</button><button type="button" data-approve-sync>Timing is correct</button><button type="button" data-fix-sync>Fix this line</button></div></div>
+      <p data-sync-status aria-live="polite">Nothing has been published.</p>
+      <details class="karaoke-skipped-directions"><summary data-skipped-summary>Skipped production directions: 0</summary><div data-skipped-details></div></details>
+    </section>
+    <div class="karaoke-viewer" data-lyric-display="word"><p class="karaoke-instrumental-cue" aria-hidden="true">Instrumental</p><div class="karaoke-lines">${lyricMarkup(applyManualSyncPreview(manifest.alignment, []), manifest.chords)}</div></div>
     <p class="karaoke-note-status"><span>Note <strong data-current-note>—</strong></span><span>Lyric <strong data-current-lyric>—</strong></span><span>Next <strong data-next>—</strong></span></p>
     <div class="karaoke-visualizer" data-karaoke-visualizer></div>
     <details class="karaoke-advanced"><summary>Advanced</summary>
@@ -114,7 +122,7 @@ export async function mountKaraokeMode(root: HTMLElement): Promise<() => void> {
           ${loaded.warning ? `<p class="karaoke-source">${escapeHtml(loaded.warning)}</p>` : ""}
           <dl><div><dt>Notes</dt><dd>${manifest.diagnostics.noteCount}</dd></div><div><dt>Pitch range</dt><dd>${manifest.diagnostics.pitchMin ?? "—"}–${manifest.diagnostics.pitchMax ?? "—"}</dd></div><div><dt>Longest silence</dt><dd>${manifest.diagnostics.longestSilenceMs} ms</dd></div><div><dt>Pitch confidence</dt><dd>${Math.round(manifest.diagnostics.pitchConfidence * 100)}%</dd></div><div><dt>Alignment</dt><dd>${alignmentLabel(manifest.alignment.source)}</dd></div><div><dt>Status</dt><dd>${manifest.diagnostics.status === "review" ? "Review required" : "Verified"}</dd></div></dl>
         </section>
-        <section class="karaoke-timing-editor"><h3>Timing editor</h3><p>Preview changes are temporary until Save timing is selected.</p><label>Entity <select data-edit-entity>${manifest.alignment.lines.flatMap((line) => [`<option value="line:${line.id}">Line · ${escapeHtml(line.text)}</option>`, ...line.words.flatMap((word) => [`<option value="word:${word.id}">Word · ${escapeHtml(word.text)}</option>`, ...word.syllables.map((syllable) => `<option value="syllable:${syllable.id}">Syllable · ${escapeHtml(syllable.text)}</option>`)])]).join("")}${manifest.chords.map((chord) => `<option value="chord:${chord.id}">Chord · ${escapeHtml(chord.symbol)}</option>`).join("")}</select></label><label>Start <input data-edit-start type="number" min="0" step="0.01"></label><label>End <input data-edit-end type="number" min="0" step="0.01"></label><label>Mapped note IDs <input data-edit-notes type="text" placeholder="note-id, note-id"></label><div class="karaoke-editor-actions"><button type="button" data-preview-word>Preview selection</button><button type="button" data-save-timing>Save timing in this session</button><button type="button" data-export-timing>Download timing JSON</button></div><p data-edit-status></p></section>
+        <section class="karaoke-timing-editor"><h3>Timing editor</h3><p>Technical timing controls.</p><label>Entity <select data-edit-entity>${manifest.alignment.lines.flatMap((line) => [`<option value="line:${line.id}">Line · ${escapeHtml(line.text)}</option>`, ...line.words.flatMap((word) => [`<option value="word:${word.id}">Word · ${escapeHtml(word.text)}</option>`, ...word.syllables.map((syllable) => `<option value="syllable:${syllable.id}">Syllable · ${escapeHtml(syllable.text)}</option>`)])]).join("")}${manifest.chords.map((chord) => `<option value="chord:${chord.id}">Chord · ${escapeHtml(chord.symbol)}</option>`).join("")}</select></label><label>Start <input data-edit-start type="number" min="0" step="0.01"></label><label>End <input data-edit-end type="number" min="0" step="0.01"></label><label>Mapped note IDs <input data-edit-notes type="text" placeholder="note-id, note-id"></label><div class="karaoke-editor-actions"><button type="button" data-preview-word>Preview selection</button><button type="button" data-save-timing>Save timing in this session</button><button type="button" data-export-timing>Download timing JSON</button><button type="button" data-export-sync-backup>Download manual-sync backup</button></div><p data-edit-status></p></section>
         ${exportLinks.length ? `<section class="karaoke-exports"><h3>Exports</h3><div class="karaoke-export-links">${exportLinks.map(([key, url]) => `<a href="${escapeHtml(resolveAsset(url, loaded.baseUrl) ?? "#")}" download>${escapeHtml(key)}</a>`).join("")}</div></section>` : ""}
       </div>
     </details>`;
@@ -129,8 +137,13 @@ export async function mountKaraokeMode(root: HTMLElement): Promise<() => void> {
   let guide: KaraokeGuide = hasGuide ? guideInstruments[0] : "off";
   let lastNoteId = "";
   let raf = 0;
-  let sessionAlignment = structuredClone(manifest.alignment);
+  let timingAlignment = structuredClone(manifest.alignment);
+  let manualSync = (() => { try { return restoreManualSyncDraft(window.localStorage, manifest); } catch { return null; } })() ?? createManualSyncSession(manifest);
+  let sessionAlignment = applyManualSyncPreview(timingAlignment, manualSync.draft.overrides);
   let sessionChords = structuredClone(manifest.chords);
+  let syncMode: "idle" | "capture" | "review" | "approved" = manualSync.draft.status === "review" ? "review" : manualSync.draft.status === "approved" ? "approved" : "idle";
+  let selectedSyncLineId = manualSync.draft.overrides[0]?.lineId ?? sungLines(timingAlignment)[0]?.id ?? "";
+  let fixingLineId: string | null = null;
   const transposeInput = root.querySelector<HTMLInputElement>("[data-transpose]")!;
   const transpose = (): number => Math.max(-12, Math.min(12, Number(transposeInput.value) || 0));
   const playback = { canPlay: () => Boolean(audio.src), play: () => audio.play(), pause: () => audio.pause(), stop: () => { audio.pause(); audio.currentTime = 0; lastNoteId = ""; engine.releaseAll(); paint(); }, isPlaying: () => !audio.paused };
@@ -195,6 +208,11 @@ export async function mountKaraokeMode(root: HTMLElement): Promise<() => void> {
     const target = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-start]") : null;
     if (!target || !viewer.contains(target)) return;
     event.preventDefault();
+    if (syncMode === "capture" && target.dataset.lineId) {
+      selectedSyncLineId = target.dataset.lineId;
+      performSync();
+      return;
+    }
     const anchor = target.dataset.syllableId ? { type: "syllable" as const, id: target.dataset.syllableId } : target.dataset.wordId ? { type: "word" as const, id: target.dataset.wordId } : target.dataset.lineId ? { type: "line" as const, id: target.dataset.lineId } : null;
     const seconds = anchor ? canonicalSecondsFor(timelineInput(), anchor) : null;
     audio.currentTime = seconds ?? Number(target.dataset.start);
@@ -216,8 +234,82 @@ export async function mountKaraokeMode(root: HTMLElement): Promise<() => void> {
   const loadEditor = (): void => { const item = findEntity(); if (!item) return; editStart.value = item.startSeconds.toFixed(2); editEnd.value = item.endSeconds.toFixed(2); editNotes.value = item.noteIds?.join(", ") ?? ""; editNotes.disabled = item.type !== "syllable"; };
   entity.addEventListener("change", loadEditor); loadEditor();
   root.querySelector<HTMLButtonElement>("[data-preview-word]")!.addEventListener("click", () => { audio.currentTime = Number(editStart.value); void audio.play(); });
-  root.querySelector<HTMLButtonElement>("[data-save-timing]")!.addEventListener("click", () => { const item = findEntity(); const start = Number(editStart.value); const end = Number(editEnd.value); const status = root.querySelector<HTMLElement>("[data-edit-status]")!; if (!item || !(start >= 0 && end > start)) { status.textContent = "End must be after start."; return; } if (item.type === "chord") sessionChords = editChordTiming(sessionChords, item.id, start, end); else { sessionAlignment = applyTimingEdits(sessionAlignment, [{ type: item.type, id: item.id, startSeconds: start, endSeconds: end }]); if (item.type === "syllable") for (const line of sessionAlignment.lines) for (const word of line.words) { const syllable = word.syllables.find((entry) => entry.id === item.id); if (syllable) syllable.noteIds = editNotes.value.split(",").map((value) => value.trim()).filter(Boolean); } } status.textContent = "Saved in this session. Download timing JSON to persist the review file."; paint(); });
+  root.querySelector<HTMLButtonElement>("[data-save-timing]")!.addEventListener("click", () => { const item = findEntity(); const start = Number(editStart.value); const end = Number(editEnd.value); const status = root.querySelector<HTMLElement>("[data-edit-status]")!; if (!item || !(start >= 0 && end > start)) { status.textContent = "End must be after start."; return; } if (item.type === "chord") sessionChords = editChordTiming(sessionChords, item.id, start, end); else { timingAlignment = applyTimingEdits(timingAlignment, [{ type: item.type, id: item.id, startSeconds: start, endSeconds: end }]); if (item.type === "syllable") for (const line of timingAlignment.lines) for (const word of line.words) { const syllable = word.syllables.find((entry) => entry.id === item.id); if (syllable) syllable.noteIds = editNotes.value.split(",").map((value) => value.trim()).filter(Boolean); } sessionAlignment = applyManualSyncPreview(timingAlignment, manualSync.draft.overrides); } status.textContent = "Saved in this session. Download timing JSON to persist the review file."; paint(); });
   root.querySelector<HTMLButtonElement>("[data-export-timing]")!.addEventListener("click", () => { const blob = new Blob([`${JSON.stringify({ alignment: sessionAlignment, chords: sessionChords }, null, 2)}\n`], { type: "application/json" }); const anchor = document.createElement("a"); anchor.href = URL.createObjectURL(blob); anchor.download = `${manifest.slug}-karaoke-timing.json`; anchor.click(); setTimeout(() => URL.revokeObjectURL(anchor.href), 0); });
 
-  return () => { cancelAnimationFrame(raf); audio.pause(); engine.destroy(); visualizer?.destroy(); unregisterPlayback(); };
+  const syncStatus = root.querySelector<HTMLElement>("[data-sync-status]")!;
+  const undoSyncButton = root.querySelector<HTMLButtonElement>("[data-undo-sync]")!;
+  const startPanel = root.querySelector<HTMLElement>("[data-sync-start-panel]")!;
+  const capturePanel = root.querySelector<HTMLElement>("[data-sync-capture-panel]")!;
+  const reviewPanel = root.querySelector<HTMLElement>("[data-sync-review-panel]")!;
+  const saveLocalDraft = (): void => { try { saveManualSyncDraft(window.localStorage, manifest, manualSync); } catch { syncStatus.textContent = "The browser could not save this local draft."; } };
+  const downloadBackup = (serialized = exportManualSyncDraft(manualSync)): void => { const blob = new Blob([serialized], { type: "application/json" }); const anchor = document.createElement("a"); anchor.href = URL.createObjectURL(blob); anchor.download = `${manifest.slug}-manual-lyric-sync.json`; anchor.click(); setTimeout(() => URL.revokeObjectURL(anchor.href), 0); };
+  const firstUnsyncedLineId = (): string => { const synced = new Set(manualSync.draft.overrides.map((item) => item.lineId)); return sungLines(timingAlignment).find((line) => !synced.has(line.id))?.id ?? manualSync.draft.overrides.at(-1)?.lineId ?? sungLines(timingAlignment)[0]?.id ?? ""; };
+  const updateSyncEditor = (): void => {
+    const progress = manualSyncProgress(manualSync, timingAlignment);
+    const displayText = syncDisplayText(timingAlignment, selectedSyncLineId) || "—";
+    root.querySelector<HTMLElement>("[data-sync-progress]")!.textContent = `Synced ${progress.synced} of ${progress.total} sung lines`;
+    root.querySelector<HTMLElement>("[data-sync-current]")!.textContent = displayText;
+    root.querySelector<HTMLElement>("[data-review-current]")!.textContent = displayText;
+    startPanel.hidden = syncMode !== "idle";
+    capturePanel.hidden = syncMode !== "capture";
+    reviewPanel.hidden = syncMode !== "review" && syncMode !== "approved";
+    const hasSavedDraft = manualSync.draft.overrides.length > 0;
+    root.querySelector<HTMLButtonElement>("[data-start-sync]")!.hidden = hasSavedDraft;
+    root.querySelector<HTMLButtonElement>("[data-resume-sync]")!.hidden = !hasSavedDraft;
+    root.querySelector<HTMLButtonElement>("[data-discard-sync]")!.hidden = !hasSavedDraft;
+    undoSyncButton.disabled = manualSync.undo.length === 0;
+  };
+  const refreshManualPreview = (): void => {
+    sessionAlignment = applyManualSyncPreview(timingAlignment, manualSync.draft.overrides);
+    const manualIds = new Set(manualSync.draft.overrides.map((override) => override.lineId));
+    root.querySelectorAll<HTMLElement>("[data-line-id]").forEach((element) => element.classList.toggle("is-manually-synced", manualIds.has(element.dataset.lineId ?? "")));
+    updateSyncEditor(); paint();
+  };
+  const performSync = (): void => {
+    if (syncMode !== "capture") return;
+    const capturedLineId = selectedSyncLineId;
+    const result = syncLyricLine(manualSync, timingAlignment, capturedLineId, audio.currentTime);
+    if (!result.ok) { syncStatus.textContent = result.message; return; }
+    manualSync = result.session;
+    selectedSyncLineId = result.selectedLineId;
+    saveLocalDraft();
+    if (fixingLineId === capturedLineId) {
+      fixingLineId = null;
+      const reviewed = finishManualSync(manualSync, manifest);
+      if (!reviewed.ok) { syncStatus.textContent = reviewed.message; refreshManualPreview(); return; }
+      manualSync = reviewed.session; selectedSyncLineId = capturedLineId; syncMode = "review"; saveLocalDraft();
+      syncStatus.textContent = "Updated this line. Review mode restored.";
+    } else {
+      const progress = manualSyncProgress(manualSync, timingAlignment);
+      syncStatus.textContent = progress.synced === progress.total ? "All lines are synchronized. Select Finish and review." : "Saved locally. Listen for the displayed line.";
+    }
+    refreshManualPreview();
+  };
+  const beginCapture = (resume: boolean): void => { manualSync = resume ? manualSync : createManualSyncSession(manifest); selectedSyncLineId = resume ? firstUnsyncedLineId() : sungLines(timingAlignment)[0]?.id ?? ""; syncMode = "capture"; audio.currentTime = 0; syncStatus.textContent = resume ? "Saved synchronization resumed." : "Playback started. Press SYNC when the displayed line begins."; updateSyncEditor(); void audio.play(); };
+  root.querySelector<HTMLButtonElement>("[data-start-sync]")!.addEventListener("click", () => beginCapture(false));
+  root.querySelector<HTMLButtonElement>("[data-resume-sync]")!.addEventListener("click", () => beginCapture(true));
+  root.querySelector<HTMLButtonElement>("[data-discard-sync]")!.addEventListener("click", () => { if (!window.confirm("Discard the saved local synchronization draft?")) return; try { discardManualSyncDraft(window.localStorage, manifest); } catch { /* No persisted draft remains accessible. */ } manualSync = createManualSyncSession(manifest); sessionAlignment = structuredClone(timingAlignment); syncMode = "idle"; selectedSyncLineId = sungLines(timingAlignment)[0]?.id ?? ""; syncStatus.textContent = "Local draft discarded. Nothing has been published."; refreshManualPreview(); });
+  root.querySelector<HTMLButtonElement>("[data-sync-line-button]")!.addEventListener("click", performSync);
+  undoSyncButton.addEventListener("click", () => { manualSync = undoManualSync(manualSync); selectedSyncLineId = firstUnsyncedLineId(); saveLocalDraft(); syncStatus.textContent = "Last synchronization undone."; refreshManualPreview(); });
+  root.querySelector<HTMLButtonElement>("[data-finish-sync]")!.addEventListener("click", () => { const result = finishManualSync(manualSync, manifest); if (!result.ok) { syncStatus.textContent = result.message; return; } manualSync = result.session; selectedSyncLineId = result.firstLineId; syncMode = "review"; saveLocalDraft(); downloadBackup(result.serialized); audio.currentTime = result.firstStartSeconds; syncStatus.textContent = "Review mode. Check each line, then select Timing is correct."; refreshManualPreview(); void audio.play(); });
+  const navigateReview = (direction: "previous" | "current" | "next", play: boolean): void => { const target = reviewLineTarget(manualSync, timingAlignment, selectedSyncLineId, direction); if (!target) return; selectedSyncLineId = target.lineId; audio.currentTime = target.startSeconds; updateSyncEditor(); paint(); if (play) void audio.play(); };
+  root.querySelector<HTMLButtonElement>("[data-review-previous]")!.addEventListener("click", () => navigateReview("previous", false));
+  root.querySelector<HTMLButtonElement>("[data-review-replay]")!.addEventListener("click", () => navigateReview("current", true));
+  root.querySelector<HTMLButtonElement>("[data-review-next]")!.addEventListener("click", () => navigateReview("next", false));
+  root.querySelector<HTMLButtonElement>("[data-fix-sync]")!.addEventListener("click", () => { const target = reviewLineTarget(manualSync, timingAlignment, selectedSyncLineId, "current"); if (!target) return; manualSync = fixManualSyncLine(manualSync, selectedSyncLineId); fixingLineId = selectedSyncLineId; syncMode = "capture"; saveLocalDraft(); audio.currentTime = Math.max(0, target.startSeconds - 2); syncStatus.textContent = "Listen for this line and press SYNC once."; updateSyncEditor(); void audio.play(); });
+  root.querySelector<HTMLButtonElement>("[data-approve-sync]")!.addEventListener("click", () => { manualSync = approveManualSync(manualSync); syncMode = "approved"; saveLocalDraft(); syncStatus.textContent = "Manual synchronization saved and verified locally. Nothing has been published."; updateSyncEditor(); });
+  root.querySelector<HTMLButtonElement>("[data-export-sync-backup]")!.addEventListener("click", () => downloadBackup());
+  const onSyncShortcut = (event: KeyboardEvent): void => { if (syncMode !== "capture" || !isManualSyncShortcut(event)) return; event.preventDefault(); performSync(); };
+  root.ownerDocument.addEventListener("keydown", onSyncShortcut);
+  const syncAnalysis = analyzeSyncLyrics(timingAlignment);
+  const directionLines = syncAnalysis.filter((item) => item.productionDirections.length > 0);
+  const malformedLines = syncAnalysis.filter((item) => item.status === "needs-review");
+  root.querySelector<HTMLElement>("[data-skipped-summary]")!.textContent = `Skipped production directions: ${directionLines.reduce((sum, item) => sum + item.productionDirections.length, 0)}`;
+  root.querySelector<HTMLElement>("[data-skipped-details]")!.innerHTML = `${directionLines.length ? `<p>${directionLines.map((item) => `Line ${item.sourceLineNumber}: ${escapeHtml(item.productionDirections.join(" "))}`).join("<br>")}</p>` : ""}${malformedLines.length ? `<p><strong>Needs review:</strong> ${malformedLines.map((item) => `line ${item.sourceLineNumber}`).join(", ")}</p>` : ""}`;
+  if (manualSync.draft.status === "review" || manualSync.draft.status === "approved") selectedSyncLineId = manualSync.draft.overrides[0]?.lineId ?? selectedSyncLineId;
+  if (manualSync.draft.status === "approved") syncStatus.textContent = "Manual synchronization saved and verified locally. Nothing has been published.";
+  updateSyncEditor();
+
+  return () => { cancelAnimationFrame(raf); audio.pause(); engine.destroy(); visualizer?.destroy(); unregisterPlayback(); root.ownerDocument.removeEventListener("keydown", onSyncShortcut); };
 }

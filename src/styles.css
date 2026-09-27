@@ -1363,6 +1363,17 @@ img {
 .karaoke-timing-editor h3, .karaoke-timing-editor > p { width: 100%; margin: 0; color: var(--muted); font-size: 12px; }
 .karaoke-timing-editor label { display: grid; flex: 1 1 150px; gap: 4px; }
 .karaoke-editor-actions { display: flex; flex-wrap: wrap; gap: 8px; width: 100%; }
+.karaoke-manual-sync { display: grid; gap: 12px; margin-top: 12px; padding: clamp(14px, 2vw, 22px); border: 1px solid var(--line); text-align: center; }
+.karaoke-manual-sync [data-sync-start-panel], .karaoke-manual-sync [data-sync-capture-panel], .karaoke-manual-sync [data-sync-review-panel] { display: grid; justify-items: center; gap: 12px; }
+.karaoke-manual-sync [hidden] { display: none; }
+.karaoke-sync-progress, .karaoke-sync-prompt { margin: 0; color: var(--muted); }
+.karaoke-sync-line { display: block; max-width: 900px; font-size: clamp(22px, 4vw, 42px); line-height: 1.2; }
+.karaoke-sync-button { min-width: min(360px, 90vw); padding: 22px; font-size: clamp(24px, 5vw, 44px); font-weight: 800; letter-spacing: .12em; }
+.karaoke-manual-sync .karaoke-editor-actions { justify-content: center; }
+.karaoke-manual-sync kbd { font: inherit; opacity: .7; }
+.karaoke-skipped-directions { width: 100%; border-top: 1px solid var(--line); padding-top: 8px; color: var(--muted); text-align: left; }
+.karaoke-skipped-directions summary { cursor: pointer; font-size: 12px; }
+.karaoke-skipped-directions p { margin: 8px 0 0; font-size: 12px; line-height: 1.6; }
 .karaoke-export-links { display: flex; flex-wrap: wrap; gap: 8px; }
 .karaoke-export-links a { border: 1px solid var(--line); padding: 7px 10px; }
 
