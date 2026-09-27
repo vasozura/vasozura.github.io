@@ -198,6 +198,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       pause: () => { scheduler?.pause(); audio?.reset(); },
       stop: () => { scheduler?.stop(); audio?.reset(); clearInstrumentVisuals(); },
     });
+    playbackCoordinator.activate(transportId);
     const recorder = new MidiAttemptRecorder();
     const visualRoot = host.querySelector<HTMLElement>('[data-l="visualizer"]')!;
     const melodyScore = new MelodyScoreView(host.querySelector<HTMLElement>('[data-l="melody-score"]')!, transformed.timeline.notes);

@@ -33,4 +33,35 @@ describe("global player Stop", () => {
     expect(JSON.parse(setItem.mock.lastCall?.[1] as string)).toMatchObject({ currentId: "selected-song", position: 0 });
     vi.unstubAllGlobals();
   });
+
+  it("delegates global shell play and stop to the active coordinated transport", () => {
+    class FakeAudio extends EventTarget {
+      preload = ""; src = ""; currentTime = 0; duration = 100; volume = 1; paused = true;
+      pause = vi.fn(); play = vi.fn(async () => undefined);
+    }
+    class FakeButton extends EventTarget {
+      textContent = ""; disabled = false; attributes = new Map<string, string>();
+      setAttribute(name: string, value: string) { this.attributes.set(name, value); }
+    }
+    const audio = new FakeAudio();
+    vi.stubGlobal("Audio", class { constructor() { return audio; } });
+    vi.stubGlobal("localStorage", { getItem: () => null, setItem: vi.fn() });
+    const play = new FakeButton(); const stop = new FakeButton();
+    const root = {
+      querySelector: (selector: string) => selector === "#player-play" ? play : selector === "#player-stop" ? stop : null,
+      querySelectorAll: () => [],
+    } as unknown as HTMLElement;
+    const toggle = vi.fn(); const stopActive = vi.fn();
+    const player = new PlayerController();
+    player.setCoordinatorControls(toggle, stopActive);
+    player.bind(root, [], "en");
+    player.setCoordinatedPlaying(true);
+    expect(play.textContent).toBe("Ⅱ");
+    expect(play.attributes.get("aria-label")).toBe("Pause");
+    play.dispatchEvent(new Event("click")); stop.dispatchEvent(new Event("click"));
+    expect(toggle).toHaveBeenCalledOnce();
+    expect(stopActive).toHaveBeenCalledOnce();
+    expect(audio.play).not.toHaveBeenCalled();
+    vi.unstubAllGlobals();
+  });
 });

@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { ignoresTransportShortcut, PlaybackCoordinator } from "./playback-coordinator";
+import { CanonicalScheduler } from "../learning/scheduler";
+import type { Timeline } from "../learning/contracts";
 
 const transport = (playing = false) => {
   let active = playing;
@@ -43,5 +45,60 @@ describe("playback coordination", () => {
       const target = { closest: vi.fn(() => ({ tag })) } as unknown as EventTarget;
       expect(ignoresTransportShortcut(target)).toBe(true);
     }
+  });
+
+  it("keeps Space and Escape bound to one active Learning scheduler across its lifecycle", async () => {
+    let now = 0;
+    vi.stubGlobal("requestAnimationFrame", () => 1);
+    vi.stubGlobal("cancelAnimationFrame", vi.fn());
+    const timeline: Timeline = {
+      version: "v1", durationSeconds: 10, notes: [], tempos: [{ atSeconds: 0, bpm: 120, measureIndex: 0 }], timeSignatures: [],
+      measures: [{ index: 0, number: "1", startSeconds: 0, durationSeconds: 10, beats: 4, beatType: 4, pickup: false }],
+    };
+    const coordinator = new PlaybackCoordinator();
+    const global = transport();
+    let scheduler = new CanonicalScheduler(timeline, () => now);
+    coordinator.register("global", global, true);
+    const unregister = coordinator.register("learning", {
+      canPlay: () => true,
+      isPlaying: () => scheduler.snapshot().playing,
+      play: () => scheduler.play(),
+      pause: () => scheduler.pause(),
+      stop: () => scheduler.stop(),
+    });
+    coordinator.activate("learning");
+    const key = (code: string, value: string) => ({ code, key: value, repeat: false, defaultPrevented: false, target: null, preventDefault: vi.fn() } as unknown as KeyboardEvent);
+    coordinator.handleKeydown(key("Space", " "));
+    await Promise.resolve();
+    now = 1_200;
+    coordinator.handleKeydown(key("Space", " "));
+    await Promise.resolve();
+    expect(scheduler.snapshot()).toMatchObject({ playing: false, position: 1.2 });
+    coordinator.handleKeydown(key("Space", " "));
+    await Promise.resolve();
+    expect(scheduler.snapshot().playing).toBe(true);
+    coordinator.handleKeydown(key("Escape", "Escape"));
+    expect(scheduler.snapshot()).toMatchObject({ playing: false, position: 0 });
+    expect(global.play).not.toHaveBeenCalled();
+    unregister();
+    coordinator.handleKeydown(key("Space", " "));
+    await Promise.resolve();
+    expect(global.play).toHaveBeenCalledOnce();
+    vi.unstubAllGlobals();
+  });
+
+  it("publishes active playback state without starting duplicate transports", async () => {
+    const coordinator = new PlaybackCoordinator();
+    const global = transport();
+    const learning = transport();
+    const states: Array<{ activeId: string | null; playing: boolean }> = [];
+    coordinator.subscribe((state) => states.push(state));
+    coordinator.register("global", global, true);
+    coordinator.register("learning", learning);
+    coordinator.activate("learning");
+    await coordinator.toggleActive();
+    expect(states.at(-1)).toEqual({ activeId: "learning", playing: true });
+    expect(learning.play).toHaveBeenCalledOnce();
+    expect(global.play).not.toHaveBeenCalled();
   });
 });

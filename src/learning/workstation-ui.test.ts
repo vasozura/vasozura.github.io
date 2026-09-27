@@ -41,6 +41,9 @@ describe("Learning Workstation V2 UI contract", () => {
     expect(source).toContain("scheduler.setTempo(snapshot.tempoPercent)");
     expect(source).toContain("if (canonicalLoop) scheduler.setLoop(");
     expect(source).toContain("if (wasPlaying) { try { await audio.enable(); scheduler.play(); }");
+    expect(source).toContain("playbackCoordinator.activate(transportId);");
+    expect(source.match(/unregisterTransport = playbackCoordinator\.register/g)).toHaveLength(1);
+    expect(source.match(/unregisterTransport\(\)/g)).toHaveLength(1);
   });
 
   it("shows incompatible visualizers without changing the selected instrument", async () => {

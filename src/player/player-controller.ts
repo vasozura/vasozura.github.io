@@ -23,6 +23,9 @@ export class PlayerController {
   private restoredPosition = 0;
   private lastPersistedSecond = 0;
   private beforePlay: (() => void) | null = null;
+  private coordinatedPlaying: boolean | null = null;
+  private coordinatedToggle: (() => void) | null = null;
+  private coordinatedStop: (() => void) | null = null;
   private readonly boundControls = new WeakSet<EventTarget>();
 
   constructor() {
@@ -47,8 +50,8 @@ export class PlayerController {
       this.audio.addEventListener("loadedmetadata", () => { this.audio.currentTime = Math.min(this.restoredPosition, Number.isFinite(this.audio.duration) ? this.audio.duration : this.restoredPosition); this.updateUi(); }, { once: true });
     }
     root.querySelectorAll<HTMLButtonElement>("[data-play-song]").forEach((button) => this.bindOnce(button, "click", () => void this.playSong(button.dataset.playSong ?? "")));
-    this.bindOnce(root.querySelector<HTMLButtonElement>("#player-play"), "click", () => void this.toggle());
-    this.bindOnce(root.querySelector<HTMLButtonElement>("#player-stop"), "click", () => this.stop());
+    this.bindOnce(root.querySelector<HTMLButtonElement>("#player-play"), "click", () => { if (this.coordinatedToggle) this.coordinatedToggle(); else void this.toggle(); });
+    this.bindOnce(root.querySelector<HTMLButtonElement>("#player-stop"), "click", () => { if (this.coordinatedStop) this.coordinatedStop(); else this.stop(); });
     this.bindOnce(root.querySelector<HTMLButtonElement>("#player-prev"), "click", () => void this.previous());
     this.bindOnce(root.querySelector<HTMLButtonElement>("#player-next"), "click", () => void this.next());
     this.bindOnce(root.querySelector<HTMLButtonElement>("#player-shuffle"), "click", () => { this.shuffle = !this.shuffle; this.persist(); this.updateUi(); });
@@ -74,6 +77,8 @@ export class PlayerController {
   }
 
   setBeforePlay(callback: () => void): void { this.beforePlay = callback; }
+  setCoordinatorControls(toggle: () => void, stop: () => void): void { this.coordinatedToggle = toggle; this.coordinatedStop = stop; }
+  setCoordinatedPlaying(playing: boolean | null): void { this.coordinatedPlaying = playing; this.updateUi(); }
   canPlay(): boolean { return Boolean(this.currentId || this.queue[0]); }
   isPlaying(): boolean { return !this.audio.paused; }
   pause(): void { this.audio.pause(); this.persist(); this.updateUi(); }
@@ -132,7 +137,8 @@ export class PlayerController {
     const volume = this.root.querySelector<HTMLInputElement>("#player-volume");
     if (volume) volume.value = String(this.audio.volume);
     const play = this.root.querySelector<HTMLButtonElement>("#player-play");
-    if (play) { play.textContent = this.audio.paused ? "▶" : "Ⅱ"; play.setAttribute("aria-label", this.audio.paused ? "Play" : "Pause"); play.disabled = !this.songs.length; }
+    const playing = this.coordinatedPlaying ?? !this.audio.paused;
+    if (play) { play.textContent = playing ? "Ⅱ" : "▶"; play.setAttribute("aria-label", playing ? "Pause" : "Play"); play.disabled = !this.songs.length; }
     const name = this.root.querySelector<HTMLElement>("#player-track");
     if (name) name.textContent = title;
     const shuffle = this.root.querySelector<HTMLButtonElement>("#player-shuffle");

@@ -27,6 +27,8 @@ let lastRenderedHash = "";
 const player = new PlayerController();
 playbackCoordinator.register("global", player, true);
 player.setBeforePlay(() => playbackCoordinator.activate("global"));
+player.setCoordinatorControls(() => { void playbackCoordinator.toggleActive(); }, () => playbackCoordinator.stopActive());
+playbackCoordinator.subscribe(({ activeId, playing }) => player.setCoordinatedPlaying(activeId === "global" ? null : playing));
 document.addEventListener("keydown", (event) => playbackCoordinator.handleKeydown(event));
 let learningCleanup: (() => void) | null = null;
 let karaokeCleanup: (() => void) | null = null;
