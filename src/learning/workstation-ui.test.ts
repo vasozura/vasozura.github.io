@@ -51,7 +51,8 @@ describe("Learning Workstation V2 UI contract", () => {
     const [source, css, instruments] = await Promise.all([read("./guitar-visualizer.ts"), read("../styles.css"), read("./instruments.ts")]);
     expect(source).toContain('class="guitar-neck"');
     expect(source.match(/guitarFretLabels\(this\.config\.frets\)/g)).toHaveLength(2);
-    expect(source).toContain('aria-label="String ${string}, fret ${fret}"></button>');
+    expect(source).toContain('data-string="${string}" data-fret="${fret}" data-midi-note="${midi}"');
+    expect(source).toContain('aria-label="String ${string}, fret ${fret}, ${noteName(midi)}"></button>');
     expect(source).not.toContain('>String ${string}, fret ${fret}<');
     expect(css).toContain(".guitar-string button::after");
     expect(css).toContain(".guitar-string button.active::after");

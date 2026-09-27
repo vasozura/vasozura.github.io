@@ -1,5 +1,6 @@
 import type { NoteEvent } from "./contracts";
-import { chooseContinuousGuitarPosition, guitarFretLabels, guitarStringLayout, type AuditionCallbacks, type GuitarConfig, type GuitarPosition, type TimelineVisualizer } from "./instruments";
+import type { HarmonicEvent } from "./harmony";
+import { chooseContinuousGuitarPosition, guitarFretLabels, guitarMidiAt, guitarStringLayout, type AuditionCallbacks, type GuitarConfig, type GuitarPosition, type TimelineVisualizer } from "./instruments";
 
 const noteName = (midi: number): string => `${["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"][midi % 12]}${Math.floor(midi / 12) - 1}`;
 const markerFrets = new Set([3, 5, 7, 9, 12, 15, 17, 19]);
@@ -17,16 +18,34 @@ export class GuitarVisualizer implements TimelineVisualizer {
     this.root.classList.add("learning-fretboard");
     this.root.classList.toggle("left-handed", Boolean(this.config.leftHanded));
     const header = `<div class="guitar-fret-header" aria-label="Fret numbers">${guitarFretLabels(this.config.frets).map((fret) => `<span class="${markerFrets.has(fret) ? fret === 12 ? "double-marker" : "fret-marker" : ""}">${fret}</span>`).join("")}</div>`;
-    const strings = guitarStringLayout(this.config).map(({ openMidi, string }) => `<div class="guitar-string" data-string="${string}" aria-label="String ${string}"><b aria-hidden="true">${string}</b>${guitarFretLabels(this.config.frets).map((fret) => `<button type="button" data-fret="${fret}" data-midi="${openMidi + fret}" aria-label="String ${string}, fret ${fret}"></button>`).join("")}</div>`).join("");
-    this.root.innerHTML = `<output class="guitar-note-status" aria-live="polite">—</output><div class="guitar-neck">${header}${strings}</div>`;
-    this.root.querySelectorAll<HTMLButtonElement>("[data-midi]").forEach((fret) => {
-      const start = (event: PointerEvent): void => { event.preventDefault(); fret.classList.add("manual-audition"); fret.dataset.noteLabel = noteName(Number(fret.dataset.midi)); fret.setPointerCapture?.(event.pointerId); this.audition?.noteOn(Number(fret.dataset.midi)); };
+    const strings = guitarStringLayout(this.config).map(({ openMidi, string }) => `<div class="guitar-string" data-string="${string}" aria-label="String ${string}"><b aria-hidden="true">${string}</b>${guitarFretLabels(this.config.frets).map((fret) => { const midi = guitarMidiAt(openMidi, fret); return `<button type="button" data-string="${string}" data-fret="${fret}" data-midi-note="${midi}" aria-label="String ${string}, fret ${fret}, ${noteName(midi)}"></button>`; }).join("")}</div>`).join("");
+    this.root.innerHTML = `<div class="guitar-readout"><output class="guitar-note-status" aria-live="polite">—</output><output class="guitar-chord-status" aria-live="polite">ACTIVE CHORD: —</output></div><div class="guitar-neck">${header}${strings}</div>`;
+    this.root.querySelectorAll<HTMLButtonElement>("[data-midi-note]").forEach((fret) => {
+      const start = (event: PointerEvent): void => { event.preventDefault(); fret.classList.add("manual-audition"); fret.dataset.noteLabel = noteName(Number(fret.dataset.midiNote)); fret.setPointerCapture?.(event.pointerId); this.audition?.noteOn(Number(fret.dataset.midiNote), "guitar"); };
       const stop = (): void => { fret.classList.remove("manual-audition"); delete fret.dataset.noteLabel; this.audition?.noteOff(); };
       fret.addEventListener("pointerdown", start);
       fret.addEventListener("pointerup", stop);
       fret.addEventListener("pointercancel", stop);
+      fret.addEventListener("pointerleave", stop);
       fret.addEventListener("lostpointercapture", stop);
     });
+  }
+
+  setActiveChord(harmony: HarmonicEvent | null): void {
+    this.root.querySelectorAll<HTMLElement>(".chord-active").forEach((cell) => cell.classList.remove("chord-active"));
+    const status = this.root.querySelector<HTMLOutputElement>(".guitar-chord-status");
+    if (!harmony) {
+      if (status) status.value = "ACTIVE CHORD: —";
+      return;
+    }
+    for (const position of harmony.guitar) this.root.querySelector<HTMLElement>(`button[data-string="${position.string}"][data-fret="${position.fret}"]`)?.classList.add("chord-active");
+    if (status) status.value = `ACTIVE CHORD: ${harmony.label} · ${harmony.guitar.map((position) => `S${position.string}/F${position.fret}`).join(" · ")}`;
+  }
+
+  clear(): void {
+    this.previous = null;
+    this.render([], []);
+    this.setActiveChord(null);
   }
 
   render(active: NoteEvent[], upcoming: NoteEvent[]): void {

@@ -2,6 +2,7 @@ import type { NoteEvent } from "./contracts";
 import type { AuditionCallbacks, NoteState, TimelineVisualizer } from "./instruments";
 
 const isBlack = (midi: number): boolean => [1, 3, 6, 8, 10].includes(midi % 12);
+const noteName = (midi: number): string => `${["C", "C sharp", "D", "D sharp", "E", "F", "F sharp", "G", "G sharp", "A", "A sharp", "B"][midi % 12]} ${Math.floor(midi / 12) - 1}`;
 
 export class PianoRangeVisualizer implements TimelineVisualizer {
   private readonly min: number;
@@ -19,14 +20,15 @@ export class PianoRangeVisualizer implements TimelineVisualizer {
     this.root.classList.add("learning-piano");
     this.root.innerHTML = Array.from({ length: this.max - this.min + 1 }, (_, index) => {
       const midi = this.min + index;
-      return `<button type="button" class="learning-key ${isBlack(midi) ? "black" : "white"}" data-note="${midi}" aria-label="MIDI note ${midi}"></button>`;
+      return `<button type="button" class="learning-key ${isBlack(midi) ? "black" : "white"}" data-note="${midi}" data-midi-note="${midi}" aria-label="${noteName(midi)}"></button>`;
     }).join("");
     this.root.querySelectorAll<HTMLButtonElement>("[data-note]").forEach((key) => {
-      const start = (event: PointerEvent): void => { event.preventDefault(); key.classList.add("manual-audition"); key.setPointerCapture?.(event.pointerId); this.audition?.noteOn(Number(key.dataset.note)); };
+      const start = (event: PointerEvent): void => { event.preventDefault(); key.classList.add("manual-audition"); key.setPointerCapture?.(event.pointerId); this.audition?.noteOn(Number(key.dataset.note), "piano"); };
       const stop = (): void => { key.classList.remove("manual-audition"); this.audition?.noteOff(); };
       key.addEventListener("pointerdown", start);
       key.addEventListener("pointerup", stop);
       key.addEventListener("pointercancel", stop);
+      key.addEventListener("pointerleave", stop);
       key.addEventListener("lostpointercapture", stop);
     });
   }
@@ -38,7 +40,8 @@ export class PianoRangeVisualizer implements TimelineVisualizer {
       const midi = Number(key.dataset.note);
       const note = activeByMidi.get(midi);
       const hand = note?.hand === "left" || note?.hand === "right" ? `hand-${note.hand}` : "";
-      key.className = `learning-key ${isBlack(midi) ? "black" : "white"} ${note ? "active" : ""} ${upcomingPitches.has(midi) ? "upcoming" : ""} ${hand} ${states.get(midi) ?? ""}`;
+      const manual = key.classList.contains("manual-audition");
+      key.className = `learning-key ${isBlack(midi) ? "black" : "white"} ${note ? "active" : ""} ${upcomingPitches.has(midi) ? "upcoming" : ""} ${hand} ${states.get(midi) ?? ""} ${manual ? "manual-audition" : ""}`;
     });
     const activeKey = this.follow && active[0]
       ? this.root.querySelector<HTMLElement>(`[data-note="${active[0].midi}"]`)

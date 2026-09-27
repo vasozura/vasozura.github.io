@@ -18,7 +18,7 @@ import { mountMidiLab } from "./midi-lab";
 import { hasExplicitStaffIdentity, type PlaybackMode, type StaffScope } from "./playback-selection";
 import { buildActiveTrackOptions, buildVoiceLanes, laneInScope, resolveActiveTrack, selectMelodyLane, type ActiveTrackId, type VoiceLane } from "./voice-lanes";
 import { composeLearningMelody, replaceLearningSegmentSource, retainLearningSegmentRest, type LearningMelody } from "./learning-melody";
-import { activeHarmonyAt, buildHarmonicTimeline, type ExplicitHarmony } from "./harmony";
+import { activeHarmonyAt, buildHarmonicTimeline, type ExplicitHarmony, type HarmonicEvent } from "./harmony";
 import { SampleInstrumentEngine, type InstrumentName } from "../audio/sample-instrument";
 import { guitarCandidates } from "./instruments";
 import type { ChordPatternName, PatternRate } from "./chord-patterns";
@@ -102,7 +102,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       </div>
     </div>
     <input data-l="melody" type="checkbox" checked hidden><input data-l="chords-layer" type="checkbox" hidden><select data-l="playback-mode" hidden><option value="solo">${copy.solo}</option><option value="chords">${copy.chords}</option></select><select data-l="staff-scope" hidden><option value="both">${copy.both}</option></select>
-    <section class="learning-status-strip"><p data-l="harmony">${copy.currentChord}: —</p><p data-l="pattern-status" aria-live="polite" hidden></p><p data-l="notes">${copy.current}: — · ${copy.upcoming}: —</p></section>
+    <section class="learning-status-strip"><button type="button" data-l="harmony" class="learning-chord-audition" disabled aria-label="Audition active chord">ACTIVE CHORD: —</button><p data-l="pattern-status" aria-live="polite" hidden></p><p data-l="notes">${copy.current}: — · ${copy.upcoming}: —</p></section>
     <section class="learning-melody-score" aria-labelledby="melody-score-title"><div class="learning-melody-score-heading"><h4 id="melody-score-title">LEARNING MELODY</h4><div><button type="button" data-l="score-melody" aria-pressed="true">Melody score</button><button type="button" data-l="score-full" aria-pressed="false">Full score</button><button type="button" data-l="marker" aria-pressed="true">Marker</button></div></div><div data-l="melody-score"></div></section>
     <div class="learning-visualizer-panel"><div data-l="visualizer" aria-live="off"></div></div>
     <details class="learning-workstation-advanced"><summary>Advanced controls</summary><div class="learning-advanced-grid"><button type="button" data-l="metronome" aria-pressed="false">${copy.metronome}</button><label><input type="checkbox" data-l="follow"> ${copy.follow}</label><label data-l="left-label" hidden><input type="checkbox" data-l="left"> ${copy.leftHanded}</label><label>${copy.loopFrom}<input data-l="loop-a" type="number" min="1" value="1"></label><label>${copy.to}<input data-l="loop-b" type="number" min="1" value="1"></label><button type="button" data-l="loop">${copy.setLoop}</button><button type="button" data-l="clear-loop">${copy.clearLoop}</button></div><div class="learning-mix-levels"><label>Melody <input data-l="melody-level" type="range" min="0" max="100" value="90"></label><label>Chords <input data-l="chords-level" type="range" min="0" max="100" value="62"></label><label>Metronome <input data-l="metronome-level" type="range" min="0" max="100" value="55"></label></div><details class="learning-voice-picker"><summary>Source voices</summary><div data-l="voice-list"></div><p data-l="staff-evidence" hidden>${copy.inferredStaff}</p></details><details class="learning-segment-map"><summary>Learning Melody segment map</summary><div data-l="segment-map"></div><p data-l="continuity"></p></details></details>
@@ -132,6 +132,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
   let scheduler: CanonicalScheduler | null = null;
   let visualizer: TimelineVisualizer | null = null;
   let auditionEngine: SampleInstrumentEngine | null = null;
+  let clearInstrumentVisuals = (): void => undefined;
   let unregisterTransport = (): void => {};
   let removeScorePositionListener = (): void => {};
   let midiLabCleanup = (): void => {};
@@ -189,7 +190,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
         catch (error) { host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = errorMessage(error); }
       },
       pause: () => { scheduler?.pause(); audio?.reset(); },
-      stop: () => { scheduler?.stop(); audio?.reset(); },
+      stop: () => { scheduler?.stop(); audio?.reset(); clearInstrumentVisuals(); },
     });
     const recorder = new MidiAttemptRecorder();
     const visualRoot = host.querySelector<HTMLElement>('[data-l="visualizer"]')!;
@@ -273,15 +274,15 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     let selectedInstrument = melodySound.value || "piano";
     auditionEngine = new SampleInstrumentEngine();
     const audition = {
-      noteOn: (midi: number): void => {
+      noteOn: (midi: number, instrument?: "piano" | "guitar"): void => {
         auditionEngine?.releaseAll();
-        auditionEngine?.setInstrument(selectedInstrument as InstrumentName);
+        auditionEngine?.setInstrument((instrument ?? selectedInstrument) as InstrumentName);
         void auditionEngine?.enable([midi]).then(() => auditionEngine?.play({ midi, velocity: 0.78, durationSeconds: 1.5 })).catch((error) => { host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = errorMessage(error); });
       },
       noteOff: (): void => auditionEngine?.releaseAll(),
     };
     type FollowVisualizer = TimelineVisualizer & { setFollow(enabled: boolean): void };
-    type HandedVisualizer = TimelineVisualizer & { setLeftHanded(enabled: boolean): void };
+    type HandedVisualizer = TimelineVisualizer & { setLeftHanded(enabled: boolean): void; setActiveChord(harmony: HarmonicEvent | null): void; clear(): void };
     let piano: FollowVisualizer | null = null;
     let guitar: HandedVisualizer | null = null;
     let accordion: FollowVisualizer | null = null;
@@ -291,6 +292,30 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     let exercise: Exercise | null = null;
     let waitingForMidi = false;
     let expectedMidi = new Set<number>();
+    let activeHarmony: HarmonicEvent | null = null;
+    const harmonyButton = host.querySelector<HTMLButtonElement>('[data-l="harmony"]')!;
+    const showHarmony = (harmony: HarmonicEvent | null): void => {
+      activeHarmony = playbackMode.value === "chords" ? harmony : null;
+      harmonyButton.textContent = activeHarmony ? `ACTIVE CHORD: ${activeHarmony.label}` : "ACTIVE CHORD: —";
+      harmonyButton.disabled = !activeHarmony;
+      guitar?.setActiveChord(activeHarmony);
+    };
+    const updateHarmonyAtCurrentPosition = (): void => showHarmony(activeHarmonyAt(harmonies, scheduler?.snapshot().position ?? 0));
+    clearInstrumentVisuals = (): void => {
+      auditionEngine?.releaseAll();
+      visualizer?.render([], []);
+      guitar?.clear();
+      visualRoot.querySelectorAll(".manual-audition").forEach((element) => element.classList.remove("manual-audition"));
+      showHarmony(null);
+    };
+    harmonyButton.onclick = (): void => {
+      const harmony = activeHarmony;
+      if (!harmony) return;
+      const notes = selectedInstrument === "guitar" && harmony.guitar.length ? harmony.guitar.map((position) => position.midi) : harmony.pitches;
+      auditionEngine?.releaseAll();
+      auditionEngine?.setInstrument(selectedInstrument as InstrumentName);
+      void auditionEngine?.enable(notes).then(() => notes.forEach((midi) => auditionEngine?.play({ midi, velocity: 0.68, durationSeconds: 1.2 }))).catch((error) => { host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = errorMessage(error); });
+    };
 
     const selectInstrument = async (name: string): Promise<void> => {
       selectedInstrument = name;
@@ -318,6 +343,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       if (name === "guitar") guitar = next as HandedVisualizer;
       if (name === "accordion") accordion = next as FollowVisualizer;
       visualizer.mount();
+      updateHarmonyAtCurrentPosition();
       if (name === "piano" || name === "guitar") melodyScore.setInstrument(name);
       host.querySelector<HTMLElement>('[data-l="left-label"]')!.hidden = name !== "guitar";
       if (name === "accordion") host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = "Accordion audio unavailable.";
@@ -358,7 +384,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     host.querySelector<HTMLButtonElement>('[data-l="play"]')!.onclick = () => { void playbackCoordinator.play(transportId); };
     host.querySelector<HTMLButtonElement>('[data-l="pause"]')!.onclick = () => playbackCoordinator.pause(transportId);
     host.querySelector<HTMLButtonElement>('[data-l="stop"]')!.onclick = () => playbackCoordinator.stop(transportId);
-    seek.oninput = () => { playbackCoordinator.activate(transportId); scheduler?.seek(Number(seek.value)); audio?.reset(); };
+    seek.oninput = () => { playbackCoordinator.activate(transportId); guitar?.clear(); scheduler?.seek(Number(seek.value)); audio?.reset(); };
     host.querySelector<HTMLInputElement>('[data-l="tempo"]')!.oninput = (event) => { const input = event.currentTarget as HTMLInputElement; scheduler?.setTempo(Number(input.value)); host.querySelector<HTMLOutputElement>('[data-l="tempo-value"]')!.value = `${input.value}%`; };
     const dispatchLearningMarker = (note: NoteEvent | null): void => {
       if (!note || host.querySelector<HTMLButtonElement>('[data-l="marker"]')!.getAttribute("aria-pressed") !== "true") return;
@@ -574,7 +600,8 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       const prefix = `LEARNING MELODY\n`;
       host.querySelector<HTMLElement>('[data-l="notes"]')!.textContent = `${prefix}${copy.current}: ${displayActive.map((note) => noteLabel(note.midi)).join(" ") || "—"}${instrumentDetail} · ${copy.upcoming}: ${displayUpcoming.slice(0, 7).map((note) => noteLabel(note.midi)).join(" ") || "—"}`;
       const harmony = activeHarmonyAt(harmonies, frame.position);
-      host.querySelector<HTMLElement>('[data-l="harmony"]')!.textContent = harmony ? `${copy.currentChord}: ${harmony.label} · ${harmony.pitches.map(noteLabel).join(" ")} · ${harmony.inferred ? copy.harmonyInferred : copy.harmonySource}` : `${copy.currentChord}: —`;
+      showHarmony(harmony);
+      harmonyButton.title = harmony ? `${harmony.pitches.map(noteLabel).join(" ")} · ${harmony.inferred ? copy.harmonyInferred : copy.harmonySource}` : "";
       const pattern = audio?.getChordPatternStatus();
       const patternName = [...patternSelect.options].find((option) => option.value === pattern?.pattern)?.text ?? copy.block;
       host.querySelector<HTMLElement>('[data-l="pattern-status"]')!.textContent = `${copy.pattern}: ${patternName} · ${copy.rate}: ${pattern?.rate ?? chordRate} · ${copy.patternStep}: ${pattern?.step ?? "—"}`;
@@ -680,6 +707,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
         chordsToggle.checked = accompaniment;
         pressGroup("[data-accompaniment]", accompaniment ? "on" : "off", "accompaniment");
         updatePlaybackSelection();
+        updateHarmonyAtCurrentPosition();
       };
     });
     host.querySelectorAll<HTMLButtonElement>("[data-voices]").forEach((button) => {

@@ -2241,7 +2241,10 @@ img {
 .learning-fretboard { min-width: 0; overflow-x: auto; padding: 8px; background: #090a0a; }
 .learning-fretboard.left-handed .guitar-string,
 .learning-fretboard.left-handed .guitar-fret-header { direction: rtl; }
-.guitar-note-status { display: block; position: sticky; left: 0; margin-bottom: 6px; color: var(--acid); font-weight: 800; }
+.guitar-readout { display: flex; position: sticky; z-index: 4; left: 0; min-height: 1.6rem; gap: 1rem; margin-bottom: 6px; color: var(--acid); font-weight: 800; }
+.guitar-note-status,
+.guitar-chord-status { white-space: nowrap; }
+.learning-chord-audition { min-width: 12rem; min-height: 2.25rem; text-align: left; }
 .guitar-neck { min-width: 820px; overflow: hidden; border: 1px solid #4a3525; border-radius: 6px; background: linear-gradient(90deg, #4a2d19, #6d4427 42%, #392315); box-shadow: inset 0 0 22px rgb(0 0 0 / 50%); }
 .guitar-string { display: grid; grid-template-columns: 26px repeat(21, minmax(34px, 1fr)); position: relative; align-items: center; }
 .guitar-fret-header { display: grid; grid-template-columns: repeat(21, minmax(34px, 1fr)); margin-left: 26px; color: #d4c5af; font-size: .68rem; text-align: center; background: #101112; }
@@ -2263,6 +2266,7 @@ img {
 .guitar-string button::after { content: attr(data-note-label); display: grid; width: 25px; height: 25px; place-items: center; border: 2px solid transparent; border-radius: 50%; font-size: 8px; font-weight: 900; opacity: 0; }
 .guitar-string button.upcoming::after { border-color: #e3c260; color: #f5e2a6; opacity: .8; }
 .guitar-string button.active::after { border-color: var(--acid); background: var(--acid); color: #050505; box-shadow: 0 0 0 3px rgb(255 183 0 / 22%); opacity: 1; }
+.guitar-string button.chord-active::after { border-color: #c78cff; background: #6f3f91; color: #fff; box-shadow: 0 0 0 3px rgb(199 140 255 / 24%); opacity: 1; }
 .guitar-string button.manual-audition::after { border-color: #6cb7ff; background: #6cb7ff; color: #050505; opacity: 1; }
 .guitar-string button.source-authored::after { border-style: solid; }
 .guitar-string button.suggested::after { border-style: dashed; }

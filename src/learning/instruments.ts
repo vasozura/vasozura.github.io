@@ -7,7 +7,7 @@ export interface TimelineVisualizer {
   destroy(): void;
 }
 export interface AuditionCallbacks {
-  noteOn(midi: number): void;
+  noteOn(midi: number, instrument?: "piano" | "guitar"): void;
   noteOff(): void;
 }
 
@@ -19,6 +19,8 @@ export function guitarStringLayout(config: GuitarConfig = { tuning: [40, 45, 50,
 }
 
 export function guitarFretLabels(frets = 20): number[] { return Array.from({ length: frets + 1 }, (_, index) => index); }
+
+export function guitarMidiAt(openMidi: number, fret: number): number { return openMidi + fret; }
 
 export function guitarCandidates(note: NoteEvent, config: GuitarConfig = { tuning: [40, 45, 50, 55, 59, 64], frets: 20 }): FingeringCandidate[] {
   if (note.string && note.fret !== undefined) {
