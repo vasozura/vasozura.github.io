@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { describe, expect, it, vi } from "vitest";
-import { FULL_SCORE_PART_ID, attemptScorePartSwitch, chooseDefaultMusicXmlPart, filterMusicXmlToPart, parseMusicXmlParts, rememberScorePart, restoreScorePart, type PartSelectionStorage } from "./musicxml-parts";
+import { FULL_SCORE_PART_ID, attemptScorePartSwitch, chooseDefaultMusicXmlPart, filterMusicXmlToPart, parseMusicXmlParts, parseMusicXmlStaves, rememberScorePart, resolveStaffVisibility, restoreScorePart, staffVisibilityForPart, visibleStaffNumbers, type PartSelectionStorage } from "./musicxml-parts";
 
 const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <score-partwise version="4.0">
@@ -12,7 +12,7 @@ const xml = `<?xml version="1.0" encoding="UTF-8"?>
     <score-part id="P2"><part-name>Lead Vocal</part-name><part-abbreviation>Vox</part-abbreviation></score-part>
     <score-part id="P3"><part-name>Guitar</part-name></score-part>
   </part-list>
-  <part id="P1"><measure number="1" id="piano-m1"><attributes><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time></attributes><direction><sound tempo="96"/></direction><note id="piano-note"/></measure></part>
+  <part id="P1"><measure number="1" id="piano-m1"><attributes><staves>2</staves><clef number="1"><sign>G</sign><line>2</line></clef><clef number="2"><sign>F</sign><line>4</line></clef><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time></attributes><direction><sound tempo="96"/></direction><note id="piano-note"/></measure></part>
   <part id="P2"><measure number="1" id="vocal-m1"><attributes><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time></attributes><direction><sound tempo="96"/></direction><note id="vocal-note"/></measure></part>
   <part id="P3"><measure number="1" id="guitar-m1"><note id="guitar-note"/></measure></part>
 </score-partwise>`;
@@ -33,6 +33,31 @@ describe("MusicXML score-part selection", () => {
     expect(chooseDefaultMusicXmlPart(parts)).toBe("P2");
     expect(chooseDefaultMusicXmlPart(parts.filter((part) => part.id !== "P2"))).toBe("P1");
     expect(chooseDefaultMusicXmlPart([{ id: "B", name: "Bass", abbreviation: null }])).toBe("B");
+  });
+
+  it("classifies supported two-staff piano clefs without guessing", () => {
+    expect(parseMusicXmlStaves(xml, "P1")).toEqual([
+      { number: 1, clefSign: "G", clefLine: 2, label: "TREBLE" },
+      { number: 2, clefSign: "F", clefLine: 4, label: "BASS" },
+    ]);
+    expect(parseMusicXmlStaves(xml, "P2")).toEqual([{ number: 1, clefSign: null, clefLine: null, label: "STAFF 1" }]);
+  });
+
+  it("uses generic labels for unusual multi-staff parts and no controls for Full Score", () => {
+    const unusual = xml.replace("<part-name>Guitar</part-name>", "<part-name>Organ</part-name>").replace('<part id="P3"><measure number="1" id="guitar-m1">', '<part id="P3"><measure number="1" id="guitar-m1"><attributes><staves>3</staves><clef number="1"><sign>G</sign><line>2</line></clef><clef number="2"><sign>C</sign><line>3</line></clef><clef number="3"><sign>F</sign><line>4</line></clef></attributes>');
+    expect(parseMusicXmlStaves(unusual, "P3").map((staff) => staff.label)).toEqual(["STAFF 1", "STAFF 2", "STAFF 3"]);
+    expect(parseMusicXmlStaves(xml, FULL_SCORE_PART_ID)).toEqual([]);
+  });
+
+  it("preserves valid staff state and falls back deterministically", () => {
+    const staves = parseMusicXmlStaves(xml, "P1");
+    expect(resolveStaffVisibility(staves, "staff:2")).toBe("staff:2");
+    expect(resolveStaffVisibility(staves, "staff:9")).toBe("all");
+    expect(visibleStaffNumbers(staves, "staff:2")).toEqual([2]);
+    expect(visibleStaffNumbers(staves, "all")).toEqual([1, 2]);
+    const selections = new Map([["P1", "staff:2" as const], ["P2", "staff:9" as const]]);
+    expect(staffVisibilityForPart(selections, "P1", staves)).toBe("staff:2");
+    expect(staffVisibilityForPart(selections, "P2", parseMusicXmlStaves(xml, "P2"))).toBe("all");
   });
 
   it("filters score-part and part elements consistently while preserving score metadata", () => {

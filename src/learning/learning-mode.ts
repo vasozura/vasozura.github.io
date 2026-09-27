@@ -16,7 +16,7 @@ import { playbackCoordinator } from "../audio/playback-coordinator";
 import { resolveCanonicalScoreLocation, type ScorePositionRequest } from "../score/score-navigation";
 import { mountMidiLab } from "./midi-lab";
 import { hasExplicitStaffIdentity, type PlaybackMode, type StaffScope } from "./playback-selection";
-import { buildVoiceLanes, laneInScope, selectMelodyLane, type VoiceLane } from "./voice-lanes";
+import { buildActiveTrackOptions, buildVoiceLanes, laneInScope, resolveActiveTrack, selectMelodyLane, type ActiveTrackId, type VoiceLane } from "./voice-lanes";
 import { composeLearningMelody, replaceLearningSegmentSource, retainLearningSegmentRest, type LearningMelody } from "./learning-melody";
 import { activeHarmonyAt, buildHarmonicTimeline, type ExplicitHarmony } from "./harmony";
 import { SampleInstrumentEngine, type InstrumentName } from "../audio/sample-instrument";
@@ -88,7 +88,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     <div class="learning-workstation-controls">
       <div class="learning-workstation-row learning-workstation-row-primary">
         <fieldset class="learning-control-group learning-transport-compact"><legend>TRANSPORT</legend><button type="button" data-l="play">▶ ${copy.play}</button><button type="button" data-l="pause">Ⅱ ${copy.pause}</button><button type="button" data-l="stop">■ ${copy.stop}</button><label><span>${copy.tempo}</span><input data-l="tempo" type="range" min="50" max="150" value="100"><output data-l="tempo-value">100%</output></label><label class="learning-position"><span>${copy.position}</span><input data-l="seek" type="range" min="0" max="0" value="0" step="0.01"><output data-l="time-value">00:00 / 00:00</output></label><output data-l="position">${copy.measure} 1 · ${copy.beat} 1</output></fieldset>
-        <fieldset class="learning-control-group learning-segments" data-l="part-group"><legend>PART</legend><button type="button" data-part="melody" aria-pressed="true">MELODY</button>${allowed.has("piano") ? `<button type="button" data-part="piano" aria-pressed="false">PIANO</button>` : ""}${allowed.has("guitar") ? `<button type="button" data-part="guitar" aria-pressed="false">GUITAR</button>` : ""}</fieldset>
+        <fieldset class="learning-control-group learning-segments" data-l="part-group"><legend>ACTIVE TRACK</legend><button type="button" data-part="melody" aria-pressed="true">MELODY</button><button type="button" data-part="piano" aria-pressed="false">PIANO</button><button type="button" data-part="guitar" aria-pressed="false">GUITAR</button></fieldset>
         <fieldset class="learning-control-group learning-segments" data-l="play-group"><legend>PLAY</legend><button type="button" data-play="solo" aria-pressed="true">SOLO</button><button type="button" data-play="chords" aria-pressed="false">CHORDS</button></fieldset>
         <fieldset class="learning-control-group learning-segments" data-l="voices-group"><legend>VOICES</legend>${[1,2,3,4].map((voice) => `<button type="button" data-voices="${voice}" aria-pressed="${voice === 1}">${voice}</button>`).join("")}</fieldset>
       </div>
@@ -158,13 +158,15 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     const canonicalTimeline = manifest.timeline;
     const lanes = buildVoiceLanes(manifest);
     const melodyLane = selectMelodyLane(manifest, lanes);
-    let learningMelody = composeLearningMelody(canonicalTimeline, lanes, { primaryLane: melodyLane });
-    let selectedLaneIds = new Set<string>(melodyLane ? [melodyLane.id] : lanes[0] ? [lanes[0].id] : []);
+    const activeTrackOptions = buildActiveTrackOptions(manifest, lanes, melodyLane);
+    const initialActiveTrack = resolveActiveTrack("melody", activeTrackOptions).option;
+    let learningMelody = composeLearningMelody(canonicalTimeline, lanes, { primaryLane: initialActiveTrack?.lane ?? null });
+    let selectedLaneIds = new Set<string>(initialActiveTrack ? [initialActiveTrack.lane.id] : []);
     const explicitHarmonies = (() => { try { return JSON.parse(root.dataset.scoreHarmonies || "[]") as ExplicitHarmony[]; } catch { return []; } })();
     const canonicalHarmonies = buildHarmonicTimeline(canonicalTimeline, explicitHarmonies);
     let transformState: WorkstationTransform = { timing: "continuous", mode: "original", targetTonic: null, transpose: 0, sourceKey: parseSourceKey(root.dataset.musicalKey) };
     let timingMode: LearningTiming = "continuous";
-    let selectedPart: LearningPart = "melody";
+    let selectedPart: LearningPart = initialActiveTrack?.id ?? "melody";
     let studyVoices: StudyVoiceCount = 1;
     let accompaniment = false;
     let transformed = transformLearningTimeline(learningMelody.timeline, transformState);
@@ -319,8 +321,8 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       if (name === "piano" || name === "guitar") melodyScore.setInstrument(name);
       host.querySelector<HTMLElement>('[data-l="left-label"]')!.hidden = name !== "guitar";
       if (name === "accordion") host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = "Accordion audio unavailable.";
-      if (selectedPart === "melody" && (name === "piano" || name === "guitar")) melodySound.value = name;
-      host.querySelectorAll<HTMLButtonElement>("[data-sound]").forEach((button) => button.setAttribute("aria-pressed", String(selectedPart === "melody" && button.dataset.sound === name)));
+      if (name === "piano" || name === "guitar") melodySound.value = name;
+      host.querySelectorAll<HTMLButtonElement>("[data-sound]").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.sound === name)));
       if (scheduler?.snapshot().playing) {
         try { await audio?.enable(); } catch (error) { host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = errorMessage(error); }
       }
@@ -598,7 +600,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       playbackCoordinator.activate(transportId);
       scheduler = new CanonicalScheduler(arrangement);
       audio = new SchedulerAudioAdapter(scheduler);
-      selectedInstrument = selectedPart === "melody" ? melodySound.value : selectedPart;
+      selectedInstrument = melodySound.value;
       audio.setInstrument(selectedInstrument as InstrumentName);
       audio.setHarmonicTimeline(harmonies);
       audio.setChordPattern(chordPattern, chordRate);
@@ -654,11 +656,18 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       host.querySelectorAll<HTMLButtonElement>(selector).forEach((button) => button.setAttribute("aria-pressed", String(button.dataset[dataName] === value)));
     };
     host.querySelectorAll<HTMLButtonElement>("[data-part]").forEach((button) => {
+      const option = activeTrackOptions.find((entry) => entry.id === button.dataset.part);
+      button.hidden = !option;
+      button.setAttribute("aria-pressed", String(option?.id === selectedPart));
       button.onclick = () => {
-        selectedPart = button.dataset.part as LearningPart;
+        const resolution = resolveActiveTrack(button.dataset.part as ActiveTrackId, activeTrackOptions);
+        if (!resolution.option) return;
+        selectedPart = resolution.option.id;
+        selectedLaneIds = new Set([resolution.option.lane.id]);
+        voiceList.querySelectorAll<HTMLInputElement>("[data-lane]").forEach((input) => { input.checked = selectedLaneIds.has(input.value); });
         pressGroup("[data-part]", selectedPart, "part");
-        host.querySelector<HTMLElement>('[data-l="sound-control"]')!.hidden = selectedPart !== "melody";
-        void rebuildWorkstation();
+        host.querySelector<HTMLElement>('[data-l="melody-source"]')!.textContent = `active · ${resolution.option.lane.label}${resolution.usedFallback ? " · fallback" : ""}`;
+        void installLearningMelody(composeLearningMelody(canonicalTimeline, lanes, { primaryLane: resolution.option.lane }));
       };
     });
     host.querySelectorAll<HTMLButtonElement>("[data-play]").forEach((button) => {
@@ -684,7 +693,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       button.onclick = () => {
         melodySound.value = button.dataset.sound ?? "piano";
         pressGroup("[data-sound]", melodySound.value, "sound");
-        if (selectedPart === "melody") void selectInstrument(melodySound.value);
+        void selectInstrument(melodySound.value);
       };
     });
     host.querySelectorAll<HTMLButtonElement>("[data-timing]").forEach((button) => {

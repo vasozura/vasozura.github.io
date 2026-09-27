@@ -3,7 +3,7 @@ import { MidiPlayback } from "./midi-playback";
 import { PianoVisualizer } from "./instrument-visualizer";
 import { playbackCoordinator } from "../audio/playback-coordinator";
 import { clientToScorePoint, learningMarkerTarget, logicalPageState, nearestScorePosition, scoreClickRatio, type LearningMarkerRequest, type ScoreCoordinateTransform, type ScoreMeasureTarget, type ScorePositionRequest } from "./score-navigation";
-import { FULL_SCORE_PART_ID, attemptScorePartSwitch, chooseDefaultMusicXmlPart, filterMusicXmlToPart, parseMusicXmlParts, rememberScorePart, restoreScorePart } from "./musicxml-parts";
+import { FULL_SCORE_PART_ID, attemptScorePartSwitch, chooseDefaultMusicXmlPart, filterMusicXmlToPart, parseMusicXmlParts, parseMusicXmlStaves, rememberScorePart, restoreScorePart, staffVisibilityForPart, visibleStaffNumbers, type StaffVisibility } from "./musicxml-parts";
 import "./score-parts.css";
 
 interface GraphicalEntryLike {
@@ -108,6 +108,7 @@ export async function mountScoreViewer(
     const scoreParts = parseMusicXmlParts(canonicalText);
     const songId = root.dataset.songId || musicXmlUrl;
     let selectedPartId = (() => { try { return restoreScorePart(window.localStorage, songId, scoreParts); } catch { return chooseDefaultMusicXmlPart(scoreParts); } })();
+    const staffSelectionByPart = new Map<string, StaffVisibility>();
     const explicitPartResources = (() => { try { return JSON.parse(root.dataset.musicxmlPartResources || "{}") as Record<string, string>; } catch { return {}; } })();
     const sourceForPart = async (partId: string | null): Promise<{ source: Blob | string; dedicated: boolean }> => {
       if (!partId || partId === FULL_SCORE_PART_ID) return { source: canonicalSource, dedicated: false };
@@ -118,6 +119,21 @@ export async function mountScoreViewer(
     let activeSource = await sourceForPart(selectedPartId);
     const osmd = new OpenSheetMusicDisplay(surface, osmdViewerOptions);
     await osmd.load(activeSource.source);
+    const staffStateFor = (partId: string | null): { staves: ReturnType<typeof parseMusicXmlStaves>; selection: StaffVisibility } => {
+      const staves = partId ? parseMusicXmlStaves(canonicalText, partId) : [];
+      const selection = partId ? staffVisibilityForPart(staffSelectionByPart, partId, staves) : "all";
+      if (partId) staffSelectionByPart.set(partId, selection);
+      return { staves, selection };
+    };
+    const applyStaffVisibility = (partId: string | null): void => {
+      const { staves, selection } = staffStateFor(partId);
+      const visible = new Set(visibleStaffNumbers(staves, selection));
+      for (const instrument of osmd.Sheet.Instruments) {
+        instrument.Staves.forEach((staff, index) => { staff.Visible = !staves.length || visible.has(index + 1); });
+      }
+      osmd.updateGraphic();
+    };
+    applyStaffVisibility(selectedPartId);
     root.dataset.scorePartSource = activeSource.dedicated ? "dedicated" : selectedPartId === FULL_SCORE_PART_ID || !selectedPartId ? "full-score" : "filtered-full-score";
     let scoreTargets: ScoreMeasureTarget[] = [];
     let learningMarker: HTMLSpanElement | null = null;
@@ -178,7 +194,7 @@ export async function mountScoreViewer(
       canvas.scrollTo({ top: index * canvas.clientHeight, left: canvas.scrollLeft });
       showPage();
     };
-    controls.innerHTML = `<div class="score-part-picker" data-score-part-picker></div><div class="score-control-group"><button type="button" data-score-action="zoom-out" aria-label="${copy.zoomOut}">−</button><output data-zoom-label>100%</output><button type="button" data-score-action="zoom-in" aria-label="${copy.zoomIn}">+</button></div><div class="score-control-group"><label>${copy.layout} <select data-score-layout><option value="page">${copy.page}</option><option value="continuous">${copy.continuous}</option></select></label><button type="button" data-score-action="cursor" aria-pressed="true">${copy.cursor}</button></div><div class="score-control-group" data-score-pages><button type="button" data-score-action="prev-page" aria-label="${copy.previousPage}">← ${copy.page.toLowerCase()}</button><output data-page-label>1 / 1</output><button type="button" data-score-action="next-page" aria-label="${copy.nextPage}">${copy.page.toLowerCase()} →</button></div><div class="score-control-group"><button type="button" data-score-action="prev-measure" aria-label="${copy.previousMeasure}">← ${copy.measure.toLowerCase()}</button><output data-measure-label>${copy.measure} 1</output><button type="button" data-score-action="next-measure" aria-label="${copy.nextMeasure}">${copy.measure.toLowerCase()} →</button></div>`;
+    controls.innerHTML = `<div class="score-part-picker" data-score-part-picker></div><div class="score-staff-picker" data-score-staff-picker hidden></div><div class="score-control-group"><button type="button" data-score-action="zoom-out" aria-label="${copy.zoomOut}">−</button><output data-zoom-label>100%</output><button type="button" data-score-action="zoom-in" aria-label="${copy.zoomIn}">+</button></div><div class="score-control-group"><label>${copy.layout} <select data-score-layout><option value="page">${copy.page}</option><option value="continuous">${copy.continuous}</option></select></label><button type="button" data-score-action="cursor" aria-pressed="true">${copy.cursor}</button></div><div class="score-control-group" data-score-pages><button type="button" data-score-action="prev-page" aria-label="${copy.previousPage}">← ${copy.page.toLowerCase()}</button><output data-page-label>1 / 1</output><button type="button" data-score-action="next-page" aria-label="${copy.nextPage}">${copy.page.toLowerCase()} →</button></div><div class="score-control-group"><button type="button" data-score-action="prev-measure" aria-label="${copy.previousMeasure}">← ${copy.measure.toLowerCase()}</button><output data-measure-label>${copy.measure} 1</output><button type="button" data-score-action="next-measure" aria-label="${copy.nextMeasure}">${copy.measure.toLowerCase()} →</button></div>`;
     if (dedicatedLearningMarker) controls.querySelector<HTMLElement>('[data-score-action="cursor"]')!.hidden = true;
     controls.querySelector('[data-score-action="zoom-out"]')?.addEventListener("click", () => { zoom = Math.max(0.5, zoom - 0.1); osmd.Zoom = zoom; renderScore(); controls.querySelector<HTMLElement>("[data-zoom-label]")!.textContent = `${Math.round(zoom * 100)}%`; showPage(); });
     controls.querySelector('[data-score-action="zoom-in"]')?.addEventListener("click", () => { zoom = Math.min(1.8, zoom + 0.1); osmd.Zoom = zoom; renderScore(); controls.querySelector<HTMLElement>("[data-zoom-label]")!.textContent = `${Math.round(zoom * 100)}%`; showPage(); });
@@ -199,6 +215,28 @@ export async function mountScoreViewer(
       for (let step = 0; step <= learningCursorStep; step += 1) osmd.cursor.next();
       osmd.cursor.show();
     };
+    const staffPicker = controls.querySelector<HTMLElement>("[data-score-staff-picker]")!;
+    const refreshStaffPicker = (): void => {
+      staffPicker.replaceChildren();
+      const { staves, selection } = staffStateFor(selectedPartId);
+      staffPicker.hidden = staves.length < 2;
+      if (staves.length < 2) return;
+      const label = document.createElement("span"); label.textContent = "STAFF";
+      for (const option of [...staves.map((staff) => ({ value: `staff:${staff.number}` as StaffVisibility, label: staff.label })), { value: "all" as const, label: staves.length === 2 ? "BOTH" : "ALL" }]) {
+        const button = document.createElement("button"); button.type = "button"; button.textContent = option.label; button.dataset.staffVisibility = option.value; button.setAttribute("aria-pressed", String(selection === option.value));
+        button.addEventListener("click", () => {
+          if (!selectedPartId) return;
+          staffSelectionByPart.set(selectedPartId, option.value);
+          staffPicker.querySelectorAll<HTMLButtonElement>("[data-staff-visibility]").forEach((entry) => entry.setAttribute("aria-pressed", String(entry === button)));
+          learningMarker?.classList.remove("is-visible");
+          applyStaffVisibility(selectedPartId);
+          renderScore();
+          restoreScoreCursor();
+        });
+        staffPicker.append(button);
+      }
+      staffPicker.prepend(label);
+    };
     const partPicker = controls.querySelector<HTMLElement>("[data-score-part-picker]")!;
     if (scoreParts.length) {
       const label = document.createElement("label"); label.textContent = `${copy.part} `;
@@ -214,16 +252,17 @@ export async function mountScoreViewer(
         select.disabled = true;
         const result = await attemptScorePartSwitch(previousPartId, nextPartId, async (partId) => {
           const nextSource = await sourceForPart(partId);
-          try { await osmd.load(nextSource.source); activeSource = nextSource; renderScore(); restoreScoreCursor(); }
-          catch (error) { await osmd.load(previousSource.source); activeSource = previousSource; renderScore(); restoreScoreCursor(); throw error; }
+          try { await osmd.load(nextSource.source); activeSource = nextSource; applyStaffVisibility(partId); renderScore(); restoreScoreCursor(); }
+          catch (error) { await osmd.load(previousSource.source); activeSource = previousSource; applyStaffVisibility(previousPartId); renderScore(); restoreScoreCursor(); throw error; }
         });
-        selectedPartId = result.selectedPartId; select.value = selectedPartId; select.disabled = false; updateCurrentPart();
+        selectedPartId = result.selectedPartId; select.value = selectedPartId; select.disabled = false; updateCurrentPart(); refreshStaffPicker();
         if (result.error) { status.textContent = `${copy.partFailed}: ${result.error}`; return; }
         root.dataset.scorePartSource = activeSource.dedicated ? "dedicated" : selectedPartId === FULL_SCORE_PART_ID ? "full-score" : "filtered-full-score";
         try { rememberScorePart(window.localStorage, songId, selectedPartId); } catch { /* Selection remains active for this session. */ }
         status.textContent = `${copy.loaded} ${copy.currentPart}: ${partName(selectedPartId)}.`;
       });
     } else partPicker.hidden = true;
+    refreshStaffPicker();
     // Build the selector before rendering so a malformed individual part can
     // report its own error without removing the available part choices.
     renderScore();
@@ -257,7 +296,7 @@ export async function mountScoreViewer(
       if (!marker) return;
       const request = (event as CustomEvent<LearningMarkerRequest>).detail;
       const resolved = learningMarkerTarget(request, scoreTargets);
-      if (!resolved) return;
+      if (!resolved) { marker.classList.remove("is-visible"); return; }
       const client = osmdToClient({ x: resolved.entry.x, y: resolved.entry.y });
       const surfaceRect = surface.getBoundingClientRect();
       marker.style.left = `${client.x - surfaceRect.left}px`;

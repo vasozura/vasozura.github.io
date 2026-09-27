@@ -58,8 +58,10 @@ export function nearestScorePosition(x: number, y: number, targets: ScoreMeasure
 }
 
 export function learningMarkerTarget(request: LearningMarkerRequest, targets: ScoreMeasureTarget[]): LearningMarkerTarget | null {
-  const measures = targets.filter((target) => target.measureIndex === request.measureIndex && (request.staffIndex == null || target.staffIndex === request.staffIndex));
-  const candidates = (measures.length ? measures : targets.filter((target) => target.measureIndex === request.measureIndex))
+  const measureTargets = targets.filter((target) => target.measureIndex === request.measureIndex);
+  const measures = request.staffIndex == null ? measureTargets : measureTargets.filter((target) => target.staffIndex === request.staffIndex);
+  if (request.staffIndex != null && !measures.length) return null;
+  const candidates = measures
     .flatMap((measure) => measure.entries.map((entry, entryIndex) => ({ measure, entry, entryIndex })));
   return candidates.sort((a, b) => {
     const aTime = Math.abs(a.entry.relativePosition - request.relativePosition);

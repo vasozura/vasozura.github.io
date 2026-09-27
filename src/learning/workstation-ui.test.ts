@@ -14,6 +14,9 @@ describe("Learning Workstation V2 UI contract", () => {
     expect(source).toContain('data-timing="continuous" aria-pressed="true"');
     expect(css).toContain('.learning-mode button[aria-pressed="true"]');
     expect(css).toContain("background: var(--acid)");
+    expect(source).toContain("<legend>ACTIVE TRACK</legend>");
+    expect(source).toContain("selectedInstrument = melodySound.value");
+    expect(source).not.toContain('selectedInstrument = selectedPart === "melody"');
   });
 
   it("shows chord styles only in Chords mode and exposes every requested pattern", async () => {

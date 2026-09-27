@@ -13,6 +13,10 @@ export interface VoiceLane {
   notes: NoteEvent[];
 }
 
+export type ActiveTrackId = "melody" | "piano" | "guitar";
+export interface ActiveTrackOption { id: ActiveTrackId; label: string; lane: VoiceLane; }
+export interface ActiveTrackResolution { option: ActiveTrackOption | null; usedFallback: boolean; }
+
 const laneKey = (partId: string, staff: number | null, voice: string | null): string =>
   `${partId}::s${staff ?? "?"}::v${voice ?? "?"}`;
 
@@ -95,6 +99,31 @@ export function selectMelodyLane(manifest: ScoreManifest, lanes = buildVoiceLane
   if (!winner) return null;
   const sourceNamed = named.includes(winner);
   return sourceNamed ? { ...winner, label: winner.partName, inferred: false } : { ...winner, label: "Melody · inferred", inferred: true };
+}
+
+function namedInstrumentLane(manifest: ScoreManifest, lanes: readonly VoiceLane[], pattern: RegExp): VoiceLane | null {
+  const matches = lanes.filter((lane) => {
+    const part = manifest.parts.find((entry) => entry.id === lane.partId);
+    return pattern.test(`${lane.partName} ${part?.instrument ?? ""}`);
+  });
+  return [...matches].sort((left, right) => right.notes.length - left.notes.length || left.id.localeCompare(right.id))[0] ?? null;
+}
+
+export function buildActiveTrackOptions(manifest: ScoreManifest, lanes = buildVoiceLanes(manifest), melodyLane = selectMelodyLane(manifest, lanes)): ActiveTrackOption[] {
+  const options: ActiveTrackOption[] = [];
+  if (melodyLane) options.push({ id: "melody", label: /vocal|voice|singer/iu.test(melodyLane.partName) ? "VOCAL / MELODY" : "MELODY", lane: melodyLane });
+  const piano = namedInstrumentLane(manifest, lanes, /\b(piano|pno|keyboard)\b/iu);
+  const guitar = namedInstrumentLane(manifest, lanes, /\b(guitar|gtr)\b/iu);
+  if (piano && piano.id !== melodyLane?.id) options.push({ id: "piano", label: "PIANO", lane: piano });
+  if (guitar && guitar.id !== melodyLane?.id) options.push({ id: "guitar", label: "GUITAR", lane: guitar });
+  return options;
+}
+
+export function resolveActiveTrack(requested: ActiveTrackId | null | undefined, options: readonly ActiveTrackOption[]): ActiveTrackResolution {
+  const requestedOption = options.find((option) => option.id === requested);
+  if (requestedOption) return { option: requestedOption, usedFallback: false };
+  const fallback = (["melody", "piano", "guitar"] as const).map((id) => options.find((option) => option.id === id)).find(Boolean) ?? options[0] ?? null;
+  return { option: fallback, usedFallback: requested != null && fallback?.id !== requested };
 }
 
 export function laneInScope(lane: VoiceLane, scope: LaneScope): boolean {

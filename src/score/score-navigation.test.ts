@@ -53,4 +53,11 @@ describe("score navigation", () => {
     expect(target?.entryIndex).toBe(1);
     expect(target?.entry.midi).toBe(67);
   });
+
+  it("does not move a hidden-staff marker onto a visible staff", () => {
+    const visibleTargets = [{ measureIndex: 3, staffIndex: 0, left: 0, right: 100, top: 0, bottom: 40, entries: [
+      { x: 20, y: 20, left: 16, right: 24, top: 14, bottom: 26, relativePosition: 0.25, midi: 60 },
+    ] }];
+    expect(learningMarkerTarget({ noteId: "bass", measureIndex: 3, staffIndex: 1, relativePosition: 0.25, midi: 43 }, visibleTargets)).toBeNull();
+  });
 });
