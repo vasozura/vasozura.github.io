@@ -51,8 +51,8 @@ describe("Learning instrument interaction", () => {
   });
 
   it("retains stable mobile panel markup and deterministic cell metadata", async () => {
-    const [mode, guitar, css] = await Promise.all([read("./learning-mode.ts"), read("./guitar-visualizer.ts"), read("../styles.css")]);
-    expect(mode).toContain('class="learning-visualizer-panel"');
+    const [selection, guitar, css] = await Promise.all([read("./learning-selection.ts"), read("./guitar-visualizer.ts"), read("../styles.css")]);
+    expect(selection).toContain('class="learning-visualizer-panel"');
     for (const attribute of ["data-string", "data-fret", "data-midi-note"]) expect(guitar).toContain(attribute);
     expect(css).toContain(".learning-fretboard { min-width: 0; overflow-x: auto;");
     expect(css).toContain(".learning-chord-audition { min-width:");
