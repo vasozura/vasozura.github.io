@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import fixture from "./fixtures/complex-score.json";
-import { chooseContinuousGuitarPosition, guitarCandidates, guitarFretLabels, guitarStringLayout, isVerifiedAccordionConfig } from "./instruments";
+import { chooseContinuousGuitarPosition, guitarCandidates, guitarFretLabels, guitarStringLayout, isVerifiedAccordionConfig, pianoAccordionRightHandKeys, PIANO_ACCORDION_MAX_MIDI, PIANO_ACCORDION_MIN_MIDI, standardPianoAccordionConfig } from "./instruments";
 import type { ScoreManifest } from "./contracts";
 
 const manifest = fixture as ScoreManifest;
@@ -62,5 +62,17 @@ describe("instrument adapters", () => {
     expect(isVerifiedAccordionConfig({ ...base, buttons: [button, button] })).toBe(false);
     expect(isVerifiedAccordionConfig({ ...base, buttons: [{ ...button, row: 4 }] })).toBe(false);
     expect(isVerifiedAccordionConfig({ ...base, buttons: [{ ...button, provenance: "inferred", confidence: .5, bellows: "push" }] })).toBe(false);
+  });
+
+  it("maps the verified 41-key piano-accordion right hand exactly from F3 through A6", () => {
+    const keys = pianoAccordionRightHandKeys();
+    expect([PIANO_ACCORDION_MIN_MIDI, PIANO_ACCORDION_MAX_MIDI]).toEqual([53, 93]);
+    expect(keys).toHaveLength(41);
+    expect(keys[0]).toMatchObject({ id: "rh-53", midi: [53], label: "F 3", side: "right", row: 1, column: 1, provenance: "deterministic" });
+    expect(keys.at(-1)).toMatchObject({ id: "rh-93", midi: [93], label: "A 6", column: 41 });
+    expect(keys.map((key) => key.midi[0])).toEqual(Array.from({ length: 41 }, (_, index) => 53 + index));
+    expect(isVerifiedAccordionConfig(standardPianoAccordionConfig)).toBe(true);
+    expect(pianoAccordionRightHandKeys(52, 93)).toEqual([]);
+    expect(pianoAccordionRightHandKeys(53, 94)).toEqual([]);
   });
 });

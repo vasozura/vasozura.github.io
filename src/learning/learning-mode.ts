@@ -95,7 +95,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       </div>
       <div class="learning-workstation-row learning-workstation-row-secondary">
         <fieldset class="learning-control-group learning-segments" data-l="timing"><legend>MELODY TIMING</legend><button type="button" data-timing="continuous" aria-pressed="true">CONTINUOUS</button><button type="button" data-timing="original" aria-pressed="false">ORIGINAL</button></fieldset>
-        <fieldset class="learning-control-group learning-segments" data-l="sound-control"><legend>MELODY SOUND</legend>${allowed.has("piano") ? `<button type="button" data-sound="piano" aria-pressed="true">PIANO</button>` : ""}${allowed.has("guitar") ? `<button type="button" data-sound="guitar" aria-pressed="false">GUITAR</button>` : ""}<select data-l="melody-sound" hidden>${allowed.has("piano") ? `<option value="piano">${copy.piano}</option>` : ""}${allowed.has("guitar") ? `<option value="guitar">${copy.guitar}</option>` : ""}</select></fieldset>
+        <fieldset class="learning-control-group learning-segments" data-l="sound-control"><legend>MELODY SOUND</legend>${allowed.has("piano") ? `<button type="button" data-sound="piano" aria-pressed="true">PIANO</button>` : ""}${allowed.has("guitar") ? `<button type="button" data-sound="guitar" aria-pressed="false">GUITAR</button>` : ""}<button type="button" data-sound="accordion" aria-pressed="false">ACCORDION</button><select data-l="melody-sound" hidden>${allowed.has("piano") ? `<option value="piano">${copy.piano}</option>` : ""}${allowed.has("guitar") ? `<option value="guitar">${copy.guitar}</option>` : ""}<option value="accordion">${copy.accordion}</option></select></fieldset>
         <fieldset class="learning-control-group learning-chord-controls" data-l="chord-controls" hidden><legend>CHORDS</legend><label>${copy.pattern}<select data-l="chord-pattern"><option value="block">${copy.block}</option><option value="bass-12321">Bass · 1 2 3 2 1</option><option value="bass-123-bass-123">Bass · 1 2 3 · Bass · 1 2 3</option><option value="bass-1323">Bass · 1 3 2 3</option><option value="bass-321">Bass · 3 2 1</option><option value="up">Up</option><option value="down">Down</option><option value="up-down">Up / Down</option><option value="alberti">Alberti</option></select></label><label>${copy.rate}<select data-l="chord-rate"><option value="1/4">1/4</option><option value="1/8" selected>1/8</option><option value="1/16">1/16</option></select></label><div class="learning-segments"><span>Accompaniment</span><button type="button" data-accompaniment="off" aria-pressed="false">OFF</button><button type="button" data-accompaniment="on" aria-pressed="true">ON</button></div></fieldset>
         <fieldset class="learning-control-group learning-pitch"><legend>PITCH</legend><div><span>Octave</span><button type="button" data-transpose="-12">−12</button><button type="button" data-transpose="12">+12</button></div><div><span>Semitone</span><button type="button" data-transpose="-1">−1</button><button type="button" data-transpose="1">+1</button></div><output data-l="transpose-value">0 st</output><button type="button" data-transpose-reset>Reset</button></fieldset>
         <fieldset class="learning-control-group"><legend>KEY</legend><select data-l="target-key"><option value="">Original</option>${["C","C#/Db","D","D#/Eb","E","F","F#/Gb","G","G#/Ab","A","A#/Bb","B"].map((name,index)=>`<option value="${index}">${name}</option>`).join("")}</select><output data-l="key-status"></output></fieldset>
@@ -314,7 +314,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     let accordion: FollowVisualizer | null = null;
     const visualizerUnavailable = host.querySelector<HTMLElement>('[data-l="visualizer-unavailable"]')!;
     updateVisualizerAvailability = (): void => {
-      const state = visualizerAvailability(selectedInstrument as InstrumentName, currentTrackOption(), selectedStaffScope, Boolean(accordionConfig));
+      const state = visualizerAvailability(selectedInstrument as InstrumentName, currentTrackOption(), selectedStaffScope, accordionConfig);
       applyVisualizerAvailability(visualRoot, visualizerUnavailable, state);
     };
     let practicing = false;
@@ -364,7 +364,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
         next = new GuitarVisualizer(visualRoot, undefined, audition);
       } else {
         const { AccordionVisualizer } = await import("./accordion-visualizer");
-        next = new AccordionVisualizer(visualRoot, name === "accordion" ? accordionConfig : null);
+        next = new AccordionVisualizer(visualRoot, name === "accordion" ? accordionConfig : null, audition);
       }
       if (selectedInstrument !== name) return;
       audio?.setInstrument(name as "piano" | "guitar" | "accordion");
@@ -379,7 +379,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       if (name === "piano" || name === "guitar") melodyScore.setInstrument(name);
       host.querySelector<HTMLElement>('[data-l="left-label"]')!.hidden = name !== "guitar";
       if (name === "accordion") host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = "Accordion audio unavailable.";
-      if (name === "piano" || name === "guitar") melodySound.value = name;
+      melodySound.value = name;
       host.querySelectorAll<HTMLButtonElement>("[data-sound]").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.sound === name)));
       if (scheduler?.snapshot().playing) {
         try { await audio?.enable(); } catch (error) { host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = errorMessage(error); }

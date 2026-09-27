@@ -35,8 +35,16 @@ describe("Learning selection state", () => {
 
   it("reports incompatible visualizers without mutating the requested instrument", () => {
     const high = option([note("high", 96, 1)]);
-    expect(visualizerAvailability("guitar", high, "treble", false)).toMatchObject({ available: false });
-    expect(visualizerAvailability("piano", high, "treble", false)).toEqual({ available: true, reason: "" });
-    expect(visualizerAvailability("accordion", high, "treble", false).reason).toContain("verified mapping");
+    expect(visualizerAvailability("guitar", high, "treble", null)).toMatchObject({ available: false });
+    expect(visualizerAvailability("piano", high, "treble", null)).toEqual({ available: true, reason: "" });
+    expect(visualizerAvailability("accordion", high, "treble", null).reason).toContain("outside the verified mapping");
+  });
+
+  it("supports verified Accordion right-hand notes without a Piano fallback", () => {
+    const right = option([note("f3", 53, 1), note("a6", 93, 1)]);
+    expect(visualizerAvailability("accordion", right, "treble", null)).toEqual({ available: true, reason: "" });
+    expect(visualizerAvailability("accordion", right, "bass", null).reason).toContain("left-hand bass");
+    expect(visualizerAvailability("accordion", option([note("right", 60, 1), note("left", 55, 2)]), "both", null).reason).toContain("left-hand bass");
+    expect(visualizerAvailability("accordion", option([note("e3", 52, 1)]), "treble", null)).toMatchObject({ available: false });
   });
 });

@@ -1,4 +1,5 @@
 import type { InstrumentName } from "../audio/sample-instrument";
+import { normalizedAccordionButtons, standardPianoAccordionConfig, type AccordionConfig } from "./instruments";
 import { noteMatchesStaffScope, type StaffScope } from "./playback-selection";
 import type { ActiveTrackOption } from "./voice-lanes";
 
@@ -41,12 +42,20 @@ export function resolveStaffScope(requested: StaffScope | null | undefined, supp
   return support.both ? "both" : support.treble ? "treble" : support.bass ? "bass" : "both";
 }
 
-export function visualizerAvailability(instrument: InstrumentName, option: ActiveTrackOption | null, scope: StaffScope, accordionConfigured: boolean): { available: boolean; reason: string } {
+export function visualizerAvailability(instrument: InstrumentName, option: ActiveTrackOption | null, scope: StaffScope, accordionConfig: AccordionConfig | null): { available: boolean; reason: string } {
   const notes = (option?.lane.notes ?? []).filter((note) => noteMatchesStaffScope(note, scope));
+  const accordionButtons = instrument === "accordion" ? normalizedAccordionButtons(accordionConfig ?? standardPianoAccordionConfig) : [];
+  if (instrument === "accordion" && scope === "bass" && !accordionButtons.some((button) => button.side === "left")) return { available: false, reason: "Accordion left-hand bass visualization is unsupported; choose Treble or a right-hand track." };
   if (!option || !notes.length) return { available: false, reason: "No notes are available for this track and staff selection." };
   if (instrument === "guitar" && notes.some((note) => note.midi < 40 || note.midi > 84)) return { available: false, reason: "Guitar visualization is unavailable for notes outside E2–C6." };
   if (instrument === "piano" && notes.some((note) => note.midi < 21 || note.midi > 108)) return { available: false, reason: "Piano visualization is unavailable for notes outside A0–C8." };
-  if (instrument === "accordion" && !accordionConfigured) return { available: false, reason: "Accordion visualization requires a verified mapping." };
+  if (instrument === "accordion") {
+    const right = new Set(accordionButtons.filter((button) => button.side === "right").flatMap((button) => button.midi));
+    const left = new Set(accordionButtons.filter((button) => button.side === "left").flatMap((button) => button.midi));
+    const needsLeft = scope === "bass" || (scope === "both" && notes.some((note) => noteMatchesStaffScope(note, "bass")));
+    if (needsLeft && !left.size) return { available: false, reason: "Accordion left-hand bass visualization is unsupported; choose Treble or a right-hand track." };
+    if (notes.some((note) => !(right.has(note.midi) || left.has(note.midi)))) return { available: false, reason: "Accordion visualization is unavailable for notes outside the verified mapping." };
+  }
   return { available: true, reason: "" };
 }
 

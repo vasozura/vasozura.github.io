@@ -2234,6 +2234,7 @@ img {
 .learning-key.active,
 .learning-fretboard .active,
 .learning-accordion .active { background: var(--acid); color: #050505; }
+.learning-accordion .manual-audition { outline: 3px solid var(--acid); outline-offset: 2px; }
 .learning-key.active.hand-left { background: #6cb7ff; }
 .learning-key.active.hand-right { background: var(--acid); }
 .learning-key.correct { background: #58bd7b; }

@@ -7,7 +7,7 @@ export interface TimelineVisualizer {
   destroy(): void;
 }
 export interface AuditionCallbacks {
-  noteOn(midi: number, instrument?: "piano" | "guitar"): void;
+  noteOn(midi: number, instrument?: "piano" | "guitar" | "accordion"): void;
   noteOff(): void;
 }
 
@@ -68,6 +68,31 @@ export interface AccordionConfig {
   buttons: AccordionButtonMapping[];
   verified: true;
 }
+
+/** Conventional 41-key piano-accordion right-hand keyboard: F3 through A6. */
+export const PIANO_ACCORDION_MIN_MIDI = 53;
+export const PIANO_ACCORDION_MAX_MIDI = 93;
+
+const accordionNoteName = (midi: number): string => `${["C", "C sharp", "D", "D sharp", "E", "F", "F sharp", "G", "G sharp", "A", "A sharp", "B"][midi % 12]} ${Math.floor(midi / 12) - 1}`;
+
+export function pianoAccordionRightHandKeys(min = PIANO_ACCORDION_MIN_MIDI, max = PIANO_ACCORDION_MAX_MIDI): AccordionButtonMapping[] {
+  if (!Number.isInteger(min) || !Number.isInteger(max) || min < PIANO_ACCORDION_MIN_MIDI || max > PIANO_ACCORDION_MAX_MIDI || min > max) return [];
+  return Array.from({ length: max - min + 1 }, (_, index) => {
+    const midi = min + index;
+    return { id: `rh-${midi}`, side: "right" as const, row: 1, column: index + 1, midi: [midi], label: accordionNoteName(midi), kind: "note" as const, provenance: "deterministic" as const, confidence: 1 };
+  });
+}
+
+export const standardPianoAccordionConfig: AccordionConfig = {
+  schema_version: "zura-accordion-mapping/v1",
+  layout_id: "piano-accordion-41-key-f3-a6",
+  system: "piano_accordion",
+  orientation: "horizontal",
+  row_direction: "left_to_right",
+  row_count: 1,
+  buttons: pianoAccordionRightHandKeys(),
+  verified: true,
+};
 
 interface LegacyAccordionConfig {
   system: "stradella" | "free-bass";

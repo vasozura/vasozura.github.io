@@ -28,8 +28,8 @@ describe("Learning instrument interaction", () => {
   });
 
   it("keeps manual audition independent and releases on every pointer termination", async () => {
-    const [piano, guitar] = await Promise.all([read("./piano-visualizer.ts"), read("./guitar-visualizer.ts")]);
-    for (const source of [piano, guitar]) {
+    const [piano, guitar, accordion] = await Promise.all([read("./piano-visualizer.ts"), read("./guitar-visualizer.ts"), read("./accordion-visualizer.ts")]);
+    for (const source of [piano, guitar, accordion]) {
       expect(source).toContain('addEventListener("pointerdown", start)');
       expect(source).toContain('addEventListener("pointerup", stop)');
       expect(source).toContain('addEventListener("pointercancel", stop)');
@@ -39,6 +39,12 @@ describe("Learning instrument interaction", () => {
     }
     expect(piano).toContain('this.audition?.noteOn(Number(key.dataset.note), "piano")');
     expect(guitar).toContain('this.audition?.noteOn(Number(fret.dataset.midiNote), "guitar")');
+    expect(accordion).toContain('this.audition?.noteOn(Number(key.dataset.midiNote), "accordion")');
+    expect(accordion).toContain('data-midi-note="${button.midi[0]}"');
+    expect(accordion).toContain('MIDI ${button.midi.join(", ")}');
+    expect(accordion).toContain('classList.toggle("active"');
+    expect(accordion).toContain('classList.toggle("upcoming"');
+    expect(accordion).not.toContain("seek(");
   });
 
   it("updates chord state only in CHORDS mode and clears it on stop", async () => {

@@ -93,6 +93,17 @@ describe("Learning Workstation V2 UI contract", () => {
     expect(css).toContain(".learning-key.manual-audition");
   });
 
+  it("keeps Accordion distinct, exposes its selector, and never silently substitutes Piano", async () => {
+    const [mode, accordion, selection] = await Promise.all([read("./learning-mode.ts"), read("./accordion-visualizer.ts"), read("./learning-selection.ts")]);
+    expect(mode).toContain('data-sound="accordion"');
+    expect(mode).toContain('new AccordionVisualizer(visualRoot, name === "accordion" ? accordionConfig : null, audition)');
+    expect(mode).toContain('textContent = "Accordion audio unavailable."');
+    expect(accordion).toContain("standardPianoAccordionConfig");
+    expect(accordion).toContain("Left-hand bass mapping is not available");
+    expect(selection).toContain('scope === "bass"');
+    expect(selection).not.toContain('instrument === "accordion" ? "piano"');
+  });
+
   it("keeps MIDI Lab source, track, melody, gap-fill and audition selections visible", async () => {
     const [source, css] = await Promise.all([read("./midi-lab.ts"), read("../styles.css")]);
     expect(source).toContain("ACTIVE SOURCE");
