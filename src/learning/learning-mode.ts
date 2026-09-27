@@ -187,12 +187,17 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     audio.setHarmonicTimeline(harmonies);
     audio.setChordPattern(chordPattern, chordRate);
     audio.setLearningLayers({ melody: true, chords: false }, arrangement.notes);
+    let selectedInstrument = "piano";
     const transportId = `learning-${songId}`;
     unregisterTransport = playbackCoordinator.register(transportId, {
       canPlay: () => Boolean(scheduler?.timeline.notes.length),
       isPlaying: () => scheduler?.snapshot().playing ?? false,
       play: async () => {
-        try { await audio?.enable(); scheduler?.play(); }
+        try {
+          if (selectedInstrument !== "accordion") await audio?.enable();
+          scheduler?.play();
+          if (selectedInstrument === "accordion") host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = "Accordion audio unavailable; visual playback active.";
+        }
         catch (error) { host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = errorMessage(error); }
       },
       pause: () => { scheduler?.pause(); audio?.reset(); },
@@ -297,7 +302,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     host.querySelector<HTMLElement>('[data-l="staff-evidence"]')!.hidden = hasExplicitStaffIdentity(manifest.timeline);
     const mapping = (() => { try { return JSON.parse(root.dataset.learningMapping || "{}"); } catch { return {}; } })() as Record<string, unknown>;
     const accordionConfig = isVerifiedAccordionConfig(mapping.accordion) ? mapping.accordion : null;
-    let selectedInstrument = melodySound.value || "piano";
+    selectedInstrument = melodySound.value || "piano";
     auditionEngine = new SampleInstrumentEngine();
     const audition = {
       noteOn: (midi: number, instrument?: "piano" | "guitar"): void => {
@@ -676,7 +681,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       const key = describeStudyKey(transformState);
       host.querySelector<HTMLOutputElement>('[data-l="transpose-value"]')!.value = `${key.semitones >= 0 ? "+" : ""}${key.semitones} st`;
       host.querySelector<HTMLOutputElement>('[data-l="key-status"]')!.value = `Original: ${key.source} · Study: ${key.study}`;
-      if (wasPlaying) { try { await audio.enable(); scheduler.play(); } catch (error) { host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = errorMessage(error); } }
+      if (wasPlaying) { try { if (selectedInstrument !== "accordion") await audio.enable(); scheduler.play(); } catch (error) { host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = errorMessage(error); } }
     };
     const segmentMap = host.querySelector<HTMLElement>('[data-l="segment-map"]')!;
     const renderSegmentMap = (): void => {

@@ -40,7 +40,7 @@ describe("Learning Workstation V2 UI contract", () => {
     expect(source).toContain("const canonicalLoop = loop ?");
     expect(source).toContain("scheduler.setTempo(snapshot.tempoPercent)");
     expect(source).toContain("if (canonicalLoop) scheduler.setLoop(");
-    expect(source).toContain("if (wasPlaying) { try { await audio.enable(); scheduler.play(); }");
+    expect(source).toContain('if (wasPlaying) { try { if (selectedInstrument !== "accordion") await audio.enable(); scheduler.play(); }');
     expect(source).toContain("playbackCoordinator.activate(transportId);");
     expect(source.match(/unregisterTransport = playbackCoordinator\.register/g)).toHaveLength(1);
     expect(source.match(/unregisterTransport\(\)/g)).toHaveLength(1);
@@ -98,6 +98,8 @@ describe("Learning Workstation V2 UI contract", () => {
     expect(mode).toContain('data-sound="accordion"');
     expect(mode).toContain('new AccordionVisualizer(visualRoot, name === "accordion" ? accordionConfig : null, audition)');
     expect(mode).toContain('textContent = "Accordion audio unavailable."');
+    expect(mode).toContain('if (selectedInstrument !== "accordion") await audio?.enable()');
+    expect(mode).toContain('Accordion audio unavailable; visual playback active.');
     expect(accordion).toContain("standardPianoAccordionConfig");
     expect(accordion).toContain("Left-hand bass mapping is not available");
     expect(selection).toContain('scope === "bass"');
