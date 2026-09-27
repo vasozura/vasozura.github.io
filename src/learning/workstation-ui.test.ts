@@ -5,16 +5,19 @@ const read = (path: string) => readFile(new URL(path, import.meta.url), "utf8");
 
 describe("Learning Workstation V2 UI contract", () => {
   it("uses obvious persistent segmented state for part, play, sound, timing, voices and mode", async () => {
-    const [source, css] = await Promise.all([read("./learning-mode.ts"), read("../styles.css")]);
-    for (const selector of ["data-part", "data-play", "data-sound", "data-timing", "data-voices", "data-mode"]) {
-      expect(source).toContain(selector);
+    const [source, selection, css] = await Promise.all([read("./learning-mode.ts"), read("./learning-selection.ts"), read("../styles.css")]);
+    for (const selector of ["data-l=\"active-track\"", "data-staff-scope", "data-play", "data-sound", "data-timing", "data-voices", "data-mode"]) {
+      expect(source + selection).toContain(selector);
     }
-    expect(source).toContain('data-part="melody" aria-pressed="true"');
+    expect(selection).toContain('<select data-l="active-track" aria-label="Active track"></select>');
+    expect(selection).toContain('data-staff-scope="treble"');
+    expect(selection).toContain('data-staff-scope="bass"');
+    expect(selection).toContain('data-staff-scope="both"');
     expect(source).toContain('data-play="solo" aria-pressed="true"');
     expect(source).toContain('data-timing="continuous" aria-pressed="true"');
     expect(css).toContain('.learning-mode button[aria-pressed="true"]');
     expect(css).toContain("background: var(--acid)");
-    expect(source).toContain("<legend>ACTIVE TRACK</legend>");
+    expect(selection).toContain("<legend>ACTIVE TRACK</legend>");
     expect(source).toContain("selectedInstrument = melodySound.value");
     expect(source).not.toContain('selectedInstrument = selectedPart === "melody"');
   });
@@ -26,6 +29,25 @@ describe("Learning Workstation V2 UI contract", () => {
       expect(source).toContain(`value="${pattern}"`);
     }
     expect(source).toContain('chordControls.hidden = playbackMode.value !== "chords"');
+  });
+
+  it("persists real active tracks and staff scope while preserving scheduler state", async () => {
+    const source = await read("./learning-mode.ts");
+    expect(source).toContain("renderActiveTrackOptions(activeTrackSelect, activeTrackOptions, selectedTrackId)");
+    expect(source).toContain("restoreLearningSelection(window.localStorage, songId)");
+    expect(source).toContain("rememberLearningSelection(window.localStorage, songId");
+    expect(source).toContain("const canonicalPosition = transformed.studyToOriginal(snapshot.position)");
+    expect(source).toContain("const canonicalLoop = loop ?");
+    expect(source).toContain("scheduler.setTempo(snapshot.tempoPercent)");
+    expect(source).toContain("if (canonicalLoop) scheduler.setLoop(");
+    expect(source).toContain("if (wasPlaying) { try { await audio.enable(); scheduler.play(); }");
+  });
+
+  it("shows incompatible visualizers without changing the selected instrument", async () => {
+    const source = await read("./learning-mode.ts");
+    expect(source).toContain("visualizerAvailability(selectedInstrument as InstrumentName");
+    expect(source).toContain("applyVisualizerAvailability(visualRoot, visualizerUnavailable, state)");
+    expect(source).not.toContain('selectedInstrument = state.available ? selectedInstrument : "piano"');
   });
 
   it("exposes voices 1-4, semitone/octave, target-key, reset and deterministic mode transforms", async () => {

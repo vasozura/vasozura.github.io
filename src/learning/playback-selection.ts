@@ -6,15 +6,20 @@ export type StaffScope = "both" | "treble" | "bass";
 export interface PlaybackSelection { mode: PlaybackMode; voices: number; scope: StaffScope; }
 export interface LanePlaybackSelection extends PlaybackSelection { selectedLaneIds?: ReadonlySet<string>; }
 
-function inScope(note: NoteEvent, scope: StaffScope): boolean {
+function explicitScope(note: NoteEvent): "treble" | "bass" | null {
+  if (note.staff != null) return note.staff === 1 ? "treble" : "bass";
+  if (note.hand === "right") return "treble";
+  if (note.hand === "left") return "bass";
+  return null;
+}
+
+export function noteMatchesStaffScope(note: NoteEvent, scope: StaffScope): boolean {
   if (scope === "both") return true;
-  if (note.staff != null) return scope === "treble" ? note.staff === 1 : note.staff > 1;
-  if (note.hand !== "unknown") return scope === "treble" ? note.hand === "right" : note.hand === "left";
-  return scope === "treble" ? note.midi >= 60 : note.midi < 60;
+  return explicitScope(note) === scope || (explicitScope(note) === null && (scope === "treble" ? note.midi >= 60 : note.midi < 60));
 }
 
 export function selectPlaybackNotes(notes: NoteEvent[], selection: PlaybackSelection): NoteEvent[] {
-  const scoped = notes.filter((note) => inScope(note, selection.scope));
+  const scoped = notes.filter((note) => noteMatchesStaffScope(note, selection.scope));
   // Chords mode uses the derived harmonic timeline, never raw score polyphony.
   if (selection.mode === "chords") return [];
   const voices = Math.max(1, Math.floor(selection.voices));

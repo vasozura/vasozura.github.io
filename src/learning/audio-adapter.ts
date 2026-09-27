@@ -1,7 +1,7 @@
 import type { NoteEvent } from "./contracts";
 import type { CanonicalScheduler, SchedulerFrame } from "./scheduler";
 import { SampleInstrumentEngine, type InstrumentName, type InstrumentPlayback } from "../audio/sample-instrument";
-import { selectPlaybackNotes, type PlaybackSelection } from "./playback-selection";
+import { noteMatchesStaffScope, selectPlaybackNotes, type PlaybackSelection } from "./playback-selection";
 import { activeHarmonyAt, type HarmonicEvent } from "./harmony";
 import { selectLaneNotes, type VoiceLane } from "./voice-lanes";
 import { resolveChordPatternFrame, type ChordPatternName, type PatternInstrument, type PatternRate } from "./chord-patterns";
@@ -60,7 +60,7 @@ export class SchedulerAudioAdapter {
   getChordPatternStatus(): ChordPatternStatus { return { ...this.patternStatus }; }
   selectNotes(notes: NoteEvent[]): NoteEvent[] {
     if (this.selection.mode === "chords") return this.selected;
-    if (this.lanes.length) return selectLaneNotes(notes, this.lanes, this.selectedLaneIds);
+    if (this.lanes.length) return selectLaneNotes(notes.filter((note) => noteMatchesStaffScope(note, this.selection.scope)), this.lanes, this.selectedLaneIds);
     return selectPlaybackNotes(notes, this.selection);
   }
   reset(): void { this.played.clear(); this.lastBeat = -1; this.lastPosition = 0; this.lastPatternBoundary = ""; this.lastHarmonyId = ""; this.instrument.releaseAll(); }
@@ -75,8 +75,9 @@ export class SchedulerAudioAdapter {
       this.played.clear();
       this.instrument.releaseAll();
     }
+    const learningCandidates = frame.active.filter((note) => this.learningMelodyIds.has(note.id) && noteMatchesStaffScope(note, this.selection.scope));
     const melody = this.learningMelodyIds.size
-      ? frame.active.filter((note) => this.learningMelodyIds.has(note.id))
+      ? (this.lanes.length ? selectLaneNotes(learningCandidates, this.lanes, this.selectedLaneIds) : learningCandidates)
       : this.selectNotes(frame.active);
     const chords = this.layers.chords ? this.chordNotes(frame) : [];
     this.selected = [...(this.layers.melody ? melody : []), ...chords];

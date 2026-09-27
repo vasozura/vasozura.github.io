@@ -6,6 +6,7 @@ import { CanonicalScheduler } from "./scheduler";
 import type { ScoreManifest } from "./contracts";
 import type { NoteEvent } from "./contracts";
 import { buildHarmonicTimeline } from "./harmony";
+import type { VoiceLane } from "./voice-lanes";
 
 function instrument(): InstrumentPlayback {
   return {
@@ -48,6 +49,21 @@ describe("learning audio adapter", () => {
     adapter.setSelection({ mode: "solo", voices: 1, scope: "treble" });
     expect(adapter.selectNotes(notes).map((note) => note.id)).toEqual(["high"]);
     expect(audio.releaseAll).toHaveBeenCalled();
+    adapter.destroy(); scheduler.destroy();
+  });
+
+  it("applies staff scope to the selected active lane without moving transport", () => {
+    const scheduler = new CanonicalScheduler((fixture as ScoreManifest).timeline);
+    const adapter = new SchedulerAudioAdapter(scheduler, instrument());
+    const notes = [
+      { id: "treble", midi: 52, staff: 1, hand: "unknown" },
+      { id: "bass", midi: 76, staff: 2, hand: "unknown" },
+    ] as NoteEvent[];
+    const lane = { id: "lane", notes } as VoiceLane;
+    const before = scheduler.snapshot();
+    adapter.setSelection({ mode: "solo", voices: 1, scope: "bass" }, [lane], new Set([lane.id]));
+    expect(adapter.selectNotes(notes).map((note) => note.id)).toEqual(["bass"]);
+    expect(scheduler.snapshot()).toMatchObject({ position: before.position, playing: before.playing });
     adapter.destroy(); scheduler.destroy();
   });
 

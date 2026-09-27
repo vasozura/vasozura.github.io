@@ -65,6 +65,14 @@ describe("canonical scheduler", () => {
     expect(cancel).toHaveBeenCalledWith(1);
   });
 
+  it("exposes a defensive loop snapshot for state-preserving rebuilds", () => {
+    const scheduler = new CanonicalScheduler(manifest.timeline, () => now);
+    scheduler.setLoop(1, 2);
+    const range = scheduler.getLoopRange()!;
+    range[0] = 9;
+    expect(scheduler.getLoopRange()).toEqual([1, 2]);
+  });
+
   it("preserves playing or paused state when a score click seeks", () => {
     const scheduler = new CanonicalScheduler(manifest.timeline, () => now);
     scheduler.play();

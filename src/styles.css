@@ -2198,6 +2198,8 @@ img {
   border: 1px solid rgb(255 255 255 / 12%);
   background: #111315;
 }
+.learning-visualizer-unavailable { min-height: 4rem; margin: 0; padding: 1rem; border: 1px dashed #7c6748; color: #e3c260; }
+[data-l="staff-source"] { align-self: center; color: var(--muted); font-size: .65rem; letter-spacing: .08em; }
 
 .learning-piano {
   position: relative;

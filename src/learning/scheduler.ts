@@ -66,6 +66,8 @@ export class CanonicalScheduler extends EventTarget {
     this.emit();
   }
 
+  getLoopRange(): [number, number] | null { return this.loop ? [...this.loop] : null; }
+
   setMeasureLoop(a: number, b: number): void {
     const start = this.timeline.measures[a]?.startSeconds;
     const end = this.timeline.measures[b];

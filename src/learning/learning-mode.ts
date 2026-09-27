@@ -15,7 +15,7 @@ import { getLearningCopy } from "./copy";
 import { playbackCoordinator } from "../audio/playback-coordinator";
 import { resolveCanonicalScoreLocation, type ScorePositionRequest } from "../score/score-navigation";
 import { mountMidiLab } from "./midi-lab";
-import { hasExplicitStaffIdentity, type PlaybackMode, type StaffScope } from "./playback-selection";
+import { hasExplicitStaffIdentity, noteMatchesStaffScope, type PlaybackMode, type StaffScope } from "./playback-selection";
 import { buildActiveTrackOptions, buildVoiceLanes, laneInScope, resolveActiveTrack, selectMelodyLane, type ActiveTrackId, type VoiceLane } from "./voice-lanes";
 import { composeLearningMelody, replaceLearningSegmentSource, retainLearningSegmentRest, type LearningMelody } from "./learning-melody";
 import { activeHarmonyAt, buildHarmonicTimeline, type ExplicitHarmony, type HarmonicEvent } from "./harmony";
@@ -79,6 +79,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
   if (root.dataset.learningEnabled !== "true" || !songId || (!appConfig.hasLearningApi && !midiUrl)) return scoreCleanup;
 
   const allowed = new Set((root.dataset.learningInstruments || "piano").split(",").filter(Boolean));
+  const selectionHelpers = await import("./learning-selection");
   const host = document.createElement("section");
   host.className = "learning-mode";
   host.setAttribute("aria-labelledby", "learning-mode-title");
@@ -88,7 +89,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     <div class="learning-workstation-controls">
       <div class="learning-workstation-row learning-workstation-row-primary">
         <fieldset class="learning-control-group learning-transport-compact"><legend>TRANSPORT</legend><button type="button" data-l="play">▶ ${copy.play}</button><button type="button" data-l="pause">Ⅱ ${copy.pause}</button><button type="button" data-l="stop">■ ${copy.stop}</button><label><span>${copy.tempo}</span><input data-l="tempo" type="range" min="50" max="150" value="100"><output data-l="tempo-value">100%</output></label><label class="learning-position"><span>${copy.position}</span><input data-l="seek" type="range" min="0" max="0" value="0" step="0.01"><output data-l="time-value">00:00 / 00:00</output></label><output data-l="position">${copy.measure} 1 · ${copy.beat} 1</output></fieldset>
-        <fieldset class="learning-control-group learning-segments" data-l="part-group"><legend>ACTIVE TRACK</legend><button type="button" data-part="melody" aria-pressed="true">MELODY</button><button type="button" data-part="piano" aria-pressed="false">PIANO</button><button type="button" data-part="guitar" aria-pressed="false">GUITAR</button></fieldset>
+        ${selectionHelpers.learningSelectionControlsHtml}
         <fieldset class="learning-control-group learning-segments" data-l="play-group"><legend>PLAY</legend><button type="button" data-play="solo" aria-pressed="true">SOLO</button><button type="button" data-play="chords" aria-pressed="false">CHORDS</button></fieldset>
         <fieldset class="learning-control-group learning-segments" data-l="voices-group"><legend>VOICES</legend>${[1,2,3,4].map((voice) => `<button type="button" data-voices="${voice}" aria-pressed="${voice === 1}">${voice}</button>`).join("")}</fieldset>
       </div>
@@ -101,10 +102,10 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
         <fieldset class="learning-control-group learning-segments" data-l="mode-group"><legend>MODE</legend><button type="button" data-mode="original" aria-pressed="true">ORIGINAL</button><button type="button" data-mode="major" aria-pressed="false">MAJOR</button><button type="button" data-mode="minor" aria-pressed="false">MINOR</button></fieldset>
       </div>
     </div>
-    <input data-l="melody" type="checkbox" checked hidden><input data-l="chords-layer" type="checkbox" hidden><select data-l="playback-mode" hidden><option value="solo">${copy.solo}</option><option value="chords">${copy.chords}</option></select><select data-l="staff-scope" hidden><option value="both">${copy.both}</option></select>
+    <input data-l="melody" type="checkbox" checked hidden><input data-l="chords-layer" type="checkbox" hidden><select data-l="playback-mode" hidden><option value="solo">${copy.solo}</option><option value="chords">${copy.chords}</option></select><select data-l="staff-scope" hidden><option value="treble">${copy.treble}</option><option value="bass">${copy.bass}</option><option value="both">${copy.both}</option></select>
     <section class="learning-status-strip"><button type="button" data-l="harmony" class="learning-chord-audition" disabled aria-label="Audition active chord">ACTIVE CHORD: —</button><p data-l="pattern-status" aria-live="polite" hidden></p><p data-l="notes">${copy.current}: — · ${copy.upcoming}: —</p></section>
     <section class="learning-melody-score" aria-labelledby="melody-score-title"><div class="learning-melody-score-heading"><h4 id="melody-score-title">LEARNING MELODY</h4><div><button type="button" data-l="score-melody" aria-pressed="true">Melody score</button><button type="button" data-l="score-full" aria-pressed="false">Full score</button><button type="button" data-l="marker" aria-pressed="true">Marker</button></div></div><div data-l="melody-score"></div></section>
-    <div class="learning-visualizer-panel"><div data-l="visualizer" aria-live="off"></div></div>
+    ${selectionHelpers.learningVisualizerHtml}
     <details class="learning-workstation-advanced"><summary>Advanced controls</summary><div class="learning-advanced-grid"><button type="button" data-l="metronome" aria-pressed="false">${copy.metronome}</button><label><input type="checkbox" data-l="follow"> ${copy.follow}</label><label data-l="left-label" hidden><input type="checkbox" data-l="left"> ${copy.leftHanded}</label><label>${copy.loopFrom}<input data-l="loop-a" type="number" min="1" value="1"></label><label>${copy.to}<input data-l="loop-b" type="number" min="1" value="1"></label><button type="button" data-l="loop">${copy.setLoop}</button><button type="button" data-l="clear-loop">${copy.clearLoop}</button></div><div class="learning-mix-levels"><label>Melody <input data-l="melody-level" type="range" min="0" max="100" value="90"></label><label>Chords <input data-l="chords-level" type="range" min="0" max="100" value="62"></label><label>Metronome <input data-l="metronome-level" type="range" min="0" max="100" value="55"></label></div><details class="learning-voice-picker"><summary>Source voices</summary><div data-l="voice-list"></div><p data-l="staff-evidence" hidden>${copy.inferredStaff}</p></details><details class="learning-segment-map"><summary>Learning Melody segment map</summary><div data-l="segment-map"></div><p data-l="continuity"></p></details></details>
     <details class="learning-midi-advanced"><summary>Advanced / MIDI Lab</summary><div data-l="midi-lab"></div></details>
     <section class="learning-practice" aria-labelledby="practice-title">
@@ -156,18 +157,23 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       usingLocalAdapter = true;
     }
 
+    const { applyStaffControlState, applyVisualizerAvailability, rememberLearningSelection, renderActiveTrackOptions, resolveStaffScope, restoreLearningSelection, staffScopeSupport, visualizerAvailability } = selectionHelpers;
     const canonicalTimeline = manifest.timeline;
     const lanes = buildVoiceLanes(manifest);
     const melodyLane = selectMelodyLane(manifest, lanes);
     const activeTrackOptions = buildActiveTrackOptions(manifest, lanes, melodyLane);
-    const initialActiveTrack = resolveActiveTrack("melody", activeTrackOptions).option;
+    const rememberedSelection = (() => { try { return restoreLearningSelection(window.localStorage, songId); } catch { return null; } })();
+    const initialTrackResolution = resolveActiveTrack((rememberedSelection?.activeTrackId ?? "melody") as ActiveTrackId, activeTrackOptions);
+    const initialActiveTrack = initialTrackResolution.option;
+    let selectedStaffScope = resolveStaffScope(rememberedSelection?.staffScope, staffScopeSupport(initialActiveTrack));
     let learningMelody = composeLearningMelody(canonicalTimeline, lanes, { primaryLane: initialActiveTrack?.lane ?? null });
     let selectedLaneIds = new Set<string>(initialActiveTrack ? [initialActiveTrack.lane.id] : []);
     const explicitHarmonies = (() => { try { return JSON.parse(root.dataset.scoreHarmonies || "[]") as ExplicitHarmony[]; } catch { return []; } })();
     const canonicalHarmonies = buildHarmonicTimeline(canonicalTimeline, explicitHarmonies);
     let transformState: WorkstationTransform = { timing: "continuous", mode: "original", targetTonic: null, transpose: 0, sourceKey: parseSourceKey(root.dataset.musicalKey) };
     let timingMode: LearningTiming = "continuous";
-    let selectedPart: LearningPart = initialActiveTrack?.id ?? "melody";
+    let selectedTrackId: ActiveTrackId = initialActiveTrack?.id ?? "melody";
+    let selectedPart: LearningPart = initialActiveTrack?.arrangementPart ?? "melody";
     let studyVoices: StudyVoiceCount = 1;
     let accompaniment = false;
     let transformed = transformLearningTimeline(learningMelody.timeline, transformState);
@@ -214,6 +220,9 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     host.querySelector<HTMLOutputElement>('[data-l="time-value"]')!.value = `CONTINUOUS 00:00 / ${formatClock(arrangement.durationSeconds)}`;
     const playbackMode = host.querySelector<HTMLSelectElement>('[data-l="playback-mode"]')!;
     const staffScope = host.querySelector<HTMLSelectElement>('[data-l="staff-scope"]')!;
+    const activeTrackSelect = host.querySelector<HTMLSelectElement>('[data-l="active-track"]')!;
+    renderActiveTrackOptions(activeTrackSelect, activeTrackOptions, selectedTrackId);
+    staffScope.value = selectedStaffScope;
     const chordControls = host.querySelector<HTMLElement>('[data-l="chord-controls"]')!;
     const patternSelect = host.querySelector<HTMLSelectElement>('[data-l="chord-pattern"]')!;
     const rateSelect = host.querySelector<HTMLSelectElement>('[data-l="chord-rate"]')!;
@@ -224,6 +233,17 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     melodyToggle.disabled = !learningMelody.notes.length;
     host.querySelector<HTMLElement>('[data-l="melody-source"]')!.textContent = melodyLane ? `canonical · ${melodyLane.label} · ${melodyLane.inferred ? "INFERRED" : "VERIFIED"}` : "No melody source";
     const voiceList = host.querySelector<HTMLElement>('[data-l="voice-list"]')!;
+    let updateVisualizerAvailability = (): void => undefined;
+    const persistSelection = (): void => {
+      try { rememberLearningSelection(window.localStorage, songId, { activeTrackId: selectedTrackId, staffScope: selectedStaffScope }); } catch { /* Keep session selection active. */ }
+    };
+    const currentTrackOption = () => activeTrackOptions.find((option) => option.id === selectedTrackId) ?? null;
+    const updateStaffControls = (): void => {
+      const support = staffScopeSupport(currentTrackOption());
+      selectedStaffScope = resolveStaffScope(selectedStaffScope, support);
+      staffScope.value = selectedStaffScope;
+      applyStaffControlState(host, selectedStaffScope, support);
+    };
     for (const lane of lanes) {
       const label = document.createElement("label");
       const input = document.createElement("input");
@@ -235,18 +255,21 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       voiceList.append(label);
     }
     const updateLaneVisibility = (): void => {
-      const scope = staffScope.value as StaffScope;
+      const scope = selectedStaffScope;
       lanes.forEach((lane) => { const input = voiceList.querySelector<HTMLInputElement>(`[data-lane="${CSS.escape(lane.id)}"]`); if (input?.parentElement) input.parentElement.hidden = !laneInScope(lane, scope); });
     };
     const updatePlaybackSelection = (): void => {
-      audio?.setSelection({ mode: playbackMode.value as PlaybackMode, voices: 1, scope: staffScope.value as StaffScope }, lanes, selectedLaneIds);
+      audio?.setSelection({ mode: playbackMode.value as PlaybackMode, voices: 1, scope: selectedStaffScope }, lanes, selectedLaneIds);
       audio?.setLearningLayers({ melody: true, chords: accompaniment }, scheduler?.timeline.notes ?? arrangement.notes);
       chordControls.hidden = playbackMode.value !== "chords";
       host.querySelector<HTMLElement>('[data-l="pattern-status"]')!.hidden = !chordsToggle.checked;
       updateLaneVisibility();
+      updateVisualizerAvailability();
+      const frame = scheduler?.snapshot();
+      if (frame) visualizer?.render(frame.active.filter((note) => noteMatchesStaffScope(note, selectedStaffScope)), frame.upcoming.filter((note) => noteMatchesStaffScope(note, selectedStaffScope)));
     };
     playbackMode.onchange = updatePlaybackSelection;
-    staffScope.onchange = updatePlaybackSelection;
+    staffScope.onchange = () => { selectedStaffScope = staffScope.value as StaffScope; updateStaffControls(); persistSelection(); updatePlaybackSelection(); };
     voiceList.onchange = () => {
       selectedLaneIds = new Set([...voiceList.querySelectorAll<HTMLInputElement>("[data-lane]:checked")].map((input) => input.value));
       updatePlaybackSelection();
@@ -268,6 +291,8 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     rateSelect.onchange = updateChordPattern;
     updatePlaybackSelection();
     updateMix();
+    updateStaffControls();
+    if (initialTrackResolution.usedFallback || rememberedSelection) persistSelection();
     host.querySelector<HTMLElement>('[data-l="staff-evidence"]')!.hidden = hasExplicitStaffIdentity(manifest.timeline);
     const mapping = (() => { try { return JSON.parse(root.dataset.learningMapping || "{}"); } catch { return {}; } })() as Record<string, unknown>;
     const accordionConfig = isVerifiedAccordionConfig(mapping.accordion) ? mapping.accordion : null;
@@ -286,6 +311,11 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     let piano: FollowVisualizer | null = null;
     let guitar: HandedVisualizer | null = null;
     let accordion: FollowVisualizer | null = null;
+    const visualizerUnavailable = host.querySelector<HTMLElement>('[data-l="visualizer-unavailable"]')!;
+    updateVisualizerAvailability = (): void => {
+      const state = visualizerAvailability(selectedInstrument as InstrumentName, currentTrackOption(), selectedStaffScope, Boolean(accordionConfig));
+      applyVisualizerAvailability(visualRoot, visualizerUnavailable, state);
+    };
     let practicing = false;
     let reliable = true;
     let practiceStartedAtMs = 0;
@@ -343,6 +373,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       if (name === "guitar") guitar = next as HandedVisualizer;
       if (name === "accordion") accordion = next as FollowVisualizer;
       visualizer.mount();
+      updateVisualizerAvailability();
       updateHarmonyAtCurrentPosition();
       if (name === "piano" || name === "guitar") melodyScore.setInstrument(name);
       host.querySelector<HTMLElement>('[data-l="left-label"]')!.hidden = name !== "guitar";
@@ -572,8 +603,8 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     const renderFrame = (event: Event): void => {
       const frame = (event as CustomEvent<SchedulerFrame>).detail;
       reliable = reliable && frame.reliable;
-      const active = frame.active;
-      const upcoming = frame.upcoming;
+      const active = frame.active.filter((note) => noteMatchesStaffScope(note, selectedStaffScope));
+      const upcoming = frame.upcoming.filter((note) => noteMatchesStaffScope(note, selectedStaffScope));
       visualizer?.render(active, upcoming);
       expectedMidi = new Set(active.map((note) => note.midi));
       if (practicing && exercise?.mode === "wait-for-note" && supportsWebMidi() && frame.playing && active.length) { waitingForMidi = true; scheduler?.pause(); }
@@ -612,6 +643,8 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       if (!scheduler || !audio) return;
       const snapshot = scheduler.snapshot();
       const canonicalPosition = transformed.studyToOriginal(snapshot.position);
+      const loop = scheduler.getLoopRange();
+      const canonicalLoop = loop ? [transformed.studyToOriginal(loop[0]), transformed.studyToOriginal(loop[1])] as const : null;
       const wasPlaying = snapshot.playing;
       scheduler.removeEventListener("frame", renderFrame);
       scheduler.pause();
@@ -634,6 +667,8 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       updatePlaybackSelection();
       updateMix();
       scheduler.addEventListener("frame", renderFrame);
+      scheduler.setTempo(snapshot.tempoPercent);
+      if (canonicalLoop) scheduler.setLoop(transformed.originalToStudy(canonicalLoop[0]), transformed.originalToStudy(canonicalLoop[1]));
       scheduler.seek(transformed.originalToStudy(canonicalPosition));
       seek.max = String(arrangement.durationSeconds);
       await selectInstrument(selectedInstrument);
@@ -682,19 +717,29 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     const pressGroup = (selector: string, value: string, dataName: string): void => {
       host.querySelectorAll<HTMLButtonElement>(selector).forEach((button) => button.setAttribute("aria-pressed", String(button.dataset[dataName] === value)));
     };
-    host.querySelectorAll<HTMLButtonElement>("[data-part]").forEach((button) => {
-      const option = activeTrackOptions.find((entry) => entry.id === button.dataset.part);
-      button.hidden = !option;
-      button.setAttribute("aria-pressed", String(option?.id === selectedPart));
+    if (initialTrackResolution.usedFallback) activeTrackSelect.value = initialActiveTrack?.id ?? "";
+    activeTrackSelect.onchange = () => {
+      const resolution = resolveActiveTrack(activeTrackSelect.value as ActiveTrackId, activeTrackOptions);
+      if (!resolution.option) return;
+      selectedTrackId = resolution.option.id;
+      selectedPart = resolution.option.arrangementPart;
+      selectedLaneIds = new Set([resolution.option.lane.id]);
+      voiceList.querySelectorAll<HTMLInputElement>("[data-lane]").forEach((input) => { input.checked = selectedLaneIds.has(input.value); });
+      selectedStaffScope = resolveStaffScope(selectedStaffScope, staffScopeSupport(resolution.option));
+      updateStaffControls();
+      persistSelection();
+      host.querySelector<HTMLElement>('[data-l="melody-source"]')!.textContent = `active · ${resolution.option.lane.label}${resolution.usedFallback ? " · fallback" : ""}`;
+      void installLearningMelody(composeLearningMelody(canonicalTimeline, lanes, { primaryLane: resolution.option.lane }));
+    };
+    host.querySelectorAll<HTMLButtonElement>("[data-staff-scope]").forEach((button) => {
       button.onclick = () => {
-        const resolution = resolveActiveTrack(button.dataset.part as ActiveTrackId, activeTrackOptions);
-        if (!resolution.option) return;
-        selectedPart = resolution.option.id;
-        selectedLaneIds = new Set([resolution.option.lane.id]);
-        voiceList.querySelectorAll<HTMLInputElement>("[data-lane]").forEach((input) => { input.checked = selectedLaneIds.has(input.value); });
-        pressGroup("[data-part]", selectedPart, "part");
-        host.querySelector<HTMLElement>('[data-l="melody-source"]')!.textContent = `active · ${resolution.option.lane.label}${resolution.usedFallback ? " · fallback" : ""}`;
-        void installLearningMelody(composeLearningMelody(canonicalTimeline, lanes, { primaryLane: resolution.option.lane }));
+        const requested = button.dataset.staffScope as StaffScope;
+        const support = staffScopeSupport(currentTrackOption());
+        if (!support[requested]) return;
+        selectedStaffScope = requested;
+        updateStaffControls();
+        persistSelection();
+        updatePlaybackSelection();
       };
     });
     host.querySelectorAll<HTMLButtonElement>("[data-play]").forEach((button) => {

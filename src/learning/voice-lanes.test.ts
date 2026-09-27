@@ -44,4 +44,12 @@ describe("voice lanes", () => {
     expect(resolveActiveTrack("guitar", options)).toMatchObject({ option: { id: "guitar" }, usedFallback: false });
     expect(resolveActiveTrack("guitar", options.filter((option) => option.id !== "guitar"))).toMatchObject({ option: { id: "melody" }, usedFallback: true });
   });
+
+  it("lists every real unrepresented lane without inventing a track", () => {
+    const value = manifest("Violin", [note("v1", "p", 0, 67, "1"), note("v2", "p", 1, 69, "2")]);
+    const lanes = buildVoiceLanes(value);
+    const options = buildActiveTrackOptions(value, lanes, selectMelodyLane(value, lanes));
+    expect(options).toHaveLength(lanes.length);
+    expect(options.every((entry) => lanes.some((lane) => lane.id === entry.lane.id))).toBe(true);
+  });
 });
