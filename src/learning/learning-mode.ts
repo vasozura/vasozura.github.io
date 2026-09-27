@@ -193,11 +193,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       canPlay: () => Boolean(scheduler?.timeline.notes.length),
       isPlaying: () => scheduler?.snapshot().playing ?? false,
       play: async () => {
-        try {
-          if (selectedInstrument !== "accordion") await audio?.enable();
-          scheduler?.play();
-          if (selectedInstrument === "accordion") host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = "Accordion audio unavailable; visual playback active.";
-        }
+        try { await audio?.enable(); scheduler?.play(); }
         catch (error) { host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = errorMessage(error); }
       },
       pause: () => { scheduler?.pause(); audio?.reset(); },
@@ -383,7 +379,6 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       updateHarmonyAtCurrentPosition();
       if (name === "piano" || name === "guitar") melodyScore.setInstrument(name);
       host.querySelector<HTMLElement>('[data-l="left-label"]')!.hidden = name !== "guitar";
-      if (name === "accordion") host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = "Accordion audio unavailable.";
       melodySound.value = name;
       host.querySelectorAll<HTMLButtonElement>("[data-sound]").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.sound === name)));
       if (scheduler?.snapshot().playing) {
@@ -681,7 +676,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       const key = describeStudyKey(transformState);
       host.querySelector<HTMLOutputElement>('[data-l="transpose-value"]')!.value = `${key.semitones >= 0 ? "+" : ""}${key.semitones} st`;
       host.querySelector<HTMLOutputElement>('[data-l="key-status"]')!.value = `Original: ${key.source} · Study: ${key.study}`;
-      if (wasPlaying) { try { if (selectedInstrument !== "accordion") await audio.enable(); scheduler.play(); } catch (error) { host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = errorMessage(error); } }
+      if (wasPlaying) { try { await audio.enable(); scheduler.play(); } catch (error) { host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = errorMessage(error); } }
     };
     const segmentMap = host.querySelector<HTMLElement>('[data-l="segment-map"]')!;
     const renderSegmentMap = (): void => {

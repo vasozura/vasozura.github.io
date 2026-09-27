@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { nearestSample, sampledGuitarFiles, sampledPianoFiles, SampleInstrumentEngine } from "./sample-instrument";
+import { instrumentSampleBank, nearestSample, sampledAccordionFiles, sampledGuitarFiles, sampledPianoFiles, SampleInstrumentEngine } from "./sample-instrument";
 
 function audioParam() {
   return {
@@ -110,6 +110,41 @@ describe("sample instrument", () => {
     const engine = new SampleInstrumentEngine(() => context);
     engine.setInstrument("guitar");
     await expect(engine.enable([38])).rejects.toThrow("Guitar audio unavailable");
+    expect(oscillator.start).not.toHaveBeenCalled();
+    vi.unstubAllGlobals();
+  });
+
+  it("routes Accordion to its genuine bank with bounded F3-A6 pitch shifting", async () => {
+    const { context, bufferSource, oscillator } = audioContext();
+    vi.stubGlobal("fetch", vi.fn(async (url: string) => new Response(url.includes("accordion-chemnitzer") ? new Uint8Array([1]) : null, { status: url.includes("accordion-chemnitzer") ? 200 : 404 })));
+    const engine = new SampleInstrumentEngine(() => context);
+    engine.setInstrument("accordion");
+    await engine.enable([53, 65, 93]);
+    await engine.enable([65]);
+    engine.play({ midi: 53, velocity: 0.7, durationSeconds: 0.4 });
+    engine.play({ midi: 65, velocity: 0.8, durationSeconds: 0.4 });
+    engine.play({ midi: 93, velocity: 0.7, durationSeconds: 0.4 });
+    const bank = instrumentSampleBank("accordion");
+    expect(sampledAccordionFiles).toHaveLength(13);
+    expect(nearestSample(53, bank)).toMatchObject({ midi: 53, file: "F3.mp3" });
+    expect(nearestSample(65, bank)).toMatchObject({ midi: 65, file: "F4.mp3" });
+    expect(nearestSample(93, bank)).toMatchObject({ midi: 90, file: "Fs6.mp3" });
+    expect(Math.max(...Array.from({ length: 41 }, (_, index) => 53 + index).map((midi) => Math.abs(midi - nearestSample(midi, bank).midi)))).toBeLessThanOrEqual(3);
+    expect(engine.currentInstrument).toBe("accordion");
+    expect(vi.mocked(fetch).mock.calls.every(([url]) => String(url).includes("accordion-chemnitzer"))).toBe(true);
+    expect(fetch).toHaveBeenCalledTimes(3);
+    expect(bufferSource.start).toHaveBeenCalledTimes(3);
+    expect(oscillator.start).not.toHaveBeenCalled();
+    vi.unstubAllGlobals();
+  });
+
+  it("fails Accordion loading explicitly without using Piano or an oscillator", async () => {
+    const { context, oscillator } = audioContext();
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(null, { status: 404 })));
+    const engine = new SampleInstrumentEngine(() => context);
+    engine.setInstrument("accordion");
+    await expect(engine.enable([56])).rejects.toThrow("Accordion audio unavailable");
+    expect(String(vi.mocked(fetch).mock.calls[0][0])).toContain("accordion-chemnitzer/Gs3.mp3");
     expect(oscillator.start).not.toHaveBeenCalled();
     vi.unstubAllGlobals();
   });

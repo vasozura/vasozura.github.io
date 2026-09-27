@@ -40,7 +40,7 @@ describe("Learning Workstation V2 UI contract", () => {
     expect(source).toContain("const canonicalLoop = loop ?");
     expect(source).toContain("scheduler.setTempo(snapshot.tempoPercent)");
     expect(source).toContain("if (canonicalLoop) scheduler.setLoop(");
-    expect(source).toContain('if (wasPlaying) { try { if (selectedInstrument !== "accordion") await audio.enable(); scheduler.play(); }');
+    expect(source).toContain("if (wasPlaying) { try { await audio.enable(); scheduler.play(); }");
     expect(source).toContain("playbackCoordinator.activate(transportId);");
     expect(source.match(/unregisterTransport = playbackCoordinator\.register/g)).toHaveLength(1);
     expect(source.match(/unregisterTransport\(\)/g)).toHaveLength(1);
@@ -97,11 +97,10 @@ describe("Learning Workstation V2 UI contract", () => {
     const [mode, accordion, selection] = await Promise.all([read("./learning-mode.ts"), read("./accordion-visualizer.ts"), read("./learning-selection.ts")]);
     expect(mode).toContain('data-sound="accordion"');
     expect(mode).toContain('new AccordionVisualizer(visualRoot, name === "accordion" ? accordionConfig : null, audition)');
-    expect(mode).toContain('textContent = "Accordion audio unavailable."');
-    expect(mode).toContain('if (selectedInstrument !== "accordion") await audio?.enable()');
-    expect(mode).toContain('Accordion audio unavailable; visual playback active.');
+    expect(mode).not.toContain('textContent = "Accordion audio unavailable."');
+    expect(mode).toContain("try { await audio?.enable(); scheduler?.play(); }");
     expect(accordion).toContain("standardPianoAccordionConfig");
-    expect(accordion).toContain("Left-hand bass mapping is not available");
+    expect(accordion).toContain("CC0 Tomiak Chemnitzer samples");
     expect(selection).toContain('scope === "bass"');
     expect(selection).not.toContain('instrument === "accordion" ? "piano"');
   });

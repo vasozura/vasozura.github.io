@@ -57,23 +57,37 @@ const guitarSamples: readonly SampleDefinition[] = [
   { midi: 72, file: "C5.mp3" },
 ] as const;
 
+// Medium-dynamic roots from Josh Tomiak's CC0 Chemnitzer concertina bank.
+// They cover the verified F3-A6 visual range with at most three semitones shift.
+const accordionSamples: readonly SampleDefinition[] = [
+  { midi: 53, file: "F3.mp3" }, { midi: 56, file: "Gs3.mp3" },
+  { midi: 59, file: "B3.mp3" }, { midi: 62, file: "D4.mp3" },
+  { midi: 65, file: "F4.mp3" }, { midi: 68, file: "Gs4.mp3" },
+  { midi: 71, file: "B4.mp3" }, { midi: 74, file: "D5.mp3" },
+  { midi: 77, file: "F5.mp3" }, { midi: 80, file: "Gs5.mp3" },
+  { midi: 83, file: "B5.mp3" }, { midi: 86, file: "D6.mp3" },
+  { midi: 90, file: "Fs6.mp3" },
+] as const;
+
 const sampleBanks: Partial<Record<InstrumentName, readonly SampleDefinition[]>> = {
   piano: pianoSamples,
   guitar: guitarSamples,
+  accordion: accordionSamples,
 };
 
 /** Single source of truth for where each bank lives under public/audio, shared with the
  *  offline guide renderer so a browser guide and a rendered guide use the same samples. */
-export const instrumentSampleDirectory = { piano: "salamander", guitar: "guitar-acoustic" } as const satisfies Record<"piano" | "guitar", string>;
+export const instrumentSampleDirectory = { piano: "salamander", guitar: "guitar-acoustic", accordion: "accordion-chemnitzer" } as const satisfies Record<InstrumentName, string>;
 
-export function instrumentSampleBank(instrument: "piano" | "guitar"): readonly SampleDefinition[] {
-  return instrument === "guitar" ? guitarSamples : pianoSamples;
+export function instrumentSampleBank(instrument: InstrumentName): readonly SampleDefinition[] {
+  return sampleBanks[instrument] ?? [];
 }
 
 const decodedBuffers = new Map<string, Promise<AudioBuffer>>();
 
 export const sampledPianoFiles = pianoSamples.map((sample) => sample.file);
 export const sampledGuitarFiles = guitarSamples.map((sample) => sample.file);
+export const sampledAccordionFiles = accordionSamples.map((sample) => sample.file);
 
 export function nearestSample(midi: number, samples: readonly SampleDefinition[] = pianoSamples): SampleDefinition {
   return samples.reduce((nearest, sample) => (
@@ -217,7 +231,7 @@ export class SampleInstrumentEngine implements InstrumentPlayback {
 
   private sampleUrl(file: string, instrument: InstrumentName = this.instrument): string {
     const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
-    const directory = instrument === "guitar" ? instrumentSampleDirectory.guitar : instrumentSampleDirectory.piano;
+    const directory = instrumentSampleDirectory[instrument];
     return `${base}audio/${directory}/${file}`;
   }
 
