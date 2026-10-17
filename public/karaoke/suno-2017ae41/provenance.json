@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "zura-learning-artifact-provenance/v1",
+  "sourceSlug": "suno-2017ae41",
+  "sunoGenerationId": "2017ae41-bc61-481b-b471-f596623fb3e0",
+  "canonicalAudioSha256": "fc1a373c6838c4e718185e4b88d9e2102ac6bcc75553888c25b19f4280086536",
+  "extractorVersion": "canonical-melody-extractor/v2",
+  "reviewVersion": "v2",
+  "ownerReviewCompleted": true,
+  "finalVerdict": "A",
+  "source38Regression": "PASS",
+  "artifactSha256": {
+    "canonical-melody.mid": "07343e8b0ecdda0116f39807953b30001d4877281c318b329f133fd13b75e9ae",
+    "piano-melody.mid": "8f802b0831be573807dcd38275abe00ea7e99b0b6e72d7b8b18cc3380486662e",
+    "guitar-melody.mid": "7fbf2624c1c844a7abce7bc5e1b26e29b54fbda87475a7fedc6b1e029dba5df4",
+    "accordion-melody.mid": "9b8e68058788a7a4cb0520293b4bd9d5872a701496dd06801de3ac1b970418ec"
+  },
+  "artifactKinds": {
+    "canonical-melody.mid": "generated-canonical-melody",
+    "piano-melody.mid": "instrument-adapted-melody",
+    "guitar-melody.mid": "instrument-adapted-melody",
+    "accordion-melody.mid": "instrument-adapted-melody"
+  }
+}
