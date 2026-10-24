@@ -64,16 +64,16 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
   const scoreSession = await mountScoreViewer(root, { midiPlayback: false });
   const midiUrl = root.dataset.midiUrl;
   const songId = root.dataset.songId ?? "";
-  if (root.dataset.learningEnabled !== "true" || !songId || (!appConfig.hasLearningApi && !midiUrl)) return () => scoreSession.dispose();
+  if (root.dataset.learningEnabled !== "true" || !songId || (!appConfig.hasLearningApi && !midiUrl && !root.dataset.learningArtifactsUrl)) return () => scoreSession.dispose();
 
   const allowed = new Set((root.dataset.learningInstruments || "piano").split(",").filter(Boolean));
-  const selectionHelpers = await import("./learning-selection");
+  const [selectionHelpers, staticSource] = await Promise.all([import("./learning-selection"), import("./static-source-controls")]);
   const host = document.createElement("section");
   host.className = "learning-mode";
   host.setAttribute("aria-labelledby", "learning-mode-title");
   host.innerHTML = `
     <header class="learning-workstation-heading"><div><p class="eyebrow">MUSIC LEARNING WORKSTATION</p><h3 id="learning-mode-title">${copy.title}</h3></div><details class="learning-help"><summary aria-label="Learning workstation help">?</summary><p>${copy.clock}</p><p data-l="sync" class="learning-sync" aria-live="polite">${copy.checking}</p></details></header>
-    <p class="learning-source-status"><span>Melody source:</span> <strong data-l="melody-source">—</strong></p><fieldset class="learning-control-group learning-segments" data-l="source-mode" hidden><legend>SOURCE</legend><button type="button" data-source-mode="original" aria-pressed="true">ORIGINAL</button><button type="button" data-source-mode="melody" aria-pressed="false">MELODY</button></fieldset>
+    <p class="learning-source-status"><span>Melody source:</span> <strong data-l="melody-source">—</strong></p>${staticSource.sourceControlsHtml}
     <div class="learning-workstation-controls">
       <div class="learning-workstation-row learning-workstation-row-primary">
         <fieldset class="learning-control-group learning-transport-compact"><legend>TRANSPORT</legend><button type="button" data-l="play">▶ ${copy.play}</button><button type="button" data-l="pause">Ⅱ ${copy.pause}</button><button type="button" data-l="stop">■ ${copy.stop}</button><label><span>${copy.tempo}</span><input data-l="tempo" type="range" min="50" max="150" value="100"><output data-l="tempo-value">100%</output></label><label class="learning-position"><span>${copy.position}</span><input data-l="seek" type="range" min="0" max="0" value="0" step="0.01"><output data-l="time-value">00:00 / 00:00</output></label><output data-l="position">${copy.measure} 1 · ${copy.beat} 1</output></fieldset>
@@ -126,27 +126,26 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
   let removeScorePositionListener = (): void => {};
   let midiLabCleanup = (): void => {};
   try {
-    let api: LearningApi;
-    let manifest: ScoreManifest;
-    let usingLocalAdapter = false;
-    if (appConfig.hasLearningApi) {
-      api = new LearningApiClient(appConfig.learningApiUrl, 30_000, undefined, root.dataset.privatePreview === "true");
-      try { manifest = await api.manifest(songId, controller.signal); }
-      catch (error) {
-        if (!midiUrl || !isLearningApiUnavailable(error)) throw error;
-        manifest = await import("./midi-manifest").then(({ manifestFromMidi }) => manifestFromMidi(songId, midiUrl));
-        api = new LocalLearningApi({ [songId]: manifest });
-        usingLocalAdapter = true;
-      }
-    } else {
-      if (!midiUrl) throw new Error("Learning resources are unavailable.");
-      manifest = await import("./midi-manifest").then(({ manifestFromMidi }) => manifestFromMidi(songId, midiUrl));
-      api = new LocalLearningApi({ [songId]: manifest });
-      usingLocalAdapter = true;
-    }
-
-    const staticSource = await import("./static-source-controls");
     const staticArtifacts = await staticSource.discoverStaticArtifacts(root, controller.signal);
+    let api: LearningApi | null = null;
+    if (appConfig.hasLearningApi) api = new LearningApiClient(appConfig.learningApiUrl, 30_000, undefined, root.dataset.privatePreview === "true");
+    const original = await staticSource.discoverOriginalSource<ScoreManifest>({
+      loadApi: api ? () => api!.manifest(songId, controller.signal) : undefined,
+      loadMidi: midiUrl ? () => import("./midi-manifest").then(({ manifestFromMidi }) => manifestFromMidi(songId, midiUrl)) : undefined,
+      staticAvailable: Boolean(staticArtifacts),
+      isApiUnavailable: isLearningApiUnavailable,
+    });
+    const originalManifest = original.source;
+    let usingLocalAdapter = original.local;
+    if (original.local && originalManifest) api = new LocalLearningApi({ [songId]: originalManifest });
+    const initialInstrument = ([...allowed].find((value) => value === "piano" || value === "guitar" || value === "accordion") ?? "piano") as "piano" | "guitar" | "accordion";
+    const initialSource = await staticSource.resolveInitialLearningManifest({ root, songId, original: originalManifest, artifacts: staticArtifacts, instrument: initialInstrument });
+    const sourceAvailability = initialSource.availability;
+    if (!sourceAvailability.initial) throw new Error("Learning resources are unavailable.");
+    const manifest = initialSource.manifest;
+    if (!manifest) throw new Error("Learning resources are unavailable.");
+    if (!originalManifest) { api = new LocalLearningApi({ [songId]: manifest }); usingLocalAdapter = true; }
+    if (!api) throw new Error("Learning resources are unavailable.");
 
     const { applyStaffControlState, applyVisualizerAvailability, rememberLearningSelection, renderActiveTrackOptions, resolveStaffScope, restoreLearningSelection, staffScopeSupport, visualizerAvailability } = selectionHelpers;
     const canonicalTimeline = manifest.timeline;
@@ -158,7 +157,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     const initialActiveTrack = initialTrackResolution.option;
     let selectedStaffScope = resolveStaffScope(rememberedSelection?.staffScope, staffScopeSupport(initialActiveTrack));
     let learningMelody = composeLearningMelody(canonicalTimeline, lanes, { primaryLane: initialActiveTrack?.lane ?? null });
-    const originalLearningMelody = learningMelody;
+    const originalLearningMelody = originalManifest ? learningMelody : null;
     let selectedLaneIds = new Set<string>(initialActiveTrack ? [initialActiveTrack.lane.id] : []);
     const explicitHarmonies = (() => { try { return JSON.parse(root.dataset.scoreHarmonies || "[]") as ExplicitHarmony[]; } catch { return []; } })();
     const canonicalHarmonies = buildHarmonicTimeline(canonicalTimeline, explicitHarmonies);
@@ -697,20 +696,17 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       await rebuildWorkstation();
     };
     const sourceMode = host.querySelector<HTMLElement>('[data-l="source-mode"]')!;
-    if (staticArtifacts) staticSource.bindStaticSourceControls({ root, controls: sourceMode, manifest: staticArtifacts, instrument: () => selectedInstrument, report: (message) => { host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = message; },
+    if (staticArtifacts) staticSource.bindStaticSourceControls({ root, controls: sourceMode, manifest: staticArtifacts, availability: sourceAvailability, initialMode: sourceAvailability.initial, instrument: () => selectedInstrument, report: (message) => { host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = message; },
       activateOriginal: async () => {
+        if (!originalLearningMelody) throw new Error("Original source unavailable.");
         await installLearningMelody(originalLearningMelody);
         scoreSession.setPosition({ playbackSeconds: scheduler?.snapshot().position ?? 0 });
         host.querySelector<HTMLElement>('[data-l="melody-source"]')!.textContent = melodyLane ? `original · ${melodyLane.label}` : "Original";
       },
-      activateMelody: async (url, instrument) => {
-        const staticManifest = await import("./midi-manifest").then(({ manifestFromMidi }) => manifestFromMidi(songId, url));
-        const staticLanes = buildVoiceLanes(staticManifest);
-        const staticLane = selectMelodyLane(staticManifest, staticLanes) ?? staticLanes[0] ?? null;
-        if (!staticLane) throw new Error("Static melody contains no playable notes.");
-        await installLearningMelody(composeLearningMelody(staticManifest.timeline, staticLanes, { primaryLane: staticLane, manualPrimary: true }));
+      activateStatic: async (url, instrument, mode) => {
+        await installLearningMelody(await staticSource.loadStaticLearningMelody(songId, url));
         scoreSession.setPosition({ playbackSeconds: scheduler?.snapshot().position ?? 0 });
-        host.querySelector<HTMLElement>('[data-l="melody-source"]')!.textContent = `reviewed static · ${instrument}`;
+        host.querySelector<HTMLElement>('[data-l="melody-source"]')!.textContent = `reviewed static · ${mode === "fullSong" ? "full song" : instrument}`;
       },
     });
     applySessionMelody = (track) => {
@@ -723,7 +719,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       void installLearningMelody(composeLearningMelody(canonicalTimeline, [gapLane, ...lanes], { primaryLane: melodyLane, gapFillLane: gapLane }));
     };
     renderSegmentMap();
-    host.querySelector<HTMLElement>('[data-l="melody-source"]')!.textContent = melodyLane ? `canonical · ${melodyLane.label} · ${melodyLane.inferred ? "INFERRED" : "VERIFIED"}` : "Unavailable";
+    host.querySelector<HTMLElement>('[data-l="melody-source"]')!.textContent = originalManifest && melodyLane ? `canonical · ${melodyLane.label} · ${melodyLane.inferred ? "INFERRED" : "VERIFIED"}` : sourceAvailability.initial === "fullSong" ? "reviewed static · full song" : "reviewed static · melody";
     const pressGroup = (selector: string, value: string, dataName: string): void => {
       host.querySelectorAll<HTMLButtonElement>(selector).forEach((button) => button.setAttribute("aria-pressed", String(button.dataset[dataName] === value)));
     };

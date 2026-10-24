@@ -12,6 +12,7 @@ export interface LearningArtifactResource {
 export interface LearningArtifactManifest {
   schemaVersion: "zura-learning-artifacts/v1";
   song: { slug: string; generationId: string; canonicalAudioSha256: string };
+  canonicalMelody?: LearningArtifactResource;
   instruments: Record<LearningArtifactInstrument, Record<LearningArtifactMode, LearningArtifactResource>>;
 }
 
