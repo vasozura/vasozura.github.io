@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "canonical-melody-static-package/v1",
+  "packageVersion": "canonical-melody-reviewed-v1",
+  "sourceIndex": 57,
+  "slug": "suno-0d116a84",
+  "generationId": "0d116a84-60f9-40a8-9e92-3fb7ec695076",
+  "title": "მეხი დიდ ხეებს ეძებს",
+  "canonicalAudioSha256": "4e55a2736828edf09f4e9c1777609ce5c1de2915313fe4976015bf69da4d8ea3",
+  "archiveSha256": "e4ff8fda3d5a678afc05ef7263ed224d3b53c56cb35fe520d12f989a33a9ac77",
+  "officialVocalMidiSha256": "3c863481b4e421b13592b723db95430775c28e3d16e7ea9c5a03d270865a0bc7",
+  "extractorVersion": "generic-vocal-authority-v1-frozen",
+  "overlapClassifierVersion": "polyphonic-vocal-overlap-v1-frozen",
+  "reviewState": "REVIEW_COMPLETE",
+  "state": "PACKAGE_READY",
+  "duration": 225.5609097499999,
+  "noteCount": 272,
+  "confidenceSummary": {
+    "finalLow": 1,
+    "questionableVocal": 2
+  },
+  "unresolvedRegionCount": 0,
+  "artifacts": {
+    "midi/canonical-melody.mid": "cc6759056b1619ed6fcfb41fae4794c378047c05309161e50146e8a1847f7389",
+    "midi/piano-melody.mid": "7535d48d1bced95f741b2760d78ee51786c96b74e0cbc0b9cd191865e436ffe6",
+    "midi/guitar-melody.mid": "d4f4b1dd09f96d6187a52edc257e61ba10dec6744b2129dd2eb18b9bb85793b9",
+    "midi/accordion-melody.mid": "1f94cc586306c7d9912d81302ded9e047020a882450fc3ff01658fb4a5a84601",
+    "canonical-melody.json": "fd1e43de89b144c15360df7a658a5fcfeb069575238ab92b5266d048f871e595",
+    "piano-melody.json": "a461e85c6f9b35579e8aef19543b444a4f4d5d33a68d7bb65ace61073a7c5af4",
+    "guitar-melody.json": "71af7fb642719d047fd063da1238f4bae99ef54b9e47c6d4e9f855c09968e24a",
+    "accordion-melody.json": "108ff749c0ff3673eac80964b1b9baa6593d2ac57152e3e746f166fc3299d946",
+    "note-mapping-audit.json": "49027b794ab0fcca5ab7bb0ffd51d511511eabb6d43909a4c05c6f12a67d6c12",
+    "review/decisions.json": "95c6cad9d259358b2ab5584ef04007f54c817fa7fb68c6d1afe169ae08b6f6e4",
+    "review/review-summary.json": "bb578b957f4b773d5c2612a23a01cbeac50b8149537f88261d8371526b17cc34",
+    "provenance/validation.json": "aafb8e629508f807287ad4fb10509e8be7826043d04f550586821b73ce326096",
+    "provenance/source.json": "0180ec5a599c0301e4465e7dfe015dd9592e73e5a5e0588faa76de2c69fedb58"
+  },
+  "validationVersion": "controlled-rollout-10/frozen-v1",
+  "reviewedRegionCount": 1,
+  "reviewDecisionSha256": "95c6cad9d259358b2ab5584ef04007f54c817fa7fb68c6d1afe169ae08b6f6e4",
+  "deterministic": true
+}

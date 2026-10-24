@@ -1,0 +1,45 @@
+{
+  "source": 48,
+  "regions": [
+    {
+      "source": 48,
+      "regionId": "48-1",
+      "decision": "A",
+      "selectedNotePath": [
+        {
+          "id": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:0:7",
+          "track": "Vocals",
+          "start": 17.59406925416667,
+          "end": 18.245607375,
+          "pitch": 57,
+          "velocity": 0.2204724409448819
+        },
+        {
+          "id": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:0:11",
+          "track": "Vocals",
+          "start": 18.244247166666668,
+          "end": 19.551113875,
+          "pitch": 58,
+          "velocity": 0.1968503937007874
+        }
+      ],
+      "reviewed": true
+    },
+    {
+      "source": 48,
+      "regionId": "48-2",
+      "decision": "A",
+      "selectedNotePath": [
+        {
+          "id": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:12:0",
+          "track": "Vocals",
+          "start": 242.1666335083333,
+          "end": 243.81757599999997,
+          "pitch": 57,
+          "velocity": 0.33858267716535434
+        }
+      ],
+      "reviewed": true
+    }
+  ]
+}

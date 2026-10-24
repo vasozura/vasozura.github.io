@@ -1,0 +1,23 @@
+{
+  "source": {
+    "sourceIndex": 61,
+    "slug": "suno-1829ca46",
+    "generationId": "1829ca46-999c-4702-ba35-6a8b26567886",
+    "title": "როცა ძალიან მოგენატრები",
+    "directory": "tmp/canonical-melody-validation-batch-2/source-61/source-midi"
+  },
+  "extractor": "generic-vocal-authority-v1-frozen",
+  "sourceHashes": {
+    "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Backing Vocals).mid": "840fb97ac55d1ffd2109f1392ce827ba62ae9e691f13c75eaf9c67a894c2b71c",
+    "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Bass).mid": "925217b713f7dc8acadbda3ab47c464fa80c7326d74ce36afce8a949ee995b35",
+    "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Brass).mid": "6e820220883bcb45bfcc41d30ed53a13eaeb4a1c171abdc13a8c2a758a07b6ba",
+    "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Drums).mid": "1e701c9bfb25eccf49c6f769d4ef322c0a9c168c38416cd21300560a9bb151ed",
+    "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Guitar).mid": "932b88a0b404accc20023bfb0b2b071f1042adc62b657321556a1b045a2d1130",
+    "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Keyboard).mid": "aeb861aabbe961becb26d9d3518390c2e23fde5748f5f21258ef6a79a16a9067",
+    "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Percussion).mid": "f20b1ebf2e367da63c06e766f771f6a25aeb268a0bfa0f2b553c991f20b52706",
+    "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Strings).mid": "156466b95fade90281f93ccaa930823d37da869a1fd48983cfe5871bf95386a7",
+    "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Synth).mid": "f72cc201c9cc2a63b1067bc4813bb4c5b5284b30944fa82394b63e401252f2dd",
+    "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid": "1aa0f1a880d4deb8c43b6acbb3c9b4798db8e803a7d0242325d907a298c79cd5",
+    "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Woodwinds).mid": "47005bca6b88fea2a0dde5cd6a89d8c3c4f21b5a47cbdf90f01e1c62a52321da"
+  }
+}

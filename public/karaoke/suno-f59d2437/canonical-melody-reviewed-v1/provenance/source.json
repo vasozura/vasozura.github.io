@@ -1,0 +1,23 @@
+{
+  "source": {
+    "sourceIndex": 49,
+    "slug": "suno-f59d2437",
+    "generationId": "f59d2437-d9cf-40ce-9d51-80de18a46d71",
+    "title": "სხვისი გული",
+    "directory": "tmp/canonical-melody-validation-batch-2/source-49/source-midi"
+  },
+  "extractor": "generic-vocal-authority-v1-frozen",
+  "sourceHashes": {
+    "სხვისი გული -ბერდია ბერიაშვილი - გული (Backing Vocals).mid": "c8ac04b9513c0cae0e7774e7c4a9709c1922137111a20ba05f6e751f1df5c32f",
+    "სხვისი გული -ბერდია ბერიაშვილი - გული (Bass).mid": "ad726e1ada09ee13aa34f3c6cb47c1b1e08db11a222986d317baea93da989e07",
+    "სხვისი გული -ბერდია ბერიაშვილი - გული (Drums).mid": "0977866a656242e77279a2a8a46df4e8c263e4d394a78bdf102c78f1c75dced9",
+    "სხვისი გული -ბერდია ბერიაშვილი - გული (FX).mid": "ba1f3dcac4b764fd697e0109d240d28f6ef857353bf45521b709c298a58f41a3",
+    "სხვისი გული -ბერდია ბერიაშვილი - გული (Guitar).mid": "7359a056a7a8253b3d99a0a0080b5a2790a3cf461ebaf7c25694bee1f934cb77",
+    "სხვისი გული -ბერდია ბერიაშვილი - გული (Keyboard).mid": "fe77f7fe4ee88ec2f1ad09efe54cd305dcab9df5e2adf922953bccd654a3f64d",
+    "სხვისი გული -ბერდია ბერიაშვილი - გული (Percussion).mid": "5d3b9bb31362227681ae5ddd138cd00b7219784e1258f795852a1bf989a74cb9",
+    "სხვისი გული -ბერდია ბერიაშვილი - გული (Strings).mid": "165cf104ff2835c906ef25793023f80b62d52993f9af7093b77265a9cd238eda",
+    "სხვისი გული -ბერდია ბერიაშვილი - გული (Synth).mid": "0207e823faf543c731c72c5e3278a07627e6447a294383b1024a06509090a1ec",
+    "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid": "d1543f040bf09121fb7ffdb0f76ec754366c1b1ddd1bdc0d704fed6fa187543e",
+    "სხვისი გული -ბერდია ბერიაშვილი - გული (Woodwinds).mid": "6c69825002fa027f5686d214ff5a2ff55aa054416d6331e23eef0a7fbb389b49"
+  }
+}

@@ -1,0 +1,7349 @@
+{
+  "schemaVersion": "canonical-melody-note-mapping/v1",
+  "notes": [
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:0",
+      "canonical": {
+        "pitch": 53,
+        "start": 17.544702025000007,
+        "end": 17.919639012500003
+      },
+      "piano": {
+        "pitch": 53,
+        "start": 17.544702025000007,
+        "end": 17.919639012500003
+      },
+      "guitar": {
+        "pitch": 53,
+        "start": 17.544702025000007,
+        "end": 17.919639012500003,
+        "string": 4,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 53,
+        "start": 17.544702025000007,
+        "end": 17.919639012500003,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:1",
+      "canonical": {
+        "pitch": 60,
+        "start": 17.919639012500003,
+        "end": 18.294686000000002
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 17.919639012500003,
+        "end": 18.294686000000002
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 17.919639012500003,
+        "end": 18.294686000000002,
+        "string": 3,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 17.919639012500003,
+        "end": 18.294686000000002,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:2",
+      "canonical": {
+        "pitch": 65,
+        "start": 18.294686000000002,
+        "end": 18.669302152083336
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 18.294686000000002,
+        "end": 18.669302152083336
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 18.294686000000002,
+        "end": 18.669302152083336,
+        "string": 2,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 18.294686000000002,
+        "end": 18.669302152083336,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:3",
+      "canonical": {
+        "pitch": 67,
+        "start": 18.669302152083336,
+        "end": 19.043997083333338
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 18.669302152083336,
+        "end": 19.043997083333338
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 18.669302152083336,
+        "end": 19.043997083333338,
+        "string": 2,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 18.669302152083336,
+        "end": 19.043997083333338,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:4",
+      "canonical": {
+        "pitch": 68,
+        "start": 19.043997083333338,
+        "end": 19.793479112500002
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 19.043997083333338,
+        "end": 19.793479112500002
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 19.043997083333338,
+        "end": 19.793479112500002,
+        "string": 2,
+        "fret": 9,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 19.043997083333338,
+        "end": 19.793479112500002,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:5",
+      "canonical": {
+        "pitch": 67,
+        "start": 19.795021193750003,
+        "end": 19.981613025
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 19.795021193750003,
+        "end": 19.981613025
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 19.795021193750003,
+        "end": 19.981613025,
+        "string": 2,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 19.795021193750003,
+        "end": 19.981613025,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:6",
+      "canonical": {
+        "pitch": 65,
+        "start": 19.981613025,
+        "end": 20.356338768750003
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 19.981613025,
+        "end": 20.356338768750003
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 19.981613025,
+        "end": 20.356338768750003,
+        "string": 2,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 19.981613025,
+        "end": 20.356338768750003,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:7",
+      "canonical": {
+        "pitch": 67,
+        "start": 20.356338768750003,
+        "end": 20.73100066666667
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 20.356338768750003,
+        "end": 20.73100066666667
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 20.356338768750003,
+        "end": 20.73100066666667,
+        "string": 2,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 20.356338768750003,
+        "end": 20.73100066666667,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:8",
+      "canonical": {
+        "pitch": 65,
+        "start": 20.732542333333335,
+        "end": 21.107167333333337
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 20.732542333333335,
+        "end": 21.107167333333337
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 20.732542333333335,
+        "end": 21.107167333333337,
+        "string": 2,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 20.732542333333335,
+        "end": 21.107167333333337,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:9",
+      "canonical": {
+        "pitch": 70,
+        "start": 21.107167333333337,
+        "end": 21.856754000000002
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 21.107167333333337,
+        "end": 21.856754000000002
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 21.107167333333337,
+        "end": 21.856754000000002,
+        "string": 1,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 21.107167333333337,
+        "end": 21.856754000000002,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:10",
+      "canonical": {
+        "pitch": 63,
+        "start": 23.794192000000002,
+        "end": 23.981691583333333
+      },
+      "piano": {
+        "pitch": 63,
+        "start": 23.794192000000002,
+        "end": 23.981691583333333
+      },
+      "guitar": {
+        "pitch": 63,
+        "start": 23.794192000000002,
+        "end": 23.981691583333333,
+        "string": 2,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 63,
+        "start": 23.794192000000002,
+        "end": 23.981691583333333,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:11",
+      "canonical": {
+        "pitch": 63,
+        "start": 23.981691583333333,
+        "end": 24.35702075
+      },
+      "piano": {
+        "pitch": 63,
+        "start": 23.981691583333333,
+        "end": 24.35702075
+      },
+      "guitar": {
+        "pitch": 63,
+        "start": 23.981691583333333,
+        "end": 24.35702075,
+        "string": 2,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 63,
+        "start": 23.981691583333333,
+        "end": 24.35702075,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:12",
+      "canonical": {
+        "pitch": 63,
+        "start": 24.35702075,
+        "end": 24.919176583333336
+      },
+      "piano": {
+        "pitch": 63,
+        "start": 24.35702075,
+        "end": 24.919176583333336
+      },
+      "guitar": {
+        "pitch": 63,
+        "start": 24.35702075,
+        "end": 24.919176583333336,
+        "string": 2,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 63,
+        "start": 24.35702075,
+        "end": 24.919176583333336,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:13",
+      "canonical": {
+        "pitch": 67,
+        "start": 24.919176583333336,
+        "end": 25.29368111875
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 24.919176583333336,
+        "end": 25.29368111875
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 24.919176583333336,
+        "end": 25.29368111875,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 24.919176583333336,
+        "end": 25.29368111875,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:14",
+      "canonical": {
+        "pitch": 67,
+        "start": 25.29368111875,
+        "end": 25.855536833333332
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 25.29368111875,
+        "end": 25.855536833333332
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 25.29368111875,
+        "end": 25.855536833333332,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 25.29368111875,
+        "end": 25.855536833333332,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:15",
+      "canonical": {
+        "pitch": 63,
+        "start": 25.857086416666668,
+        "end": 26.232085583333333
+      },
+      "piano": {
+        "pitch": 63,
+        "start": 25.857086416666668,
+        "end": 26.232085583333333
+      },
+      "guitar": {
+        "pitch": 63,
+        "start": 25.857086416666668,
+        "end": 26.232085583333333,
+        "string": 2,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 63,
+        "start": 25.857086416666668,
+        "end": 26.232085583333333,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:16",
+      "canonical": {
+        "pitch": 60,
+        "start": 26.232085583333333,
+        "end": 26.982157458333333
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 26.232085583333333,
+        "end": 26.982157458333333
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 26.232085583333333,
+        "end": 26.982157458333333,
+        "string": 3,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 26.232085583333333,
+        "end": 26.982157458333333,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:17",
+      "canonical": {
+        "pitch": 53,
+        "start": 29.356178125000003,
+        "end": 29.731773312500003
+      },
+      "piano": {
+        "pitch": 53,
+        "start": 29.356178125000003,
+        "end": 29.731773312500003
+      },
+      "guitar": {
+        "pitch": 53,
+        "start": 29.356178125000003,
+        "end": 29.731773312500003,
+        "string": 4,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 53,
+        "start": 29.356178125000003,
+        "end": 29.731773312500003,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:18",
+      "canonical": {
+        "pitch": 60,
+        "start": 29.731773312500003,
+        "end": 30.107258431250003
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 29.731773312500003,
+        "end": 30.107258431250003
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 29.731773312500003,
+        "end": 30.107258431250003,
+        "string": 3,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 29.731773312500003,
+        "end": 30.107258431250003,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:19",
+      "canonical": {
+        "pitch": 65,
+        "start": 30.107258431250003,
+        "end": 30.48254254166667
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 30.107258431250003,
+        "end": 30.48254254166667
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 30.107258431250003,
+        "end": 30.48254254166667,
+        "string": 2,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 30.107258431250003,
+        "end": 30.48254254166667,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:20",
+      "canonical": {
+        "pitch": 67,
+        "start": 30.48254254166667,
+        "end": 30.66871754166667
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 30.48254254166667,
+        "end": 30.66871754166667
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 30.48254254166667,
+        "end": 30.66871754166667,
+        "string": 2,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 30.48254254166667,
+        "end": 30.66871754166667,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:21",
+      "canonical": {
+        "pitch": 65,
+        "start": 30.66871754166667,
+        "end": 31.60571970833334
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 30.66871754166667,
+        "end": 31.60571970833334
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 30.66871754166667,
+        "end": 31.60571970833334,
+        "string": 2,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 30.66871754166667,
+        "end": 31.60571970833334,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:22",
+      "canonical": {
+        "pitch": 67,
+        "start": 31.607267622916673,
+        "end": 31.982513368750006
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 31.607267622916673,
+        "end": 31.982513368750006
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 31.607267622916673,
+        "end": 31.982513368750006,
+        "string": 2,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 31.607267622916673,
+        "end": 31.982513368750006,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:23",
+      "canonical": {
+        "pitch": 68,
+        "start": 31.982513368750006,
+        "end": 32.35626370000001
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 31.982513368750006,
+        "end": 32.35626370000001
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 31.982513368750006,
+        "end": 32.35626370000001,
+        "string": 2,
+        "fret": 9,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 31.982513368750006,
+        "end": 32.35626370000001,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:24",
+      "canonical": {
+        "pitch": 70,
+        "start": 32.35626370000001,
+        "end": 32.73085861250001
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 32.35626370000001,
+        "end": 32.73085861250001
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 32.35626370000001,
+        "end": 32.73085861250001,
+        "string": 2,
+        "fret": 11,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 32.35626370000001,
+        "end": 32.73085861250001,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:25",
+      "canonical": {
+        "pitch": 70,
+        "start": 32.73240631875,
+        "end": 33.48178537500001
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 32.73240631875,
+        "end": 33.48178537500001
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 32.73240631875,
+        "end": 33.48178537500001,
+        "string": 2,
+        "fret": 11,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 32.73240631875,
+        "end": 33.48178537500001,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:26",
+      "canonical": {
+        "pitch": 53,
+        "start": 35.10755725208334,
+        "end": 35.482470706250005
+      },
+      "piano": {
+        "pitch": 53,
+        "start": 35.10755725208334,
+        "end": 35.482470706250005
+      },
+      "guitar": {
+        "pitch": 53,
+        "start": 35.10755725208334,
+        "end": 35.482470706250005,
+        "string": 6,
+        "fret": 13,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 53,
+        "start": 35.10755725208334,
+        "end": 35.482470706250005,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:27",
+      "canonical": {
+        "pitch": 72,
+        "start": 35.482470706250005,
+        "end": 35.85681395208334
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 35.482470706250005,
+        "end": 35.85681395208334
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 35.482470706250005,
+        "end": 35.85681395208334,
+        "string": 2,
+        "fret": 13,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 35.482470706250005,
+        "end": 35.85681395208334,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:28",
+      "canonical": {
+        "pitch": 72,
+        "start": 35.85681395208334,
+        "end": 36.231263447916675
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 35.85681395208334,
+        "end": 36.231263447916675
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 35.85681395208334,
+        "end": 36.231263447916675,
+        "string": 2,
+        "fret": 13,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 35.85681395208334,
+        "end": 36.231263447916675,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:29",
+      "canonical": {
+        "pitch": 72,
+        "start": 36.231263447916675,
+        "end": 36.793232066666675
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 36.231263447916675,
+        "end": 36.793232066666675
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 36.231263447916675,
+        "end": 36.793232066666675,
+        "string": 2,
+        "fret": 13,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 36.231263447916675,
+        "end": 36.793232066666675,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:30",
+      "canonical": {
+        "pitch": 72,
+        "start": 36.79478018958334,
+        "end": 37.16892781250001
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 36.79478018958334,
+        "end": 37.16892781250001
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 36.79478018958334,
+        "end": 37.16892781250001,
+        "string": 2,
+        "fret": 13,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 36.79478018958334,
+        "end": 37.16892781250001,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:31",
+      "canonical": {
+        "pitch": 70,
+        "start": 37.16892781250001,
+        "end": 37.543230435416675
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 37.16892781250001,
+        "end": 37.543230435416675
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 37.16892781250001,
+        "end": 37.543230435416675,
+        "string": 2,
+        "fret": 11,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 37.16892781250001,
+        "end": 37.543230435416675,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:32",
+      "canonical": {
+        "pitch": 68,
+        "start": 37.54478355833334,
+        "end": 37.91966350000001
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 37.54478355833334,
+        "end": 37.91966350000001
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 37.54478355833334,
+        "end": 37.91966350000001,
+        "string": 2,
+        "fret": 9,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 37.54478355833334,
+        "end": 37.91966350000001,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:33",
+      "canonical": {
+        "pitch": 67,
+        "start": 37.91966350000001,
+        "end": 38.294619333333344
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 37.91966350000001,
+        "end": 38.294619333333344
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 37.91966350000001,
+        "end": 38.294619333333344,
+        "string": 2,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 37.91966350000001,
+        "end": 38.294619333333344,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:0:34",
+      "canonical": {
+        "pitch": 65,
+        "start": 38.294619333333344,
+        "end": 39.04527691875001
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 38.294619333333344,
+        "end": 39.04527691875001
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 38.294619333333344,
+        "end": 39.04527691875001,
+        "string": 2,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 38.294619333333344,
+        "end": 39.04527691875001,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:0:0",
+      "canonical": {
+        "pitch": 58,
+        "start": 51.77283450000001,
+        "end": 52.152314075000014
+      },
+      "piano": {
+        "pitch": 58,
+        "start": 51.77283450000001,
+        "end": 52.152314075000014
+      },
+      "guitar": {
+        "pitch": 58,
+        "start": 51.77283450000001,
+        "end": 52.152314075000014,
+        "string": 4,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 58,
+        "start": 51.77283450000001,
+        "end": 52.152314075000014,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:0:1",
+      "canonical": {
+        "pitch": 53,
+        "start": 52.15388344791668,
+        "end": 52.53367169375001
+      },
+      "piano": {
+        "pitch": 53,
+        "start": 52.15388344791668,
+        "end": 52.53367169375001
+      },
+      "guitar": {
+        "pitch": 53,
+        "start": 52.15388344791668,
+        "end": 52.53367169375001,
+        "string": 5,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 53,
+        "start": 52.15388344791668,
+        "end": 52.53367169375001,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:0:3",
+      "canonical": {
+        "pitch": 48,
+        "start": 52.53367169375001,
+        "end": 52.91432931250001
+      },
+      "piano": {
+        "pitch": 48,
+        "start": 52.53367169375001,
+        "end": 52.91432931250001
+      },
+      "guitar": {
+        "pitch": 48,
+        "start": 52.53367169375001,
+        "end": 52.91432931250001,
+        "string": 6,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 52.53367169375001,
+        "end": 52.91432931250001,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:0:6",
+      "canonical": {
+        "pitch": 48,
+        "start": 52.91432931250001,
+        "end": 53.29487693125001
+      },
+      "piano": {
+        "pitch": 48,
+        "start": 52.91432931250001,
+        "end": 53.29487693125001
+      },
+      "guitar": {
+        "pitch": 48,
+        "start": 52.91432931250001,
+        "end": 53.29487693125001,
+        "string": 6,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 52.91432931250001,
+        "end": 53.29487693125001,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:0:8",
+      "canonical": {
+        "pitch": 41,
+        "start": 53.29487693125001,
+        "end": 53.67403166666668
+      },
+      "piano": {
+        "pitch": 41,
+        "start": 53.29487693125001,
+        "end": 53.67403166666668
+      },
+      "guitar": {
+        "pitch": 41,
+        "start": 53.29487693125001,
+        "end": 53.67403166666668,
+        "string": 6,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 53,
+        "start": 53.29487693125001,
+        "end": 53.67403166666668,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:0:10",
+      "canonical": {
+        "pitch": 68,
+        "start": 53.67403166666668,
+        "end": 54.24692604583335
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 53.67403166666668,
+        "end": 54.24692604583335
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 53.67403166666668,
+        "end": 54.24692604583335,
+        "string": 1,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 53.67403166666668,
+        "end": 54.24692604583335,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:0:11",
+      "canonical": {
+        "pitch": 58,
+        "start": 54.24692604583335,
+        "end": 54.81482341875001
+      },
+      "piano": {
+        "pitch": 58,
+        "start": 54.24692604583335,
+        "end": 54.81482341875001
+      },
+      "guitar": {
+        "pitch": 58,
+        "start": 54.24692604583335,
+        "end": 54.81482341875001,
+        "string": 3,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 58,
+        "start": 54.24692604583335,
+        "end": 54.81482341875001,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:0:13",
+      "canonical": {
+        "pitch": 65,
+        "start": 54.81482341875001,
+        "end": 55.195751500000014
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 54.81482341875001,
+        "end": 55.195751500000014
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 54.81482341875001,
+        "end": 55.195751500000014,
+        "string": 1,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 54.81482341875001,
+        "end": 55.195751500000014,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:0:14",
+      "canonical": {
+        "pitch": 60,
+        "start": 55.195751500000014,
+        "end": 55.388502750000015
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 55.195751500000014,
+        "end": 55.388502750000015
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 55.195751500000014,
+        "end": 55.388502750000015,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 55.195751500000014,
+        "end": 55.388502750000015,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:0:16",
+      "canonical": {
+        "pitch": 63,
+        "start": 55.388502750000015,
+        "end": 55.57655275000001
+      },
+      "piano": {
+        "pitch": 63,
+        "start": 55.388502750000015,
+        "end": 55.57655275000001
+      },
+      "guitar": {
+        "pitch": 63,
+        "start": 55.388502750000015,
+        "end": 55.57655275000001,
+        "string": 2,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 63,
+        "start": 55.388502750000015,
+        "end": 55.57655275000001,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:0",
+      "canonical": {
+        "pitch": 53,
+        "start": 65.20069175000003,
+        "end": 65.57532383333336
+      },
+      "piano": {
+        "pitch": 53,
+        "start": 65.20069175000003,
+        "end": 65.57532383333336
+      },
+      "guitar": {
+        "pitch": 53,
+        "start": 65.20069175000003,
+        "end": 65.57532383333336,
+        "string": 4,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 53,
+        "start": 65.20069175000003,
+        "end": 65.57532383333336,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:1",
+      "canonical": {
+        "pitch": 72,
+        "start": 65.57532383333336,
+        "end": 65.95081841666669
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 65.57532383333336,
+        "end": 65.95081841666669
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 65.57532383333336,
+        "end": 65.95081841666669,
+        "string": 1,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 65.57532383333336,
+        "end": 65.95081841666669,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:2",
+      "canonical": {
+        "pitch": 72,
+        "start": 65.95081841666669,
+        "end": 66.51377550000002
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 65.95081841666669,
+        "end": 66.51377550000002
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 65.95081841666669,
+        "end": 66.51377550000002,
+        "string": 1,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 65.95081841666669,
+        "end": 66.51377550000002,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:3",
+      "canonical": {
+        "pitch": 72,
+        "start": 66.51377550000002,
+        "end": 67.2631725666667
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 66.51377550000002,
+        "end": 67.2631725666667
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 66.51377550000002,
+        "end": 67.2631725666667,
+        "string": 1,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 66.51377550000002,
+        "end": 67.2631725666667,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:4",
+      "canonical": {
+        "pitch": 72,
+        "start": 67.2631725666667,
+        "end": 67.82500700000003
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 67.2631725666667,
+        "end": 67.82500700000003
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 67.2631725666667,
+        "end": 67.82500700000003,
+        "string": 1,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 67.2631725666667,
+        "end": 67.82500700000003,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:5",
+      "canonical": {
+        "pitch": 70,
+        "start": 67.82500700000003,
+        "end": 68.19956575000002
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 67.82500700000003,
+        "end": 68.19956575000002
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 67.82500700000003,
+        "end": 68.19956575000002,
+        "string": 1,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 67.82500700000003,
+        "end": 68.19956575000002,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:6",
+      "canonical": {
+        "pitch": 72,
+        "start": 68.20114616666669,
+        "end": 68.57596808541669
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 68.20114616666669,
+        "end": 68.57596808541669
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 68.20114616666669,
+        "end": 68.57596808541669,
+        "string": 1,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 68.20114616666669,
+        "end": 68.57596808541669,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:7",
+      "canonical": {
+        "pitch": 73,
+        "start": 68.57596808541669,
+        "end": 69.32642141666669
+      },
+      "piano": {
+        "pitch": 73,
+        "start": 68.57596808541669,
+        "end": 69.32642141666669
+      },
+      "guitar": {
+        "pitch": 73,
+        "start": 68.57596808541669,
+        "end": 69.32642141666669,
+        "string": 1,
+        "fret": 9,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 73,
+        "start": 68.57596808541669,
+        "end": 69.32642141666669,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:8",
+      "canonical": {
+        "pitch": 70,
+        "start": 70.91852500000002,
+        "end": 71.29392312500002
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 70.91852500000002,
+        "end": 71.29392312500002
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 70.91852500000002,
+        "end": 71.29392312500002,
+        "string": 2,
+        "fret": 11,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 70.91852500000002,
+        "end": 71.29392312500002,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:9",
+      "canonical": {
+        "pitch": 73,
+        "start": 71.29392312500002,
+        "end": 71.66967726250003
+      },
+      "piano": {
+        "pitch": 73,
+        "start": 71.29392312500002,
+        "end": 71.66967726250003
+      },
+      "guitar": {
+        "pitch": 73,
+        "start": 71.29392312500002,
+        "end": 71.66967726250003,
+        "string": 1,
+        "fret": 9,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 73,
+        "start": 71.29392312500002,
+        "end": 71.66967726250003,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:10",
+      "canonical": {
+        "pitch": 75,
+        "start": 71.66967726250003,
+        "end": 73.35610650000002
+      },
+      "piano": {
+        "pitch": 75,
+        "start": 71.66967726250003,
+        "end": 73.35610650000002
+      },
+      "guitar": {
+        "pitch": 75,
+        "start": 71.66967726250003,
+        "end": 73.35610650000002,
+        "string": 1,
+        "fret": 11,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 75,
+        "start": 71.66967726250003,
+        "end": 73.35610650000002,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:11",
+      "canonical": {
+        "pitch": 77,
+        "start": 73.35610650000002,
+        "end": 73.73145525000002
+      },
+      "piano": {
+        "pitch": 77,
+        "start": 73.35610650000002,
+        "end": 73.73145525000002
+      },
+      "guitar": {
+        "pitch": 77,
+        "start": 73.35610650000002,
+        "end": 73.73145525000002,
+        "string": 1,
+        "fret": 13,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 77,
+        "start": 73.35610650000002,
+        "end": 73.73145525000002,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:12",
+      "canonical": {
+        "pitch": 75,
+        "start": 73.73145525000002,
+        "end": 74.29422754166669
+      },
+      "piano": {
+        "pitch": 75,
+        "start": 73.73145525000002,
+        "end": 74.29422754166669
+      },
+      "guitar": {
+        "pitch": 75,
+        "start": 73.73145525000002,
+        "end": 74.29422754166669,
+        "string": 1,
+        "fret": 11,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 75,
+        "start": 73.73145525000002,
+        "end": 74.29422754166669,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:13",
+      "canonical": {
+        "pitch": 72,
+        "start": 74.29422754166669,
+        "end": 74.66898528125002
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 74.29422754166669,
+        "end": 74.66898528125002
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 74.29422754166669,
+        "end": 74.66898528125002,
+        "string": 2,
+        "fret": 13,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 74.29422754166669,
+        "end": 74.66898528125002,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:14",
+      "canonical": {
+        "pitch": 72,
+        "start": 74.66898528125002,
+        "end": 75.41946800000002
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 74.66898528125002,
+        "end": 75.41946800000002
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 74.66898528125002,
+        "end": 75.41946800000002,
+        "string": 2,
+        "fret": 13,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 74.66898528125002,
+        "end": 75.41946800000002,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:15",
+      "canonical": {
+        "pitch": 72,
+        "start": 77.54453895625002,
+        "end": 78.29446005000001
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 77.54453895625002,
+        "end": 78.29446005000001
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 77.54453895625002,
+        "end": 78.29446005000001,
+        "string": 2,
+        "fret": 13,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 77.54453895625002,
+        "end": 78.29446005000001,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:16",
+      "canonical": {
+        "pitch": 72,
+        "start": 78.29446005000001,
+        "end": 78.66898333333336
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 78.29446005000001,
+        "end": 78.66898333333336
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 78.29446005000001,
+        "end": 78.66898333333336,
+        "string": 2,
+        "fret": 13,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 78.29446005000001,
+        "end": 78.66898333333336,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:17",
+      "canonical": {
+        "pitch": 70,
+        "start": 78.66898333333336,
+        "end": 79.41861540625001
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 78.66898333333336,
+        "end": 79.41861540625001
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 78.66898333333336,
+        "end": 79.41861540625001,
+        "string": 2,
+        "fret": 11,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 78.66898333333336,
+        "end": 79.41861540625001,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:18",
+      "canonical": {
+        "pitch": 68,
+        "start": 79.41861540625001,
+        "end": 79.79327241250002
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 79.41861540625001,
+        "end": 79.79327241250002
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 79.41861540625001,
+        "end": 79.79327241250002,
+        "string": 2,
+        "fret": 9,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 79.41861540625001,
+        "end": 79.79327241250002,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:19",
+      "canonical": {
+        "pitch": 67,
+        "start": 79.79485324375001,
+        "end": 80.16855170833334
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 79.79485324375001,
+        "end": 80.16855170833334
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 79.79485324375001,
+        "end": 80.16855170833334,
+        "string": 2,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 79.79485324375001,
+        "end": 80.16855170833334,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:20",
+      "canonical": {
+        "pitch": 65,
+        "start": 80.16855170833334,
+        "end": 80.54394983333334
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 80.16855170833334,
+        "end": 80.54394983333334
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 80.16855170833334,
+        "end": 80.54394983333334,
+        "string": 2,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 80.16855170833334,
+        "end": 80.54394983333334,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:21",
+      "canonical": {
+        "pitch": 72,
+        "start": 80.54394983333334,
+        "end": 80.91938816666668
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 80.54394983333334,
+        "end": 80.91938816666668
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 80.54394983333334,
+        "end": 80.91938816666668,
+        "string": 1,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 80.54394983333334,
+        "end": 80.91938816666668,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:22",
+      "canonical": {
+        "pitch": 70,
+        "start": 80.91938816666668,
+        "end": 81.66958986250002
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 80.91938816666668,
+        "end": 81.66958986250002
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 80.91938816666668,
+        "end": 81.66958986250002,
+        "string": 1,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 80.91938816666668,
+        "end": 81.66958986250002,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:23",
+      "canonical": {
+        "pitch": 60,
+        "start": 83.41913731666668,
+        "end": 83.793744325
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 83.41913731666668,
+        "end": 83.793744325
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 83.41913731666668,
+        "end": 83.793744325,
+        "string": 3,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 83.41913731666668,
+        "end": 83.793744325,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:24",
+      "canonical": {
+        "pitch": 72,
+        "start": 83.793744325,
+        "end": 84.54306933333334
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 83.793744325,
+        "end": 84.54306933333334
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 83.793744325,
+        "end": 84.54306933333334,
+        "string": 1,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 83.793744325,
+        "end": 84.54306933333334,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:25",
+      "canonical": {
+        "pitch": 72,
+        "start": 84.54465391666666,
+        "end": 85.29475960416666
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 84.54465391666666,
+        "end": 85.29475960416666
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 84.54465391666666,
+        "end": 85.29475960416666,
+        "string": 1,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 84.54465391666666,
+        "end": 85.29475960416666,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:26",
+      "canonical": {
+        "pitch": 70,
+        "start": 85.29475960416666,
+        "end": 85.66914348958333
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 85.29475960416666,
+        "end": 85.66914348958333
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 85.29475960416666,
+        "end": 85.66914348958333,
+        "string": 1,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 85.29475960416666,
+        "end": 85.66914348958333,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:27",
+      "canonical": {
+        "pitch": 68,
+        "start": 85.66914348958333,
+        "end": 86.41933875
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 85.66914348958333,
+        "end": 86.41933875
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 85.66914348958333,
+        "end": 86.41933875,
+        "string": 1,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 85.66914348958333,
+        "end": 86.41933875,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:28",
+      "canonical": {
+        "pitch": 67,
+        "start": 86.41933875,
+        "end": 86.79462113541665
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 86.41933875,
+        "end": 86.79462113541665
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 86.41933875,
+        "end": 86.79462113541665,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 86.41933875,
+        "end": 86.79462113541665,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:1:29",
+      "canonical": {
+        "pitch": 65,
+        "start": 86.79462113541665,
+        "end": 87.54385411041665
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 86.79462113541665,
+        "end": 87.54385411041665
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 86.79462113541665,
+        "end": 87.54385411041665,
+        "string": 1,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 86.79462113541665,
+        "end": 87.54385411041665,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:4",
+      "canonical": {
+        "pitch": 55,
+        "start": 91.96595287499999,
+        "end": 92.15888599999998
+      },
+      "piano": {
+        "pitch": 55,
+        "start": 91.96595287499999,
+        "end": 92.15888599999998
+      },
+      "guitar": {
+        "pitch": 55,
+        "start": 91.96595287499999,
+        "end": 92.15888599999998,
+        "string": 3,
+        "fret": 0,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 55,
+        "start": 91.96595287499999,
+        "end": 92.15888599999998,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:9",
+      "canonical": {
+        "pitch": 67,
+        "start": 92.35172974999999,
+        "end": 92.54457349999998
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 92.35172974999999,
+        "end": 92.54457349999998
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 92.35172974999999,
+        "end": 92.54457349999998,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 92.35172974999999,
+        "end": 92.54457349999998,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:12",
+      "canonical": {
+        "pitch": 65,
+        "start": 92.54457349999998,
+        "end": 93.12297162499999
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 92.54457349999998,
+        "end": 93.12297162499999
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 92.54457349999998,
+        "end": 93.12297162499999,
+        "string": 1,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 92.54457349999998,
+        "end": 93.12297162499999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:17",
+      "canonical": {
+        "pitch": 61,
+        "start": 93.12297162499999,
+        "end": 93.50850787499999
+      },
+      "piano": {
+        "pitch": 61,
+        "start": 93.12297162499999,
+        "end": 93.50850787499999
+      },
+      "guitar": {
+        "pitch": 61,
+        "start": 93.12297162499999,
+        "end": 93.50850787499999,
+        "string": 2,
+        "fret": 2,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 61,
+        "start": 93.12297162499999,
+        "end": 93.50850787499999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:19",
+      "canonical": {
+        "pitch": 60,
+        "start": 93.50850787499999,
+        "end": 93.7011958
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 93.50850787499999,
+        "end": 93.7011958
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 93.50850787499999,
+        "end": 93.7011958,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 93.50850787499999,
+        "end": 93.7011958,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:20",
+      "canonical": {
+        "pitch": 58,
+        "start": 93.7011958,
+        "end": 93.89386283958332
+      },
+      "piano": {
+        "pitch": 58,
+        "start": 93.7011958,
+        "end": 93.89386283958332
+      },
+      "guitar": {
+        "pitch": 58,
+        "start": 93.7011958,
+        "end": 93.89386283958332,
+        "string": 3,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 58,
+        "start": 93.7011958,
+        "end": 93.89386283958332,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:21",
+      "canonical": {
+        "pitch": 53,
+        "start": 93.89386283958332,
+        "end": 94.08652987916666
+      },
+      "piano": {
+        "pitch": 53,
+        "start": 93.89386283958332,
+        "end": 94.08652987916666
+      },
+      "guitar": {
+        "pitch": 53,
+        "start": 93.89386283958332,
+        "end": 94.08652987916666,
+        "string": 4,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 53,
+        "start": 93.89386283958332,
+        "end": 94.08652987916666,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:22",
+      "canonical": {
+        "pitch": 58,
+        "start": 94.08652987916666,
+        "end": 94.46561499999999
+      },
+      "piano": {
+        "pitch": 58,
+        "start": 94.08652987916666,
+        "end": 94.46561499999999
+      },
+      "guitar": {
+        "pitch": 58,
+        "start": 94.08652987916666,
+        "end": 94.46561499999999,
+        "string": 3,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 58,
+        "start": 94.08652987916666,
+        "end": 94.46561499999999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:23",
+      "canonical": {
+        "pitch": 61,
+        "start": 94.46561499999999,
+        "end": 95.03928999999998
+      },
+      "piano": {
+        "pitch": 61,
+        "start": 94.46561499999999,
+        "end": 95.03928999999998
+      },
+      "guitar": {
+        "pitch": 61,
+        "start": 94.46561499999999,
+        "end": 95.03928999999998,
+        "string": 2,
+        "fret": 2,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 61,
+        "start": 94.46561499999999,
+        "end": 95.03928999999998,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:24",
+      "canonical": {
+        "pitch": 60,
+        "start": 95.03928999999998,
+        "end": 95.23198708958331
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 95.03928999999998,
+        "end": 95.23198708958331
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 95.03928999999998,
+        "end": 95.23198708958331,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 95.03928999999998,
+        "end": 95.23198708958331,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:25",
+      "canonical": {
+        "pitch": 58,
+        "start": 95.23198708958331,
+        "end": 95.41987726041665
+      },
+      "piano": {
+        "pitch": 58,
+        "start": 95.23198708958331,
+        "end": 95.41987726041665
+      },
+      "guitar": {
+        "pitch": 58,
+        "start": 95.23198708958331,
+        "end": 95.41987726041665,
+        "string": 3,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 58,
+        "start": 95.23198708958331,
+        "end": 95.41987726041665,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:26",
+      "canonical": {
+        "pitch": 58,
+        "start": 95.41987726041665,
+        "end": 95.80521133958332
+      },
+      "piano": {
+        "pitch": 58,
+        "start": 95.41987726041665,
+        "end": 95.80521133958332
+      },
+      "guitar": {
+        "pitch": 58,
+        "start": 95.41987726041665,
+        "end": 95.80521133958332,
+        "string": 3,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 58,
+        "start": 95.41987726041665,
+        "end": 95.80521133958332,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:28",
+      "canonical": {
+        "pitch": 60,
+        "start": 95.80521133958332,
+        "end": 96.18520646874998
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 95.80521133958332,
+        "end": 96.18520646874998
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 95.80521133958332,
+        "end": 96.18520646874998,
+        "string": 3,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 95.80521133958332,
+        "end": 96.18520646874998,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:31",
+      "canonical": {
+        "pitch": 60,
+        "start": 96.18520646874998,
+        "end": 96.57010304999997
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 96.18520646874998,
+        "end": 96.57010304999997
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 96.18520646874998,
+        "end": 96.57010304999997,
+        "string": 3,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 96.18520646874998,
+        "end": 96.57010304999997,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:36",
+      "canonical": {
+        "pitch": 53,
+        "start": 96.57010304999997,
+        "end": 96.76314799999997
+      },
+      "piano": {
+        "pitch": 53,
+        "start": 96.57010304999997,
+        "end": 96.76314799999997
+      },
+      "guitar": {
+        "pitch": 53,
+        "start": 96.57010304999997,
+        "end": 96.76314799999997,
+        "string": 4,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 53,
+        "start": 96.57010304999997,
+        "end": 96.76314799999997,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:39",
+      "canonical": {
+        "pitch": 48,
+        "start": 96.76314799999997,
+        "end": 97.14913799999998
+      },
+      "piano": {
+        "pitch": 48,
+        "start": 96.76314799999997,
+        "end": 97.14913799999998
+      },
+      "guitar": {
+        "pitch": 48,
+        "start": 96.76314799999997,
+        "end": 97.14913799999998,
+        "string": 5,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 96.76314799999997,
+        "end": 97.14913799999998,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:43",
+      "canonical": {
+        "pitch": 48,
+        "start": 97.14913799999998,
+        "end": 97.34053799999998
+      },
+      "piano": {
+        "pitch": 48,
+        "start": 97.14913799999998,
+        "end": 97.34053799999998
+      },
+      "guitar": {
+        "pitch": 48,
+        "start": 97.14913799999998,
+        "end": 97.34053799999998,
+        "string": 5,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 97.14913799999998,
+        "end": 97.34053799999998,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:47",
+      "canonical": {
+        "pitch": 48,
+        "start": 97.34053799999998,
+        "end": 97.53361633333331
+      },
+      "piano": {
+        "pitch": 48,
+        "start": 97.34053799999998,
+        "end": 97.53361633333331
+      },
+      "guitar": {
+        "pitch": 48,
+        "start": 97.34053799999998,
+        "end": 97.53361633333331,
+        "string": 5,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 97.34053799999998,
+        "end": 97.53361633333331,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:51",
+      "canonical": {
+        "pitch": 52,
+        "start": 97.53361633333331,
+        "end": 97.72032883333331
+      },
+      "piano": {
+        "pitch": 52,
+        "start": 97.53361633333331,
+        "end": 97.72032883333331
+      },
+      "guitar": {
+        "pitch": 52,
+        "start": 97.53361633333331,
+        "end": 97.72032883333331,
+        "string": 4,
+        "fret": 2,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 64,
+        "start": 97.53361633333331,
+        "end": 97.72032883333331,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:0",
+      "canonical": {
+        "pitch": 65,
+        "start": 101.91961662499997,
+        "end": 102.2947572458333
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 101.91961662499997,
+        "end": 102.2947572458333
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 101.91961662499997,
+        "end": 102.2947572458333,
+        "string": 1,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 101.91961662499997,
+        "end": 102.2947572458333,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:1",
+      "canonical": {
+        "pitch": 65,
+        "start": 102.2947572458333,
+        "end": 102.66997342291663
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 102.2947572458333,
+        "end": 102.66997342291663
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 102.2947572458333,
+        "end": 102.66997342291663,
+        "string": 1,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 102.2947572458333,
+        "end": 102.66997342291663,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:2",
+      "canonical": {
+        "pitch": 65,
+        "start": 102.66997342291663,
+        "end": 103.04347395833331
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 102.66997342291663,
+        "end": 103.04347395833331
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 102.66997342291663,
+        "end": 103.04347395833331,
+        "string": 1,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 102.66997342291663,
+        "end": 103.04347395833331,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:3",
+      "canonical": {
+        "pitch": 67,
+        "start": 103.04347395833331,
+        "end": 103.41854374999997
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 103.04347395833331,
+        "end": 103.41854374999997
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 103.04347395833331,
+        "end": 103.41854374999997,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 103.04347395833331,
+        "end": 103.41854374999997,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:4",
+      "canonical": {
+        "pitch": 68,
+        "start": 103.41854374999997,
+        "end": 104.1692891333333
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 103.41854374999997,
+        "end": 104.1692891333333
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 103.41854374999997,
+        "end": 104.1692891333333,
+        "string": 1,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 103.41854374999997,
+        "end": 104.1692891333333,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:5",
+      "canonical": {
+        "pitch": 68,
+        "start": 104.1692891333333,
+        "end": 104.54466587499998
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 104.1692891333333,
+        "end": 104.54466587499998
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 104.1692891333333,
+        "end": 104.54466587499998,
+        "string": 1,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 104.1692891333333,
+        "end": 104.54466587499998,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:6",
+      "canonical": {
+        "pitch": 67,
+        "start": 104.54466587499998,
+        "end": 104.92002941666664
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 104.54466587499998,
+        "end": 104.92002941666664
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 104.54466587499998,
+        "end": 104.92002941666664,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 104.54466587499998,
+        "end": 104.92002941666664,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:7",
+      "canonical": {
+        "pitch": 65,
+        "start": 104.92002941666664,
+        "end": 105.67045149999997
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 104.92002941666664,
+        "end": 105.67045149999997
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 104.92002941666664,
+        "end": 105.67045149999997,
+        "string": 1,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 104.92002941666664,
+        "end": 105.67045149999997,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:8",
+      "canonical": {
+        "pitch": 67,
+        "start": 108.04383457499996,
+        "end": 108.41960991666663
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 108.04383457499996,
+        "end": 108.41960991666663
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 108.04383457499996,
+        "end": 108.41960991666663,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 108.04383457499996,
+        "end": 108.41960991666663,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:9",
+      "canonical": {
+        "pitch": 67,
+        "start": 108.41960991666663,
+        "end": 108.79410741666663
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 108.41960991666663,
+        "end": 108.79410741666663
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 108.41960991666663,
+        "end": 108.79410741666663,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 108.41960991666663,
+        "end": 108.79410741666663,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:10",
+      "canonical": {
+        "pitch": 67,
+        "start": 108.79410741666663,
+        "end": 109.1694216083333
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 108.79410741666663,
+        "end": 109.1694216083333
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 108.79410741666663,
+        "end": 109.1694216083333,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 108.79410741666663,
+        "end": 109.1694216083333,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:11",
+      "canonical": {
+        "pitch": 65,
+        "start": 109.1694216083333,
+        "end": 109.54453986874995
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 109.1694216083333,
+        "end": 109.54453986874995
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 109.1694216083333,
+        "end": 109.54453986874995,
+        "string": 1,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 109.1694216083333,
+        "end": 109.54453986874995,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:12",
+      "canonical": {
+        "pitch": 63,
+        "start": 109.54453986874995,
+        "end": 109.91891037499995
+      },
+      "piano": {
+        "pitch": 63,
+        "start": 109.54453986874995,
+        "end": 109.91891037499995
+      },
+      "guitar": {
+        "pitch": 63,
+        "start": 109.54453986874995,
+        "end": 109.91891037499995,
+        "string": 2,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 63,
+        "start": 109.54453986874995,
+        "end": 109.91891037499995,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:13",
+      "canonical": {
+        "pitch": 63,
+        "start": 109.91891037499995,
+        "end": 110.29355412499996
+      },
+      "piano": {
+        "pitch": 63,
+        "start": 109.91891037499995,
+        "end": 110.29355412499996
+      },
+      "guitar": {
+        "pitch": 63,
+        "start": 109.91891037499995,
+        "end": 110.29355412499996,
+        "string": 2,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 63,
+        "start": 109.91891037499995,
+        "end": 110.29355412499996,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:14",
+      "canonical": {
+        "pitch": 65,
+        "start": 110.29355412499996,
+        "end": 110.66785378124996
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 110.29355412499996,
+        "end": 110.66785378124996
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 110.29355412499996,
+        "end": 110.66785378124996,
+        "string": 2,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 110.29355412499996,
+        "end": 110.66785378124996,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:15",
+      "canonical": {
+        "pitch": 63,
+        "start": 110.66945273749995,
+        "end": 111.04360849999996
+      },
+      "piano": {
+        "pitch": 63,
+        "start": 110.66945273749995,
+        "end": 111.04360849999996
+      },
+      "guitar": {
+        "pitch": 63,
+        "start": 110.66945273749995,
+        "end": 111.04360849999996,
+        "string": 2,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 63,
+        "start": 110.66945273749995,
+        "end": 111.04360849999996,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:16",
+      "canonical": {
+        "pitch": 61,
+        "start": 111.04360849999996,
+        "end": 111.41884687499996
+      },
+      "piano": {
+        "pitch": 61,
+        "start": 111.04360849999996,
+        "end": 111.41884687499996
+      },
+      "guitar": {
+        "pitch": 61,
+        "start": 111.04360849999996,
+        "end": 111.41884687499996,
+        "string": 2,
+        "fret": 2,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 61,
+        "start": 111.04360849999996,
+        "end": 111.41884687499996,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:17",
+      "canonical": {
+        "pitch": 60,
+        "start": 111.41884687499996,
+        "end": 112.16909240624996
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 111.41884687499996,
+        "end": 112.16909240624996
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 111.41884687499996,
+        "end": 112.16909240624996,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 111.41884687499996,
+        "end": 112.16909240624996,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:18",
+      "canonical": {
+        "pitch": 60,
+        "start": 113.41913191666663,
+        "end": 114.16980524999995
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 113.41913191666663,
+        "end": 114.16980524999995
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 113.41913191666663,
+        "end": 114.16980524999995,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 113.41913191666663,
+        "end": 114.16980524999995,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:19",
+      "canonical": {
+        "pitch": 60,
+        "start": 114.54363298124996,
+        "end": 116.04327473541662
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 114.54363298124996,
+        "end": 116.04327473541662
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 114.54363298124996,
+        "end": 116.04327473541662,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 114.54363298124996,
+        "end": 116.04327473541662,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:20",
+      "canonical": {
+        "pitch": 65,
+        "start": 116.04487264999995,
+        "end": 116.41878466249995
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 116.04487264999995,
+        "end": 116.41878466249995
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 116.04487264999995,
+        "end": 116.41878466249995,
+        "string": 1,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 116.04487264999995,
+        "end": 116.41878466249995,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:21",
+      "canonical": {
+        "pitch": 65,
+        "start": 116.41878466249995,
+        "end": 116.79439304166662
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 116.41878466249995,
+        "end": 116.79439304166662
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 116.41878466249995,
+        "end": 116.79439304166662,
+        "string": 1,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 116.41878466249995,
+        "end": 116.79439304166662,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:22",
+      "canonical": {
+        "pitch": 60,
+        "start": 116.79439304166662,
+        "end": 117.17005033333328
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 116.79439304166662,
+        "end": 117.17005033333328
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 116.79439304166662,
+        "end": 117.17005033333328,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 116.79439304166662,
+        "end": 117.17005033333328,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:23",
+      "canonical": {
+        "pitch": 63,
+        "start": 117.17005033333328,
+        "end": 117.35697693958329
+      },
+      "piano": {
+        "pitch": 63,
+        "start": 117.17005033333328,
+        "end": 117.35697693958329
+      },
+      "guitar": {
+        "pitch": 63,
+        "start": 117.17005033333328,
+        "end": 117.35697693958329,
+        "string": 2,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 63,
+        "start": 117.17005033333328,
+        "end": 117.35697693958329,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:24",
+      "canonical": {
+        "pitch": 61,
+        "start": 117.35697693958329,
+        "end": 118.10667745833328
+      },
+      "piano": {
+        "pitch": 61,
+        "start": 117.35697693958329,
+        "end": 118.10667745833328
+      },
+      "guitar": {
+        "pitch": 61,
+        "start": 117.35697693958329,
+        "end": 118.10667745833328,
+        "string": 2,
+        "fret": 2,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 61,
+        "start": 117.35697693958329,
+        "end": 118.10667745833328,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:25",
+      "canonical": {
+        "pitch": 60,
+        "start": 120.13727495833328,
+        "end": 120.51208999374994
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 120.13727495833328,
+        "end": 120.51208999374994
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 120.13727495833328,
+        "end": 120.51208999374994,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 120.13727495833328,
+        "end": 120.51208999374994,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:26",
+      "canonical": {
+        "pitch": 60,
+        "start": 120.51369082499994,
+        "end": 121.26302999999994
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 120.51369082499994,
+        "end": 121.26302999999994
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 120.51369082499994,
+        "end": 121.26302999999994,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 120.51369082499994,
+        "end": 121.26302999999994,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:27",
+      "canonical": {
+        "pitch": 60,
+        "start": 121.26302999999994,
+        "end": 121.63811249999995
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 121.26302999999994,
+        "end": 121.63811249999995
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 121.26302999999994,
+        "end": 121.63811249999995,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 121.26302999999994,
+        "end": 121.63811249999995,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:28",
+      "canonical": {
+        "pitch": 60,
+        "start": 121.63811249999995,
+        "end": 122.01328237499995
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 121.63811249999995,
+        "end": 122.01328237499995
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 121.63811249999995,
+        "end": 122.01328237499995,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 121.63811249999995,
+        "end": 122.01328237499995,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:29",
+      "canonical": {
+        "pitch": 58,
+        "start": 122.01328237499995,
+        "end": 122.38870563749995
+      },
+      "piano": {
+        "pitch": 58,
+        "start": 122.01328237499995,
+        "end": 122.38870563749995
+      },
+      "guitar": {
+        "pitch": 58,
+        "start": 122.01328237499995,
+        "end": 122.38870563749995,
+        "string": 3,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 58,
+        "start": 122.01328237499995,
+        "end": 122.38870563749995,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:30",
+      "canonical": {
+        "pitch": 56,
+        "start": 122.38870563749995,
+        "end": 122.76244629166662
+      },
+      "piano": {
+        "pitch": 56,
+        "start": 122.38870563749995,
+        "end": 122.76244629166662
+      },
+      "guitar": {
+        "pitch": 56,
+        "start": 122.38870563749995,
+        "end": 122.76244629166662,
+        "string": 3,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 56,
+        "start": 122.38870563749995,
+        "end": 122.76244629166662,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:31",
+      "canonical": {
+        "pitch": 61,
+        "start": 122.76244629166662,
+        "end": 123.13748004166662
+      },
+      "piano": {
+        "pitch": 61,
+        "start": 122.76244629166662,
+        "end": 123.13748004166662
+      },
+      "guitar": {
+        "pitch": 61,
+        "start": 122.76244629166662,
+        "end": 123.13748004166662,
+        "string": 2,
+        "fret": 2,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 61,
+        "start": 122.76244629166662,
+        "end": 123.13748004166662,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:32",
+      "canonical": {
+        "pitch": 60,
+        "start": 123.13748004166662,
+        "end": 123.88687448124995
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 123.13748004166662,
+        "end": 123.88687448124995
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 123.13748004166662,
+        "end": 123.88687448124995,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 123.13748004166662,
+        "end": 123.88687448124995,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:33",
+      "canonical": {
+        "pitch": 60,
+        "start": 125.91971763749996,
+        "end": 126.29475006874996
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 125.91971763749996,
+        "end": 126.29475006874996
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 125.91971763749996,
+        "end": 126.29475006874996,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 125.91971763749996,
+        "end": 126.29475006874996,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:34",
+      "canonical": {
+        "pitch": 60,
+        "start": 126.29475006874996,
+        "end": 127.04357662499996
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 126.29475006874996,
+        "end": 127.04357662499996
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 126.29475006874996,
+        "end": 127.04357662499996,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 126.29475006874996,
+        "end": 127.04357662499996,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:35",
+      "canonical": {
+        "pitch": 58,
+        "start": 127.04357662499996,
+        "end": 127.79409037499997
+      },
+      "piano": {
+        "pitch": 58,
+        "start": 127.04357662499996,
+        "end": 127.79409037499997
+      },
+      "guitar": {
+        "pitch": 58,
+        "start": 127.04357662499996,
+        "end": 127.79409037499997,
+        "string": 3,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 58,
+        "start": 127.04357662499996,
+        "end": 127.79409037499997,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:36",
+      "canonical": {
+        "pitch": 55,
+        "start": 128.37251984374996,
+        "end": 128.74740041249996
+      },
+      "piano": {
+        "pitch": 55,
+        "start": 128.37251984374996,
+        "end": 128.74740041249996
+      },
+      "guitar": {
+        "pitch": 55,
+        "start": 128.37251984374996,
+        "end": 128.74740041249996,
+        "string": 4,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 55,
+        "start": 128.37251984374996,
+        "end": 128.74740041249996,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:37",
+      "canonical": {
+        "pitch": 55,
+        "start": 128.74740041249996,
+        "end": 129.49747779791662
+      },
+      "piano": {
+        "pitch": 55,
+        "start": 128.74740041249996,
+        "end": 129.49747779791662
+      },
+      "guitar": {
+        "pitch": 55,
+        "start": 128.74740041249996,
+        "end": 129.49747779791662,
+        "string": 4,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 55,
+        "start": 128.74740041249996,
+        "end": 129.49747779791662,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:2:38",
+      "canonical": {
+        "pitch": 55,
+        "start": 129.49747779791662,
+        "end": 129.77270633333328
+      },
+      "piano": {
+        "pitch": 55,
+        "start": 129.49747779791662,
+        "end": 129.77270633333328
+      },
+      "guitar": {
+        "pitch": 55,
+        "start": 129.49747779791662,
+        "end": 129.77270633333328,
+        "string": 4,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 55,
+        "start": 129.49747779791662,
+        "end": 129.77270633333328,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:2:1",
+      "canonical": {
+        "pitch": 41,
+        "start": 130.44522633333327,
+        "end": 130.83650106458327
+      },
+      "piano": {
+        "pitch": 41,
+        "start": 130.44522633333327,
+        "end": 130.83650106458327
+      },
+      "guitar": {
+        "pitch": 41,
+        "start": 130.44522633333327,
+        "end": 130.83650106458327,
+        "string": 6,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 53,
+        "start": 130.44522633333327,
+        "end": 130.83650106458327,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:2:2",
+      "canonical": {
+        "pitch": 41,
+        "start": 130.83650106458327,
+        "end": 131.22119328749994
+      },
+      "piano": {
+        "pitch": 41,
+        "start": 130.83650106458327,
+        "end": 131.22119328749994
+      },
+      "guitar": {
+        "pitch": 41,
+        "start": 130.83650106458327,
+        "end": 131.22119328749994,
+        "string": 6,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 53,
+        "start": 130.83650106458327,
+        "end": 131.22119328749994,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:2:3",
+      "canonical": {
+        "pitch": 41,
+        "start": 131.22119328749994,
+        "end": 131.79924637499994
+      },
+      "piano": {
+        "pitch": 41,
+        "start": 131.22119328749994,
+        "end": 131.79924637499994
+      },
+      "guitar": {
+        "pitch": 41,
+        "start": 131.22119328749994,
+        "end": 131.79924637499994,
+        "string": 6,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 53,
+        "start": 131.22119328749994,
+        "end": 131.79924637499994,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:2:4",
+      "canonical": {
+        "pitch": 41,
+        "start": 131.79924637499994,
+        "end": 131.98679262499994
+      },
+      "piano": {
+        "pitch": 41,
+        "start": 131.79924637499994,
+        "end": 131.98679262499994
+      },
+      "guitar": {
+        "pitch": 41,
+        "start": 131.79924637499994,
+        "end": 131.98679262499994,
+        "string": 6,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 53,
+        "start": 131.79924637499994,
+        "end": 131.98679262499994,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:2:5",
+      "canonical": {
+        "pitch": 41,
+        "start": 131.98679262499994,
+        "end": 132.5647467916666
+      },
+      "piano": {
+        "pitch": 41,
+        "start": 131.98679262499994,
+        "end": 132.5647467916666
+      },
+      "guitar": {
+        "pitch": 41,
+        "start": 131.98679262499994,
+        "end": 132.5647467916666,
+        "string": 6,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 53,
+        "start": 131.98679262499994,
+        "end": 132.5647467916666,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:0",
+      "canonical": {
+        "pitch": 60,
+        "start": 132.71557908333327,
+        "end": 133.09044283749995
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 132.71557908333327,
+        "end": 133.09044283749995
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 132.71557908333327,
+        "end": 133.09044283749995,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 132.71557908333327,
+        "end": 133.09044283749995,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:1",
+      "canonical": {
+        "pitch": 60,
+        "start": 133.09044283749995,
+        "end": 133.46533817916662
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 133.09044283749995,
+        "end": 133.46533817916662
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 133.09044283749995,
+        "end": 133.46533817916662,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 133.09044283749995,
+        "end": 133.46533817916662,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:2",
+      "canonical": {
+        "pitch": 60,
+        "start": 133.46533817916662,
+        "end": 133.83962974999994
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 133.46533817916662,
+        "end": 133.83962974999994
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 133.46533817916662,
+        "end": 133.83962974999994,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 133.46533817916662,
+        "end": 133.83962974999994,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:3",
+      "canonical": {
+        "pitch": 60,
+        "start": 133.84122349999993,
+        "end": 134.02928599999993
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 133.84122349999993,
+        "end": 134.02928599999993
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 133.84122349999993,
+        "end": 134.02928599999993,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 133.84122349999993,
+        "end": 134.02928599999993,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:4",
+      "canonical": {
+        "pitch": 68,
+        "start": 134.02928599999993,
+        "end": 134.40383024374992
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 134.02928599999993,
+        "end": 134.40383024374992
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 134.02928599999993,
+        "end": 134.40383024374992,
+        "string": 1,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 134.02928599999993,
+        "end": 134.40383024374992,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:5",
+      "canonical": {
+        "pitch": 68,
+        "start": 134.40383024374992,
+        "end": 134.77840996249992
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 134.40383024374992,
+        "end": 134.77840996249992
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 134.40383024374992,
+        "end": 134.77840996249992,
+        "string": 1,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 134.40383024374992,
+        "end": 134.77840996249992,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:6",
+      "canonical": {
+        "pitch": 67,
+        "start": 134.77840996249992,
+        "end": 135.15324374999992
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 134.77840996249992,
+        "end": 135.15324374999992
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 134.77840996249992,
+        "end": 135.15324374999992,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 134.77840996249992,
+        "end": 135.15324374999992,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:7",
+      "canonical": {
+        "pitch": 68,
+        "start": 135.15324374999992,
+        "end": 135.90305749999993
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 135.15324374999992,
+        "end": 135.90305749999993
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 135.15324374999992,
+        "end": 135.90305749999993,
+        "string": 1,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 135.15324374999992,
+        "end": 135.90305749999993,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:8",
+      "canonical": {
+        "pitch": 68,
+        "start": 135.90305749999993,
+        "end": 136.2787637499999
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 135.90305749999993,
+        "end": 136.2787637499999
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 135.90305749999993,
+        "end": 136.2787637499999,
+        "string": 1,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 135.90305749999993,
+        "end": 136.2787637499999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:9",
+      "canonical": {
+        "pitch": 65,
+        "start": 136.2787637499999,
+        "end": 136.65437659999992
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 136.2787637499999,
+        "end": 136.65437659999992
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 136.2787637499999,
+        "end": 136.65437659999992,
+        "string": 2,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 136.2787637499999,
+        "end": 136.65437659999992,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:10",
+      "canonical": {
+        "pitch": 60,
+        "start": 136.65437659999992,
+        "end": 137.4044814999999
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 136.65437659999992,
+        "end": 137.4044814999999
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 136.65437659999992,
+        "end": 137.4044814999999,
+        "string": 3,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 136.65437659999992,
+        "end": 137.4044814999999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:11",
+      "canonical": {
+        "pitch": 60,
+        "start": 138.15425856041657,
+        "end": 138.90410695833324
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 138.15425856041657,
+        "end": 138.90410695833324
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 138.15425856041657,
+        "end": 138.90410695833324,
+        "string": 3,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 138.15425856041657,
+        "end": 138.90410695833324,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:12",
+      "canonical": {
+        "pitch": 67,
+        "start": 138.90410695833324,
+        "end": 139.27826320833324
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 138.90410695833324,
+        "end": 139.27826320833324
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 138.90410695833324,
+        "end": 139.27826320833324,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 138.90410695833324,
+        "end": 139.27826320833324,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:13",
+      "canonical": {
+        "pitch": 67,
+        "start": 139.27826320833324,
+        "end": 139.46534133333324
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 139.27826320833324,
+        "end": 139.46534133333324
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 139.27826320833324,
+        "end": 139.46534133333324,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 139.27826320833324,
+        "end": 139.46534133333324,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:14",
+      "canonical": {
+        "pitch": 67,
+        "start": 139.46534133333324,
+        "end": 139.84091798541658
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 139.46534133333324,
+        "end": 139.84091798541658
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 139.46534133333324,
+        "end": 139.84091798541658,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 139.46534133333324,
+        "end": 139.84091798541658,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:15",
+      "canonical": {
+        "pitch": 65,
+        "start": 139.84091798541658,
+        "end": 140.02780086666658
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 139.84091798541658,
+        "end": 140.02780086666658
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 139.84091798541658,
+        "end": 140.02780086666658,
+        "string": 1,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 139.84091798541658,
+        "end": 140.02780086666658,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:16",
+      "canonical": {
+        "pitch": 63,
+        "start": 140.0293981562499,
+        "end": 140.77852697083324
+      },
+      "piano": {
+        "pitch": 63,
+        "start": 140.0293981562499,
+        "end": 140.77852697083324
+      },
+      "guitar": {
+        "pitch": 63,
+        "start": 140.0293981562499,
+        "end": 140.77852697083324,
+        "string": 2,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 63,
+        "start": 140.0293981562499,
+        "end": 140.77852697083324,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:17",
+      "canonical": {
+        "pitch": 67,
+        "start": 140.77852697083324,
+        "end": 141.15389002291658
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 140.77852697083324,
+        "end": 141.15389002291658
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 140.77852697083324,
+        "end": 141.15389002291658,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 140.77852697083324,
+        "end": 141.15389002291658,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:18",
+      "canonical": {
+        "pitch": 67,
+        "start": 141.15389002291658,
+        "end": 141.3407549874999
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 141.15389002291658,
+        "end": 141.3407549874999
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 141.15389002291658,
+        "end": 141.3407549874999,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 141.15389002291658,
+        "end": 141.3407549874999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:19",
+      "canonical": {
+        "pitch": 67,
+        "start": 141.3407549874999,
+        "end": 141.7160690812499
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 141.3407549874999,
+        "end": 141.7160690812499
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 141.3407549874999,
+        "end": 141.7160690812499,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 141.3407549874999,
+        "end": 141.7160690812499,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:20",
+      "canonical": {
+        "pitch": 70,
+        "start": 141.7160690812499,
+        "end": 142.0913991666666
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 141.7160690812499,
+        "end": 142.0913991666666
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 141.7160690812499,
+        "end": 142.0913991666666,
+        "string": 1,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 141.7160690812499,
+        "end": 142.0913991666666,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:21",
+      "canonical": {
+        "pitch": 68,
+        "start": 142.0913991666666,
+        "end": 142.8420987499999
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 142.0913991666666,
+        "end": 142.8420987499999
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 142.0913991666666,
+        "end": 142.8420987499999,
+        "string": 1,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 142.0913991666666,
+        "end": 142.8420987499999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:22",
+      "canonical": {
+        "pitch": 60,
+        "start": 143.59106738541658,
+        "end": 144.7163677499999
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 143.59106738541658,
+        "end": 144.7163677499999
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 143.59106738541658,
+        "end": 144.7163677499999,
+        "string": 3,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 143.59106738541658,
+        "end": 144.7163677499999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:23",
+      "canonical": {
+        "pitch": 68,
+        "start": 144.7163677499999,
+        "end": 144.84160649999993
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 144.7163677499999,
+        "end": 144.84160649999993
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 144.7163677499999,
+        "end": 144.84160649999993,
+        "string": 1,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 144.7163677499999,
+        "end": 144.84160649999993,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:4:0",
+      "canonical": {
+        "pitch": 58,
+        "start": 144.84160649999993,
+        "end": 145.0342814999999
+      },
+      "piano": {
+        "pitch": 58,
+        "start": 144.84160649999993,
+        "end": 145.0342814999999
+      },
+      "guitar": {
+        "pitch": 58,
+        "start": 144.84160649999993,
+        "end": 145.0342814999999,
+        "string": 3,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 58,
+        "start": 144.84160649999993,
+        "end": 145.0342814999999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:4:1",
+      "canonical": {
+        "pitch": 63,
+        "start": 145.0342814999999,
+        "end": 145.0904589354166
+      },
+      "piano": {
+        "pitch": 63,
+        "start": 145.0342814999999,
+        "end": 145.0904589354166
+      },
+      "guitar": {
+        "pitch": 63,
+        "start": 145.0342814999999,
+        "end": 145.0904589354166,
+        "string": 2,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 63,
+        "start": 145.0342814999999,
+        "end": 145.0904589354166,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:24",
+      "canonical": {
+        "pitch": 70,
+        "start": 145.0904589354166,
+        "end": 145.22688375833326
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 145.0904589354166,
+        "end": 145.22688375833326
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 145.0904589354166,
+        "end": 145.22688375833326,
+        "string": 1,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 145.0904589354166,
+        "end": 145.22688375833326,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:4:2",
+      "canonical": {
+        "pitch": 61,
+        "start": 145.22688375833326,
+        "end": 145.41948350833326
+      },
+      "piano": {
+        "pitch": 61,
+        "start": 145.22688375833326,
+        "end": 145.41948350833326
+      },
+      "guitar": {
+        "pitch": 61,
+        "start": 145.22688375833326,
+        "end": 145.41948350833326,
+        "string": 3,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 61,
+        "start": 145.22688375833326,
+        "end": 145.41948350833326,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:4:3",
+      "canonical": {
+        "pitch": 58,
+        "start": 145.41948350833326,
+        "end": 145.61208325833326
+      },
+      "piano": {
+        "pitch": 58,
+        "start": 145.41948350833326,
+        "end": 145.61208325833326
+      },
+      "guitar": {
+        "pitch": 58,
+        "start": 145.41948350833326,
+        "end": 145.61208325833326,
+        "string": 4,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 58,
+        "start": 145.41948350833326,
+        "end": 145.61208325833326,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:4:4",
+      "canonical": {
+        "pitch": 61,
+        "start": 145.61208325833326,
+        "end": 145.80468300833326
+      },
+      "piano": {
+        "pitch": 61,
+        "start": 145.61208325833326,
+        "end": 145.80468300833326
+      },
+      "guitar": {
+        "pitch": 61,
+        "start": 145.61208325833326,
+        "end": 145.80468300833326,
+        "string": 3,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 61,
+        "start": 145.61208325833326,
+        "end": 145.80468300833326,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:4:5",
+      "canonical": {
+        "pitch": 58,
+        "start": 145.80468300833326,
+        "end": 145.8416059166666
+      },
+      "piano": {
+        "pitch": 58,
+        "start": 145.80468300833326,
+        "end": 145.8416059166666
+      },
+      "guitar": {
+        "pitch": 58,
+        "start": 145.80468300833326,
+        "end": 145.8416059166666,
+        "string": 4,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 58,
+        "start": 145.80468300833326,
+        "end": 145.8416059166666,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:25",
+      "canonical": {
+        "pitch": 70,
+        "start": 145.8416059166666,
+        "end": 146.02783424999993
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 145.8416059166666,
+        "end": 146.02783424999993
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 145.8416059166666,
+        "end": 146.02783424999993,
+        "string": 1,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 145.8416059166666,
+        "end": 146.02783424999993,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:26",
+      "canonical": {
+        "pitch": 70,
+        "start": 146.02783424999993,
+        "end": 146.40350174999992
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 146.02783424999993,
+        "end": 146.40350174999992
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 146.02783424999993,
+        "end": 146.40350174999992,
+        "string": 1,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 146.02783424999993,
+        "end": 146.40350174999992,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:27",
+      "canonical": {
+        "pitch": 72,
+        "start": 146.40350174999992,
+        "end": 147.15285975833325
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 146.40350174999992,
+        "end": 147.15285975833325
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 146.40350174999992,
+        "end": 147.15285975833325,
+        "string": 1,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 146.40350174999992,
+        "end": 147.15285975833325,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:28",
+      "canonical": {
+        "pitch": 70,
+        "start": 147.15285975833325,
+        "end": 147.9027238749999
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 147.15285975833325,
+        "end": 147.9027238749999
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 147.15285975833325,
+        "end": 147.9027238749999,
+        "string": 1,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 147.15285975833325,
+        "end": 147.9027238749999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:29",
+      "canonical": {
+        "pitch": 72,
+        "start": 147.9043207499999,
+        "end": 148.09115512499991
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 147.9043207499999,
+        "end": 148.09115512499991
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 147.9043207499999,
+        "end": 148.09115512499991,
+        "string": 1,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 147.9043207499999,
+        "end": 148.09115512499991,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:30",
+      "canonical": {
+        "pitch": 72,
+        "start": 148.09115512499991,
+        "end": 148.46614824999992
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 148.09115512499991,
+        "end": 148.46614824999992
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 148.09115512499991,
+        "end": 148.46614824999992,
+        "string": 1,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 148.09115512499991,
+        "end": 148.46614824999992,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:31",
+      "canonical": {
+        "pitch": 68,
+        "start": 148.46614824999992,
+        "end": 149.21570156666658
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 148.46614824999992,
+        "end": 149.21570156666658
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 148.46614824999992,
+        "end": 149.21570156666658,
+        "string": 2,
+        "fret": 9,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 148.46614824999992,
+        "end": 149.21570156666658,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:32",
+      "canonical": {
+        "pitch": 60,
+        "start": 149.9656709999999,
+        "end": 150.71637810833323
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 149.9656709999999,
+        "end": 150.71637810833323
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 149.9656709999999,
+        "end": 150.71637810833323,
+        "string": 4,
+        "fret": 10,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 149.9656709999999,
+        "end": 150.71637810833323,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:33",
+      "canonical": {
+        "pitch": 72,
+        "start": 150.71637810833323,
+        "end": 151.0913494937499
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 150.71637810833323,
+        "end": 151.0913494937499
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 150.71637810833323,
+        "end": 151.0913494937499,
+        "string": 1,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 150.71637810833323,
+        "end": 151.0913494937499,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:34",
+      "canonical": {
+        "pitch": 72,
+        "start": 151.0913494937499,
+        "end": 151.46628416666655
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 151.0913494937499,
+        "end": 151.46628416666655
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 151.0913494937499,
+        "end": 151.46628416666655,
+        "string": 1,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 151.0913494937499,
+        "end": 151.46628416666655,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:35",
+      "canonical": {
+        "pitch": 70,
+        "start": 151.46628416666655,
+        "end": 151.84120708333322
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 151.46628416666655,
+        "end": 151.84120708333322
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 151.46628416666655,
+        "end": 151.84120708333322,
+        "string": 1,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 151.46628416666655,
+        "end": 151.84120708333322,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:36",
+      "canonical": {
+        "pitch": 67,
+        "start": 151.84120708333322,
+        "end": 152.59128458333322
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 151.84120708333322,
+        "end": 152.59128458333322
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 151.84120708333322,
+        "end": 152.59128458333322,
+        "string": 2,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 151.84120708333322,
+        "end": 152.59128458333322,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:37",
+      "canonical": {
+        "pitch": 60,
+        "start": 152.96583156458323,
+        "end": 153.71634643541657
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 152.96583156458323,
+        "end": 153.71634643541657
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 152.96583156458323,
+        "end": 153.71634643541657,
+        "string": 4,
+        "fret": 10,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 152.96583156458323,
+        "end": 153.71634643541657,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:38",
+      "canonical": {
+        "pitch": 60,
+        "start": 153.71634643541657,
+        "end": 154.09167282916655
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 153.71634643541657,
+        "end": 154.09167282916655
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 153.71634643541657,
+        "end": 154.09167282916655,
+        "string": 4,
+        "fret": 10,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 153.71634643541657,
+        "end": 154.09167282916655,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:39",
+      "canonical": {
+        "pitch": 65,
+        "start": 154.09167282916655,
+        "end": 154.84098737499988
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 154.09167282916655,
+        "end": 154.84098737499988
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 154.09167282916655,
+        "end": 154.84098737499988,
+        "string": 3,
+        "fret": 10,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 154.09167282916655,
+        "end": 154.84098737499988,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:4:2",
+      "canonical": {
+        "pitch": 41,
+        "start": 155.84683965833324,
+        "end": 156.3718348124999
+      },
+      "piano": {
+        "pitch": 41,
+        "start": 155.84683965833324,
+        "end": 156.3718348124999
+      },
+      "guitar": {
+        "pitch": 41,
+        "start": 155.84683965833324,
+        "end": 156.3718348124999,
+        "string": 6,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 53,
+        "start": 155.84683965833324,
+        "end": 156.3718348124999,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:40",
+      "canonical": {
+        "pitch": 60,
+        "start": 156.3718348124999,
+        "end": 157.12130116666657
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 156.3718348124999,
+        "end": 157.12130116666657
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 156.3718348124999,
+        "end": 157.12130116666657,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 156.3718348124999,
+        "end": 157.12130116666657,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:41",
+      "canonical": {
+        "pitch": 60,
+        "start": 157.12290845833323,
+        "end": 157.4972614374999
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 157.12290845833323,
+        "end": 157.4972614374999
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 157.12290845833323,
+        "end": 157.4972614374999,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 157.12290845833323,
+        "end": 157.4972614374999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:42",
+      "canonical": {
+        "pitch": 60,
+        "start": 157.4972614374999,
+        "end": 158.2469166249999
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 157.4972614374999,
+        "end": 158.2469166249999
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 157.4972614374999,
+        "end": 158.2469166249999,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 157.4972614374999,
+        "end": 158.2469166249999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:43",
+      "canonical": {
+        "pitch": 68,
+        "start": 158.2469166249999,
+        "end": 159.74737676874992
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 158.2469166249999,
+        "end": 159.74737676874992
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 158.2469166249999,
+        "end": 159.74737676874992,
+        "string": 1,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 158.2469166249999,
+        "end": 159.74737676874992,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:44",
+      "canonical": {
+        "pitch": 72,
+        "start": 159.74737676874992,
+        "end": 160.12314128124993
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 159.74737676874992,
+        "end": 160.12314128124993
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 159.74737676874992,
+        "end": 160.12314128124993,
+        "string": 1,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 159.74737676874992,
+        "end": 160.12314128124993,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:45",
+      "canonical": {
+        "pitch": 70,
+        "start": 160.12314128124993,
+        "end": 160.87301249999993
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 160.12314128124993,
+        "end": 160.87301249999993
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 160.12314128124993,
+        "end": 160.87301249999993,
+        "string": 1,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 160.12314128124993,
+        "end": 160.87301249999993,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:46",
+      "canonical": {
+        "pitch": 60,
+        "start": 161.24712728124993,
+        "end": 161.99734234999994
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 161.24712728124993,
+        "end": 161.99734234999994
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 161.24712728124993,
+        "end": 161.99734234999994,
+        "string": 3,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 161.24712728124993,
+        "end": 161.99734234999994,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:47",
+      "canonical": {
+        "pitch": 55,
+        "start": 163.4979319166666,
+        "end": 164.2472874729166
+      },
+      "piano": {
+        "pitch": 55,
+        "start": 163.4979319166666,
+        "end": 164.2472874729166
+      },
+      "guitar": {
+        "pitch": 55,
+        "start": 163.4979319166666,
+        "end": 164.2472874729166,
+        "string": 4,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 55,
+        "start": 163.4979319166666,
+        "end": 164.2472874729166,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:48",
+      "canonical": {
+        "pitch": 67,
+        "start": 164.2472874729166,
+        "end": 164.99749299999993
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 164.2472874729166,
+        "end": 164.99749299999993
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 164.2472874729166,
+        "end": 164.99749299999993,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 164.2472874729166,
+        "end": 164.99749299999993,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:49",
+      "canonical": {
+        "pitch": 70,
+        "start": 164.99749299999993,
+        "end": 165.74788214999992
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 164.99749299999993,
+        "end": 165.74788214999992
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 164.99749299999993,
+        "end": 165.74788214999992,
+        "string": 1,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 164.99749299999993,
+        "end": 165.74788214999992,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:50",
+      "canonical": {
+        "pitch": 68,
+        "start": 165.74788214999992,
+        "end": 166.1218311666666
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 165.74788214999992,
+        "end": 166.1218311666666
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 165.74788214999992,
+        "end": 166.1218311666666,
+        "string": 1,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 165.74788214999992,
+        "end": 166.1218311666666,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:51",
+      "canonical": {
+        "pitch": 67,
+        "start": 166.1218311666666,
+        "end": 166.4975961666666
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 166.1218311666666,
+        "end": 166.4975961666666
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 166.1218311666666,
+        "end": 166.4975961666666,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 166.1218311666666,
+        "end": 166.4975961666666,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:52",
+      "canonical": {
+        "pitch": 65,
+        "start": 166.4975961666666,
+        "end": 167.2475311999999
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 166.4975961666666,
+        "end": 167.2475311999999
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 166.4975961666666,
+        "end": 167.2475311999999,
+        "string": 1,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 166.4975961666666,
+        "end": 167.2475311999999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:53",
+      "canonical": {
+        "pitch": 60,
+        "start": 167.6217484999999,
+        "end": 168.37226427708325
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 167.6217484999999,
+        "end": 168.37226427708325
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 167.6217484999999,
+        "end": 168.37226427708325,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 167.6217484999999,
+        "end": 168.37226427708325,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Woodwinds).mid:0:3",
+      "canonical": {
+        "pitch": 56,
+        "start": 168.90819378749993,
+        "end": 169.69410526249993
+      },
+      "piano": {
+        "pitch": 56,
+        "start": 168.90819378749993,
+        "end": 169.69410526249993
+      },
+      "guitar": {
+        "pitch": 56,
+        "start": 168.90819378749993,
+        "end": 169.69410526249993,
+        "string": 3,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 56,
+        "start": 168.90819378749993,
+        "end": 169.69410526249993,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:54",
+      "canonical": {
+        "pitch": 55,
+        "start": 169.8723014999999,
+        "end": 170.62251316666658
+      },
+      "piano": {
+        "pitch": 55,
+        "start": 169.8723014999999,
+        "end": 170.62251316666658
+      },
+      "guitar": {
+        "pitch": 55,
+        "start": 169.8723014999999,
+        "end": 170.62251316666658,
+        "string": 3,
+        "fret": 0,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 55,
+        "start": 169.8723014999999,
+        "end": 170.62251316666658,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:55",
+      "canonical": {
+        "pitch": 67,
+        "start": 170.62251316666658,
+        "end": 171.37201149999993
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 170.62251316666658,
+        "end": 171.37201149999993
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 170.62251316666658,
+        "end": 171.37201149999993,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 170.62251316666658,
+        "end": 171.37201149999993,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:56",
+      "canonical": {
+        "pitch": 72,
+        "start": 171.37201149999993,
+        "end": 172.12187649999993
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 171.37201149999993,
+        "end": 172.12187649999993
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 171.37201149999993,
+        "end": 172.12187649999993,
+        "string": 1,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 171.37201149999993,
+        "end": 172.12187649999993,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:57",
+      "canonical": {
+        "pitch": 70,
+        "start": 172.12187649999993,
+        "end": 172.8726113916666
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 172.12187649999993,
+        "end": 172.8726113916666
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 172.12187649999993,
+        "end": 172.8726113916666,
+        "string": 1,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 172.12187649999993,
+        "end": 172.8726113916666,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:58",
+      "canonical": {
+        "pitch": 72,
+        "start": 172.8726113916666,
+        "end": 173.24730403124994
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 172.8726113916666,
+        "end": 173.24730403124994
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 172.8726113916666,
+        "end": 173.24730403124994,
+        "string": 1,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 172.8726113916666,
+        "end": 173.24730403124994,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:59",
+      "canonical": {
+        "pitch": 70,
+        "start": 173.24730403124994,
+        "end": 173.99680222708326
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 173.24730403124994,
+        "end": 173.99680222708326
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 173.24730403124994,
+        "end": 173.99680222708326,
+        "string": 1,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 173.24730403124994,
+        "end": 173.99680222708326,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:60",
+      "canonical": {
+        "pitch": 60,
+        "start": 174.3716269999999,
+        "end": 175.12188072916658
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 174.3716269999999,
+        "end": 175.12188072916658
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 174.3716269999999,
+        "end": 175.12188072916658,
+        "string": 3,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 174.3716269999999,
+        "end": 175.12188072916658,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:61",
+      "canonical": {
+        "pitch": 60,
+        "start": 175.4968646187499,
+        "end": 176.2469759999999
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 175.4968646187499,
+        "end": 176.2469759999999
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 175.4968646187499,
+        "end": 176.2469759999999,
+        "string": 3,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 175.4968646187499,
+        "end": 176.2469759999999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:62",
+      "canonical": {
+        "pitch": 67,
+        "start": 176.2469759999999,
+        "end": 176.99651888541658
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 176.2469759999999,
+        "end": 176.99651888541658
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 176.2469759999999,
+        "end": 176.99651888541658,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 176.2469759999999,
+        "end": 176.99651888541658,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:63",
+      "canonical": {
+        "pitch": 70,
+        "start": 176.9981255499999,
+        "end": 177.74720999583323
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 176.9981255499999,
+        "end": 177.74720999583323
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 176.9981255499999,
+        "end": 177.74720999583323,
+        "string": 1,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 176.9981255499999,
+        "end": 177.74720999583323,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:64",
+      "canonical": {
+        "pitch": 68,
+        "start": 177.74720999583323,
+        "end": 178.4977679812499
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 177.74720999583323,
+        "end": 178.4977679812499
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 177.74720999583323,
+        "end": 178.4977679812499,
+        "string": 1,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 177.74720999583323,
+        "end": 178.4977679812499,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:65",
+      "canonical": {
+        "pitch": 67,
+        "start": 178.4977679812499,
+        "end": 178.6855771124999
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 178.4977679812499,
+        "end": 178.6855771124999
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 178.4977679812499,
+        "end": 178.6855771124999,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 178.4977679812499,
+        "end": 178.6855771124999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:66",
+      "canonical": {
+        "pitch": 65,
+        "start": 178.6855771124999,
+        "end": 179.43612466666656
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 178.6855771124999,
+        "end": 179.43612466666656
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 178.6855771124999,
+        "end": 179.43612466666656,
+        "string": 1,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 178.6855771124999,
+        "end": 179.43612466666656,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:67",
+      "canonical": {
+        "pitch": 60,
+        "start": 179.80922978124988,
+        "end": 180.5599619999999
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 179.80922978124988,
+        "end": 180.5599619999999
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 179.80922978124988,
+        "end": 180.5599619999999,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 179.80922978124988,
+        "end": 180.5599619999999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:68",
+      "canonical": {
+        "pitch": 60,
+        "start": 180.9340726249999,
+        "end": 181.68365345833325
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 180.9340726249999,
+        "end": 181.68365345833325
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 180.9340726249999,
+        "end": 181.68365345833325,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 180.9340726249999,
+        "end": 181.68365345833325,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:69",
+      "canonical": {
+        "pitch": 60,
+        "start": 182.06059761458326,
+        "end": 182.81085913958324
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 182.06059761458326,
+        "end": 182.81085913958324
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 182.06059761458326,
+        "end": 182.81085913958324,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 182.06059761458326,
+        "end": 182.81085913958324,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:70",
+      "canonical": {
+        "pitch": 60,
+        "start": 183.18523427916656,
+        "end": 183.9359106249999
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 183.18523427916656,
+        "end": 183.9359106249999
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 183.18523427916656,
+        "end": 183.9359106249999,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 183.18523427916656,
+        "end": 183.9359106249999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:71",
+      "canonical": {
+        "pitch": 67,
+        "start": 184.3106037499999,
+        "end": 184.49692416666656
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 184.3106037499999,
+        "end": 184.49692416666656
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 184.3106037499999,
+        "end": 184.49692416666656,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 184.3106037499999,
+        "end": 184.49692416666656,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:72",
+      "canonical": {
+        "pitch": 68,
+        "start": 184.49692416666656,
+        "end": 184.68475791666657
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 184.49692416666656,
+        "end": 184.68475791666657
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 184.49692416666656,
+        "end": 184.68475791666657,
+        "string": 1,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 184.49692416666656,
+        "end": 184.68475791666657,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:73",
+      "canonical": {
+        "pitch": 67,
+        "start": 184.68475791666657,
+        "end": 184.87259166666658
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 184.68475791666657,
+        "end": 184.87259166666658
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 184.68475791666657,
+        "end": 184.87259166666658,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 184.68475791666657,
+        "end": 184.87259166666658,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:74",
+      "canonical": {
+        "pitch": 65,
+        "start": 184.87259166666658,
+        "end": 185.6221312437499
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 184.87259166666658,
+        "end": 185.6221312437499
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 184.87259166666658,
+        "end": 185.6221312437499,
+        "string": 1,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 184.87259166666658,
+        "end": 185.6221312437499,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:75",
+      "canonical": {
+        "pitch": 60,
+        "start": 185.9977707562499,
+        "end": 186.74829966666655
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 185.9977707562499,
+        "end": 186.74829966666655
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 185.9977707562499,
+        "end": 186.74829966666655,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 185.9977707562499,
+        "end": 186.74829966666655,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:3:76",
+      "canonical": {
+        "pitch": 60,
+        "start": 187.1217229999999,
+        "end": 187.7728919562499
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 187.1217229999999,
+        "end": 187.7728919562499
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 187.1217229999999,
+        "end": 187.7728919562499,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 187.1217229999999,
+        "end": 187.7728919562499,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Woodwinds).mid:2:4",
+      "canonical": {
+        "pitch": 48,
+        "start": 188.20491660416658,
+        "end": 188.3975496874999
+      },
+      "piano": {
+        "pitch": 48,
+        "start": 188.20491660416658,
+        "end": 188.3975496874999
+      },
+      "guitar": {
+        "pitch": 48,
+        "start": 188.20491660416658,
+        "end": 188.3975496874999,
+        "string": 5,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 188.20491660416658,
+        "end": 188.3975496874999,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:6:39",
+      "canonical": {
+        "pitch": 48,
+        "start": 188.58535881874988,
+        "end": 188.9401093999999
+      },
+      "piano": {
+        "pitch": 48,
+        "start": 188.58535881874988,
+        "end": 188.9401093999999
+      },
+      "guitar": {
+        "pitch": 48,
+        "start": 188.58535881874988,
+        "end": 188.9401093999999,
+        "string": 5,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 188.58535881874988,
+        "end": 188.9401093999999,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Woodwinds).mid:2:5",
+      "canonical": {
+        "pitch": 72,
+        "start": 188.9401093999999,
+        "end": 190.5332749999999
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 188.9401093999999,
+        "end": 190.5332749999999
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 188.9401093999999,
+        "end": 190.5332749999999,
+        "string": 1,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 188.9401093999999,
+        "end": 190.5332749999999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Woodwinds).mid:2:6",
+      "canonical": {
+        "pitch": 70,
+        "start": 190.5332749999999,
+        "end": 191.31440708333324
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 190.5332749999999,
+        "end": 191.31440708333324
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 190.5332749999999,
+        "end": 191.31440708333324,
+        "string": 1,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 190.5332749999999,
+        "end": 191.31440708333324,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Woodwinds).mid:2:7",
+      "canonical": {
+        "pitch": 72,
+        "start": 191.31440708333324,
+        "end": 192.3717883624999
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 191.31440708333324,
+        "end": 192.3717883624999
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 191.31440708333324,
+        "end": 192.3717883624999,
+        "string": 1,
+        "fret": 8,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 191.31440708333324,
+        "end": 192.3717883624999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:5:0",
+      "canonical": {
+        "pitch": 60,
+        "start": 192.3717883624999,
+        "end": 193.12245363749986
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 192.3717883624999,
+        "end": 193.12245363749986
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 192.3717883624999,
+        "end": 193.12245363749986,
+        "string": 4,
+        "fret": 10,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 192.3717883624999,
+        "end": 193.12245363749986,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:5:1",
+      "canonical": {
+        "pitch": 60,
+        "start": 193.49763314999987,
+        "end": 194.2469657083332
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 193.49763314999987,
+        "end": 194.2469657083332
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 193.49763314999987,
+        "end": 194.2469657083332,
+        "string": 4,
+        "fret": 10,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 193.49763314999987,
+        "end": 194.2469657083332,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:5:2",
+      "canonical": {
+        "pitch": 60,
+        "start": 194.62217623124985,
+        "end": 195.3721983833332
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 194.62217623124985,
+        "end": 195.3721983833332
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 194.62217623124985,
+        "end": 195.3721983833332,
+        "string": 4,
+        "fret": 10,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 194.62217623124985,
+        "end": 195.3721983833332,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:5:3",
+      "canonical": {
+        "pitch": 60,
+        "start": 195.74668456666652,
+        "end": 196.49624224999985
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 195.74668456666652,
+        "end": 196.49624224999985
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 195.74668456666652,
+        "end": 196.49624224999985,
+        "string": 4,
+        "fret": 10,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 195.74668456666652,
+        "end": 196.49624224999985,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:5:4",
+      "canonical": {
+        "pitch": 60,
+        "start": 196.87195036249986,
+        "end": 197.6220608520832
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 196.87195036249986,
+        "end": 197.6220608520832
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 196.87195036249986,
+        "end": 197.6220608520832,
+        "string": 4,
+        "fret": 10,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 196.87195036249986,
+        "end": 197.6220608520832,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:5:5",
+      "canonical": {
+        "pitch": 60,
+        "start": 197.99714182499986,
+        "end": 198.74666024999985
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 197.99714182499986,
+        "end": 198.74666024999985
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 197.99714182499986,
+        "end": 198.74666024999985,
+        "string": 4,
+        "fret": 10,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 197.99714182499986,
+        "end": 198.74666024999985,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:5:6",
+      "canonical": {
+        "pitch": 60,
+        "start": 199.12191441666653,
+        "end": 199.87262931249987
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 199.12191441666653,
+        "end": 199.87262931249987
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 199.12191441666653,
+        "end": 199.87262931249987,
+        "string": 4,
+        "fret": 10,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 199.12191441666653,
+        "end": 199.87262931249987,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:5:7",
+      "canonical": {
+        "pitch": 60,
+        "start": 200.24664236874986,
+        "end": 200.99621743749987
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 200.24664236874986,
+        "end": 200.99621743749987
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 200.24664236874986,
+        "end": 200.99621743749987,
+        "string": 4,
+        "fret": 10,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 200.24664236874986,
+        "end": 200.99621743749987,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:5:8",
+      "canonical": {
+        "pitch": 67,
+        "start": 201.37192194999986,
+        "end": 202.12242433333319
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 201.37192194999986,
+        "end": 202.12242433333319
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 201.37192194999986,
+        "end": 202.12242433333319,
+        "string": 3,
+        "fret": 12,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 201.37192194999986,
+        "end": 202.12242433333319,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:5:9",
+      "canonical": {
+        "pitch": 70,
+        "start": 202.12242433333319,
+        "end": 202.87234849999987
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 202.12242433333319,
+        "end": 202.87234849999987
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 202.12242433333319,
+        "end": 202.87234849999987,
+        "string": 2,
+        "fret": 11,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 202.12242433333319,
+        "end": 202.87234849999987,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:5:10",
+      "canonical": {
+        "pitch": 73,
+        "start": 202.87234849999987,
+        "end": 203.62310253124988
+      },
+      "piano": {
+        "pitch": 73,
+        "start": 202.87234849999987,
+        "end": 203.62310253124988
+      },
+      "guitar": {
+        "pitch": 73,
+        "start": 202.87234849999987,
+        "end": 203.62310253124988,
+        "string": 1,
+        "fret": 9,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 73,
+        "start": 202.87234849999987,
+        "end": 203.62310253124988,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:6:0",
+      "canonical": {
+        "pitch": 41,
+        "start": 203.62310253124988,
+        "end": 203.80996437499988
+      },
+      "piano": {
+        "pitch": 41,
+        "start": 203.62310253124988,
+        "end": 203.80996437499988
+      },
+      "guitar": {
+        "pitch": 41,
+        "start": 203.62310253124988,
+        "end": 203.80996437499988,
+        "string": 6,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 53,
+        "start": 203.62310253124988,
+        "end": 203.80996437499988,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:6:1",
+      "canonical": {
+        "pitch": 60,
+        "start": 203.80996437499988,
+        "end": 203.9969418749999
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 203.80996437499988,
+        "end": 203.9969418749999
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 203.80996437499988,
+        "end": 203.9969418749999,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 203.80996437499988,
+        "end": 203.9969418749999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:6:2",
+      "canonical": {
+        "pitch": 65,
+        "start": 203.9969418749999,
+        "end": 204.18391937499987
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 203.9969418749999,
+        "end": 204.18391937499987
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 203.9969418749999,
+        "end": 204.18391937499987,
+        "string": 1,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 203.9969418749999,
+        "end": 204.18391937499987,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:6:3",
+      "canonical": {
+        "pitch": 60,
+        "start": 204.18553124999988,
+        "end": 204.3725087499999
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 204.18553124999988,
+        "end": 204.3725087499999
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 204.18553124999988,
+        "end": 204.3725087499999,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 204.18553124999988,
+        "end": 204.3725087499999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:6:4",
+      "canonical": {
+        "pitch": 67,
+        "start": 204.3725087499999,
+        "end": 204.55918148749987
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 204.3725087499999,
+        "end": 204.55918148749987
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 204.3725087499999,
+        "end": 204.55918148749987,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 204.3725087499999,
+        "end": 204.55918148749987,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:6:5",
+      "canonical": {
+        "pitch": 60,
+        "start": 204.55918148749987,
+        "end": 204.7473562437499
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 204.55918148749987,
+        "end": 204.7473562437499
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 204.55918148749987,
+        "end": 204.7473562437499,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 204.55918148749987,
+        "end": 204.7473562437499,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:6:6",
+      "canonical": {
+        "pitch": 68,
+        "start": 204.7473562437499,
+        "end": 204.93553099999988
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 204.7473562437499,
+        "end": 204.93553099999988
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 204.7473562437499,
+        "end": 204.93553099999988,
+        "string": 1,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 204.7473562437499,
+        "end": 204.93553099999988,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:6:7",
+      "canonical": {
+        "pitch": 60,
+        "start": 204.93553099999988,
+        "end": 205.12209742499988
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 204.93553099999988,
+        "end": 205.12209742499988
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 204.93553099999988,
+        "end": 205.12209742499988,
+        "string": 3,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 204.93553099999988,
+        "end": 205.12209742499988,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:6:8",
+      "canonical": {
+        "pitch": 70,
+        "start": 205.12209742499988,
+        "end": 205.31024191666654
+      },
+      "piano": {
+        "pitch": 70,
+        "start": 205.12209742499988,
+        "end": 205.31024191666654
+      },
+      "guitar": {
+        "pitch": 70,
+        "start": 205.12209742499988,
+        "end": 205.31024191666654,
+        "string": 1,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 70,
+        "start": 205.12209742499988,
+        "end": 205.31024191666654,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:6:9",
+      "canonical": {
+        "pitch": 60,
+        "start": 205.31024191666654,
+        "end": 205.49676024999988
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 205.31024191666654,
+        "end": 205.49676024999988
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 205.31024191666654,
+        "end": 205.49676024999988,
+        "string": 3,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 205.31024191666654,
+        "end": 205.49676024999988,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:6:10",
+      "canonical": {
+        "pitch": 68,
+        "start": 205.49676024999988,
+        "end": 205.68488649999986
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 205.49676024999988,
+        "end": 205.68488649999986
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 205.49676024999988,
+        "end": 205.68488649999986,
+        "string": 1,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 205.49676024999988,
+        "end": 205.68488649999986,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:6:11",
+      "canonical": {
+        "pitch": 60,
+        "start": 205.68488649999986,
+        "end": 205.87301274999987
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 205.68488649999986,
+        "end": 205.87301274999987
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 205.68488649999986,
+        "end": 205.87301274999987,
+        "string": 3,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 205.68488649999986,
+        "end": 205.87301274999987,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:6:12",
+      "canonical": {
+        "pitch": 67,
+        "start": 205.87301274999987,
+        "end": 206.05956783541654
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 205.87301274999987,
+        "end": 206.05956783541654
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 205.87301274999987,
+        "end": 206.05956783541654,
+        "string": 1,
+        "fret": 3,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 205.87301274999987,
+        "end": 206.05956783541654,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:6:13",
+      "canonical": {
+        "pitch": 60,
+        "start": 206.05956783541654,
+        "end": 206.24776696666655
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 206.05956783541654,
+        "end": 206.24776696666655
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 206.05956783541654,
+        "end": 206.24776696666655,
+        "string": 2,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 206.05956783541654,
+        "end": 206.24776696666655,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:6:14",
+      "canonical": {
+        "pitch": 68,
+        "start": 206.24776696666655,
+        "end": 206.43435755833323
+      },
+      "piano": {
+        "pitch": 68,
+        "start": 206.24776696666655,
+        "end": 206.43435755833323
+      },
+      "guitar": {
+        "pitch": 68,
+        "start": 206.24776696666655,
+        "end": 206.43435755833323,
+        "string": 1,
+        "fret": 4,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 68,
+        "start": 206.24776696666655,
+        "end": 206.43435755833323,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:6:15",
+      "canonical": {
+        "pitch": 60,
+        "start": 206.43435755833323,
+        "end": 206.6225566895832
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 206.43435755833323,
+        "end": 206.6225566895832
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 206.43435755833323,
+        "end": 206.6225566895832,
+        "string": 3,
+        "fret": 5,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 206.43435755833323,
+        "end": 206.6225566895832,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:6:16",
+      "canonical": {
+        "pitch": 65,
+        "start": 206.6225566895832,
+        "end": 206.81063123749988
+      },
+      "piano": {
+        "pitch": 65,
+        "start": 206.6225566895832,
+        "end": 206.81063123749988
+      },
+      "guitar": {
+        "pitch": 65,
+        "start": 206.6225566895832,
+        "end": 206.81063123749988,
+        "string": 2,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 65,
+        "start": 206.6225566895832,
+        "end": 206.81063123749988,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Woodwinds).mid:3:4",
+      "canonical": {
+        "pitch": 77,
+        "start": 207.49792701249987,
+        "end": 208.07084324999988
+      },
+      "piano": {
+        "pitch": 77,
+        "start": 207.49792701249987,
+        "end": 208.07084324999988
+      },
+      "guitar": {
+        "pitch": 77,
+        "start": 207.49792701249987,
+        "end": 208.07084324999988,
+        "string": 1,
+        "fret": 13,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 77,
+        "start": 207.49792701249987,
+        "end": 208.07084324999988,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Woodwinds).mid:3:5",
+      "canonical": {
+        "pitch": 72,
+        "start": 208.07084324999988,
+        "end": 208.2623588749999
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 208.07084324999988,
+        "end": 208.2623588749999
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 208.07084324999988,
+        "end": 208.2623588749999,
+        "string": 2,
+        "fret": 13,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 208.07084324999988,
+        "end": 208.2623588749999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Woodwinds).mid:3:6",
+      "canonical": {
+        "pitch": 79,
+        "start": 208.2623588749999,
+        "end": 208.4553701062499
+      },
+      "piano": {
+        "pitch": 79,
+        "start": 208.2623588749999,
+        "end": 208.4553701062499
+      },
+      "guitar": {
+        "pitch": 79,
+        "start": 208.2623588749999,
+        "end": 208.4553701062499,
+        "string": 1,
+        "fret": 15,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 79,
+        "start": 208.2623588749999,
+        "end": 208.4553701062499,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Woodwinds).mid:3:7",
+      "canonical": {
+        "pitch": 80,
+        "start": 208.4553701062499,
+        "end": 208.6483698562499
+      },
+      "piano": {
+        "pitch": 80,
+        "start": 208.4553701062499,
+        "end": 208.6483698562499
+      },
+      "guitar": {
+        "pitch": 80,
+        "start": 208.4553701062499,
+        "end": 208.6483698562499,
+        "string": 1,
+        "fret": 16,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 80,
+        "start": 208.4553701062499,
+        "end": 208.6483698562499,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Woodwinds).mid:3:8",
+      "canonical": {
+        "pitch": 79,
+        "start": 208.6483698562499,
+        "end": 208.8413696062499
+      },
+      "piano": {
+        "pitch": 79,
+        "start": 208.6483698562499,
+        "end": 208.8413696062499
+      },
+      "guitar": {
+        "pitch": 79,
+        "start": 208.6483698562499,
+        "end": 208.8413696062499,
+        "string": 1,
+        "fret": 15,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 79,
+        "start": 208.6483698562499,
+        "end": 208.8413696062499,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Woodwinds).mid:3:9",
+      "canonical": {
+        "pitch": 77,
+        "start": 208.8413696062499,
+        "end": 209.0343693562499
+      },
+      "piano": {
+        "pitch": 77,
+        "start": 208.8413696062499,
+        "end": 209.0343693562499
+      },
+      "guitar": {
+        "pitch": 77,
+        "start": 208.8413696062499,
+        "end": 209.0343693562499,
+        "string": 1,
+        "fret": 13,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 77,
+        "start": 208.8413696062499,
+        "end": 209.0343693562499,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Woodwinds).mid:3:10",
+      "canonical": {
+        "pitch": 72,
+        "start": 209.0343693562499,
+        "end": 209.6063609999999
+      },
+      "piano": {
+        "pitch": 72,
+        "start": 209.0343693562499,
+        "end": 209.6063609999999
+      },
+      "guitar": {
+        "pitch": 72,
+        "start": 209.0343693562499,
+        "end": 209.6063609999999,
+        "string": 2,
+        "fret": 13,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 72,
+        "start": 209.0343693562499,
+        "end": 209.6063609999999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Woodwinds).mid:3:11",
+      "canonical": {
+        "pitch": 75,
+        "start": 209.6063609999999,
+        "end": 209.79916099999988
+      },
+      "piano": {
+        "pitch": 75,
+        "start": 209.6063609999999,
+        "end": 209.79916099999988
+      },
+      "guitar": {
+        "pitch": 75,
+        "start": 209.6063609999999,
+        "end": 209.79916099999988,
+        "string": 1,
+        "fret": 11,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 75,
+        "start": 209.6063609999999,
+        "end": 209.79916099999988,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Woodwinds).mid:3:12",
+      "canonical": {
+        "pitch": 73,
+        "start": 209.79916099999988,
+        "end": 210.20102301041655
+      },
+      "piano": {
+        "pitch": 73,
+        "start": 209.79916099999988,
+        "end": 210.20102301041655
+      },
+      "guitar": {
+        "pitch": 73,
+        "start": 209.79916099999988,
+        "end": 210.20102301041655,
+        "string": 1,
+        "fret": 9,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 73,
+        "start": 209.79916099999988,
+        "end": 210.20102301041655,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:7:0",
+      "canonical": {
+        "pitch": 60,
+        "start": 210.20102301041655,
+        "end": 212.13394525416655
+      },
+      "piano": {
+        "pitch": 60,
+        "start": 210.20102301041655,
+        "end": 212.13394525416655
+      },
+      "guitar": {
+        "pitch": 60,
+        "start": 210.20102301041655,
+        "end": 212.13394525416655,
+        "string": 4,
+        "fret": 10,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 60,
+        "start": 210.20102301041655,
+        "end": 212.13394525416655,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:9:20",
+      "canonical": {
+        "pitch": 67,
+        "start": 213.46527703124988,
+        "end": 215.7673038749999
+      },
+      "piano": {
+        "pitch": 67,
+        "start": 213.46527703124988,
+        "end": 215.7673038749999
+      },
+      "guitar": {
+        "pitch": 67,
+        "start": 213.46527703124988,
+        "end": 215.7673038749999,
+        "string": 3,
+        "fret": 12,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 67,
+        "start": 213.46527703124988,
+        "end": 215.7673038749999,
+        "octaveShift": 0
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:8:0",
+      "canonical": {
+        "pitch": 46,
+        "start": 217.2362419999999,
+        "end": 217.8149379374999
+      },
+      "piano": {
+        "pitch": 46,
+        "start": 217.2362419999999,
+        "end": 217.8149379374999
+      },
+      "guitar": {
+        "pitch": 46,
+        "start": 217.2362419999999,
+        "end": 217.8149379374999,
+        "string": 6,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 58,
+        "start": 217.2362419999999,
+        "end": 217.8149379374999,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:8:1",
+      "canonical": {
+        "pitch": 46,
+        "start": 219.44593354166656,
+        "end": 220.02353352916657
+      },
+      "piano": {
+        "pitch": 46,
+        "start": 219.44593354166656,
+        "end": 220.02353352916657
+      },
+      "guitar": {
+        "pitch": 46,
+        "start": 219.44593354166656,
+        "end": 220.02353352916657,
+        "string": 6,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 58,
+        "start": 219.44593354166656,
+        "end": 220.02353352916657,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:8:2",
+      "canonical": {
+        "pitch": 46,
+        "start": 220.2165220249999,
+        "end": 220.40951052083324
+      },
+      "piano": {
+        "pitch": 46,
+        "start": 220.2165220249999,
+        "end": 220.40951052083324
+      },
+      "guitar": {
+        "pitch": 46,
+        "start": 220.2165220249999,
+        "end": 220.40951052083324,
+        "string": 6,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 58,
+        "start": 220.2165220249999,
+        "end": 220.40951052083324,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:8:3",
+      "canonical": {
+        "pitch": 46,
+        "start": 220.40951052083324,
+        "end": 220.7954400124999
+      },
+      "piano": {
+        "pitch": 46,
+        "start": 220.40951052083324,
+        "end": 220.7954400124999
+      },
+      "guitar": {
+        "pitch": 46,
+        "start": 220.40951052083324,
+        "end": 220.7954400124999,
+        "string": 6,
+        "fret": 6,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 58,
+        "start": 220.40951052083324,
+        "end": 220.7954400124999,
+        "octaveShift": 12
+      }
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:8:4",
+      "canonical": {
+        "pitch": 41,
+        "start": 220.9867962187499,
+        "end": 221.75802466666656
+      },
+      "piano": {
+        "pitch": 41,
+        "start": 220.9867962187499,
+        "end": 221.75802466666656
+      },
+      "guitar": {
+        "pitch": 41,
+        "start": 220.9867962187499,
+        "end": 221.75802466666656,
+        "string": 6,
+        "fret": 1,
+        "octaveShift": 0
+      },
+      "accordion": {
+        "pitch": 53,
+        "start": 220.9867962187499,
+        "end": 221.75802466666656,
+        "octaveShift": 12
+      }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "canonical-melody-static-package/v1",
+  "packageVersion": "canonical-melody-reviewed-v1",
+  "sourceIndex": 49,
+  "slug": "suno-f59d2437",
+  "generationId": "f59d2437-d9cf-40ce-9d51-80de18a46d71",
+  "title": "სხვისი გული",
+  "canonicalAudioSha256": "30942d662b2698fe795ece17f226bf4e655c151a9041130ae4fe046e62d3e1f1",
+  "archiveSha256": "0265d54e14d792391a852d5f9c4cf160679f9ec971727e1a0c62cf90024c9b68",
+  "officialVocalMidiSha256": "d1543f040bf09121fb7ffdb0f76ec754366c1b1ddd1bdc0d704fed6fa187543e",
+  "extractorVersion": "generic-vocal-authority-v1-frozen",
+  "overlapClassifierVersion": "polyphonic-vocal-overlap-v1-frozen",
+  "reviewState": "REVIEW_COMPLETE",
+  "state": "PACKAGE_READY",
+  "duration": 360.7892527687502,
+  "noteCount": 661,
+  "confidenceSummary": {
+    "finalLow": 0,
+    "questionableVocal": 2
+  },
+  "unresolvedRegionCount": 0,
+  "artifacts": {
+    "midi/canonical-melody.mid": "7c3dcfeaacf9b2ebacff7c13ecf677eefb01b29bbbbf9a28b2c7925cd99282b4",
+    "midi/piano-melody.mid": "c25172f6a6e8ba746da22f2ea5075eb2dfab743b14c7aac650d84645fdf35977",
+    "midi/guitar-melody.mid": "d318cbfc1c137d72575f19c009cff28e727667052e5fddbce32bf6f1375c120a",
+    "midi/accordion-melody.mid": "95195e3df8b6f9ebf1d42a0a1e489c9b0f081b50f89248ad05e4d0d97214d4ff",
+    "canonical-melody.json": "e2f058a50f7b8eaecda3a3822e86c866da38b2c7d66bbf411e9e0b742ddf7fa3",
+    "piano-melody.json": "a13241d38c5a3199fa97ca3e43378a698245efa4fc1c72ea77d2408bb11887f7",
+    "guitar-melody.json": "08ea313237330c368c214ace47fdad42bf46b4ecfc3ebe26cc6908014388bfdf",
+    "accordion-melody.json": "fb1451ff05aa8a11376d36e7a6bf995cccc17626da26911dc473599be057f960",
+    "note-mapping-audit.json": "978446375afee8d49c511597c02bc5179a8200c73a761934eeb6a50199661f17",
+    "review/decisions.json": "0d01dd7b316ac6f98e31cda4eceecb6ab61cf57cf2f56ba46cde41e34b40bf5a",
+    "review/review-summary.json": "09ee18475f59a406fe303f55be09a88d21b607fb4b9c8fb0039e1d6d177b4946",
+    "provenance/validation.json": "7fc226bb9abcd137c91844951b55d764a441c4358d46618b41030ede010488cd",
+    "provenance/source.json": "5cc6dfa6a9956175c4fc77c4fe59c896b29830c62506e06f0aa33c535f872a7a"
+  },
+  "validationVersion": "controlled-rollout-10/frozen-v1",
+  "reviewedRegionCount": 0,
+  "reviewDecisionSha256": "0d01dd7b316ac6f98e31cda4eceecb6ab61cf57cf2f56ba46cde41e34b40bf5a",
+  "deterministic": true
+}

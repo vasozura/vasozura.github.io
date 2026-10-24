@@ -1,0 +1,24 @@
+{
+  "source": {
+    "sourceIndex": 57,
+    "slug": "suno-0d116a84",
+    "generationId": "0d116a84-60f9-40a8-9e92-3fb7ec695076",
+    "title": "მეხი დიდ ხეებს ეძებს",
+    "directory": "tmp/canonical-melody-batch-pilot/source-57/source-midi"
+  },
+  "extractor": "generic-vocal-authority-v1-frozen",
+  "sourceHashes": {
+    "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Backing Vocals).mid": "d89cc6aa62f1ffb977873bf05fe376c25a0b0cdef4529173393c314673a3473f",
+    "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Bass).mid": "063f28e0b30ea0608fb9bdcd0e5b7234ba5aac91d360e65b6ecb9e91678c442f",
+    "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Brass).mid": "db3dbed479a1ca615895dd0661baf6abb94e6c038a0d8ec0c8b3c301b7f25ec1",
+    "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Drums).mid": "e66c9fea0e05c8080f431d9979a235357cf242af1a285b5140eeb57aff840dd3",
+    "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (FX).mid": "31cbd478812413e8ec4b876bfbd3d90e5a74bd3735e0a33be5b1f77e328c7cc0",
+    "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Guitar).mid": "2f2b22473a9b168bc16910619aefccbb02c66aca5004bdd74df92a83fef166b2",
+    "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Keyboard).mid": "9e3705c87027cea51ec7c950cbf13f37ca301e1f39a7cf0d0dbce8f19c95c45c",
+    "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Percussion).mid": "58d106cf90a914ffff76e8639e35d0928dbfbaf07d3c61dbdf1122ca2adabdcb",
+    "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Strings).mid": "af77e37ad9dabf302d14cb0c6cc4755824be907ceca2483254a1e34aa6a59d0a",
+    "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid": "a5fe91521642126e4fe7b1f06cb1043dc60d4adcf1895d263eb755c90cc51f32",
+    "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid": "3c863481b4e421b13592b723db95430775c28e3d16e7ea9c5a03d270865a0bc7",
+    "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Woodwinds).mid": "87665c7ac79b8c0a5942d83b67f0c2f06fc0336eb9a96e0276ab9efb9cd4b5e1"
+  }
+}

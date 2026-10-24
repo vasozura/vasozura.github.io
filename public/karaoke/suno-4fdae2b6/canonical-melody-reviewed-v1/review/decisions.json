@@ -1,0 +1,37 @@
+{
+  "source": 50,
+  "regions": [
+    {
+      "source": 50,
+      "regionId": "50-1",
+      "decision": "A",
+      "selectedNotePath": [
+        {
+          "id": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:3:0",
+          "track": "Vocals",
+          "start": 75.87942101875002,
+          "end": 76.64549076250002,
+          "pitch": 55,
+          "velocity": 0.05511811023622047
+        },
+        {
+          "id": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:3:3",
+          "track": "Vocals",
+          "start": 76.75606730208335,
+          "end": 77.52111725625001,
+          "pitch": 55,
+          "velocity": 0.05511811023622047
+        },
+        {
+          "id": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:3:6",
+          "track": "Vocals",
+          "start": 77.62974963125001,
+          "end": 77.87958684375002,
+          "pitch": 55,
+          "velocity": 0.007874015748031496
+        }
+      ],
+      "reviewed": true
+    }
+  ]
+}

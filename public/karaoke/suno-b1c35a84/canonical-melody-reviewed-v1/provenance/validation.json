@@ -1,0 +1,356 @@
+{
+  "sourceIndex": 19,
+  "slug": "suno-b1c35a84",
+  "generationId": "b1c35a84-bf24-4441-a7b5-c497fc0999cd",
+  "title": "Too late…",
+  "directory": "tmp/canonical-melody-controlled-rollout-10/source-19/source-midi",
+  "durationSeconds": 335.64576472500016,
+  "trackCount": 12,
+  "vocalPhrases": 24,
+  "validVocal": 19,
+  "questionableVocal": 5,
+  "invalidVocal": 0,
+  "overlapClusters": 216,
+  "autoResolvedOverlaps": 214,
+  "canonicalNotes": 451,
+  "acceptedHandoffs": 12,
+  "rejectedHandoffs": 247,
+  "initialLow": 14,
+  "finalLow": 9,
+  "ownerReviewRegions": 2,
+  "vocalAgreement": 1,
+  "onsetAlignment": 1,
+  "contourAgreement": 1,
+  "trackConfusionFailures": 0,
+  "crossingVoiceCases": 0,
+  "noClearLeadClusters": 0,
+  "guitarOctaveShifts": [
+    {
+      "canonicalId": "Too late… (Vocals).mid:0:2",
+      "octaveShift": 12,
+      "string": 5,
+      "fret": 5
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:0",
+      "octaveShift": 12,
+      "string": 4,
+      "fret": 0
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:5",
+      "octaveShift": 12,
+      "string": 5,
+      "fret": 5
+    }
+  ],
+  "accordionOctaveFolds": 60,
+  "status": "REVIEW_REQUIRED",
+  "artifacts": {
+    "canonical-melody.mid": {
+      "bytes": 9456,
+      "sha256": "a25b26b5ff10671be642f740957357215876e6e8ee89799922f3ac036e4a247b"
+    },
+    "piano-melody.mid": {
+      "bytes": 9448,
+      "sha256": "dfb260b9e55a3b34527379c29413204555005ec7af2386523150f44901636b16"
+    },
+    "guitar-melody.mid": {
+      "bytes": 9450,
+      "sha256": "a783852283ef616e8800957d2ac155d0443b3215687f4b2382867e8af30613e2"
+    },
+    "accordion-melody.mid": {
+      "bytes": 9456,
+      "sha256": "661fce49b12937f9f975d911afb01504caa984639571d8a0631f89518457148b"
+    }
+  },
+  "monophonic": true,
+  "normalizationTrims": 0,
+  "continuity": [
+    {
+      "regionId": "19-1",
+      "selectedNotes": 5,
+      "selectedIdsExact": true,
+      "entryInterval": 8,
+      "exitInterval": 27,
+      "maxInternalInterval": 8,
+      "entryGap": 2.9214079187500026,
+      "exitGap": 1.3960019166666697
+    },
+    {
+      "regionId": "19-2",
+      "selectedNotes": 4,
+      "selectedIdsExact": true,
+      "entryInterval": 32,
+      "exitInterval": 12,
+      "maxInternalInterval": 8,
+      "entryGap": 0,
+      "exitGap": 2.3491343645833354
+    }
+  ],
+  "identity": {
+    "piano": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 1,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    },
+    "guitar": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 0.9888888888888889,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    },
+    "accordion": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 0.9422222222222222,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    }
+  },
+  "accordionFolds": [
+    {
+      "canonicalId": "Too late… (Vocals).mid:0:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:0:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:0:2",
+      "octaveShift": 24
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:0:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:0:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:0:7",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:0:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:0:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:0",
+      "octaveShift": 24
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:5",
+      "octaveShift": 24
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:7",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:10",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:12",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:13",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:14",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:15",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:16",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:17",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:18",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:19",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:1:20",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:2:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:7:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:7:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:7:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:7:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:7:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:5:60",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:7:12",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:7:15",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:7:18",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:7:20",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:9:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:9:7",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:9:11",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:9:16",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:9:18",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:9:46",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:9:50",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:10:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:10:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:15:61",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:15:62",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:15:64",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:15:70",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:15:72",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:15:74",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:15:76",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:15:78",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:15:81",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:15:83",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:15:85",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:15:86",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Too late… (Vocals).mid:15:87",
+      "octaveShift": 12
+    }
+  ],
+  "malformedEvents": 0,
+  "overlaps": 0,
+  "deterministic": true
+}

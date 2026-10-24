@@ -1,0 +1,1004 @@
+{
+  "sourceIndex": 38,
+  "slug": "suno-304f1b29",
+  "generationId": "304f1b29-075b-40d1-99a9-daf73aa33cbd",
+  "title": "საფიცარი",
+  "directory": "tmp/canonical-melody-source33/source38-midi",
+  "durationSeconds": 310.91013589375,
+  "trackCount": 12,
+  "vocalPhrases": 18,
+  "validVocal": 11,
+  "questionableVocal": 7,
+  "invalidVocal": 0,
+  "overlapClusters": 200,
+  "autoResolvedOverlaps": 199,
+  "canonicalNotes": 799,
+  "acceptedHandoffs": 0,
+  "rejectedHandoffs": 680,
+  "initialLow": 10,
+  "finalLow": 3,
+  "ownerReviewRegions": 1,
+  "vocalAgreement": 1,
+  "onsetAlignment": 1,
+  "contourAgreement": 1,
+  "trackConfusionFailures": 0,
+  "crossingVoiceCases": 0,
+  "noClearLeadClusters": 0,
+  "guitarOctaveShifts": [
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:163",
+      "octaveShift": 12,
+      "string": 5,
+      "fret": 5
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:164",
+      "octaveShift": 12,
+      "string": 5,
+      "fret": 5
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:165",
+      "octaveShift": 12,
+      "string": 5,
+      "fret": 5
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:166",
+      "octaveShift": 12,
+      "string": 5,
+      "fret": 5
+    }
+  ],
+  "accordionOctaveFolds": 223,
+  "status": "REVIEW_REQUIRED",
+  "artifacts": {
+    "canonical-melody.mid": {
+      "bytes": 10579,
+      "sha256": "f3bb32bc9cb5ff00164e638beed5ef17cadf093a930d63859a5145beed24a474"
+    },
+    "piano-melody.mid": {
+      "bytes": 10571,
+      "sha256": "fb01e596b3b9eaad359ac69d3b0741e4632a9d4f238e2b7be840e109c73d1382"
+    },
+    "guitar-melody.mid": {
+      "bytes": 10573,
+      "sha256": "4a001d87b31abf34ac12932bab7e07e4d97343245a190346bd3cfc34cb8a3d22"
+    },
+    "accordion-melody.mid": {
+      "bytes": 10579,
+      "sha256": "2fe8a2a52baf06d36b02a94bad36707539d251ff1731aebd28321178f58c703a"
+    }
+  },
+  "monophonic": true,
+  "normalizationTrims": 28,
+  "continuity": [
+    {
+      "regionId": "38-1",
+      "selectedNotes": 3,
+      "selectedIdsExact": true,
+      "entryInterval": 5,
+      "exitInterval": 22,
+      "maxInternalInterval": 0,
+      "entryGap": 2.1246255291666643,
+      "exitGap": 9.593912385416687
+    }
+  ],
+  "identity": {
+    "piano": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 1,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    },
+    "guitar": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 0.9974937343358395,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    },
+    "accordion": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 0.8634085213032582,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    }
+  },
+  "accordionFolds": [
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:0:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:1:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:1:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:2:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:2:16",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:7",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:10",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:11",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:12",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:15",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:16",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:17",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:18",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:19",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:20",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:21",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:22",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:23",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:24",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:25",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:26",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:34",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:35",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:36",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:37",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:38",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:39",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:46",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:47",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:48",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:10",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:11",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:12",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:13",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:14",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:15",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:16",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:17",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:18",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:19",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:20",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:21",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:24",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:25",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:26",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:27",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:28",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:29",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:30",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:31",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:32",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:37",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:38",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:44",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:45",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:46",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:47",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:48",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:63",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:64",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:4:65",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:5:139",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:5:141",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:7:25",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:7:27",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:7:28",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:7:29",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:7:30",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:7:31",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:7:56",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:7:59",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:7:61",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:7:62",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:9:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:10",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:11",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:14",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:15",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:16",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:17",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:18",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:19",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:20",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:21",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:22",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:26",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:27",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:28",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:29",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:30",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:31",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:34",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:35",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:40",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:41",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:42",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:9:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:97",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:98",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:99",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:108",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:109",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:123",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:126",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:127",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:128",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:129",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:130",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:136",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:8:137",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:10",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:11",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:12",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:13",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:14",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:15",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:16",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:17",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:18",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:20",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:24",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:25",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:26",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:27",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:28",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:29",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:30",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:31",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:32",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:33",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:34",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:35",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:36",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:37",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:40",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:41",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:42",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:43",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:44",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:45",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:46",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:47",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:48",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:49",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:50",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:51",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:52",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:53",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:57",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:58",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:59",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:60",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:61",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:62",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:63",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:64",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:65",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:66",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:67",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:68",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:69",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:73",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:74",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:75",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:76",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:77",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:78",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:79",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:80",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:81",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:82",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:86",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:87",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:90",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:94",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:95",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:96",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:97",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:98",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:118",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:119",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:139",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:140",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:141",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:142",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:146",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:147",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:148",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:150",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:153",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:154",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:156",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:159",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:160",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:161",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:162",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:163",
+      "octaveShift": 24
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:164",
+      "octaveShift": 24
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:165",
+      "octaveShift": 24
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:166",
+      "octaveShift": 24
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:10:167",
+      "octaveShift": 12
+    }
+  ],
+  "malformedEvents": 0,
+  "overlaps": 0,
+  "deterministic": true
+}

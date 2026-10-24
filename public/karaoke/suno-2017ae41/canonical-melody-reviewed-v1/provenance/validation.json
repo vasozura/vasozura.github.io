@@ -1,0 +1,392 @@
+{
+  "sourceIndex": 33,
+  "slug": "suno-2017ae41",
+  "generationId": "2017ae41-bc61-481b-b471-f596623fb3e0",
+  "title": "ჩემგან შორს არი",
+  "directory": "tmp/canonical-melody-source33/source-midi",
+  "durationSeconds": 314.7725966666667,
+  "trackCount": 12,
+  "vocalPhrases": 16,
+  "validVocal": 16,
+  "questionableVocal": 0,
+  "invalidVocal": 0,
+  "overlapClusters": 144,
+  "autoResolvedOverlaps": 144,
+  "canonicalNotes": 519,
+  "acceptedHandoffs": 0,
+  "rejectedHandoffs": 107,
+  "initialLow": 0,
+  "finalLow": 0,
+  "ownerReviewRegions": 0,
+  "vocalAgreement": 1,
+  "onsetAlignment": 1,
+  "contourAgreement": 1,
+  "trackConfusionFailures": 0,
+  "crossingVoiceCases": 0,
+  "noClearLeadClusters": 0,
+  "guitarOctaveShifts": [],
+  "accordionOctaveFolds": 79,
+  "status": "AUTO_READY",
+  "artifacts": {
+    "canonical-melody.mid": {
+      "bytes": 9387,
+      "sha256": "23344559807d122b89b61ec8a036b7441abbc45cab331287afcb74794790a50f"
+    },
+    "piano-melody.mid": {
+      "bytes": 9379,
+      "sha256": "354bc2ca932a0abe256ae54d58a9c15afa1aed37aaae7f5e82415e883b9dfdc3"
+    },
+    "guitar-melody.mid": {
+      "bytes": 9381,
+      "sha256": "e38c666e6465001790acd2c6dbe8e186c4aecb0fc70386f420f642e4640de281"
+    },
+    "accordion-melody.mid": {
+      "bytes": 9387,
+      "sha256": "d0d19b25125c49370ac2fa680423dfa9b4740d52c6c266dadbfe72dfa14a3e06"
+    }
+  },
+  "monophonic": true,
+  "normalizationTrims": 0,
+  "continuity": [],
+  "identity": {
+    "piano": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 1,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    },
+    "guitar": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 1,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    },
+    "accordion": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 0.88996138996139,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    }
+  },
+  "accordionFolds": [
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:0:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:1:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:1:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:2:21",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:2:95",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:2:98",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:2:108",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:2:110",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:2:113",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:2:122",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:2:124",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:3:11",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:3:13",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:3:14",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:3:15",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:3:16",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:3:17",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:4:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:4:46",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:4:49",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:4:51",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:4:53",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:4:62",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:4:64",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:4:66",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:4:75",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:4:77",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:4:89",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:4:93",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:4:94",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:5:12",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:5:22",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:5:23",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:5:52",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:5:53",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:5:54",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:5:55",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:5:56",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:5:57",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:5:58",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:5:59",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:5:60",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:5:61",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:86",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:87",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:88",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:89",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:90",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:91",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:92",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:93",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:94",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:95",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:96",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:97",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:98",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:99",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:100",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:101",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:102",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:115",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:116",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:120",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:121",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:122",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:123",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:124",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:125",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:126",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:127",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:128",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:129",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:6:130",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid:7:0",
+      "octaveShift": 12
+    }
+  ],
+  "malformedEvents": 0,
+  "overlaps": 0,
+  "deterministic": true
+}

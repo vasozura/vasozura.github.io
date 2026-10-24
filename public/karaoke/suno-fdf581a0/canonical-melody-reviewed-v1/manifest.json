@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "canonical-melody-static-package/v1",
+  "packageVersion": "canonical-melody-reviewed-v1",
+  "sourceIndex": 44,
+  "slug": "suno-fdf581a0",
+  "generationId": "fdf581a0-889c-4d1e-a39d-936ac1e22b97",
+  "title": "ნუ დააბრალებ სხვას",
+  "canonicalAudioSha256": "386d6ad2a0923cf813a6230e33859fc0a85a6e6c1e042efe45b5cf2c00201258",
+  "archiveSha256": "f2f35d9c1c7ee28d49328159d40ba7b835262a72dffc1c3324d70fa973c47ece",
+  "officialVocalMidiSha256": "f8fa1ee510d38bab636366e8dbe3297976110bffb94b8881ca7caae3b4112ebb",
+  "extractorVersion": "generic-vocal-authority-v1-frozen",
+  "overlapClassifierVersion": "polyphonic-vocal-overlap-v1-frozen",
+  "reviewState": "REVIEW_COMPLETE",
+  "state": "PACKAGE_READY",
+  "duration": 303.4415468666671,
+  "noteCount": 276,
+  "confidenceSummary": {
+    "finalLow": 0,
+    "questionableVocal": 0
+  },
+  "unresolvedRegionCount": 0,
+  "artifacts": {
+    "midi/canonical-melody.mid": "8a45ef1aa375012103640609438cc041f6c52106e35f2dc2a61a1132d07bd437",
+    "midi/piano-melody.mid": "7bc3722452cfa1de50a64fe962c35393472f79ca35e8b3e4a0c6daa52b0e0f0d",
+    "midi/guitar-melody.mid": "a8a1c98b2e0739084f16dabeb6ecb1600646b550a4450588e3bc4bfc27b29968",
+    "midi/accordion-melody.mid": "377a19a3fdcc43c1876f6e52d737dad3dfb960f405811a287a4064c68fab0773",
+    "canonical-melody.json": "4aba248fc446cb28d8640fa673dc1e606a3eb5a99801edef0462a97bbbab75bd",
+    "piano-melody.json": "64e919b16722e697eea5a69e69dfe27d760eecb607448905b48537058c8ead13",
+    "guitar-melody.json": "3ca968ad715247d9e0a292c976da8802e27b9d4e7cb040828582d07f816736cf",
+    "accordion-melody.json": "73e3661bdbbbc154999058bc097b3ef25d786d42836f9aa45f629acdeafacdcf",
+    "note-mapping-audit.json": "652f40c32f3d6b8931b2bfbc30e3f1a6103c92060b92a201a9c7193d88b33aba",
+    "review/decisions.json": "f915190fb543f965b3f720013f4630bec47188134d488724cfbbecb13526fcfa",
+    "review/review-summary.json": "09ee18475f59a406fe303f55be09a88d21b607fb4b9c8fb0039e1d6d177b4946",
+    "provenance/validation.json": "ae0145af965b84ebaac7d44520e322a31135fb111b42330ac98ddda99da8e7be",
+    "provenance/source.json": "72e00fab5e37499f1ba1a194ea1654f335a22de79b16ee1bd5e1def794f2af13"
+  },
+  "validationVersion": "controlled-rollout-10/frozen-v1",
+  "reviewedRegionCount": 0,
+  "reviewDecisionSha256": "f915190fb543f965b3f720013f4630bec47188134d488724cfbbecb13526fcfa",
+  "deterministic": true
+}

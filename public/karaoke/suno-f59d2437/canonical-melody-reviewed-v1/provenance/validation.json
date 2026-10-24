@@ -1,0 +1,1055 @@
+{
+  "sourceIndex": 49,
+  "slug": "suno-f59d2437",
+  "generationId": "f59d2437-d9cf-40ce-9d51-80de18a46d71",
+  "title": "სხვისი გული",
+  "directory": "tmp/canonical-melody-validation-batch-2/source-49/source-midi",
+  "durationSeconds": 360.7892527687502,
+  "trackCount": 11,
+  "vocalPhrases": 24,
+  "validVocal": 22,
+  "questionableVocal": 2,
+  "invalidVocal": 0,
+  "overlapClusters": 13,
+  "autoResolvedOverlaps": 13,
+  "canonicalNotes": 661,
+  "acceptedHandoffs": 24,
+  "rejectedHandoffs": 228,
+  "initialLow": 2,
+  "finalLow": 0,
+  "ownerReviewRegions": 0,
+  "vocalAgreement": 1,
+  "onsetAlignment": 1,
+  "contourAgreement": 1,
+  "trackConfusionFailures": 0,
+  "crossingVoiceCases": 0,
+  "noClearLeadClusters": 0,
+  "guitarOctaveShifts": [
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (FX).mid:1:7",
+      "octaveShift": -12,
+      "string": 1,
+      "fret": 12
+    }
+  ],
+  "accordionOctaveFolds": 243,
+  "status": "AUTO_READY",
+  "artifacts": {
+    "canonical-melody.mid": {
+      "bytes": 11683,
+      "sha256": "a7c595a5a6f0231dd15a283ecbcaac4686b3eed4a268454b3129ffa9926df896"
+    },
+    "piano-melody.mid": {
+      "bytes": 11675,
+      "sha256": "9cba09f998f514b7483af341146b4212b4561312886bbb7b33d4cf1b8ad7e221"
+    },
+    "guitar-melody.mid": {
+      "bytes": 11677,
+      "sha256": "6f803f85025e0e1d7b683c163e8f9cc5835df8a2ec3d8215aa1091986f02be8d"
+    },
+    "accordion-melody.mid": {
+      "bytes": 11683,
+      "sha256": "64c1e8b5b11ddace9e249061f4a1e74bb14b2388fd2049194a12c71be1c68565"
+    }
+  },
+  "monophonic": true,
+  "normalizationTrims": 1,
+  "continuity": [],
+  "identity": {
+    "piano": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 1,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    },
+    "guitar": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 1,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    },
+    "accordion": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 0.8924242424242425,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    }
+  },
+  "accordionFolds": [
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:1:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:1:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:1:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:1:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:1:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:1:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:1:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:1:7",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:2:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:2:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:2:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:2:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:2:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:2:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:2:7",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:2:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:3:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:3:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:3:7",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:3:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:4:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:4:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:4:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:4:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:4:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:4:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:4:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:5:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (FX).mid:2:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:6:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:10",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:11",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:12",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:13",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:16",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:20",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:21",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:24",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:25",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:26",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:27",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:28",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:29",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:39",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:40",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:41",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:42",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:43",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:44",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:45",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:46",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:47",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:51",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:52",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:53",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:54",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:68",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:69",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:70",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:71",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:72",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:133",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:138",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:8:139",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:7:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:7:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:7:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:7:7",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:9:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:9:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:7",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:10",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:16",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:17",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:19",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:20",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:21",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:22",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:23",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:24",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:25",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:26",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:27",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:28",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:39",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:40",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:41",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:42",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:43",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:44",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:45",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:56",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:57",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:58",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:59",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:60",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:61",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:62",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:68",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:75",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:76",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:77",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:78",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:79",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:80",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:81",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:82",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:83",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:94",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:95",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:96",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:97",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:98",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:99",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:100",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:111",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:112",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:113",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:114",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:115",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:116",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:117",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:118",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:124",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:130",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:131",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:132",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:133",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:134",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:135",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:136",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:137",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:148",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:149",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:150",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:151",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:152",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:153",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:154",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:165",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:166",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:167",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:168",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:169",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:170",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:171",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:182",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:183",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:184",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:185",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:186",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:187",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:188",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:199",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:200",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:10:201",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:12",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:13",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:14",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:15",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:16",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:27",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:28",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:29",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:30",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:31",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:32",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:33",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:43",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:44",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:45",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:46",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:47",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:48",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:49",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:50",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:58",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:59",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:60",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:61",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:62",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:63",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:64",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:65",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:74",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:75",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:76",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:77",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:88",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:89",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:90",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:91",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:92",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:94",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:101",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:102",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:103",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:104",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:105",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:116",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:117",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:118",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:119",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:120",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:121",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:131",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:132",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:133",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:134",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:135",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:136",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:146",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:147",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:148",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:149",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:150",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:151",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:161",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:162",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:163",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:164",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:165",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სხვისი გული -ბერდია ბერიაშვილი - გული (Vocals).mid:12:166",
+      "octaveShift": 12
+    }
+  ],
+  "malformedEvents": 0,
+  "overlaps": 0,
+  "deterministic": true
+}

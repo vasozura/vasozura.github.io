@@ -1,0 +1,21 @@
+{
+  "source": {
+    "sourceIndex": 48,
+    "slug": "suno-4848401c",
+    "generationId": "4848401c-51fb-4680-acea-1c2e4b566b45",
+    "title": "სიყვარული იწყებოდა ასე",
+    "directory": "tmp/canonical-melody-batch-pilot/source-48/source-midi"
+  },
+  "extractor": "generic-vocal-authority-v1-frozen",
+  "sourceHashes": {
+    "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Backing Vocals).mid": "7ebb15433665b0bd7563d30b0f71a252a1ab7b8f9b73346f062cda7b3f9297ba",
+    "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Bass).mid": "bbbab9788bb5e1199ef7b0a39cc9141e7e4e6754bc2f60af0b142580e8f6a2eb",
+    "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Drums).mid": "93877c5f12e64aa1e2eccd7d23708b16d018987e198dc723a0b1c6939593a98a",
+    "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Guitar).mid": "d01a02803dae7dd7bbecd2dacda512f8c72f4ac6c33e5906009c8cb6b2e5bf3d",
+    "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Keyboard).mid": "c83149169eb6334286253b96b9ad05d8f7638d5184fdde64d1235a38c62a8ca4",
+    "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Percussion).mid": "7ef0b63e280ca9aee66021846a7f4986063f6cd9ac065a97b082933dac19e061",
+    "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Strings).mid": "a2a1a30de481d87b69ea3b7d1a64055d3d6871f62a80fb87c5f2e3f0258ce6cd",
+    "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Synth).mid": "61cafe9fc96d6919edb0c91769bc216fde8ad61d97af01cb35048b40c6fa18cd",
+    "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid": "ccf588ac2efafbce5a11fa144b49af67136ba24971072d5832af7c252268c720"
+  }
+}

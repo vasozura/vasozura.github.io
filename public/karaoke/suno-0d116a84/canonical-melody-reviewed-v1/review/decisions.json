@@ -1,0 +1,21 @@
+{
+  "source": 57,
+  "regions": [
+    {
+      "source": 57,
+      "regionId": "57-1",
+      "decision": "A",
+      "selectedNotePath": [
+        {
+          "id": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:8:0",
+          "track": "Vocals",
+          "start": 217.2362419999999,
+          "end": 217.8149379374999,
+          "pitch": 46,
+          "velocity": 0.5433070866141733
+        }
+      ],
+      "reviewed": true
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "source": {
+    "sourceIndex": 50,
+    "slug": "suno-4fdae2b6",
+    "generationId": "4fdae2b6-e5b9-4233-963d-5bba1d0c5742",
+    "title": "Another Heart",
+    "directory": "tmp/canonical-melody-batch-pilot/source-50/source-midi"
+  },
+  "extractor": "generic-vocal-authority-v1-frozen",
+  "sourceHashes": {
+    "Another Heart-Based on the Poem by Berdia Beriashvili (Backing Vocals).mid": "2c2a10f569e5e757baea8c797091d9b5360b78b0b07aa053b83cda7b1c8b1db3",
+    "Another Heart-Based on the Poem by Berdia Beriashvili (Bass).mid": "3f97b1321f30fc7df2b8ff135daa95b293600ba720579e49500eba62b97ff4a6",
+    "Another Heart-Based on the Poem by Berdia Beriashvili (Brass).mid": "fb1affe2ef3729dc34376367bc8e7203f0521ab68f8f3c536db6c435faf42edb",
+    "Another Heart-Based on the Poem by Berdia Beriashvili (Drums).mid": "9242befdfce98feef7b4b4c038984839830c0eada98092d7eefe66b98198e27e",
+    "Another Heart-Based on the Poem by Berdia Beriashvili (FX).mid": "6f391d8141d321c3aa8f95058a2766da21af0ddbb3729d3e61fff2bbf2bdb1b6",
+    "Another Heart-Based on the Poem by Berdia Beriashvili (Guitar).mid": "58163593f02224286a2130b41c4f9c40a11e247bb48b8f3825167a3c6a2d8996",
+    "Another Heart-Based on the Poem by Berdia Beriashvili (Keyboard).mid": "a743660c5c6280752057250718c2af2c85b6e169cdb11f0535ab75757ba87cf5",
+    "Another Heart-Based on the Poem by Berdia Beriashvili (Percussion).mid": "aef8d48bd0cd62b3b13890ad98a29b807e0930b3dc1d27324902425d3796d086",
+    "Another Heart-Based on the Poem by Berdia Beriashvili (Strings).mid": "5665cdae02b2c2ccbc81b0f29e8a531f3d5faf79345b0432dda6c531fb2caa4c",
+    "Another Heart-Based on the Poem by Berdia Beriashvili (Synth).mid": "7398ece1092c4e7f8b9fe8f3dcf4e1564cc68938c320d1256c0e1170e2ae686c",
+    "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid": "ac7a257b311c96c0bb60abfb35c132e136053a44d1520a72d6409b541a0cd289",
+    "Another Heart-Based on the Poem by Berdia Beriashvili (Woodwinds).mid": "031a1ee20f6b5177c06de6c8c0fa348a6fc53653bfacd56786983cf61e78588f"
+  }
+}

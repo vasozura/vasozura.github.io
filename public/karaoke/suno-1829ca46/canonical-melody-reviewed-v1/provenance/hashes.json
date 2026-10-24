@@ -1,0 +1,15 @@
+{
+  "midi/canonical-melody.mid": "50413d0778f7fb57707cb0ac81ba3993957b4ddbffc5d16b6185355df1d21823",
+  "midi/piano-melody.mid": "000a7637395368c1457c1d41025848034c10ff0ef12beff28d3a40e3f00201ed",
+  "midi/guitar-melody.mid": "710712816a79b437bedc0dd3e031957b3705b68a5142f61330630b1cf48f364a",
+  "midi/accordion-melody.mid": "7060189cf05e1932eb0c9f37158c0088be087026ba0667ae149422116fd31b22",
+  "canonical-melody.json": "3a58241ed5f717bdb6302ff2d12299ac0faea133e01d3971c8538ba12db750d0",
+  "piano-melody.json": "c84465c2b51154aabf21320bcc5129c06d541bb24a3199813b89dfa498c52425",
+  "guitar-melody.json": "d6558a3cc5357554ea50fc86d22aac774114c977562ec8fc30bd2eeafd73ffba",
+  "accordion-melody.json": "b489e058b5bdcc43669069f390f3abe5c24d6d26985bdceb3473faa823eb9778",
+  "note-mapping-audit.json": "80a664df39595023ca42ada215e044ad518fa5007c36bc9ea4e66982751a4f8b",
+  "review/decisions.json": "a8edba0632ccf7072985cacc835d78b6a54fff4abeb1ac0b51c4224158bf7103",
+  "review/review-summary.json": "09ee18475f59a406fe303f55be09a88d21b607fb4b9c8fb0039e1d6d177b4946",
+  "provenance/validation.json": "f4d5726d42717ceeb3b1bdcc77c4e13638102c3a1c7bec452c3de9b91529ae82",
+  "provenance/source.json": "8efe111f8b948879463efcba0749b4822f90c1f5104c4235eaf50dc6db2e29a3"
+}

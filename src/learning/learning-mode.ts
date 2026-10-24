@@ -2,7 +2,7 @@ import { appConfig } from "../config";
 import { getInitialLanguage } from "../i18n";
 import { getSupabase } from "../lib/supabase";
 import { mountScoreViewer } from "../score/score-viewer";
-import type { AttemptResult, Exercise, ExerciseSelection, NoteEvent, ScoreManifest, Timeline } from "./contracts";
+import type { AttemptResult, Exercise, ExerciseSelection, NoteEvent, ScoreManifest } from "./contracts";
 import { isLearningApiUnavailable, LearningApiClient, type LearningApi } from "./api-client";
 import { SchedulerAudioAdapter } from "./audio-adapter";
 import { isVerifiedAccordionConfig, type TimelineVisualizer } from "./instruments";
@@ -46,18 +46,6 @@ export function formatClock(seconds: number): string {
   return `${String(minutes).padStart(2, "0")}:${String(Math.floor(safe % 60)).padStart(2, "0")}`;
 }
 
-async function manifestFromMidi(songId: string, url: string): Promise<ScoreManifest> {
-  const [{ Midi }, response] = await Promise.all([import("@tonejs/midi"), fetch(url)]);
-  if (!response.ok) throw new Error(`MIDI unavailable (${response.status})`);
-  const midi = new Midi(await response.arrayBuffer());
-  const bpm = midi.header.tempos[0]?.bpm ?? 120;
-  const measureLength = 60 / bpm * 4;
-  const notes: NoteEvent[] = midi.tracks.flatMap((track, trackIndex) => track.notes.map((note, noteIndex): NoteEvent => ({ id: `t${trackIndex}n${noteIndex}`, partId: `track-${trackIndex}`, measureIndex: Math.max(0, Math.floor(note.time / measureLength)), beat: 1 + note.time % measureLength / (measureLength / 4), startSeconds: note.time, durationSeconds: note.duration, midi: note.midi, velocity: note.velocity, hand: "unknown" }))).sort((a, b) => a.startSeconds - b.startSeconds).map((note, cursorStep) => ({ ...note, cursorStep }));
-  const count = Math.max(1, Math.ceil(midi.duration / measureLength));
-  const timeline: Timeline = { version: "v1", durationSeconds: midi.duration, notes, tempos: [{ atSeconds: 0, bpm, measureIndex: 0 }], timeSignatures: [{ atSeconds: 0, beats: 4, beatType: 4, measureIndex: 0 }], measures: Array.from({ length: count }, (_, index) => ({ index, number: String(index + 1), startSeconds: index * measureLength, durationSeconds: Math.min(measureLength, Math.max(0, midi.duration - index * measureLength)), beats: 4, beatType: 4, pickup: false })) };
-  return { version: "v1", songId, sourceChecksum: "local-midi", generatedAt: new Date(0).toISOString(), parts: midi.tracks.map((track, index) => ({ id: `track-${index}`, name: track.name || `Track ${index + 1}`, instrument: track.instrument.name, midiChannel: track.channel, hand: "unknown" })), timeline, warnings: ["Local deterministic MIDI adapter; backend analysis unavailable."] };
-}
-
 function resultText(result: AttemptResult, copy: ReturnType<typeof getLearningCopy>): string {
   return `${copy.pitch} ${Math.round(result.pitchScore)}% · ${copy.timing} ${Math.round(result.timingScore)}% · ${copy.completion} ${Math.round(result.completion)}% · ${copy.streak} ${result.streak}`;
 }
@@ -85,7 +73,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
   host.setAttribute("aria-labelledby", "learning-mode-title");
   host.innerHTML = `
     <header class="learning-workstation-heading"><div><p class="eyebrow">MUSIC LEARNING WORKSTATION</p><h3 id="learning-mode-title">${copy.title}</h3></div><details class="learning-help"><summary aria-label="Learning workstation help">?</summary><p>${copy.clock}</p><p data-l="sync" class="learning-sync" aria-live="polite">${copy.checking}</p></details></header>
-    <p class="learning-source-status"><span>Melody source:</span> <strong data-l="melody-source">—</strong></p>
+    <p class="learning-source-status"><span>Melody source:</span> <strong data-l="melody-source">—</strong></p><fieldset class="learning-control-group learning-segments" data-l="source-mode" hidden><legend>SOURCE</legend><button type="button" data-source-mode="original" aria-pressed="true">ORIGINAL</button><button type="button" data-source-mode="melody" aria-pressed="false">MELODY</button></fieldset>
     <div class="learning-workstation-controls">
       <div class="learning-workstation-row learning-workstation-row-primary">
         <fieldset class="learning-control-group learning-transport-compact"><legend>TRANSPORT</legend><button type="button" data-l="play">▶ ${copy.play}</button><button type="button" data-l="pause">Ⅱ ${copy.pause}</button><button type="button" data-l="stop">■ ${copy.stop}</button><label><span>${copy.tempo}</span><input data-l="tempo" type="range" min="50" max="150" value="100"><output data-l="tempo-value">100%</output></label><label class="learning-position"><span>${copy.position}</span><input data-l="seek" type="range" min="0" max="0" value="0" step="0.01"><output data-l="time-value">00:00 / 00:00</output></label><output data-l="position">${copy.measure} 1 · ${copy.beat} 1</output></fieldset>
@@ -146,16 +134,19 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       try { manifest = await api.manifest(songId, controller.signal); }
       catch (error) {
         if (!midiUrl || !isLearningApiUnavailable(error)) throw error;
-        manifest = await manifestFromMidi(songId, midiUrl);
+        manifest = await import("./midi-manifest").then(({ manifestFromMidi }) => manifestFromMidi(songId, midiUrl));
         api = new LocalLearningApi({ [songId]: manifest });
         usingLocalAdapter = true;
       }
     } else {
       if (!midiUrl) throw new Error("Learning resources are unavailable.");
-      manifest = await manifestFromMidi(songId, midiUrl);
+      manifest = await import("./midi-manifest").then(({ manifestFromMidi }) => manifestFromMidi(songId, midiUrl));
       api = new LocalLearningApi({ [songId]: manifest });
       usingLocalAdapter = true;
     }
+
+    const staticSource = await import("./static-source-controls");
+    const staticArtifacts = await staticSource.discoverStaticArtifacts(root, controller.signal);
 
     const { applyStaffControlState, applyVisualizerAvailability, rememberLearningSelection, renderActiveTrackOptions, resolveStaffScope, restoreLearningSelection, staffScopeSupport, visualizerAvailability } = selectionHelpers;
     const canonicalTimeline = manifest.timeline;
@@ -167,6 +158,7 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
     const initialActiveTrack = initialTrackResolution.option;
     let selectedStaffScope = resolveStaffScope(rememberedSelection?.staffScope, staffScopeSupport(initialActiveTrack));
     let learningMelody = composeLearningMelody(canonicalTimeline, lanes, { primaryLane: initialActiveTrack?.lane ?? null });
+    const originalLearningMelody = learningMelody;
     let selectedLaneIds = new Set<string>(initialActiveTrack ? [initialActiveTrack.lane.id] : []);
     const explicitHarmonies = (() => { try { return JSON.parse(root.dataset.scoreHarmonies || "[]") as ExplicitHarmony[]; } catch { return []; } })();
     const canonicalHarmonies = buildHarmonicTimeline(canonicalTimeline, explicitHarmonies);
@@ -704,6 +696,23 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
       renderSegmentMap();
       await rebuildWorkstation();
     };
+    const sourceMode = host.querySelector<HTMLElement>('[data-l="source-mode"]')!;
+    if (staticArtifacts) staticSource.bindStaticSourceControls({ root, controls: sourceMode, manifest: staticArtifacts, instrument: () => selectedInstrument, report: (message) => { host.querySelector<HTMLElement>('[data-l="status"]')!.textContent = message; },
+      activateOriginal: async () => {
+        await installLearningMelody(originalLearningMelody);
+        scoreSession.setPosition({ playbackSeconds: scheduler?.snapshot().position ?? 0 });
+        host.querySelector<HTMLElement>('[data-l="melody-source"]')!.textContent = melodyLane ? `original · ${melodyLane.label}` : "Original";
+      },
+      activateMelody: async (url, instrument) => {
+        const staticManifest = await import("./midi-manifest").then(({ manifestFromMidi }) => manifestFromMidi(songId, url));
+        const staticLanes = buildVoiceLanes(staticManifest);
+        const staticLane = selectMelodyLane(staticManifest, staticLanes) ?? staticLanes[0] ?? null;
+        if (!staticLane) throw new Error("Static melody contains no playable notes.");
+        await installLearningMelody(composeLearningMelody(staticManifest.timeline, staticLanes, { primaryLane: staticLane, manualPrimary: true }));
+        scoreSession.setPosition({ playbackSeconds: scheduler?.snapshot().position ?? 0 });
+        host.querySelector<HTMLElement>('[data-l="melody-source"]')!.textContent = `reviewed static · ${instrument}`;
+      },
+    });
     applySessionMelody = (track) => {
       const manualLane: VoiceLane = { id: `session:${track.sourceId}:${track.trackIndex}`, label: `${track.sourceName} · Track ${track.trackIndex + 1} · manual`, partId: `session-${track.trackIndex}`, partName: track.name || "Manual reference", staff: null, voice: String(track.trackIndex + 1), inferred: false, notes: track.notes.map((note) => ({ ...note, partId: `session-${track.trackIndex}` })) };
       host.querySelector<HTMLElement>('[data-l="melody-source"]')!.textContent = `${track.sourceName} · Track ${track.trackIndex + 1} · MANUAL`;

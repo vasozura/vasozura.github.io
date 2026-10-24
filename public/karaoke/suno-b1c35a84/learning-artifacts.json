@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "zura-learning-artifacts/v1",
+  "song": {
+    "sourceIndex": 19,
+    "slug": "suno-b1c35a84",
+    "generationId": "b1c35a84-bf24-4441-a7b5-c497fc0999cd",
+    "canonicalAudioSha256": "45380a3d22f6fdcbf41391b4f4db5678900af14907b317b8b6c543251bb50f87"
+  },
+  "canonicalMelody": {
+    "url": "midi/canonical-melody.mid",
+    "sha256": "c81805a4b5e69cbc0c0b27b491e280d538f93a5b9552f3277dab6a42944951ad",
+    "provenance": "generated-canonical-melody"
+  },
+  "midiIdentity": {
+    "durationSeconds": 327.75501237500015,
+    "noteCount": 451,
+    "tempoMapSha256": "reviewed-package",
+    "validationState": "PASS"
+  },
+  "instruments": {
+    "piano": {
+      "original": {
+        "available": true,
+        "url": null,
+        "sha256": null,
+        "strategy": "existing-learning-source",
+        "provenance": "source-authored-midi"
+      },
+      "melody": {
+        "available": true,
+        "url": "midi/piano-melody.mid",
+        "sha256": "5df58f8d35aa7252efeea4b7df63f49836cabba9d0da81cb7a4a3252bfcf88d6",
+        "strategy": "static-midi",
+        "provenance": "instrument-adapted-melody"
+      },
+      "fullSong": {
+        "available": false,
+        "url": null,
+        "sha256": null,
+        "strategy": "unavailable",
+        "provenance": "full-song-arrangement"
+      }
+    },
+    "guitar": {
+      "original": {
+        "available": true,
+        "url": null,
+        "sha256": null,
+        "strategy": "existing-learning-source",
+        "provenance": "source-authored-midi"
+      },
+      "melody": {
+        "available": true,
+        "url": "midi/guitar-melody.mid",
+        "sha256": "acbe0b22d57dcf658ef405410ae0d5bef87d8c9313c58655323bc486cdf64191",
+        "strategy": "static-midi",
+        "provenance": "instrument-adapted-melody"
+      },
+      "fullSong": {
+        "available": false,
+        "url": null,
+        "sha256": null,
+        "strategy": "unavailable",
+        "provenance": "full-song-arrangement"
+      }
+    },
+    "accordion": {
+      "original": {
+        "available": true,
+        "url": null,
+        "sha256": null,
+        "strategy": "existing-learning-source",
+        "provenance": "source-authored-midi"
+      },
+      "melody": {
+        "available": true,
+        "url": "midi/accordion-melody.mid",
+        "sha256": "312e6ca170a819ccd274c7ba9dd6e6f7e31d306238d7b390c9246deebcb6504c",
+        "strategy": "static-midi",
+        "provenance": "instrument-adapted-melody"
+      },
+      "fullSong": {
+        "available": false,
+        "url": null,
+        "sha256": null,
+        "strategy": "unavailable",
+        "provenance": "full-song-arrangement"
+      }
+    }
+  },
+  "artifacts": [
+    {
+      "filename": "piano-melody.mid",
+      "sha256": "5df58f8d35aa7252efeea4b7df63f49836cabba9d0da81cb7a4a3252bfcf88d6",
+      "noteCount": 451,
+      "durationSeconds": 327.7549663750002
+    },
+    {
+      "filename": "guitar-melody.mid",
+      "sha256": "acbe0b22d57dcf658ef405410ae0d5bef87d8c9313c58655323bc486cdf64191",
+      "noteCount": 451,
+      "durationSeconds": 327.7549663750002
+    },
+    {
+      "filename": "accordion-melody.mid",
+      "sha256": "312e6ca170a819ccd274c7ba9dd6e6f7e31d306238d7b390c9246deebcb6504c",
+      "noteCount": 451,
+      "durationSeconds": 327.7549663750002
+    }
+  ]
+}

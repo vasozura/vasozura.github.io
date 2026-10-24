@@ -1,0 +1,542 @@
+{
+  "sourceIndex": 50,
+  "slug": "suno-4fdae2b6",
+  "generationId": "4fdae2b6-e5b9-4233-963d-5bba1d0c5742",
+  "title": "Another Heart",
+  "directory": "tmp/canonical-melody-batch-pilot/source-50/source-midi",
+  "durationSeconds": 329.4392170000004,
+  "trackCount": 12,
+  "vocalPhrases": 35,
+  "validVocal": 34,
+  "questionableVocal": 1,
+  "invalidVocal": 0,
+  "overlapClusters": 6,
+  "autoResolvedOverlaps": 5,
+  "canonicalNotes": 383,
+  "acceptedHandoffs": 35,
+  "rejectedHandoffs": 412,
+  "initialLow": 3,
+  "finalLow": 3,
+  "ownerReviewRegions": 1,
+  "vocalAgreement": 1,
+  "onsetAlignment": 1,
+  "contourAgreement": 1,
+  "trackConfusionFailures": 0,
+  "crossingVoiceCases": 0,
+  "noClearLeadClusters": 0,
+  "guitarOctaveShifts": [
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Synth).mid:22:32",
+      "octaveShift": -12,
+      "string": 2,
+      "fret": 17
+    }
+  ],
+  "accordionOctaveFolds": 112,
+  "status": "REVIEW_REQUIRED",
+  "artifacts": {
+    "canonical-melody.mid": {
+      "bytes": 6345,
+      "sha256": "a0f2df79802bce9f321d8f282b2d80cf1aaf20d35ce0420da4d888bf3bbb782f"
+    },
+    "piano-melody.mid": {
+      "bytes": 6337,
+      "sha256": "e98a05df507f84b7c058398a5b7d0877809b7dc00f15124d6c87f40cbfb6a15f"
+    },
+    "guitar-melody.mid": {
+      "bytes": 6339,
+      "sha256": "ae1bd8c5bcaeed9a3d79087eee7ea8fcb19df0c38aee504128efd4790debcef0"
+    },
+    "accordion-melody.mid": {
+      "bytes": 6345,
+      "sha256": "66c643a025f96bf3165ca8c99456166d7fdecf366d67cbb2884e99d1e4c4d308"
+    }
+  },
+  "monophonic": true,
+  "normalizationTrims": 0,
+  "continuity": [
+    {
+      "regionId": "50-1",
+      "selectedNotes": 3,
+      "selectedIdsExact": true,
+      "entryInterval": 5,
+      "exitInterval": 2,
+      "maxInternalInterval": 0,
+      "entryGap": 8.181602143749998,
+      "exitGap": 4.000523156249997
+    }
+  ],
+  "identity": {
+    "piano": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 1,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    },
+    "guitar": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 1,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    },
+    "accordion": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 0.7958115183246073,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    }
+  },
+  "accordionFolds": [
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:0:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:0:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:0:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:0:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:0:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:0:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:1:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:1:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:1:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:1:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:1:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:7",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:10",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:11",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:12",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:13",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:15",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:19",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:20",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:21",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:23",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:33",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:34",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:37",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:38",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:39",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:40",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:42",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:43",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:44",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:45",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:46",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:47",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:48",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:49",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:50",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:51",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:2:52",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:13",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:14",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:26",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:27",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:28",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:29",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:30",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:31",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:32",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:34",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:35",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:44",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:52",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:5:59",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:6:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:6:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:6:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:7:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:7:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:7:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:7:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:7:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:7:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:7:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:7:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:7:10",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:7:12",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:8:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:8:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:8:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:8:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:8:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:8:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:8:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:8:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:8:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:8:11",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:8:49",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:8:51",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:8:53",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:8:54",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:8:55",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:8:56",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:8:58",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:8:59",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:10:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:10:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:10:12",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Vocals).mid:10:14",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Synth).mid:16:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Synth).mid:16:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Synth).mid:16:12",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Synth).mid:16:13",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Synth).mid:16:16",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Synth).mid:18:11",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Synth).mid:20:45",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "Another Heart-Based on the Poem by Berdia Beriashvili (Synth).mid:23:6",
+      "octaveShift": 12
+    }
+  ],
+  "malformedEvents": 0,
+  "overlaps": 0,
+  "deterministic": true
+}

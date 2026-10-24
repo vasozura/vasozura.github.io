@@ -1,0 +1,21 @@
+{
+  "source": {
+    "sourceIndex": 44,
+    "slug": "suno-fdf581a0",
+    "generationId": "fdf581a0-889c-4d1e-a39d-936ac1e22b97",
+    "title": "ნუ დააბრალებ სხვას",
+    "directory": "tmp/canonical-melody-batch-pilot/source-44/source-midi"
+  },
+  "extractor": "generic-vocal-authority-v1-frozen",
+  "sourceHashes": {
+    "ნუ დააბრალებ სხვას - ბერდია ბერიაშვილი - თავს დააბრალე (Backing Vocals).mid": "f04a7fda196f9a38764220c465dba633777a79ab7d563388bb88ade5f46eb067",
+    "ნუ დააბრალებ სხვას - ბერდია ბერიაშვილი - თავს დააბრალე (Bass).mid": "79d67259cc8ba29932a046e9c40dcf42cba1e911629ac580c9a07e4f8bb1cc78",
+    "ნუ დააბრალებ სხვას - ბერდია ბერიაშვილი - თავს დააბრალე (Brass).mid": "03345b471bb596910b9dc77bcc768d1807c2fef771a7d81d1089e8a533aeb723",
+    "ნუ დააბრალებ სხვას - ბერდია ბერიაშვილი - თავს დააბრალე (Drums).mid": "d9ec1f4a7a763cbafc74b493e35cefbe5ea864b231999f865d0e10039045a662",
+    "ნუ დააბრალებ სხვას - ბერდია ბერიაშვილი - თავს დააბრალე (Guitar).mid": "af20a97ff8ae154c828b1b7c4b36b6c33b7586d04d802a7ab321f40c1f454028",
+    "ნუ დააბრალებ სხვას - ბერდია ბერიაშვილი - თავს დააბრალე (Keyboard).mid": "2334818fd3e0025811456156bafe864876136d693981f49fb16ffedc0fbfd740",
+    "ნუ დააბრალებ სხვას - ბერდია ბერიაშვილი - თავს დააბრალე (Percussion).mid": "71a4b08995fdf6bd43ca462a59d54830eaafe1c5516c88b7a29158ec0b812644",
+    "ნუ დააბრალებ სხვას - ბერდია ბერიაშვილი - თავს დააბრალე (Vocals).mid": "f8fa1ee510d38bab636366e8dbe3297976110bffb94b8881ca7caae3b4112ebb",
+    "ნუ დააბრალებ სხვას - ბერდია ბერიაშვილი - თავს დააბრალე (Woodwinds).mid": "ea3a4a088d91df63574287dac120601572a1b27e16a8b416ea1ce2e89591571d"
+  }
+}

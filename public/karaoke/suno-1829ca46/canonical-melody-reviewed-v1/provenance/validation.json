@@ -1,0 +1,196 @@
+{
+  "sourceIndex": 61,
+  "slug": "suno-1829ca46",
+  "generationId": "1829ca46-999c-4702-ba35-6a8b26567886",
+  "title": "როცა ძალიან მოგენატრები",
+  "directory": "tmp/canonical-melody-validation-batch-2/source-61/source-midi",
+  "durationSeconds": 186.91650100000012,
+  "trackCount": 11,
+  "vocalPhrases": 7,
+  "validVocal": 7,
+  "questionableVocal": 0,
+  "invalidVocal": 0,
+  "overlapClusters": 381,
+  "autoResolvedOverlaps": 381,
+  "canonicalNotes": 390,
+  "acceptedHandoffs": 0,
+  "rejectedHandoffs": 519,
+  "initialLow": 0,
+  "finalLow": 0,
+  "ownerReviewRegions": 0,
+  "vocalAgreement": 1,
+  "onsetAlignment": 1,
+  "contourAgreement": 1,
+  "trackConfusionFailures": 0,
+  "crossingVoiceCases": 0,
+  "noClearLeadClusters": 0,
+  "guitarOctaveShifts": [],
+  "accordionOctaveFolds": 30,
+  "status": "AUTO_READY",
+  "artifacts": {
+    "canonical-melody.mid": {
+      "bytes": 7845,
+      "sha256": "24467b533e2da0e57b10a102073235d427946a26942e12c5b0e8dfe9c34d567e"
+    },
+    "piano-melody.mid": {
+      "bytes": 7837,
+      "sha256": "d01ea1039cf6b83b1b9c160c26c5839330bb0a1c75e0a242ce27506a40f14535"
+    },
+    "guitar-melody.mid": {
+      "bytes": 7839,
+      "sha256": "3289951230fd45606213755983edf98d7166eed5b4e2a3b77c3f09f4df9acacf"
+    },
+    "accordion-melody.mid": {
+      "bytes": 7845,
+      "sha256": "901be0484b5666c1582ac91399e8cc860c4fe0a91b90e7286c027df8a5f808e2"
+    }
+  },
+  "monophonic": true,
+  "normalizationTrims": 4,
+  "continuity": [],
+  "identity": {
+    "piano": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 1,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    },
+    "guitar": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 1,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    },
+    "accordion": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 0.9460154241645244,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    }
+  },
+  "accordionFolds": [
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:0:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:0:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:0:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:0:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:0:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:0:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:0:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:0:7",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:0:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:3:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:3:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:3:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:3:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:3:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:3:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:3:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:3:7",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:3:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:3:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:3:37",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:3:38",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:3:39",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:3:43",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:3:44",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:3:45",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:3:46",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:5:38",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:5:39",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:5:40",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "როცა ძალიან მოგენატრები - ბერდია ბერიაშვილი (Vocals).mid:5:41",
+      "octaveShift": 12
+    }
+  ],
+  "malformedEvents": 0,
+  "overlaps": 0,
+  "deterministic": true
+}

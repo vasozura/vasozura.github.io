@@ -1,0 +1,193 @@
+{
+  "sourceIndex": 48,
+  "slug": "suno-4848401c",
+  "generationId": "4848401c-51fb-4680-acea-1c2e4b566b45",
+  "title": "სიყვარული იწყებოდა ასე",
+  "directory": "tmp/canonical-melody-batch-pilot/source-48/source-midi",
+  "durationSeconds": 261.88022701874996,
+  "trackCount": 9,
+  "vocalPhrases": 34,
+  "validVocal": 32,
+  "questionableVocal": 2,
+  "invalidVocal": 0,
+  "overlapClusters": 273,
+  "autoResolvedOverlaps": 271,
+  "canonicalNotes": 341,
+  "acceptedHandoffs": 0,
+  "rejectedHandoffs": 359,
+  "initialLow": 3,
+  "finalLow": 3,
+  "ownerReviewRegions": 2,
+  "vocalAgreement": 1,
+  "onsetAlignment": 1,
+  "contourAgreement": 1,
+  "trackConfusionFailures": 0,
+  "crossingVoiceCases": 0,
+  "noClearLeadClusters": 0,
+  "guitarOctaveShifts": [],
+  "accordionOctaveFolds": 24,
+  "status": "REVIEW_REQUIRED",
+  "artifacts": {
+    "canonical-melody.mid": {
+      "bytes": 6161,
+      "sha256": "3322004f40540e387cd205be9a9d00b58ccdf3eff967c8171c4053f7dc84227b"
+    },
+    "piano-melody.mid": {
+      "bytes": 6153,
+      "sha256": "9c59033c5ea6f23f1b0ab4e1e4dbb2c3db4bed3b4dcb3dde1ea22a31486ff8af"
+    },
+    "guitar-melody.mid": {
+      "bytes": 6155,
+      "sha256": "bb44e50f70bb61d5322a524c1c50daad04f88648ac399ecce12c440a99a16bcb"
+    },
+    "accordion-melody.mid": {
+      "bytes": 6161,
+      "sha256": "80df6ea6a8a8eb11b090779ab35d47e0935bc66c39e079dedc70bf3e50fd9b9b"
+    }
+  },
+  "monophonic": true,
+  "normalizationTrims": 5,
+  "continuity": [
+    {
+      "regionId": "48-1",
+      "selectedNotes": 2,
+      "selectedIdsExact": true,
+      "entryInterval": 3,
+      "exitInterval": 3,
+      "maxInternalInterval": 1,
+      "entryGap": 3.2716365875000015,
+      "exitGap": 3.88040779166667
+    },
+    {
+      "regionId": "48-2",
+      "selectedNotes": 1,
+      "selectedIdsExact": true,
+      "entryInterval": 5,
+      "exitInterval": 3,
+      "maxInternalInterval": 0,
+      "entryGap": 2.9795645083333397,
+      "exitGap": 4.926770606250017
+    }
+  ],
+  "identity": {
+    "piano": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 1,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    },
+    "guitar": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 1,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    },
+    "accordion": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 0.8705882352941177,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    }
+  },
+  "accordionFolds": [
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:1:27",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:2:45",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:5:14",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:5:15",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:5:16",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:5:17",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:5:27",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:5:28",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:5:29",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:4:40",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:4:56",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:6:105",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:6:112",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:6:119",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:6:126",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:4:81",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:6:140",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:6:145",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:6:154",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:4:88",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:8:14",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:8:26",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:9:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "სიყვარული იწყებოდა ასე - ბერდია ბერიაშვილი (Vocals).mid:9:13",
+      "octaveShift": 12
+    }
+  ],
+  "malformedEvents": 0,
+  "overlaps": 0,
+  "deterministic": true
+}

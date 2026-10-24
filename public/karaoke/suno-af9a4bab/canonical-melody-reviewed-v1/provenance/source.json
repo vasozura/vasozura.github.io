@@ -1,0 +1,24 @@
+{
+  "source": {
+    "sourceIndex": 37,
+    "slug": "suno-af9a4bab",
+    "generationId": "af9a4bab-9b42-4b12-bac0-30623387eae0",
+    "title": "აქსიომა",
+    "directory": "tmp/canonical-melody-batch-pilot/source-37/source-midi"
+  },
+  "extractor": "generic-vocal-authority-v1-frozen",
+  "sourceHashes": {
+    "ბერდია ბერიაშვილი - აქსიომა (Backing Vocals).mid": "b8f37b39bd7c16052f6f2840efd6cde9baa5f583455f0975ece5c500e52c5e87",
+    "ბერდია ბერიაშვილი - აქსიომა (Bass).mid": "650a96d089b26ede0d60e05fd171592fb06c7b1df51b792863bb487258e773da",
+    "ბერდია ბერიაშვილი - აქსიომა (Brass).mid": "4ef210071580de521f24db946c5e21031ae7d933c18ab323f43f4500eaf74cdf",
+    "ბერდია ბერიაშვილი - აქსიომა (Drums).mid": "9f1e70a71c422813bb4f4611501e71ee3efb454ff1c1e85bb7566cb6941799d9",
+    "ბერდია ბერიაშვილი - აქსიომა (FX).mid": "45dd117011427555f6e918d19afb1aaa0bfe487c6ed3bc07d2bf2a6854995421",
+    "ბერდია ბერიაშვილი - აქსიომა (Guitar).mid": "9193fa8fc8b12b694121e9d0d7d05cc57cca918e497540fdba312651a0617e9e",
+    "ბერდია ბერიაშვილი - აქსიომა (Keyboard).mid": "c2aa0c69a4ada634c4d48a4e9f29bd1aed32688c972113c438869185e905055a",
+    "ბერდია ბერიაშვილი - აქსიომა (Percussion).mid": "ebdea39f345def44677f3a097b2e01fd32bcedeadad35b6799de427b215b542a",
+    "ბერდია ბერიაშვილი - აქსიომა (Strings).mid": "f55256b317a4ae6657a4d618c58a52d61212d92a176041b6ad79ec16b7646f30",
+    "ბერდია ბერიაშვილი - აქსიომა (Synth).mid": "c26bf2ad4f8e7484273049225930dcac6a476fbbfe294ad39b798bcb65d594ca",
+    "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid": "5083300162bf0758e8064d68aeb0d3f23a2e8bc3031bfe1bbaadc3a8bd8d6a8b",
+    "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid": "b2214862def083b3c9dca9c3d3e4052854a8f0bc8d027217ff9fb4d8950d52a7"
+  }
+}

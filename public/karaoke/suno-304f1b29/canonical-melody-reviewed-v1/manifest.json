@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "canonical-melody-static-package/v1",
+  "packageVersion": "canonical-melody-reviewed-v1",
+  "sourceIndex": 38,
+  "slug": "suno-304f1b29",
+  "generationId": "304f1b29-075b-40d1-99a9-daf73aa33cbd",
+  "title": "საფიცარი",
+  "canonicalAudioSha256": "1077230951b35632adea367def04a2cf8ffd0acabc97b407fce1636eabbccb11",
+  "archiveSha256": null,
+  "officialVocalMidiSha256": "6437d33fa22fc9e4d9fd34a52ec8a05581157447e49d449657be814269e2213d",
+  "extractorVersion": "generic-vocal-authority-v1-frozen",
+  "overlapClassifierVersion": "polyphonic-vocal-overlap-v1-frozen",
+  "reviewState": "REVIEW_COMPLETE",
+  "state": "PACKAGE_READY",
+  "duration": 310.91013589375,
+  "noteCount": 799,
+  "confidenceSummary": {
+    "finalLow": 3,
+    "questionableVocal": 7
+  },
+  "unresolvedRegionCount": 0,
+  "artifacts": {
+    "midi/canonical-melody.mid": "d43057a03ad9df3dde6902ef61d87c26c57f3018d157f26a4683280e054f9e42",
+    "midi/piano-melody.mid": "e75f7758fc7a36ca9ca9f86ed18fd6d66a52b2a9caf9de94f839a2a922a60cc7",
+    "midi/guitar-melody.mid": "b09e7b162ebdcb1ffe1e264cf8b8c67673fb39319f811b2fc7f244dd16176416",
+    "midi/accordion-melody.mid": "869d3b51d349f85d71ea60f3e33fe7bf6b2d2a21cdff1a357bad1d5552180cbf",
+    "canonical-melody.json": "1b5f7e2537cb7e1b7a82781dddbd93821793c0242bdec6293209d6db39282d3c",
+    "piano-melody.json": "f6641678a7091f77d5ed86213fde1e1ae3c128eb964ef38f6f372ed8b6326fac",
+    "guitar-melody.json": "e43df8e8c7146388f72cace24cd203c9a58c6e61da1bada5a117fd3eb5630da0",
+    "accordion-melody.json": "b94117c236b6f6ed55b8b498facb2d5e79eddaba3d41aecd7136b9c8989eb8fe",
+    "note-mapping-audit.json": "b35aa45a3f771bedca73443c8b4c6cb4c49f30c754c95fa5b59e41745125ec6f",
+    "review/decisions.json": "69aad2b9101992fe81192986cdafc2fbcab36804e24e558358c2183ac5da46c6",
+    "review/review-summary.json": "bb578b957f4b773d5c2612a23a01cbeac50b8149537f88261d8371526b17cc34",
+    "provenance/validation.json": "63317688e04541f65e07416aaa200485988fc6369d155393a747e902b7e886d7",
+    "provenance/source.json": "3236d37683db866c7eff60460de2c2a349c884a6223365aaf6ed55c64f492c86"
+  },
+  "validationVersion": "controlled-rollout-10/frozen-v1",
+  "reviewedRegionCount": 1,
+  "reviewDecisionSha256": "69aad2b9101992fe81192986cdafc2fbcab36804e24e558358c2183ac5da46c6",
+  "deterministic": true
+}

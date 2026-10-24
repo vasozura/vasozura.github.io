@@ -1,0 +1,171 @@
+{
+  "sourceIndex": 57,
+  "slug": "suno-0d116a84",
+  "generationId": "0d116a84-60f9-40a8-9e92-3fb7ec695076",
+  "title": "მეხი დიდ ხეებს ეძებს",
+  "directory": "tmp/canonical-melody-batch-pilot/source-57/source-midi",
+  "durationSeconds": 225.5609097499999,
+  "trackCount": 12,
+  "vocalPhrases": 21,
+  "validVocal": 19,
+  "questionableVocal": 2,
+  "invalidVocal": 0,
+  "overlapClusters": 5,
+  "autoResolvedOverlaps": 4,
+  "canonicalNotes": 272,
+  "acceptedHandoffs": 51,
+  "rejectedHandoffs": 344,
+  "initialLow": 2,
+  "finalLow": 1,
+  "ownerReviewRegions": 1,
+  "vocalAgreement": 1,
+  "onsetAlignment": 1,
+  "contourAgreement": 1,
+  "trackConfusionFailures": 0,
+  "crossingVoiceCases": 0,
+  "noClearLeadClusters": 0,
+  "guitarOctaveShifts": [],
+  "accordionOctaveFolds": 21,
+  "status": "REVIEW_REQUIRED",
+  "artifacts": {
+    "canonical-melody.mid": {
+      "bytes": 4890,
+      "sha256": "20827badff4b13515d2b91ec39a8a10e3596a89c2277b05fed3af36c66c1a44c"
+    },
+    "piano-melody.mid": {
+      "bytes": 4882,
+      "sha256": "1ece553809d2c86a9145daf7f1a9ab1e4b8ac71c5d1e0e1b076f0c77106cd4ab"
+    },
+    "guitar-melody.mid": {
+      "bytes": 4884,
+      "sha256": "2899b129ecaded6192268b363c82d5703f7fa8ee3cbe452588af4bd2e70275df"
+    },
+    "accordion-melody.mid": {
+      "bytes": 4890,
+      "sha256": "fd82b21490b4f65afe4bb28689fb46eced0377e235a6d43fed468a435cb7a4b2"
+    }
+  },
+  "monophonic": true,
+  "normalizationTrims": 0,
+  "continuity": [
+    {
+      "regionId": "57-1",
+      "selectedNotes": 1,
+      "selectedIdsExact": true,
+      "entryInterval": 21,
+      "exitInterval": 0,
+      "maxInternalInterval": 0,
+      "entryGap": 1.468938124999994,
+      "exitGap": 1.6309956041666567
+    }
+  ],
+  "identity": {
+    "piano": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 1,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    },
+    "guitar": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 1,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    },
+    "accordion": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 0.988929889298893,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    }
+  },
+  "accordionFolds": [
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:0:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:0:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:0:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:39",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:43",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:47",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:1:51",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:2:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:2:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:2:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:2:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:2:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:4:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Woodwinds).mid:2:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Synth).mid:6:39",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:6:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:8:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:8:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:8:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:8:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "მეხი დიდ ხეებს ეძებს- ბერდია ბერიაშვილი (Vocals).mid:8:4",
+      "octaveShift": 12
+    }
+  ],
+  "malformedEvents": 0,
+  "overlaps": 0,
+  "deterministic": true
+}

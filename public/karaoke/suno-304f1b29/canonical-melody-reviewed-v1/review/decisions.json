@@ -1,0 +1,37 @@
+{
+  "source": 38,
+  "regions": [
+    {
+      "source": 38,
+      "regionId": "38-1",
+      "decision": "A",
+      "selectedNotePath": [
+        {
+          "id": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:46",
+          "track": "Vocals",
+          "start": 68.15445675000004,
+          "end": 68.78402425000003,
+          "pitch": 52,
+          "velocity": 0.09448818897637795
+        },
+        {
+          "id": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:47",
+          "track": "Vocals",
+          "start": 70.6445814166667,
+          "end": 71.27017641666671,
+          "pitch": 52,
+          "velocity": 0.09448818897637795
+        },
+        {
+          "id": "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid:3:48",
+          "track": "Vocals",
+          "start": 73.14443158125005,
+          "end": 73.76959473958337,
+          "pitch": 52,
+          "velocity": 0.09448818897637795
+        }
+      ],
+      "reviewed": true
+    }
+  ]
+}

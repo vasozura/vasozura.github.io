@@ -1,0 +1,24 @@
+{
+  "source": {
+    "sourceIndex": 38,
+    "slug": "suno-304f1b29",
+    "generationId": "304f1b29-075b-40d1-99a9-daf73aa33cbd",
+    "title": "საფიცარი",
+    "directory": "tmp/canonical-melody-source33/source38-midi"
+  },
+  "extractor": "generic-vocal-authority-v1-frozen",
+  "sourceHashes": {
+    "ბერდია ბერიაშვილი - საფიცარი (Backing Vocals).mid": "b899735173e7c92b722ee58d689de591306b9abb8e97c43001d9a4337a0cf23e",
+    "ბერდია ბერიაშვილი - საფიცარი (Bass).mid": "c1f94c3523914c5228edc64c230dcf4b90bf8a0988b5cf318700693dc51aa27c",
+    "ბერდია ბერიაშვილი - საფიცარი (Brass).mid": "5ed9a26c97041214a25817ee3fabd85919ec80aa56562c87c248308904de7838",
+    "ბერდია ბერიაშვილი - საფიცარი (Drums).mid": "d1721fd11d82db52bc44d6581d6fe755a367434fff7dabadf7338bffb3960a1e",
+    "ბერდია ბერიაშვილი - საფიცარი (FX).mid": "ab33c32fbd98c8531771cfccacfd351b2aa694cf62ef241a23319f365a79b2c8",
+    "ბერდია ბერიაშვილი - საფიცარი (Guitar).mid": "7ef8bd7296c3c2c347abb79f9546f3e19ae678d5e1779cc23b1ebb3393eed381",
+    "ბერდია ბერიაშვილი - საფიცარი (Keyboard).mid": "faaf208aefef6596a175bd0ecbc44ce2e44dc3684a2980399339cc7ae74a4cb1",
+    "ბერდია ბერიაშვილი - საფიცარი (Percussion).mid": "4fecff22c08753e30fc1c6c7273b5ec9cb0157ba15429e4c6c1d44082cf3ecdd",
+    "ბერდია ბერიაშვილი - საფიცარი (Strings).mid": "bdb89c9e90c941931f446a29dc3ccd034b3244d9d43218fa6fc14569e155ae03",
+    "ბერდია ბერიაშვილი - საფიცარი (Synth).mid": "251536cff825eb16e4bf186eb2a5711e5d4f8e6d4f717ac58f17cc6b34d3a2a1",
+    "ბერდია ბერიაშვილი - საფიცარი (Vocals).mid": "6437d33fa22fc9e4d9fd34a52ec8a05581157447e49d449657be814269e2213d",
+    "ბერდია ბერიაშვილი - საფიცარი (Woodwinds).mid": "49d8e05135c1344ef62c865c9db4b642b8647021ea945c3592750f5d4b4fc4ff"
+  }
+}

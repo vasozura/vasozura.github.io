@@ -1,0 +1,1194 @@
+{
+  "sourceIndex": 37,
+  "slug": "suno-af9a4bab",
+  "generationId": "af9a4bab-9b42-4b12-bac0-30623387eae0",
+  "title": "აქსიომა",
+  "directory": "tmp/canonical-melody-batch-pilot/source-37/source-midi",
+  "durationSeconds": 381.86954861041687,
+  "trackCount": 12,
+  "vocalPhrases": 33,
+  "validVocal": 30,
+  "questionableVocal": 3,
+  "invalidVocal": 0,
+  "overlapClusters": 309,
+  "autoResolvedOverlaps": 306,
+  "canonicalNotes": 572,
+  "acceptedHandoffs": 124,
+  "rejectedHandoffs": 432,
+  "initialLow": 202,
+  "finalLow": 148,
+  "ownerReviewRegions": 3,
+  "vocalAgreement": 1,
+  "onsetAlignment": 1,
+  "contourAgreement": 1,
+  "trackConfusionFailures": 0,
+  "crossingVoiceCases": 0,
+  "noClearLeadClusters": 0,
+  "guitarOctaveShifts": [
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:5",
+      "octaveShift": 12,
+      "string": 5,
+      "fret": 3
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:11",
+      "octaveShift": 12,
+      "string": 4,
+      "fret": 0
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:20",
+      "octaveShift": 12,
+      "string": 5,
+      "fret": 3
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:14:4",
+      "octaveShift": 12,
+      "string": 5,
+      "fret": 3
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:14:6",
+      "octaveShift": 12,
+      "string": 5,
+      "fret": 5
+    }
+  ],
+  "accordionOctaveFolds": 264,
+  "status": "REVIEW_REQUIRED",
+  "artifacts": {
+    "canonical-melody.mid": {
+      "bytes": 8871,
+      "sha256": "1b103dd1acf6a50517563b749a1b83fa757ff07337e946e7e9df60e000cfa4a9"
+    },
+    "piano-melody.mid": {
+      "bytes": 8863,
+      "sha256": "9d0bc7a7a0a7711e65e73fb11945f02f0fc9ffae77244eb47cd0005c6ec57073"
+    },
+    "guitar-melody.mid": {
+      "bytes": 8865,
+      "sha256": "8e261c857b6e9df83cb2467ee835c7bb0bd50e7dc0df72abb2ea7f4688e8b1e7"
+    },
+    "accordion-melody.mid": {
+      "bytes": 8871,
+      "sha256": "71df377999a76b48d57bb94f5dd5bc94776ec1d6d01f60e85d87c78abcd529ab"
+    }
+  },
+  "monophonic": true,
+  "normalizationTrims": 0,
+  "continuity": [
+    {
+      "regionId": "37-1",
+      "selectedNotes": 63,
+      "selectedIdsExact": true,
+      "entryInterval": 12,
+      "exitInterval": 9,
+      "maxInternalInterval": 9,
+      "entryGap": 3.328222993749989,
+      "exitGap": 3.06622379166663
+    },
+    {
+      "regionId": "37-2",
+      "selectedNotes": 127,
+      "selectedIdsExact": true,
+      "entryInterval": 9,
+      "exitInterval": 2,
+      "maxInternalInterval": 24,
+      "entryGap": 3.06622379166663,
+      "exitGap": 0.647997499999974
+    },
+    {
+      "regionId": "37-3",
+      "selectedNotes": 12,
+      "selectedIdsExact": true,
+      "entryInterval": 12,
+      "exitInterval": 15,
+      "maxInternalInterval": 12,
+      "entryGap": 0.33943249374999596,
+      "exitGap": 0.4587216666666336
+    }
+  ],
+  "identity": {
+    "piano": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 1,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    },
+    "guitar": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 0.9877408056042032,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    },
+    "accordion": {
+      "pitchClassIdentity": 1,
+      "contourIdentity": 0.8581436077057794,
+      "rhythmIdentity": 1,
+      "onsetIdentity": 1
+    }
+  },
+  "accordionFolds": [
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:0:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:0:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:0:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:0:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:0:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:0:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:0:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:0:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:0:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:0:10",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:0:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:0:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:0:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:0:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:1:13",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:1:28",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:1:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:1:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:1:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:1:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:1:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:1:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:1:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:1:7",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:1:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:1:12",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:1:13",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:2:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:2:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:2:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:2:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:2:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:2:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:2:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:3:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:3:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:3:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:3:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:3:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:3:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:3:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:3:7",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:3:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:3:16",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:3:24",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:2:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:2:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:2:13",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:2:20",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:2:32",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:4:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:4:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:4:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:4:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:4:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:5:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:5:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:5:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:5:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:5:10",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:5:11",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:5:12",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:5:13",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:5:14",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:5:15",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:5:16",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:5:17",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:5:18",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:5:19",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:5:20",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:5:21",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:5:22",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:6:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:6:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:6:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:6:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:7:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:7:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:7:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:7:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:4:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:4:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:4:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Brass).mid:2:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Brass).mid:2:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:7",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:10",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:11",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:12",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:15",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:16",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:17",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:18",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:19",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:20",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:21",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:22",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:23",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:24",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:25",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:26",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:27",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:28",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:29",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:8:30",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:9:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:9:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:9:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:9:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:9:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:9:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:9:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:9:7",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:9:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:9:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:9:10",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:9:11",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:9:12",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:9:13",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:9:14",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:9:15",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:10:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:10:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:10:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:10:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:10:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:10:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:10:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:10:7",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:11:145",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:11:165",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:11:189",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:11:260",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:11:351",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:11:354",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:11:355",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:11:356",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:5",
+      "octaveShift": 24
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:10",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:11",
+      "octaveShift": 24
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:11:360",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:11:361",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:16",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:11:362",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:17",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:11:363",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:11:364",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:11:365",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:11:366",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:11:367",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:20",
+      "octaveShift": 24
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:25",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:11:371",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:29",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:30",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:36",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:37",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:38",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:42",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:44",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:45",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:48",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:12:50",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:5:18",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:5:19",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:5:20",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:5:21",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:5:22",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:5:23",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:7",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:10",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:11",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:12",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:13",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:14",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:15",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:16",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:17",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:18",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:19",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:20",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:14:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:21",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:22",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:24",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:25",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:26",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:27",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:14:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:28",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:29",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:30",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:14:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:31",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:32",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:33",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:34",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:14:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:35",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:36",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:37",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Woodwinds).mid:6:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:38",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:14:4",
+      "octaveShift": 24
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:39",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:40",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:41",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:14:6",
+      "octaveShift": 24
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:42",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:43",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:44",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:45",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:46",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:14:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:47",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:48",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:49",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:50",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:51",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:52",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:53",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:54",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:13:55",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:15:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:15:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:15:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:15:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:15:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:15:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:15:6",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:15:7",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:15:8",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:15:9",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:15:10",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:15:11",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:16:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:16:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:16:2",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:16:3",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:16:4",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:16:5",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:17:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:17:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:18:0",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:18:1",
+      "octaveShift": 12
+    },
+    {
+      "canonicalId": "ბერდია ბერიაშვილი - აქსიომა (Vocals).mid:18:2",
+      "octaveShift": 12
+    }
+  ],
+  "malformedEvents": 0,
+  "overlaps": 0,
+  "deterministic": true
+}

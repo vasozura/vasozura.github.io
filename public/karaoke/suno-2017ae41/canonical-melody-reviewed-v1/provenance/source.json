@@ -1,0 +1,24 @@
+{
+  "source": {
+    "sourceIndex": 33,
+    "slug": "suno-2017ae41",
+    "generationId": "2017ae41-bc61-481b-b471-f596623fb3e0",
+    "title": "ჩემგან შორს არი",
+    "directory": "tmp/canonical-melody-source33/source-midi"
+  },
+  "extractor": "generic-vocal-authority-v1-frozen",
+  "sourceHashes": {
+    "ბერდია ბერიაშვილი - ჩემგან შორს არი (Backing Vocals).mid": "c41c68fb91b9b2be1332b4df52b606ef58dcede7c6614b170e79d379802a6afc",
+    "ბერდია ბერიაშვილი - ჩემგან შორს არი (Bass).mid": "211c46caefd34d840da55773d248cb7e6fa57e541406846bda3664240c54c9ba",
+    "ბერდია ბერიაშვილი - ჩემგან შორს არი (Brass).mid": "21be9174a63a24111e068811cc49fe8ef8c1691a67a484fb2436d203df36ecdf",
+    "ბერდია ბერიაშვილი - ჩემგან შორს არი (Drums).mid": "e951ddd08684db875c1167cb2229acfc65e01acd38e82f1e82a08636a2f00e3e",
+    "ბერდია ბერიაშვილი - ჩემგან შორს არი (FX).mid": "1d77bd723a1923084c36217b86a885256ded67d1c16bcd73bdc2273ce9f6c863",
+    "ბერდია ბერიაშვილი - ჩემგან შორს არი (Guitar).mid": "2c5bbbae16ff04a8968db4df2bc42be9d5ac65310bcfd717137900b83efde616",
+    "ბერდია ბერიაშვილი - ჩემგან შორს არი (Keyboard).mid": "0ebe81461c3809c99c11a20e1611a8b19e7d54bec2f0bd584902fdacf8e85f9c",
+    "ბერდია ბერიაშვილი - ჩემგან შორს არი (Percussion).mid": "cb88dc64acbc0220090d7a489bb9381dafe2c96b9f05a2a8fc749092384ba9a8",
+    "ბერდია ბერიაშვილი - ჩემგან შორს არი (Strings).mid": "5e515163652baafdecbca004d01f5e1a13988d777ba3f1eeec7182b3a4a8445f",
+    "ბერდია ბერიაშვილი - ჩემგან შორს არი (Synth).mid": "35374e08bf8e9e0ccea8e7b02e3d40b5857cbe56ccd75f6e5454cd36b02659cf",
+    "ბერდია ბერიაშვილი - ჩემგან შორს არი (Vocals).mid": "055d6406183c0f0d7f7cb394992ec02ac57df15b3bd2f3313c309a47c121a6e9",
+    "ბერდია ბერიაშვილი - ჩემგან შორს არი (Woodwinds).mid": "e78454202d6ab77f82fe8744fa9221dff85f0e9948f5913e6eb1891bac651168"
+  }
+}

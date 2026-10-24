@@ -1,0 +1,24 @@
+{
+  "source": {
+    "sourceIndex": 19,
+    "slug": "suno-b1c35a84",
+    "generationId": "b1c35a84-bf24-4441-a7b5-c497fc0999cd",
+    "title": "Too late…",
+    "directory": "tmp/canonical-melody-controlled-rollout-10/source-19/source-midi"
+  },
+  "extractor": "generic-vocal-authority-v1-frozen",
+  "sourceHashes": {
+    "Too late… (Backing Vocals).mid": "57849f4727ba59a88c820be2a3a7456c66cbb3b65969dac57599c7dc3f467958",
+    "Too late… (Bass).mid": "1b82c32c0f0c81d67af504a762877556612513f8720af34b969d71ab878d93ef",
+    "Too late… (Brass).mid": "9d495b7f168b20f5fb8d42493df4ab1c46e7f8a1bbe1841c50b7eac649071843",
+    "Too late… (Drums).mid": "2e66fdc7cfcc3572f720f9a3f0d925955df7407fd5d1d438a0136207f41febe0",
+    "Too late… (FX).mid": "4a0e6613e716c2ed0ed679c2d5af818e7cde4549c04442dba0324f452a6992ef",
+    "Too late… (Guitar).mid": "31a916d8a5118f44579770266ee4e33895298d7a14993ce7cf12406d1b474187",
+    "Too late… (Keyboard).mid": "f04943844bdb7b030b3f608947d58c9ad94bc82a9c4cac320170586edac9831b",
+    "Too late… (Percussion).mid": "db4d2da80cd42604e60e8612f4e4e6d4253099e001aab7c89bce68c0c11cf6e1",
+    "Too late… (Strings).mid": "c30f9a406badc26153e1eb62158ed5b9d57960e67734da84841d40c41ca08eef",
+    "Too late… (Synth).mid": "fab928b48c03d1920f45ced96d1676e2a6d3dbc2312001136730b6fedca8cd1d",
+    "Too late… (Vocals).mid": "3c87a311841ce10edb3903bf06c0977c3c196c2661b46c4dacb94e29dfbc0645",
+    "Too late… (Woodwinds).mid": "a53f02b18885617cc5f00e2e0df0a790e268e7aea1382432aacbb3e1637389af"
+  }
+}

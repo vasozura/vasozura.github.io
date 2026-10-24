@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "canonical-melody-static-package/v1",
+  "packageVersion": "canonical-melody-reviewed-v1",
+  "sourceIndex": 50,
+  "slug": "suno-4fdae2b6",
+  "generationId": "4fdae2b6-e5b9-4233-963d-5bba1d0c5742",
+  "title": "Another Heart",
+  "canonicalAudioSha256": "80e0a2b8b785ad51d92420b9da8d617298e73ecc55ced3ea32393bcbf3ec8a83",
+  "archiveSha256": "2b0a281aff80ebb066485d2230a35c3fc1414c3bc1852007de3016043ed3afb4",
+  "officialVocalMidiSha256": "ac7a257b311c96c0bb60abfb35c132e136053a44d1520a72d6409b541a0cd289",
+  "extractorVersion": "generic-vocal-authority-v1-frozen",
+  "overlapClassifierVersion": "polyphonic-vocal-overlap-v1-frozen",
+  "reviewState": "REVIEW_COMPLETE",
+  "state": "PACKAGE_READY",
+  "duration": 329.4392170000004,
+  "noteCount": 383,
+  "confidenceSummary": {
+    "finalLow": 3,
+    "questionableVocal": 1
+  },
+  "unresolvedRegionCount": 0,
+  "artifacts": {
+    "midi/canonical-melody.mid": "86a694d3645784eabc754269fdf1c8c6c547cae6fb1653dc7271827aecbbac43",
+    "midi/piano-melody.mid": "d9e34ba6e061508b6c66164fc0eba33f66bb7042f4b94cd1072dd374f8724483",
+    "midi/guitar-melody.mid": "e0d04634be79279c58dc42940e3051e58b50e9cd37610e76e56c37b6863eb3b0",
+    "midi/accordion-melody.mid": "7bb67d435ec58afe7a15d5a91c9f1eff12f8c972cae0fabb92155756f30e9d2d",
+    "canonical-melody.json": "f476ae57aa65f1afa099af81320b2ce85105203b738a1ffb2821a8d27383a3c6",
+    "piano-melody.json": "faa0f89c8949badaaba71f244a70a0c9404ca73d47e637c1955586ff559a71bf",
+    "guitar-melody.json": "be31d0d1fa5efdaa9f0419254671e6fd86fc269f24e7c58496631e8fb71d3f79",
+    "accordion-melody.json": "a21ac78e851a20cfd9e7e636c891758c5478c2846283153c9f99b0da64138ca8",
+    "note-mapping-audit.json": "807ae1797fced069dbabbe2ef353c4675ed8e1e4d7bf993bba2bbc90f17100f4",
+    "review/decisions.json": "c9e2447928a7012c0c8ef2527c805251cc86492bee632f3bf52f6ac4214148c3",
+    "review/review-summary.json": "bb578b957f4b773d5c2612a23a01cbeac50b8149537f88261d8371526b17cc34",
+    "provenance/validation.json": "8c7b46e2c1e7e66e2daeafcdded04440ed703431e426e0dac7bdf9940cf7f7ac",
+    "provenance/source.json": "18a192fee0a7e03061aa188d0669b9dc7d5d15d507b55f5c4016b0eca15fd030"
+  },
+  "validationVersion": "controlled-rollout-10/frozen-v1",
+  "reviewedRegionCount": 1,
+  "reviewDecisionSha256": "c9e2447928a7012c0c8ef2527c805251cc86492bee632f3bf52f6ac4214148c3",
+  "deterministic": true
+}
