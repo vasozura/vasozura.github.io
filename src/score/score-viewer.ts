@@ -74,6 +74,15 @@ export async function fetchScoreSource(url: string, request: typeof fetch = fetc
 }
 
 export interface ScoreViewerOptions { midiPlayback?: boolean; }
+export interface ScoreViewerPosition { playbackSeconds: number; cursorStep: number; }
+export interface ScoreViewerSource { source: Blob | string; preferredPartId?: string | null; preferredStaff?: StaffVisibility; }
+export interface ScoreViewerReplaceResult { ok: boolean; position: ScoreViewerPosition; error?: string; }
+export interface ScoreViewerSession {
+  replaceSource(next: ScoreViewerSource, restore?: Partial<ScoreViewerPosition>): Promise<ScoreViewerReplaceResult>;
+  setPosition(position: Partial<ScoreViewerPosition>): void;
+  getPosition(): ScoreViewerPosition;
+  dispose(): void;
+}
 export const shouldMountStandaloneMidi = (options: ScoreViewerOptions): boolean => options.midiPlayback !== false;
 export const scoreWidthChanged = (previous: number, next: number): boolean => previous <= 0 || Math.abs(previous - next) >= 8;
 export const osmdViewerOptions = { autoResize: false, backend: "svg", drawTitle: true, followCursor: false } as const;
@@ -89,9 +98,29 @@ export function getScoreCopy(language: Language) {
 export async function mountScoreViewer(
   root: HTMLElement,
   options: ScoreViewerOptions = {},
-): Promise<() => void> {
+): Promise<ScoreViewerSession> {
   const copy = getScoreCopy(getInitialLanguage());
   const cleanups: Array<() => void> = [];
+  let position: ScoreViewerPosition = { playbackSeconds: 0, cursorStep: -1 };
+  let replaceSource: ScoreViewerSession["replaceSource"] = async () => ({ ok: false, position: { ...position }, error: "SCORE_SOURCE_UNAVAILABLE" });
+  let setPositionImpl = (_next: ScoreViewerPosition): void => {};
+  let disposed = false;
+  const session: ScoreViewerSession = {
+    replaceSource: (next, restore) => disposed
+      ? Promise.resolve({ ok: false, position: { ...position }, error: "SCORE_SESSION_DISPOSED" })
+      : replaceSource(next, restore),
+    setPosition(next) {
+      if (disposed) return;
+      position = { playbackSeconds: next.playbackSeconds ?? position.playbackSeconds, cursorStep: next.cursorStep ?? position.cursorStep };
+      setPositionImpl(position);
+    },
+    getPosition: () => ({ ...position }),
+    dispose() {
+      if (disposed) return;
+      disposed = true;
+      cleanups.splice(0).forEach((cleanup) => cleanup());
+    },
+  };
   const musicXmlUrl = root.dataset.musicxmlUrl;
   const canvas = root.querySelector<HTMLElement>(".score-canvas");
   const surface = root.querySelector<HTMLElement>(".score-render-surface") ?? canvas;
@@ -99,13 +128,13 @@ export async function mountScoreViewer(
   const status = root.querySelector<HTMLElement>(".score-status");
   const midiControls = root.querySelector<HTMLElement>(".midi-controls");
   const piano = root.querySelector<HTMLElement>(".piano-keyboard");
-  if (!canvas || !surface || !controls || !status || !midiControls || !piano) return () => {};
+  if (!canvas || !surface || !controls || !status || !midiControls || !piano) return session;
 
   if (musicXmlUrl) try {
     const { OpenSheetMusicDisplay } = await import("opensheetmusicdisplay");
-    const canonicalSource = await fetchScoreSource(musicXmlUrl);
-    const canonicalText = await canonicalSource.text();
-    const scoreParts = parseMusicXmlParts(canonicalText);
+    let canonicalSource = await fetchScoreSource(musicXmlUrl);
+    let canonicalText = await canonicalSource.text();
+    let scoreParts = parseMusicXmlParts(canonicalText);
     const songId = root.dataset.songId || musicXmlUrl;
     let selectedPartId = (() => { try { return restoreScorePart(window.localStorage, songId, scoreParts); } catch { return chooseDefaultMusicXmlPart(scoreParts); } })();
     const staffSelectionByPart = new Map<string, StaffVisibility>();
@@ -172,6 +201,7 @@ export async function mountScoreViewer(
       if (!Number.isInteger(target) || target === learningCursorStep) return;
       if (target < learningCursorStep) { osmd.cursor.reset(); learningCursorStep = -1; }
       while (learningCursorStep < target) { osmd.cursor.next(); learningCursorStep += 1; }
+      position.cursorStep = learningCursorStep;
       osmd.cursor.show();
     };
     root.addEventListener("learning-score-cursor", moveLearningCursor);
@@ -214,6 +244,10 @@ export async function mountScoreViewer(
       osmd.cursor.reset();
       for (let step = 0; step <= learningCursorStep; step += 1) osmd.cursor.next();
       osmd.cursor.show();
+    };
+    setPositionImpl = (next) => {
+      learningCursorStep = next.cursorStep;
+      restoreScoreCursor();
     };
     const staffPicker = controls.querySelector<HTMLElement>("[data-score-staff-picker]")!;
     const refreshStaffPicker = (): void => {
@@ -268,6 +302,40 @@ export async function mountScoreViewer(
     renderScore();
     // Cursor geometry is only valid after OSMD has completed layout/render.
     if (dedicatedLearningMarker) osmd.cursor.hide(); else osmd.cursor.show();
+    replaceSource = async (next, restore = {}) => {
+      const previous = { source: canonicalSource, text: canonicalText, parts: scoreParts, partId: selectedPartId, activeSource, position: { ...position } };
+      const requestedPosition = { playbackSeconds: restore.playbackSeconds ?? position.playbackSeconds, cursorStep: restore.cursorStep ?? position.cursorStep };
+      try {
+        const blob = next.source instanceof Blob ? next.source : next.source.trimStart().startsWith("<")
+          ? new Blob([next.source], { type: "application/vnd.recordare.musicxml+xml" })
+          : await fetchScoreSource(next.source);
+        const text = await blob.text();
+        const parts = parseMusicXmlParts(text);
+        const requestedPart = next.preferredPartId ?? selectedPartId;
+        const validPart = requestedPart === FULL_SCORE_PART_ID || parts.some((part) => part.id === requestedPart)
+          ? requestedPart
+          : chooseDefaultMusicXmlPart(parts);
+        await osmd.load(blob);
+        canonicalSource = blob; canonicalText = text; scoreParts = parts; selectedPartId = validPart;
+        activeSource = { source: blob, dedicated: false };
+        if (selectedPartId && next.preferredStaff) staffSelectionByPart.set(selectedPartId, next.preferredStaff);
+        applyStaffVisibility(selectedPartId);
+        renderScore();
+        position = requestedPosition;
+        setPositionImpl(position);
+        refreshStaffPicker();
+        const select = controls.querySelector<HTMLSelectElement>("[data-score-part-picker] select");
+        if (select) {
+          select.replaceChildren(...parts.map((part) => new Option(part.abbreviation ? `${part.name} (${part.abbreviation})` : part.name, part.id)), new Option(copy.fullScore, FULL_SCORE_PART_ID));
+          select.value = selectedPartId ?? FULL_SCORE_PART_ID;
+        }
+        return { ok: true, position: { ...position } };
+      } catch (error) {
+        canonicalSource = previous.source; canonicalText = previous.text; scoreParts = previous.parts; selectedPartId = previous.partId; activeSource = previous.activeSource; position = previous.position;
+        try { await osmd.load(previous.activeSource.source); applyStaffVisibility(previous.partId); renderScore(); setPositionImpl(position); refreshStaffPicker(); } catch { /* Preserve the original failure. */ }
+        return { ok: false, position: { ...position }, error: error instanceof Error ? error.message : "SCORE_SOURCE_REPLACEMENT_FAILED" };
+      }
+    };
     if ("ResizeObserver" in window) {
       const observer = new ResizeObserver((entries) => {
         const width = entries[0]?.contentRect.width ?? surface.clientWidth;
@@ -383,13 +451,13 @@ export async function mountScoreViewer(
   if (!shouldMountStandaloneMidi(options)) {
     midiControls.hidden = true;
     piano.hidden = true;
-    return () => cleanups.splice(0).forEach((cleanup) => cleanup());
+    return session;
   }
 
   const midiUrl = root.dataset.midiUrl;
   if (!midiUrl) {
     midiControls.innerHTML = `<p>${copy.midiUnavailable}</p>`;
-    return () => cleanups.splice(0).forEach((cleanup) => cleanup());
+    return session;
   }
   const pianoVisualizer = new PianoVisualizer(piano);
   pianoVisualizer.mount();
@@ -433,5 +501,5 @@ export async function mountScoreViewer(
   } catch (error) {
     midiControls.innerHTML = `<p>${error instanceof Error ? error.message : copy.midiFailed}</p>`;
   }
-  return () => cleanups.splice(0).forEach((cleanup) => cleanup());
+  return session;
 }

@@ -73,10 +73,10 @@ async function countdown(beats: number, beatDurationMs: number, output: HTMLElem
 export async function mountLearningMode(root: HTMLElement): Promise<() => void> {
   const language = getInitialLanguage();
   const copy = getLearningCopy(language);
-  const scoreCleanup = await mountScoreViewer(root, { midiPlayback: false });
+  const scoreSession = await mountScoreViewer(root, { midiPlayback: false });
   const midiUrl = root.dataset.midiUrl;
   const songId = root.dataset.songId ?? "";
-  if (root.dataset.learningEnabled !== "true" || !songId || (!appConfig.hasLearningApi && !midiUrl)) return scoreCleanup;
+  if (root.dataset.learningEnabled !== "true" || !songId || (!appConfig.hasLearningApi && !midiUrl)) return () => scoreSession.dispose();
 
   const allowed = new Set((root.dataset.learningInstruments || "piano").split(",").filter(Boolean));
   const selectionHelpers = await import("./learning-selection");
@@ -815,6 +815,6 @@ export async function mountLearningMode(root: HTMLElement): Promise<() => void> 
   }
 
   return () => {
-    controller.abort(); disconnectMidi(); unregisterTransport(); removeScorePositionListener(); midiLabCleanup(); audio?.destroy(); scheduler?.destroy(); visualizer?.destroy(); auditionEngine?.destroy(); scoreCleanup(); host.remove();
+    controller.abort(); disconnectMidi(); unregisterTransport(); removeScorePositionListener(); midiLabCleanup(); audio?.destroy(); scheduler?.destroy(); visualizer?.destroy(); auditionEngine?.destroy(); scoreSession.dispose(); host.remove();
   };
 }

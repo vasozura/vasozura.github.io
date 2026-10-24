@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { enableMidiSeek, fetchScoreSource, getScoreCopy, osmdViewerOptions, scoreTargetsFromGraphicalMeasures, scoreWidthChanged, shouldMountStandaloneMidi } from "./score-viewer";
+import { enableMidiSeek, fetchScoreSource, getScoreCopy, mountScoreViewer, osmdViewerOptions, scoreTargetsFromGraphicalMeasures, scoreWidthChanged, shouldMountStandaloneMidi } from "./score-viewer";
 
 describe("score viewer MIDI controls", () => {
   it("disables the independent MIDI timer when the canonical learning clock is active", () => {
@@ -54,6 +54,19 @@ describe("score viewer MIDI controls", () => {
 });
 
 describe("score viewer MusicXML loading", () => {
+  it("returns a deterministic session handle without score markup", async () => {
+    const session = await mountScoreViewer({ dataset: {}, querySelector: () => null } as unknown as HTMLElement);
+    session.setPosition({ playbackSeconds: 12, cursorStep: 4 });
+    expect(session.getPosition()).toEqual({ playbackSeconds: 12, cursorStep: 4 });
+    expect(session).toMatchObject({ replaceSource: expect.any(Function), dispose: expect.any(Function) });
+  });
+
+  it("disposes idempotently and rejects later replacement", async () => {
+    const session = await mountScoreViewer({ dataset: {}, querySelector: () => null } as unknown as HTMLElement);
+    session.dispose(); session.dispose();
+    await expect(session.replaceSource({ source: "<score-partwise/>" })).resolves.toMatchObject({ ok: false, error: "SCORE_SESSION_DISPOSED" });
+  });
+
   it("prefetches a signed resource as a Blob before OSMD parses it", async () => {
     const request = vi.fn(async () => new Response("<?xml version=\"1.0\"?><score-partwise/>", {
       status: 200,

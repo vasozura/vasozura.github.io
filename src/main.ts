@@ -80,8 +80,9 @@ function bindInteractions(playableSongs: Song[] = songs): void {
       const cleanup = score.dataset.learningEnabled === "true"
         ? await import("./learning/learning-mode").then(({ mountLearningMode }) => mountLearningMode(score))
         : await import("./score/score-viewer").then(({ mountScoreViewer }) => mountScoreViewer(score));
-      if (score.isConnected) learningCleanup = cleanup;
-      else cleanup();
+      const dispose = typeof cleanup === "function" ? cleanup : () => cleanup.dispose();
+      if (score.isConnected) learningCleanup = dispose;
+      else dispose();
     } catch (error) {
       score.dataset.mounted = "false";
       openLearning.disabled = false;
