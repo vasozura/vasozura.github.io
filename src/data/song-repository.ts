@@ -2,6 +2,7 @@ import { getSupabase, requireSupabase } from "../lib/supabase";
 import type { Difficulty, LocalizedText, Song, SongFilters } from "../types/song";
 import { fileRules, type UploadFileType } from "../utils/file-validation";
 import { safeHttpUrl } from "../utils/safe-url";
+import { learningSongIdentity } from "../learning/artifact-identity";
 
 type SongRow = Record<string, unknown>;
 
@@ -44,6 +45,7 @@ export function songFromRow(row: SongRow): Song {
     publicationDate: stringOrNull(row.published_at),
     createdAt: stringOrNull(row.created_at),
     updatedAt: stringOrNull(row.updated_at),
+    learningIdentity: learningSongIdentity(String(row.slug)) ?? undefined,
   };
 }
 

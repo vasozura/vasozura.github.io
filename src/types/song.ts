@@ -39,6 +39,7 @@ export interface Song {
   learningSource?: "musicxml" | "midi";
   learningMapping?: Record<string, unknown>;
   learningFingering?: Record<string, unknown>;
+  learningIdentity?: { slug:string; generationId:string; canonicalAudioSha256:string };
   createdAt?: string | null;
   updatedAt?: string | null;
 }
