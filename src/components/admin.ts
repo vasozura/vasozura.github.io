@@ -18,6 +18,14 @@ let hashGuardInstalled = false;
 function value(text: string | null | undefined): string { return escapeHtml(text ?? ""); }
 function localized(text: string | null): LocalizedText | null { return text ? { ka: text, en: text } : null; }
 function numberValue(entry: FormDataEntryValue | null): number | null { const parsed = Number(entry); return entry && Number.isFinite(parsed) && parsed > 0 ? parsed : null; }
+function readableError(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (error && typeof error === "object") {
+    const record = error as Record<string, unknown>;
+    return [record.message, record.details, record.hint, record.code].filter((entry) => typeof entry === "string" && entry).join(" · ") || JSON.stringify(error);
+  }
+  return String(error || "import failed");
+}
 
 function installUnsavedGuard(): void {
   window.onbeforeunload = () => dirty ? "Unsaved song changes will be lost." : undefined;
@@ -166,7 +174,7 @@ function bindBatchPanel(root: HTMLElement): void {
         }
         await updateSongResources(saved.id, resources);
       } catch (error) {
-        failures.push(`${entry.expectedSlug}: ${error instanceof Error ? error.message : "import failed"}`);
+        failures.push(`${entry.expectedSlug}: ${readableError(error)}`);
       }
       completed++; progress.value = Math.round((completed / manifest.packages.length) * 100);
       output.textContent = `Imported ${completed - failures.length}/${manifest.packages.length} · failed ${failures.length}`;

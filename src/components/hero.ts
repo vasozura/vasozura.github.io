@@ -27,8 +27,8 @@ export function renderHero(language: Language, releaseCount: number): string {
             <a class="hero-secondary" href="#story">${story} <span aria-hidden="true">↘</span></a>
           </div>
         </div>
-        <aside class="hero-archive-note" aria-label="${releaseCount} ${releaseLabel}">
-          <strong>${String(releaseCount).padStart(2, "0")}</strong>
+        <aside class="hero-archive-note" aria-label="${releaseCount} ${releaseLabel}" data-release-label="${releaseLabel}">
+          <strong id="hero-release-count">${String(releaseCount).padStart(2, "0")}</strong>
           <span>${releaseLabel}</span>
           <a href="${channelUrl}" aria-label="${listenLabel}"><b aria-hidden="true">▶</b> YouTube</a>
         </aside>

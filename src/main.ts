@@ -155,6 +155,10 @@ function bindCatalogFilters(): void {
       for (const song of page.songs) if (!songs.some((entry) => entry.id === song.id)) songs.push(song);
       hasMore = page.hasMore;
       paint(entries, page.total);
+      const heroCount = document.querySelector<HTMLElement>("#hero-release-count");
+      const heroNote = document.querySelector<HTMLElement>(".hero-archive-note");
+      if (heroCount) heroCount.textContent = String(page.total).padStart(2, "0");
+      if (heroNote) heroNote.setAttribute("aria-label", `${page.total} ${heroNote.dataset.releaseLabel ?? "published releases"}`);
     } catch (error) {
       if ((error as Error).name !== "AbortError") {
         failed = true;
