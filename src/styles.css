@@ -166,8 +166,8 @@ img {
 
 .hero {
   position: relative;
-  min-height: 800px;
-  height: 100svh;
+  min-height: 700px;
+  height: min(860px, 100svh);
   overflow: hidden;
 }
 
@@ -197,8 +197,8 @@ img {
   align-items: end;
   height: 100%;
   gap: clamp(40px, 7vw, 110px);
-  padding-top: clamp(150px, 17vh, 185px);
-  padding-bottom: clamp(70px, 9vh, 110px);
+  padding-top: clamp(125px, 15vh, 160px);
+  padding-bottom: clamp(54px, 7vh, 82px);
 }
 
 .hero-content {
@@ -229,8 +229,8 @@ img {
 .hero h1 {
   display: flex;
   flex-direction: column;
-  margin: 38px 0 22px;
-  font-size: clamp(64px, 9.2vw, 132px);
+  margin: 30px 0 18px;
+  font-size: clamp(56px, 6.4vw, 92px);
   font-weight: 950;
   letter-spacing: -0.075em;
   line-height: 0.78;
@@ -254,7 +254,7 @@ img {
 
 .hero-copy {
   max-width: 560px;
-  margin: 42px 0 28px;
+  margin: 30px 0 24px;
   color: var(--paper-muted);
   font-size: clamp(14px, 1.3vw, 17px);
   line-height: 1.7;
@@ -877,7 +877,7 @@ img {
   }
 
   .hero h1 {
-    font-size: clamp(68px, 11vw, 112px);
+    font-size: clamp(54px, 8.5vw, 78px);
   }
 
   .primary-nav {
@@ -934,7 +934,7 @@ img {
   }
 
   .hero {
-    min-height: 760px;
+    min-height: 680px;
   }
 
   .hero-grid {
@@ -942,8 +942,8 @@ img {
     align-content: center;
     align-items: start;
     gap: 28px;
-    padding-top: 150px;
-    padding-bottom: 48px;
+    padding-top: 118px;
+    padding-bottom: 42px;
   }
 
   .hero-media {
@@ -960,8 +960,8 @@ img {
   }
 
   .hero h1 {
-    margin-top: 34px;
-    font-size: clamp(56px, 18vw, 78px);
+    margin-top: 26px;
+    font-size: clamp(46px, 14vw, 64px);
   }
 
   .hero-copy {
@@ -1159,7 +1159,7 @@ img {
   }
 
   .hero h1 {
-    font-size: 21.5vw;
+    font-size: clamp(42px, 14vw, 58px);
   }
 
   .hero-copy {

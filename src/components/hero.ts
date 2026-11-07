@@ -9,7 +9,7 @@ export function renderHero(language: Language, releaseCount: number): string {
   const listenLabel = language === "ka" ? "ZURA-ს YouTube არხის გახსნა" : "Open ZURA's YouTube channel";
   const explore = language === "ka" ? "არქივის დათვალიერება" : "Explore the archive";
   const story = language === "ka" ? "ZURA-ს შესახებ" : "About ZURA";
-  const releaseLabel = language === "ka" ? "ჩანაწერი არქივში" : "releases in the archive";
+  const releaseLabel = language === "ka" ? "გამოქვეყნებული ჩანაწერი" : "published releases";
   const archiveLabel = language === "ka" ? "ოფიციალური კომპოზიტორის არქივი" : "Official composer archive";
 
   return `
