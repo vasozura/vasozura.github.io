@@ -132,8 +132,13 @@ export class PlayerController {
     const current = this.songs.find((song) => song.id === this.currentId);
     const title = current ? localize(current.title, this.language) ?? current.slug : (this.language === "ka" ? "აირჩიეთ MP3 ჩანაწერი" : "Choose an MP3 release");
     const duration = Number.isFinite(this.audio.duration) ? this.audio.duration : 0;
+    const formatTime = (seconds: number): string => `${Math.floor(Math.max(0, seconds) / 60)}:${String(Math.floor(Math.max(0, seconds) % 60)).padStart(2, "0")}`;
     const seek = this.root.querySelector<HTMLInputElement>("#player-seek");
     if (seek) { seek.max = String(duration); seek.value = String(Math.min(this.audio.currentTime, duration)); }
+    const elapsed = this.root.querySelector<HTMLElement>("#player-elapsed");
+    const total = this.root.querySelector<HTMLElement>("#player-duration");
+    if (elapsed) elapsed.textContent = formatTime(this.audio.currentTime);
+    if (total) total.textContent = formatTime(duration || current?.durationSeconds || 0);
     const volume = this.root.querySelector<HTMLInputElement>("#player-volume");
     if (volume) volume.value = String(this.audio.volume);
     const play = this.root.querySelector<HTMLButtonElement>("#player-play");

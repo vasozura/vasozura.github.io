@@ -9,7 +9,7 @@ import { renderTicker } from "./ticker";
 export function renderHome(songs: Song[], language: Language): string {
   return `
     <main id="main-content" tabindex="-1">
-      ${renderHero(language)}
+      ${renderHero(language, songs.length)}
       ${renderTicker()}
       ${renderCatalog(songs, language)}
       ${renderStory(language)}

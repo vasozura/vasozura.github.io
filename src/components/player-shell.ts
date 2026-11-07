@@ -19,7 +19,7 @@ export function renderPlayerShell(language: Language, songs: Song[]): string {
         <button id="player-repeat" type="button" aria-label="${labels.repeat}" aria-pressed="false" data-mode="off">↻</button>
       </div>
       <p class="player-track-copy"><small>PLAYER · ARCHIVE</small><strong id="player-track">${labels.empty}</strong></p>
-      <label class="player-seek"><span class="sr-only">${labels.seek}</span><input id="player-seek" type="range" min="0" max="0" value="0" step="0.1" /></label>
+      <label class="player-seek"><span class="sr-only">${labels.seek}</span><input id="player-seek" type="range" min="0" max="0" value="0" step="0.1" /><span class="player-time" aria-live="off"><b id="player-elapsed">0:00</b><i aria-hidden="true">/</i><b id="player-duration">0:00</b></span></label>
       <label class="player-volume"><span aria-hidden="true">◖</span><span class="sr-only">${labels.volume}</span><input id="player-volume" type="range" min="0" max="1" value="1" step="0.05" /></label>
       <details class="player-queue"><summary>${labels.queue} · ${available.length}</summary><ol>${available.map((song) => `<li><button type="button" data-queue-song="${escapeHtml(song.id)}">${escapeHtml(localize(song.title, language) ?? song.slug)}</button></li>`).join("")}</ol></details>
     </aside>

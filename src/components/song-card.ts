@@ -15,8 +15,13 @@ export function renderSongCard(song: Song, index: number, language: Language): s
     ? `<a class="round" href="${escapeHtml(song.youtubeUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${youtubeLabel}"><span aria-hidden="true">▶</span></a>`
     : `<span class="round round-disabled" aria-hidden="true">—</span>`;
   const play = song.audioUrl
-    ? `<button class="card-play" type="button" data-play-song="${escapeHtml(song.id)}" aria-label="${language === "ka" ? `${title} — MP3 დაკვრა` : `Play ${title} MP3`}">♫</button>`
+    ? `<button class="card-play" type="button" data-play-song="${escapeHtml(song.id)}" aria-label="${language === "ka" ? `${title} — MP3 დაკვრა` : `Play ${title} MP3`}"><span aria-hidden="true">▶</span></button>`
     : "";
+  const duration = song.durationSeconds
+    ? `${Math.floor(song.durationSeconds / 60)}:${String(Math.round(song.durationSeconds % 60)).padStart(2, "0")}`
+    : null;
+  const facts = [song.language, duration, song.musicalKey, song.bpm ? `${song.bpm} BPM` : null].filter(Boolean);
+  const resources = [song.audioUrl && "MP3", song.midiUrl && "MIDI", song.musicXmlUrl && "XML", song.scorePdfUrl && "PDF", song.lyrics && "TXT"].filter(Boolean);
 
   return `
     <article class="release-card">
@@ -25,7 +30,9 @@ export function renderSongCard(song: Song, index: number, language: Language): s
       <a class="release-title" href="#/song/${escapeHtml(song.slug)}" aria-label="${detailsLabel}">
         <small>${credit}</small>
         <strong>${title}</strong>
+        <span class="release-facts">${facts.map((fact) => `<b>${escapeHtml(String(fact))}</b>`).join("")}</span>
       </a>
+      <span class="release-resources" aria-label="${language === "ka" ? "ხელმისაწვდომი რესურსები" : "Available resources"}">${resources.map((resource) => `<i>${resource}</i>`).join("")}</span>
       ${play}
       ${youtube}
     </article>
