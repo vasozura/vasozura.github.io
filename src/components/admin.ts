@@ -73,7 +73,7 @@ function renderSongList(songs: Song[]): string {
 }
 
 function renderBatchPanel(): string {
-  return `<section class="admin-list admin-batch" aria-labelledby="batch-title"><div class="admin-heading"><div><p class="num">BATCH · OWNER ONLY</p><h2 id="batch-title">Catalog onboarding readiness</h2></div></div><p>Validate the versioned batch manifest here, then run the secure local PowerShell importer. Browser code never receives a service credential.</p><label class="admin-file"><span>Batch manifest JSON</span><input type="file" accept="application/json,.json" data-batch-manifest /></label><progress data-batch-progress max="100" value="0" hidden></progress><div data-batch-result role="status" aria-live="polite">No manifest selected.</div><div class="admin-form-actions"><button type="button" data-batch-copy disabled>Copy validation-only command</button><button type="button" data-batch-resume disabled>Copy resume command</button></div><label class="admin-check"><input type="checkbox" data-batch-publication-confirm /> I reviewed every draft and its publication checklist</label><button type="button" data-batch-publish disabled>Batch publication disabled by default</button><p><small>Publication remains a separate confirmed per-song action. Incomplete imports retain a non-secret checkpoint and recovery report.</small></p></section>`;
+  return `<section class="admin-list admin-batch" aria-labelledby="batch-title"><div class="admin-heading"><div><p class="num">BATCH · OWNER ONLY</p><h2 id="batch-title">Catalog onboarding</h2></div></div><p>Choose a validated batch manifest and its package folder. The dashboard uploads verified files with the active owner session and creates drafts; public publication remains separate.</p><div class="admin-grid"><label class="admin-file"><span>Batch manifest JSON</span><input type="file" accept="application/json,.json" data-batch-manifest /></label><label class="admin-file"><span>Package folder</span><input type="file" webkitdirectory multiple data-batch-packages /></label></div><progress data-batch-progress max="100" value="0" hidden></progress><div data-batch-result role="status" aria-live="polite">Select a manifest and package folder.</div><div class="admin-form-actions"><button type="button" data-batch-import disabled>Import validated packages as drafts</button><button type="button" data-batch-copy disabled>Copy validation-only command</button><button type="button" data-batch-resume disabled>Copy resume command</button></div><label class="admin-check"><input type="checkbox" data-batch-publication-confirm /> I reviewed every draft and its publication checklist</label><button type="button" data-batch-publish disabled>Batch publication disabled by default</button><p><small>Import is resumable: matching slugs and checksums are reused. Publication remains a separate confirmed action.</small></p></section>`;
 }
 
 function bindBatchPanel(root: HTMLElement): void {
@@ -82,10 +82,15 @@ function bindBatchPanel(root: HTMLElement): void {
   const progress = root.querySelector<HTMLProgressElement>("[data-batch-progress]");
   const copy = root.querySelector<HTMLButtonElement>("[data-batch-copy]");
   const resume = root.querySelector<HTMLButtonElement>("[data-batch-resume]");
+  const packageInput = root.querySelector<HTMLInputElement>("[data-batch-packages]");
+  const importButton = root.querySelector<HTMLButtonElement>("[data-batch-import]");
   const confirmation = root.querySelector<HTMLInputElement>("[data-batch-publication-confirm]");
   const publish = root.querySelector<HTMLButtonElement>("[data-batch-publish]");
-  if (!input || !output || !progress || !copy || !resume || !confirmation || !publish) return;
+  if (!input || !packageInput || !importButton || !output || !progress || !copy || !resume || !confirmation || !publish) return;
   let filename = "batch.json";
+  let manifest: ReturnType<typeof parseBatchManifest>["manifest"] = null;
+  let packageFiles: File[] = [];
+  const refreshImport = (): void => { importButton.disabled = !manifest || packageFiles.length === 0; };
   const copyCommand = async (withResume: boolean): Promise<void> => {
     const command = `.\\scripts\\import-batch.ps1 -ManifestPath ".\\${filename}"${withResume ? " -Resume" : " -DryRun"}`;
     await navigator.clipboard.writeText(command);
@@ -97,6 +102,7 @@ function bindBatchPanel(root: HTMLElement): void {
     filename = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
     progress.hidden = false; progress.value = 25;
     const readiness = parseBatchManifest(await file.text());
+    manifest = readiness.manifest;
     progress.value = 100;
     output.className = readiness.valid ? "success" : "error";
     output.innerHTML = readiness.valid
@@ -104,6 +110,49 @@ function bindBatchPanel(root: HTMLElement): void {
       : readiness.errors.map((error) => `<p><strong>${value(error.song)}</strong>: ${value(error.message)}</p>`).join("");
     copy.disabled = !readiness.valid;
     resume.disabled = !readiness.valid;
+    refreshImport();
+  });
+  packageInput.addEventListener("change", () => {
+    packageFiles = [...(packageInput.files ?? [])];
+    output.textContent = packageFiles.length ? `${packageFiles.length} package file(s) selected.` : "Select a manifest and package folder.";
+    refreshImport();
+  });
+  importButton.addEventListener("click", async () => {
+    if (!manifest) return;
+    importButton.disabled = true; input.disabled = true; packageInput.disabled = true;
+    progress.hidden = false; progress.value = 0;
+    let completed = 0; const failures: string[] = [];
+    const locate = (packagePath: string, name: string): File | undefined => {
+      const suffix = `${packagePath.replace(/\\/g, "/")}/${name}`.toLowerCase();
+      return packageFiles.find((file) => file.webkitRelativePath.replace(/\\/g, "/").toLowerCase().endsWith(suffix));
+    };
+    for (const entry of manifest.packages) {
+      try {
+        const metadataFile = locate(entry.path, "metadata.json");
+        const audio = locate(entry.path, "audio.mp3");
+        const lyrics = locate(entry.path, "lyrics-ka.txt");
+        const cover = packageFiles.find((file) => file.webkitRelativePath.replace(/\\/g, "/").toLowerCase().match(new RegExp(`${entry.path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\\/g, "/")}/cover\\.(?:jpe?g|png|webp)$`, "i")));
+        if (!metadataFile || !audio || !lyrics || !cover) throw new Error("metadata, audio, lyrics or cover is missing");
+        const metadata = JSON.parse(await metadataFile.text()) as Record<string, unknown>;
+        if (metadata.slug !== entry.expectedSlug || metadata.status !== "draft") throw new Error("manifest and metadata identity differ");
+        const base = emptySong();
+        const draft: Song = { ...base, slug: String(metadata.slug), title: { ka: String(metadata.title_ka), en: String(metadata.title_en) }, displayCredit: localized(typeof metadata.display_credit === "string" ? metadata.display_credit : null), language: typeof metadata.language === "string" ? metadata.language : null, lyrics: { ka: cleanupLiteralNewlines(await lyrics.text()), en: null }, sunoUrl: typeof metadata.suno_url === "string" ? safeHttpUrl(metadata.suno_url) : null, durationSeconds: typeof metadata.duration_seconds === "number" ? metadata.duration_seconds : null };
+        const saved = await saveSong(draft);
+        const resources: Partial<Record<ResourceColumn, string>> = {};
+        for (const [fileType, file, column] of [["audio", audio, "audio_url"], ["cover", cover, "cover_url"], ["lyrics", lyrics, null]] as const) {
+          const uploaded = await uploadSongFile(saved.id, saved.slug, fileType, file, () => undefined);
+          if (column) resources[column] = uploaded.publicUrl;
+        }
+        await updateSongResources(saved.id, resources);
+      } catch (error) {
+        failures.push(`${entry.expectedSlug}: ${error instanceof Error ? error.message : "import failed"}`);
+      }
+      completed++; progress.value = Math.round((completed / manifest.packages.length) * 100);
+      output.textContent = `Imported ${completed - failures.length}/${manifest.packages.length} · failed ${failures.length}`;
+    }
+    output.className = failures.length ? "error" : "success";
+    output.innerHTML = failures.length ? `<strong>Imported ${completed - failures.length}/${manifest.packages.length}</strong>${failures.slice(0, 20).map((failure) => `<p>${value(failure)}</p>`).join("")}` : `<strong>Imported ${completed}/${manifest.packages.length} drafts successfully.</strong>`;
+    input.disabled = false; packageInput.disabled = false; refreshImport();
   });
   copy.addEventListener("click", () => { void copyCommand(false); });
   resume.addEventListener("click", () => { void copyCommand(true); });
