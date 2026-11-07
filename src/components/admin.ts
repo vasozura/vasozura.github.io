@@ -10,6 +10,7 @@ import { safeHttpUrl } from "../utils/safe-url";
 import { parseLearningConfiguration, validateLearningPublication } from "../learning/admin-config";
 import { inspectLearningReadiness, reprocessLearning } from "../learning/admin-readiness";
 import { parseBatchManifest } from "../data/batch-manifest";
+import JSZip from "jszip";
 
 let dirty = false;
 let hashGuardInstalled = false;
@@ -73,7 +74,7 @@ function renderSongList(songs: Song[]): string {
 }
 
 function renderBatchPanel(): string {
-  return `<section class="admin-list admin-batch" aria-labelledby="batch-title"><div class="admin-heading"><div><p class="num">BATCH · OWNER ONLY</p><h2 id="batch-title">Catalog onboarding</h2></div></div><p>Choose a validated batch manifest and its package folder. The dashboard uploads verified files with the active owner session and creates drafts; public publication remains separate.</p><div class="admin-grid"><label class="admin-file"><span>Batch manifest JSON</span><input type="file" accept="application/json,.json" data-batch-manifest /></label><label class="admin-file"><span>Package folder</span><input type="file" webkitdirectory multiple data-batch-packages /></label></div><progress data-batch-progress max="100" value="0" hidden></progress><div data-batch-result role="status" aria-live="polite">Select a manifest and package folder.</div><div class="admin-form-actions"><button type="button" data-batch-import disabled>Import validated packages as drafts</button><button type="button" data-batch-copy disabled>Copy validation-only command</button><button type="button" data-batch-resume disabled>Copy resume command</button></div><label class="admin-check"><input type="checkbox" data-batch-publication-confirm /> I reviewed every draft and its publication checklist</label><button type="button" data-batch-publish disabled>Batch publication disabled by default</button><p><small>Import is resumable: matching slugs and checksums are reused. Publication remains a separate confirmed action.</small></p></section>`;
+  return `<section class="admin-list admin-batch" aria-labelledby="batch-title"><div class="admin-heading"><div><p class="num">BATCH · OWNER ONLY</p><h2 id="batch-title">Catalog onboarding</h2></div></div><p>Choose a validated batch manifest and its package ZIP. The dashboard uploads verified files with the active owner session and creates drafts; public publication remains separate.</p><div class="admin-grid"><label class="admin-file"><span>Batch manifest JSON</span><input type="file" accept="application/json,.json" data-batch-manifest /></label><label class="admin-file"><span>Package ZIP</span><input type="file" accept="application/zip,.zip" data-batch-packages /></label></div><progress data-batch-progress max="100" value="0" hidden></progress><div data-batch-result role="status" aria-live="polite">Select a manifest and package ZIP.</div><div class="admin-form-actions"><button type="button" data-batch-import disabled>Import validated packages as drafts</button><button type="button" data-batch-copy disabled>Copy validation-only command</button><button type="button" data-batch-resume disabled>Copy resume command</button></div><label class="admin-check"><input type="checkbox" data-batch-publication-confirm /> I reviewed every draft and its publication checklist</label><button type="button" data-batch-publish disabled>Batch publication disabled by default</button><p><small>Import is resumable: matching slugs and checksums are reused. Publication remains a separate confirmed action.</small></p></section>`;
 }
 
 function bindBatchPanel(root: HTMLElement): void {
@@ -112,9 +113,25 @@ function bindBatchPanel(root: HTMLElement): void {
     resume.disabled = !readiness.valid;
     refreshImport();
   });
-  packageInput.addEventListener("change", () => {
-    packageFiles = [...(packageInput.files ?? [])];
-    output.textContent = packageFiles.length ? `${packageFiles.length} package file(s) selected.` : "Select a manifest and package folder.";
+  packageInput.addEventListener("change", async () => {
+    const archiveFile = packageInput.files?.[0];
+    packageFiles = [];
+    if (!archiveFile) { output.textContent = "Select a manifest and package ZIP."; refreshImport(); return; }
+    output.textContent = "Reading package ZIP…";
+    try {
+      const archive = await JSZip.loadAsync(archiveFile);
+      for (const [relativePath, entry] of Object.entries(archive.files)) {
+        if (entry.dir) continue;
+        const blob = await entry.async("blob");
+        const mime = /\.mp3$/i.test(relativePath) ? "audio/mpeg" : /\.jpe?g$/i.test(relativePath) ? "image/jpeg" : /\.png$/i.test(relativePath) ? "image/png" : /\.webp$/i.test(relativePath) ? "image/webp" : /\.json$/i.test(relativePath) ? "application/json" : "text/plain";
+        const file = new File([blob], relativePath.replace(/\\/g, "/").split("/").pop() ?? "package-file", { type: mime });
+        Object.defineProperty(file, "relativePath", { value: relativePath.replace(/\\/g, "/") });
+        packageFiles.push(file);
+      }
+      output.textContent = `${packageFiles.length} package file(s) loaded from ZIP.`;
+    } catch (error) {
+      output.className = "error"; output.textContent = error instanceof Error ? error.message : "Unable to read package ZIP.";
+    }
     refreshImport();
   });
   importButton.addEventListener("click", async () => {
@@ -122,16 +139,20 @@ function bindBatchPanel(root: HTMLElement): void {
     importButton.disabled = true; input.disabled = true; packageInput.disabled = true;
     progress.hidden = false; progress.value = 0;
     let completed = 0; const failures: string[] = [];
+    const packagePaths = (packagePath: string): string[] => {
+      const normalized = packagePath.replace(/\\/g, "/").toLowerCase();
+      return [normalized, normalized.replace(/^packages\//, "")];
+    };
     const locate = (packagePath: string, name: string): File | undefined => {
-      const suffix = `${packagePath.replace(/\\/g, "/")}/${name}`.toLowerCase();
-      return packageFiles.find((file) => file.webkitRelativePath.replace(/\\/g, "/").toLowerCase().endsWith(suffix));
+      const suffixes = packagePaths(packagePath).map((candidate) => `${candidate}/${name.toLowerCase()}`);
+      return packageFiles.find((file) => suffixes.some((suffix) => String((file as File & { relativePath?: string }).relativePath ?? file.webkitRelativePath ?? file.name).replace(/\\/g, "/").toLowerCase().endsWith(suffix)));
     };
     for (const entry of manifest.packages) {
       try {
         const metadataFile = locate(entry.path, "metadata.json");
         const audio = locate(entry.path, "audio.mp3");
         const lyrics = locate(entry.path, "lyrics-ka.txt");
-        const cover = packageFiles.find((file) => file.webkitRelativePath.replace(/\\/g, "/").toLowerCase().match(new RegExp(`${entry.path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\\/g, "/")}/cover\\.(?:jpe?g|png|webp)$`, "i")));
+        const cover = packageFiles.find((file) => packagePaths(entry.path).some((candidate) => new RegExp(`${candidate.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/cover\\.(?:jpe?g|png|webp)$`, "i").test(String((file as File & { relativePath?: string }).relativePath ?? file.webkitRelativePath ?? file.name).replace(/\\/g, "/"))));
         if (!metadataFile || !audio || !lyrics || !cover) throw new Error("metadata, audio, lyrics or cover is missing");
         const metadata = JSON.parse(await metadataFile.text()) as Record<string, unknown>;
         if (metadata.slug !== entry.expectedSlug || metadata.status !== "draft") throw new Error("manifest and metadata identity differ");

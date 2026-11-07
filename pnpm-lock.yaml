@@ -17,6 +17,9 @@ importers:
       '@tonejs/midi':
         specifier: ^2.0.28
         version: 2.0.28
+      jszip:
+        specifier: 3.10.1
+        version: 3.10.1
       opensheetmusicdisplay:
         specifier: ^2.1.2
         version: 2.1.2
