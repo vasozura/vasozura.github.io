@@ -647,9 +647,9 @@ img {
 
 .song-detail-grid {
   display: grid;
-  grid-template-columns: clamp(340px, 32vw, 460px) minmax(0, 1fr);
+  grid-template-columns: clamp(300px, 27vw, 400px) minmax(0, 1fr);
   align-items: center;
-  gap: clamp(50px, 6vw, 100px);
+  gap: clamp(42px, 5vw, 78px);
 }
 
 .song-detail-hero,
@@ -662,7 +662,7 @@ img {
 
 .detail-cover {
   display: grid;
-  width: clamp(340px, 32vw, 460px);
+  width: clamp(300px, 27vw, 400px);
   aspect-ratio: 1;
   place-items: center;
   overflow: hidden;
@@ -691,18 +691,18 @@ img {
 
 .detail-copy h1,
 .route-message h1 {
-  max-width: 14ch;
-  margin: 20px 0 16px;
+  max-width: 18ch;
+  margin: 16px 0 14px;
   overflow-wrap: anywhere;
-  font-size: clamp(48px, 5vw, 82px);
-  letter-spacing: -0.045em;
-  line-height: 0.98;
+  font-size: clamp(36px, 3.6vw, 58px);
+  letter-spacing: -0.035em;
+  line-height: 1.06;
 }
 
 .detail-credit {
   margin: 0;
   color: var(--acid);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 800;
   letter-spacing: 0.12em;
   line-height: 1.5;
@@ -710,8 +710,9 @@ img {
 
 .detail-description {
   max-width: 620px;
-  margin: 22px 0 0;
+  margin: 18px 0 0;
   color: var(--paper-muted);
+  font-size: 15px;
   line-height: 1.75;
 }
 
@@ -2741,12 +2742,12 @@ img {
 
 @media (max-width: 1024px) {
   .song-detail-grid {
-    grid-template-columns: clamp(300px, 34vw, 360px) minmax(0, 1fr);
+    grid-template-columns: clamp(280px, 32vw, 340px) minmax(0, 1fr);
     gap: clamp(36px, 5vw, 58px);
   }
 
   .detail-cover {
-    width: clamp(300px, 34vw, 360px);
+    width: clamp(280px, 32vw, 340px);
   }
 }
 
@@ -2786,7 +2787,8 @@ img {
   .detail-copy h1,
   .route-message h1 {
     max-width: none;
-    font-size: clamp(42px, 13vw, 58px);
+    font-size: clamp(32px, 10vw, 44px);
+    line-height: 1.08;
   }
 
   .detail-actions .resource-link {
