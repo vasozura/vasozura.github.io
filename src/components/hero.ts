@@ -11,6 +11,7 @@ export function renderHero(language: Language, releaseCount: number): string {
   const story = language === "ka" ? "ZURA-ს შესახებ" : "About ZURA";
   const releaseLabel = language === "ka" ? "გამოქვეყნებული ჩანაწერი" : "published releases";
   const archiveLabel = language === "ka" ? "ოფიციალური კომპოზიტორის არქივი" : "Official composer archive";
+  const titleLine = language === "ka" ? "მუსიკა · ტექსტები · ნოტები" : "Music · lyrics · scores";
 
   return `
     <section class="hero" id="top" aria-labelledby="hero-title">
@@ -18,7 +19,8 @@ export function renderHero(language: Language, releaseCount: number): string {
       <div class="shell hero-grid">
         <div class="hero-content">
           <p class="eyebrow"><i aria-hidden="true"></i> ${archiveLabel}</p>
-          <h1 id="hero-title"><span>HEAR</span><span>THE</span><em>UNSEEN.</em></h1>
+          <h1 id="hero-title">ZURA</h1>
+          <p class="hero-subtitle">${titleLine}</p>
           <p class="hero-copy">${copy}</p>
           <div class="hero-actions">
             <a class="hero-primary" href="#music">${explore} <span aria-hidden="true">↓</span></a>
