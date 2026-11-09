@@ -165,7 +165,7 @@ function bindBatchPanel(root: HTMLElement): void {
         const metadata = JSON.parse(await metadataFile.text()) as Record<string, unknown>;
         if (metadata.slug !== entry.expectedSlug || metadata.status !== "draft") throw new Error("manifest and metadata identity differ");
         const base = emptySong();
-        const draft: Song = { ...base, slug: String(metadata.slug), title: { ka: String(metadata.title_ka), en: String(metadata.title_en) }, displayCredit: localized(typeof metadata.display_credit === "string" ? metadata.display_credit : null), language: typeof metadata.language === "string" ? metadata.language : null, lyrics: { ka: cleanupLiteralNewlines(await lyrics.text()), en: null }, sunoUrl: typeof metadata.suno_url === "string" ? safeHttpUrl(metadata.suno_url) : null, durationSeconds: typeof metadata.duration_seconds === "number" ? metadata.duration_seconds : null };
+        const draft: Song = { ...base, slug: String(metadata.slug), title: { ka: String(metadata.title_ka), en: String(metadata.title_en) }, displayCredit: localized(typeof metadata.display_credit === "string" ? metadata.display_credit : null), language: typeof metadata.language === "string" ? metadata.language : null, lyrics: { ka: cleanupLiteralNewlines(await lyrics.text()), en: null }, sunoUrl: typeof metadata.suno_url === "string" ? safeHttpUrl(metadata.suno_url) : null, durationSeconds: typeof metadata.duration_seconds === "number" ? Math.round(metadata.duration_seconds) : null };
         const saved = await saveSong(draft);
         const resources: Partial<Record<ResourceColumn, string>> = {};
         for (const [fileType, file, column] of [["audio", audio, "audio_url"], ["cover", cover, "cover_url"], ["lyrics", lyrics, null]] as const) {
