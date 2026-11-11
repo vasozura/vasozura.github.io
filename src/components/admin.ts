@@ -337,7 +337,7 @@ export async function mountAdmin(root: HTMLElement): Promise<void> {
           const readiness = await inspectLearningReadiness(song);
           if (!readiness.ready) throw new Error(`Publication blocked: ${readiness.problems.join(" ")}`);
         }
-        await setSongStatus(button.dataset.adminPublish ?? "", button.dataset.status === "published" ? "published" : "draft");
+        await setSongStatus(button.dataset.adminPublish ?? "", button.dataset.status === "published" ? "published" : "draft", Boolean(song?.learningEnabled));
         songs = await loadAdminSongs(); renderDashboard();
       } catch (error) {
         const message = error instanceof Error

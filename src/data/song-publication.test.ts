@@ -20,7 +20,7 @@ describe("atomic song publication", () => {
   });
 
   it("publishes through the owner-only archive and Learning RPC", async () => {
-    await setSongStatus("7037edfc-52ef-4ba2-a031-bbfccde66ac3", "published");
+    await setSongStatus("7037edfc-52ef-4ba2-a031-bbfccde66ac3", "published", true);
 
     expect(rpc).toHaveBeenCalledWith("set_song_publication_with_learning", {
       p_song_id: "7037edfc-52ef-4ba2-a031-bbfccde66ac3",
@@ -29,7 +29,7 @@ describe("atomic song publication", () => {
   });
 
   it("uses the same transaction for unpublication", async () => {
-    await setSongStatus("7037edfc-52ef-4ba2-a031-bbfccde66ac3", "draft");
+    await setSongStatus("7037edfc-52ef-4ba2-a031-bbfccde66ac3", "draft", true);
 
     expect(rpc).toHaveBeenCalledWith("set_song_publication_with_learning", {
       p_song_id: "7037edfc-52ef-4ba2-a031-bbfccde66ac3",
@@ -40,14 +40,13 @@ describe("atomic song publication", () => {
   it("fails closed when the database transaction rejects publication", async () => {
     rpc.mockResolvedValueOnce({ data: null, error: new Error("manifest mismatch") });
 
-    await expect(setSongStatus("7037edfc-52ef-4ba2-a031-bbfccde66ac3", "published")).rejects.toThrow("manifest mismatch");
+    await expect(setSongStatus("7037edfc-52ef-4ba2-a031-bbfccde66ac3", "published", true)).rejects.toThrow("manifest mismatch");
   });
 
-  it("falls back to admin RLS updates when production is missing the RPC", async () => {
-    rpc.mockResolvedValueOnce({ data: null, error: { code: "PGRST202", message: "function is not in the schema cache" } });
-
+  it("uses admin RLS updates for a standard catalog song", async () => {
     await setSongStatus("7037edfc-52ef-4ba2-a031-bbfccde66ac3", "published");
 
+    expect(rpc).not.toHaveBeenCalled();
     expect(from).toHaveBeenNthCalledWith(1, "songs");
     expect(from).toHaveBeenNthCalledWith(2, "learning_exercises");
     expect(update).toHaveBeenNthCalledWith(2, { is_public: true });

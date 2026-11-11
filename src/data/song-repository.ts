@@ -236,22 +236,19 @@ export async function updateLearningConfiguration(songId: string, config: Pick<S
   if (error) throw error;
 }
 
-export async function setSongStatus(songId: string, status: "draft" | "published"): Promise<void> {
+export async function setSongStatus(songId: string, status: "draft" | "published", learningEnabled = false): Promise<void> {
   const supabase = requireSupabase();
-  const { error } = await supabase.rpc("set_song_publication_with_learning", {
-    p_song_id: songId,
-    p_status: status,
-  });
-  if (!error) return;
+  if (learningEnabled) {
+    const { error } = await supabase.rpc("set_song_publication_with_learning", {
+      p_song_id: songId,
+      p_status: status,
+    });
+    if (error) throw error;
+    return;
+  }
 
-  const missingRpc = error.code === "PGRST202"
-    || error.code === "42883"
-    || /set_song_publication_with_learning.*(not found|does not exist|schema cache)/i.test(error.message ?? "");
-  if (!missingRpc) throw error;
-
-  // Older production databases predate the atomic publication RPC. Keep the
-  // owner dashboard usable through the existing admin-only RLS policies until
-  // the migration is applied there.
+  // Standard catalog entries do not need the stricter Learning manifest and
+  // canonical-resource transaction. Admin-only RLS still protects this update.
   const publishedAt = status === "published" ? new Date().toISOString() : null;
   const { error: songError } = await supabase
     .from("songs")
