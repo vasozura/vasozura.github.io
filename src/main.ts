@@ -61,6 +61,12 @@ function updateRobots(indexable: boolean): void {
 }
 
 function bindInteractions(playableSongs: Song[] = songs): void {
+  const hero = document.querySelector<HTMLElement>(".hero");
+  hero?.addEventListener("pointermove", (event) => {
+    const bounds = hero.getBoundingClientRect();
+    hero.style.setProperty("--pointer-x", `${((event.clientX - bounds.left) / bounds.width) * 100}%`);
+    hero.style.setProperty("--pointer-y", `${((event.clientY - bounds.top) / bounds.height) * 100}%`);
+  });
   document.querySelector<HTMLButtonElement>("#language-toggle")?.addEventListener("click", () => {
     language = language === "ka" ? "en" : "ka";
     storeLanguage(language);

@@ -16,6 +16,10 @@ export function renderHero(language: Language, releaseCount: number): string {
   return `
     <section class="hero" id="top" aria-labelledby="hero-title">
       <div class="hero-media" aria-hidden="true"></div>
+      <div class="hero-aurora" aria-hidden="true"></div>
+      <div class="hero-signal" aria-hidden="true">
+        ${[18, 34, 57, 82, 46, 71, 28, 64, 92, 51, 76, 39, 68, 24, 49, 86, 61, 31, 73, 43].map((height, index) => `<i style="--bar:${height}%;--delay:${index * -0.07}s"></i>`).join("")}
+      </div>
       <div class="shell hero-grid">
         <div class="hero-content">
           <p class="eyebrow"><i aria-hidden="true"></i> ${archiveLabel}</p>
@@ -28,6 +32,7 @@ export function renderHero(language: Language, releaseCount: number): string {
           </div>
         </div>
         <aside class="hero-archive-note" aria-label="${releaseCount} ${releaseLabel}" data-release-label="${releaseLabel}">
+          <span class="live-signal"><i aria-hidden="true"></i> LIVE ARCHIVE</span>
           <strong id="hero-release-count">${String(releaseCount).padStart(2, "0")}</strong>
           <span>${releaseLabel}</span>
           <a href="${channelUrl}" aria-label="${listenLabel}"><b aria-hidden="true">▶</b> YouTube</a>
