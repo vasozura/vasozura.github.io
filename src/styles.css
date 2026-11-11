@@ -471,7 +471,7 @@ img {
 
 .release-title strong {
   overflow-wrap: anywhere;
-  font-size: 25px;
+  font-size: clamp(18px, 1.35vw, 21px);
   line-height: 1.2;
 }
 
@@ -549,9 +549,9 @@ img {
 
 .story-copy h2 {
   margin: 24px 0 35px;
-  font-size: clamp(38px, 4.5vw, 62px);
+  font-size: clamp(30px, 3vw, 44px);
   letter-spacing: -0.055em;
-  line-height: 0.95;
+  line-height: 1.05;
 }
 
 .story-copy p:last-child {
@@ -1062,7 +1062,7 @@ img {
   }
 
   .story-copy h2 {
-    font-size: clamp(38px, 11vw, 50px);
+    font-size: clamp(28px, 8vw, 38px);
   }
 
   .story-copy p:last-child {
