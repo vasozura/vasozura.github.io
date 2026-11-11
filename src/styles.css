@@ -1906,6 +1906,8 @@ img {
 .lyrics-disclosure { padding-block: clamp(14px, 2vw, 22px); }
 .lyrics-disclosure > summary { color: var(--muted); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; cursor: pointer; }
 .lyrics-disclosure[open] > summary { margin-bottom: 16px; color: var(--paper); }
+.release-resources .resource-text-link { display:inline-flex; align-items:center; justify-content:center; min-height:30px; padding:0 12px; border:1px solid rgba(236,229,215,.24); color:var(--paper); text-decoration:none; font:700 11px/1 Inter,Segoe UI,sans-serif; letter-spacing:.12em; transition:border-color .18s ease,color .18s ease,background .18s ease; }
+.release-resources .resource-text-link:hover,.release-resources .resource-text-link:focus-visible { border-color:var(--gold); color:var(--gold); background:rgba(255,190,0,.05); outline:none; }
 
 @media (max-width: 1024px) {
   .karaoke-panel { width: min(1400px, 96vw); }

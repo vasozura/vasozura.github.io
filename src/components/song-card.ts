@@ -21,7 +21,8 @@ export function renderSongCard(song: Song, index: number, language: Language): s
     ? `${Math.floor(song.durationSeconds / 60)}:${String(Math.round(song.durationSeconds % 60)).padStart(2, "0")}`
     : null;
   const facts = [song.language, duration, song.musicalKey, song.bpm ? `${song.bpm} BPM` : null].filter(Boolean);
-  const resources = [song.audioUrl && "MP3", song.midiUrl && "MIDI", song.musicXmlUrl && "XML", song.scorePdfUrl && "PDF", song.lyrics && "TXT"].filter(Boolean);
+  const resources = [song.audioUrl && "MP3", song.midiUrl && "MIDI", song.musicXmlUrl && "XML", song.scorePdfUrl && "PDF"].filter(Boolean);
+  const lyricsResource = song.lyrics ? `<a class="resource-text-link" href="#/song/${escapeHtml(song.slug)}" aria-label="${language === "ka" ? `${title} — ტექსტის გახსნა` : `Open lyrics for ${title}`}">TXT</a>` : "";
 
   return `
     <article class="release-card">
@@ -32,7 +33,7 @@ export function renderSongCard(song: Song, index: number, language: Language): s
         <strong>${title}</strong>
         <span class="release-facts">${facts.map((fact) => `<b>${escapeHtml(String(fact))}</b>`).join("")}</span>
       </a>
-      <span class="release-resources" aria-label="${language === "ka" ? "ხელმისაწვდომი რესურსები" : "Available resources"}">${resources.map((resource) => `<i>${resource}</i>`).join("")}</span>
+      <span class="release-resources" aria-label="${language === "ka" ? "ხელმისაწვდომი რესურსები" : "Available resources"}">${resources.map((resource) => `<i>${resource}</i>`).join("")}${lyricsResource}</span>
       ${play}
       ${youtube}
     </article>

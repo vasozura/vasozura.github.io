@@ -3,6 +3,7 @@ import type { Difficulty, LocalizedText, Song, SongFilters } from "../types/song
 import { fileRules, type UploadFileType } from "../utils/file-validation";
 import { safeHttpUrl } from "../utils/safe-url";
 import { learningSongIdentity } from "../learning/artifact-identity";
+import { displaySongLanguage } from "../utils/song-language";
 
 type SongRow = Record<string, unknown>;
 
@@ -16,17 +17,19 @@ function localized(ka: unknown, en: unknown): LocalizedText | null {
 }
 
 export function songFromRow(row: SongRow): Song {
+  const title = { ka: stringOrNull(row.title_ka), en: stringOrNull(row.title_en) };
+  const lyrics = localized(row.lyrics_ka, row.lyrics_en);
   return {
     id: String(row.id),
     slug: String(row.slug),
-    title: { ka: stringOrNull(row.title_ka), en: stringOrNull(row.title_en) },
+    title,
     displayCredit: localized(row.display_credit, row.display_credit),
     composer: localized(row.composer, row.composer),
     lyricistOrPoet: localized(row.lyricist, row.lyricist),
     translator: localized(row.translator, row.translator),
-    language: stringOrNull(row.language),
+    language: displaySongLanguage(stringOrNull(row.language), title, lyrics),
     description: localized(row.description_ka, row.description_en),
-    lyrics: localized(row.lyrics_ka, row.lyrics_en),
+    lyrics,
     coverUrl: safeHttpUrl(stringOrNull(row.cover_url)),
     audioUrl: safeHttpUrl(stringOrNull(row.audio_url)),
     midiUrl: safeHttpUrl(stringOrNull(row.midi_url)),
