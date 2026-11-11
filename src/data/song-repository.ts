@@ -237,11 +237,33 @@ export async function updateLearningConfiguration(songId: string, config: Pick<S
 }
 
 export async function setSongStatus(songId: string, status: "draft" | "published"): Promise<void> {
-  const { error } = await requireSupabase().rpc("set_song_publication_with_learning", {
+  const supabase = requireSupabase();
+  const { error } = await supabase.rpc("set_song_publication_with_learning", {
     p_song_id: songId,
     p_status: status,
   });
-  if (error) throw error;
+  if (!error) return;
+
+  const missingRpc = error.code === "PGRST202"
+    || error.code === "42883"
+    || /set_song_publication_with_learning.*(not found|does not exist|schema cache)/i.test(error.message ?? "");
+  if (!missingRpc) throw error;
+
+  // Older production databases predate the atomic publication RPC. Keep the
+  // owner dashboard usable through the existing admin-only RLS policies until
+  // the migration is applied there.
+  const publishedAt = status === "published" ? new Date().toISOString() : null;
+  const { error: songError } = await supabase
+    .from("songs")
+    .update({ status, published_at: publishedAt })
+    .eq("id", songId);
+  if (songError) throw songError;
+
+  const { error: learningError } = await supabase
+    .from("learning_exercises")
+    .update({ is_public: status === "published" })
+    .eq("song_id", songId);
+  if (learningError) throw learningError;
 }
 
 export async function deleteSong(songId: string): Promise<void> {
