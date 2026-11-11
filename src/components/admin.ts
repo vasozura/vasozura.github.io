@@ -339,7 +339,15 @@ export async function mountAdmin(root: HTMLElement): Promise<void> {
         }
         await setSongStatus(button.dataset.adminPublish ?? "", button.dataset.status === "published" ? "published" : "draft");
         songs = await loadAdminSongs(); renderDashboard();
-      } catch (error) { window.alert(error instanceof Error ? error.message : "Publication failed."); button.disabled = false; }
+      } catch (error) {
+        const message = error instanceof Error
+          ? error.message
+          : typeof error === "object" && error && "message" in error
+            ? String(error.message)
+            : "Publication failed.";
+        window.alert(message);
+        button.disabled = false;
+      }
     }));
     root.querySelectorAll<HTMLButtonElement>("[data-admin-delete]").forEach((button) => button.addEventListener("click", async () => { const song = songs.find((entry) => entry.id === button.dataset.adminDelete); if (!song || !window.confirm(`Delete “${song.title.ka ?? song.slug}” and all of its uploaded files? This cannot be undone.`)) return; await deleteSong(song.id); songs = await loadAdminSongs(); renderDashboard(); }));
     root.querySelectorAll("[data-admin-close]").forEach((button) => button.addEventListener("click", () => { if (dirty && !window.confirm("Discard unsaved changes?")) return; dirty = false; editing = null; renderDashboard(); }));
