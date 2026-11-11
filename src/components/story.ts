@@ -1,7 +1,7 @@
 import type { Language } from "../i18n";
 
 export function renderStory(language: Language): string {
-  const heading = language === "ka" ? "სახელი მოკლეა. ხმა — არა." : "The name is short. The sound is not.";
+  const heading = language === "ka" ? "ერთი სახელი. უსაზღვრო ჟღერადობა." : "One name. Limitless resonance.";
   const copy = language === "ka"
     ? "ZURA აერთიანებს ატმოსფერულ ჟღერადობას, ელექტრონულ ენერგიასა და კინემატოგრაფიულ სივრცეს. ეს გვერდი არის მუსიკის, ვიზუალური სამყაროსა და მომავალი რელიზების ერთი სახლი."
     : "ZURA brings together atmospheric sound, electronic energy and cinematic space. This is one home for the music, the visual world and every release still to come.";
