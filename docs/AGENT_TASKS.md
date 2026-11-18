@@ -9,6 +9,7 @@ Claude assigns and orders the tasks, and Codex works through them from the top. 
 - [ ] Codex · Resume the Suno WAV collection on 2026-11-26 (queue at Source 216) · The site already has 172 unique published songs. Before creating any new song row, check `public/data/portfolio.json` (`order` and `hidden`) and the live catalog, so the import does not duplicate a song.
 - [ ] Codex · Finish one song end to end in the karaoke and learning pipeline (prepare:vocal → verify → publish:karaoke) · Pick the hit "სიგიჟემდის მიყვარდი, მაშინ" if it is available. This is the MVP for a possible karaoke and sheet-music product, which Claude's research is evaluating in `D:\Prog\MusicToVideo\Library\_agent\karaoke_notes_business.md`.
 - [ ] Codex · Make CI green · `pnpm audit --prod` fails on the transitive `picomatch <=4.0.7` (opensheetmusicdisplay > gl > node-gyp). A pnpm override `picomatch: ">=4.0.8"` is probably enough.
+- [ ] Codex · In `src/data/portfolio.ts`, make `releaseCoverFor` prefer `artwork` (`/covers/<slug>.webp`) over the Spotify cover id, so the owner can replace any cover · This is a small change. Add a test.
 - [ ] Claude · Each week, add new songs to portfolio.json and generate covers for them, then prepare import packages in `D:\Prog\MusicToVideo\Library\_agent\site_import` · The owner runs `ATVIRTVA.bat`.
 - [ ] either · Review the language labels and lyrics of the 57 songs imported on 2026-11-18 · Their slugs are listed in `D:\Prog\MusicToVideo\Library\_agent\site_import\import_records.json` and `import_records_2026-11-18b.json`.
 
