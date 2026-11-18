@@ -71,3 +71,14 @@ Still unfinished: prepare and publish one real archive song end to end (needs th
 The `@supabase/supabase-js` 2.112.4 missing-`dist/index.d.mts` blocker did **not** reproduce on 2026-09-10: `pnpm install --frozen-lockfile` succeeded and `pnpm typecheck` was clean. If the error does return, refresh the package store or pin a corrected upstream release before changing app types. Do not add an `any` shim.
 
 Next recommended task, in order: apply `supabase/migrations/202609100001_karaoke_delivery.sql`; run `pnpm prepare:vocal` for one published song into an ignored `tmp/` directory on a machine that has the archive MP3 and Demucs; review the alignment and chords; run `pnpm verify:karaoke:browser` against that directory; then `pnpm publish:karaoke:dry-run`, and finally `pnpm publish:karaoke` with `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in the environment. Regenerate any MIDI artifact published before the `MThd` fix.
+
+## Portfolio pass (Claude, 2026-11-18) — read before continuing
+
+Deployed to `main` and live on https://zuraalexandria.com (Pages source is now **GitHub Actions**; `CNAME` stays in the repo; Supabase Site URL is `https://zuraalexandria.com/`).
+
+- **Catalog order and de-duplication** come from `public/data/portfolio.json` (`order`: slug → date the song was written, newest first; `hidden`: duplicate takes kept in the database but not listed). `loadPublishedSongPage` now fetches light rows for the whole filtered catalog, applies `orderForPortfolio`, then loads full rows only for the visible page (`src/data/portfolio.ts`, `src/data/song-repository.ts`). Nothing was deleted from the database.
+- **Catalog size:** 172 published unique songs. 57 songs were imported as packages from the owner's library (`D:\Prog\MusicToVideo\Library\_agent\site_import`, run by `ATVIRTVA.bat` with the service-role key stored DPAPI-encrypted in `%LOCALAPPDATA%\ZuraSite`) and published; 30 messy titles were cleaned.
+- **New sections:** click-to-load YouTube video grid (`src/components/videos.ts`), services (`services.ts`); YouTube links point to the Zura Alexandria channel; hero has Spotify and Apple Music (`links.ts`).
+- **Streaming links and covers:** `portfolio.json` → `spotify`, `apple` (release URLs), `covers` (Spotify artwork ids), `artwork` (`/covers/<slug>.webp`, 59 generated covers). Used by `song-card.ts` / `song-detail.ts` via `spotifyUrlFor`, `appleMusicUrlFor`, `releaseCoverFor`.
+- A weekly scheduled agent updates only `public/data/portfolio.json` (new songs, links, covers). Code changes go through the owner.
+- CI's `pnpm audit --prod` was already failing before this pass (transitive `picomatch` via `opensheetmusicdisplay > gl > node-gyp`); deploys are unaffected.
