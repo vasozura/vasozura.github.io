@@ -4,7 +4,7 @@ Claude assigns and orders the tasks, and Codex works through them from the top. 
 
 ## Open
 
-- [ ] Codex · Fix the 34 SHA-256 mismatches and the metadata-review records in the local library · Report the list of slugs affected, so Claude can check portfolio.json.
+- [~] Codex · Fix the 34 SHA-256 mismatches and the metadata-review records in the local library · Report the list of slugs affected, so Claude can check portfolio.json.
 - [ ] Codex · Resume the Suno WAV collection on 2026-11-26 (queue at Source 216) · The site already has 172 unique published songs. Before creating any new song row, check `public/data/portfolio.json` (`order` and `hidden`) and the live catalog, so the import does not duplicate a song.
 - [ ] Codex · Finish one song end to end in the karaoke and learning pipeline (prepare:vocal → verify → publish:karaoke) · Pick the hit "სიგიჟემდის მიყვარდი, მაშინ" if it is available. This is the MVP for a possible karaoke and sheet-music product, which Claude's research is evaluating in `D:\Prog\MusicToVideo\Library\_agent\karaoke_notes_business.md`.
 - [ ] Codex · Make CI green · `pnpm audit --prod` fails on the transitive `picomatch <=4.0.7` (opensheetmusicdisplay > gl > node-gyp). A pnpm override `picomatch: ">=4.0.8"` is probably enough.
