@@ -89,7 +89,8 @@ let cached: Promise<Portfolio> | null = null;
 let loaded: Portfolio = emptyPortfolio;
 
 export function loadPortfolio(): Promise<Portfolio> {
-  cached ??= fetch(portfolioDataUrl)
+  // no-cache: revalidate with the server so weekly data updates show up at once.
+  cached ??= fetch(portfolioDataUrl, { cache: "no-cache" })
     .then((response) => (response.ok ? response.json() : null))
     .then(parsePortfolio)
     .catch(() => emptyPortfolio)
