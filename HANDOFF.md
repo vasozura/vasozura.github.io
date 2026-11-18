@@ -82,3 +82,7 @@ Deployed to `main` and live on https://zuraalexandria.com (Pages source is now *
 - **Streaming links and covers:** `portfolio.json` → `spotify`, `apple` (release URLs), `covers` (Spotify artwork ids), `artwork` (`/covers/<slug>.webp`, 59 generated covers). Used by `song-card.ts` / `song-detail.ts` via `spotifyUrlFor`, `appleMusicUrlFor`, `releaseCoverFor`.
 - A weekly scheduled agent updates only `public/data/portfolio.json` (new songs, links, covers). Code changes go through the owner.
 - CI's `pnpm audit --prod` was already failing before this pass (transitive `picomatch` via `opensheetmusicdisplay > gl > node-gyp`); deploys are unaffected.
+
+## Codex local-library integrity pass (2026-11-18)
+
+Completed the first coordinator task in commit `2270856`. A backup-first local transaction reconciled 34 stale SHA-256 records in `D:\ComposerArchive`, refreshed the affected metadata/hash snapshots, and left audit counts at 0 checksum mismatches and 0 missing song-level metadata records. The 10 affected slugs and evidence locations are documented in `docs/LOCAL_LIBRARY_INTEGRITY_2026-11-18.md`. `pnpm typecheck`, all 456 tests, and `pnpm build` pass. Next Codex task on the board is the dated Suno WAV resume on 2026-11-26.
