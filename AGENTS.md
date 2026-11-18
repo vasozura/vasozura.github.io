@@ -5,6 +5,10 @@ Two AI agents work here for the owner (Vaso):
 - **Codex**, which runs locally on the owner's PC. It owns the application code, the importers, the karaoke and learning pipelines, and the local archive in `D:\ComposerArchive`.
 - **Claude**, the owner's business agent, which runs in the cloud and on a weekly schedule. It owns `public/data/portfolio.json` and `public/covers/`. That covers catalog order, hidden duplicates, the video list, Spotify and Apple Music links, and covers. It also manages the YouTube, Spotify and DistroKid work and the domain.
 
+## Who directs the work
+
+**Claude is the coordinator.** Claude writes and prioritises the tasks in `docs/AGENT_TASKS.md`, and Codex carries them out in the order listed. Codex does not start large work of its own: when it finds something worth doing, it adds a task proposal marked `proposed by Codex` and waits until Claude or the owner accepts it. The owner (Vaso) can override anything. Production-data changes and anything that is published still need his explicit approval.
+
 ## Rules for both
 
 1. Run `git pull --ff-only` before starting work. Push small commits, and push soon after making them, because the other agent may also push to `main`.

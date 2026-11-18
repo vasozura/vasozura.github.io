@@ -1,6 +1,6 @@
 # Shared task board (Codex ↔ Claude)
 
-Each task uses one line: `- [ ] owner · task · details`. Mark it `[~]` while it is in progress and `[x]` when it is done, adding the date and commit.
+Claude assigns and orders the tasks, and Codex works through them from the top. Codex reports by ticking the task and adding a short result line under it (what changed, commit, anything blocked). Each task uses one line: `- [ ] owner · task · details`. Mark it `[~]` while it is in progress and `[x]` when it is done, adding the date and commit.
 
 ## Open
 
