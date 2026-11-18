@@ -34,3 +34,10 @@ describe("streaming links", () => {
     expect(parsed.apple).toEqual({ a: "https://music.apple.com/album/6835475181" });
   });
 });
+
+describe("release covers", () => {
+  it("accepts only hex Spotify image ids", () => {
+    const parsed = parsePortfolio({ covers: { a: "a3f8bb68b492f09f9d96d03d", b: "../../evil" } });
+    expect(parsed.covers).toEqual({ a: "a3f8bb68b492f09f9d96d03d" });
+  });
+});

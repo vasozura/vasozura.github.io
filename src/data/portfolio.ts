@@ -26,11 +26,13 @@ export interface Portfolio {
   spotify: Record<string, string>;
   /** Published slug -> Apple Music / iTunes release URL. */
   apple: Record<string, string>;
+  /** Published slug -> Spotify cover image id (the part after the size prefix). */
+  covers: Record<string, string>;
 }
 
 export const portfolioDataUrl = "/data/portfolio.json";
 
-const emptyPortfolio: Portfolio = { generated: "", featured: null, order: {}, hidden: [], videos: [], spotify: {}, apple: {} };
+const emptyPortfolio: Portfolio = { generated: "", featured: null, order: {}, hidden: [], videos: [], spotify: {}, apple: {}, covers: {} };
 
 const youtubeIdPattern = /^[A-Za-z0-9_-]{11}$/;
 
@@ -73,8 +75,14 @@ export function parsePortfolio(value: unknown): Portfolio {
       if (typeof url === "string" && /^https:\/\/music\.apple\.com\/album\/\d+$/.test(url)) apple[slug] = url;
     }
   }
+  const covers: Record<string, string> = {};
+  if (raw.covers && typeof raw.covers === "object") {
+    for (const [slug, id] of Object.entries(raw.covers as Record<string, unknown>)) {
+      if (typeof id === "string" && /^[0-9a-f]{24,64}$/.test(id)) covers[slug] = id;
+    }
+  }
   const featured = typeof raw.featured === "string" && youtubeIdPattern.test(raw.featured) ? raw.featured : null;
-  return { generated: typeof raw.generated === "string" ? raw.generated : "", featured, order, hidden, videos, spotify, apple };
+  return { generated: typeof raw.generated === "string" ? raw.generated : "", featured, order, hidden, videos, spotify, apple, covers };
 }
 
 let cached: Promise<Portfolio> | null = null;
@@ -97,6 +105,13 @@ export function spotifyUrlFor(slug: string): string | null {
 /** Apple Music release for a published song, once the portfolio data has loaded. */
 export function appleMusicUrlFor(slug: string): string | null {
   return loaded.apple[slug] ?? null;
+}
+
+/** Release artwork (Spotify CDN) for a song without its own cover: 300 px for cards, 640 px for the song page. */
+export function releaseCoverFor(slug: string, size: "small" | "large" = "small"): string | null {
+  const id = loaded.covers[slug];
+  if (!id) return null;
+  return `https://i.scdn.co/image/ab67616d${size === "large" ? "0000b273" : "00001e02"}${id}`;
 }
 
 export interface OrderableRow {

@@ -1,6 +1,6 @@
 import { localize, type Language } from "../i18n";
 import type { LocalizedText, Song } from "../types/song";
-import { appleMusicUrlFor, spotifyUrlFor } from "../data/portfolio";
+import { appleMusicUrlFor, releaseCoverFor, spotifyUrlFor } from "../data/portfolio";
 import { escapeHtml } from "../utils/escape-html";
 import { youtubePrivacyEmbedUrl } from "../utils/youtube";
 
@@ -51,7 +51,8 @@ export function renderSongDetail(song: Song, language: Language, options: SongDe
 
   const metadata = rows.length ? `<dl class="song-metadata">${rows.map((row) => `<div><dt>${escapeHtml(row.label)}</dt><dd>${escapeHtml(String(row.value))}</dd></div>`).join("")}</dl>` : "";
   const description = localize(song.description, language);
-  const cover = song.coverUrl ? `<img src="${escapeHtml(song.coverUrl)}" alt="${title}" width="460" height="460" decoding="async" />` : `<span aria-hidden="true">ZV</span>`;
+  const coverUrl = song.coverUrl ?? releaseCoverFor(song.slug, "large");
+  const cover = coverUrl ? `<img src="${escapeHtml(coverUrl)}" alt="${title}" width="460" height="460" decoding="async" />` : `<span aria-hidden="true">ZV</span>`;
   const primaryLinks = [
     song.youtubeUrl ? `<a class="resource-link" href="${escapeHtml(song.youtubeUrl)}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">▶</span>${labels.youtube}</a>` : "",
     spotifyUrlFor(song.slug) ? `<a class="resource-link resource-spotify" href="${escapeHtml(spotifyUrlFor(song.slug) ?? "")}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">♫</span>${language === "ka" ? "Spotify-ზე მოსმენა" : "Listen on Spotify"}</a>` : "",
