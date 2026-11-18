@@ -22,11 +22,15 @@ export interface Portfolio {
   /** Published slugs that duplicate a canonical song and stay off the public list. */
   hidden: string[];
   videos: PortfolioVideo[];
+  /** Published slug -> Spotify release URL (DistroKid releases). */
+  spotify: Record<string, string>;
+  /** Published slug -> Apple Music / iTunes release URL. */
+  apple: Record<string, string>;
 }
 
 export const portfolioDataUrl = "/data/portfolio.json";
 
-const emptyPortfolio: Portfolio = { generated: "", featured: null, order: {}, hidden: [], videos: [] };
+const emptyPortfolio: Portfolio = { generated: "", featured: null, order: {}, hidden: [], videos: [], spotify: {}, apple: {} };
 
 const youtubeIdPattern = /^[A-Za-z0-9_-]{11}$/;
 
@@ -57,18 +61,42 @@ export function parsePortfolio(value: unknown): Portfolio {
       }];
     })
     : [];
+  const spotify: Record<string, string> = {};
+  if (raw.spotify && typeof raw.spotify === "object") {
+    for (const [slug, url] of Object.entries(raw.spotify as Record<string, unknown>)) {
+      if (typeof url === "string" && /^https:\/\/open\.spotify\.com\/(album|track)\/[A-Za-z0-9]+$/.test(url)) spotify[slug] = url;
+    }
+  }
+  const apple: Record<string, string> = {};
+  if (raw.apple && typeof raw.apple === "object") {
+    for (const [slug, url] of Object.entries(raw.apple as Record<string, unknown>)) {
+      if (typeof url === "string" && /^https:\/\/music\.apple\.com\/album\/\d+$/.test(url)) apple[slug] = url;
+    }
+  }
   const featured = typeof raw.featured === "string" && youtubeIdPattern.test(raw.featured) ? raw.featured : null;
-  return { generated: typeof raw.generated === "string" ? raw.generated : "", featured, order, hidden, videos };
+  return { generated: typeof raw.generated === "string" ? raw.generated : "", featured, order, hidden, videos, spotify, apple };
 }
 
 let cached: Promise<Portfolio> | null = null;
+let loaded: Portfolio = emptyPortfolio;
 
 export function loadPortfolio(): Promise<Portfolio> {
   cached ??= fetch(portfolioDataUrl)
     .then((response) => (response.ok ? response.json() : null))
     .then(parsePortfolio)
-    .catch(() => emptyPortfolio);
+    .catch(() => emptyPortfolio)
+    .then((portfolio) => { loaded = portfolio; return portfolio; });
   return cached;
+}
+
+/** Spotify release for a published song, once the portfolio data has loaded. */
+export function spotifyUrlFor(slug: string): string | null {
+  return loaded.spotify[slug] ?? null;
+}
+
+/** Apple Music release for a published song, once the portfolio data has loaded. */
+export function appleMusicUrlFor(slug: string): string | null {
+  return loaded.apple[slug] ?? null;
 }
 
 export interface OrderableRow {

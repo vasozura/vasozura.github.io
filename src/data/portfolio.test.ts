@@ -23,3 +23,14 @@ describe("portfolio ordering", () => {
     expect(portfolio.videos.map((video) => video.id)).toEqual(["1aWyT1B7YF4"]);
   });
 });
+
+describe("streaming links", () => {
+  it("keeps only Spotify and Apple Music release URLs", () => {
+    const parsed = parsePortfolio({
+      spotify: { a: "https://open.spotify.com/album/0R2fVwsvO3yd82bwIcCNvt", b: "javascript:alert(1)" },
+      apple: { a: "https://music.apple.com/album/6835475181", b: "https://evil.example/album/1" },
+    });
+    expect(parsed.spotify).toEqual({ a: "https://open.spotify.com/album/0R2fVwsvO3yd82bwIcCNvt" });
+    expect(parsed.apple).toEqual({ a: "https://music.apple.com/album/6835475181" });
+  });
+});

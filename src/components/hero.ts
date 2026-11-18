@@ -1,6 +1,6 @@
 import type { Language } from "../i18n";
 
-import { youtubeChannelUrl as channelUrl, spotifyArtistUrl, youtubeSubscribeUrl } from "./links";
+import { appleMusicArtistUrl, youtubeChannelUrl as channelUrl, spotifyArtistUrl, youtubeSubscribeUrl } from "./links";
 
 export function renderHero(language: Language, releaseCount: number): string {
   const copy = language === "ka"
@@ -31,6 +31,7 @@ export function renderHero(language: Language, releaseCount: number): string {
             <a class="hero-primary" href="#videos">${explore} <span aria-hidden="true">↓</span></a>
             <a class="hero-secondary" href="${youtubeSubscribeUrl}" target="_blank" rel="noopener noreferrer">${subscribe} <span aria-hidden="true">↗</span></a>
             <a class="hero-secondary" href="${spotifyArtistUrl}" target="_blank" rel="noopener noreferrer">Spotify <span aria-hidden="true">↗</span></a>
+            <a class="hero-secondary" href="${appleMusicArtistUrl}" target="_blank" rel="noopener noreferrer">Apple Music <span aria-hidden="true">↗</span></a>
             <a class="hero-secondary hero-tertiary" href="#story">${story} <span aria-hidden="true">↘</span></a>
           </div>
         </div>

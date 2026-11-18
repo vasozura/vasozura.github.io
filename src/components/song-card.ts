@@ -1,5 +1,6 @@
 import { localize, type Language } from "../i18n";
 import type { Song } from "../types/song";
+import { appleMusicUrlFor, spotifyUrlFor } from "../data/portfolio";
 import { escapeHtml } from "../utils/escape-html";
 
 export function renderSongCard(song: Song, index: number, language: Language): string {
@@ -24,6 +25,10 @@ export function renderSongCard(song: Song, index: number, language: Language): s
   const resources = [song.audioUrl && "MP3", song.midiUrl && "MIDI", song.musicXmlUrl && "XML", song.scorePdfUrl && "PDF"].filter(Boolean);
   const lyricsResource = song.lyrics ? `<a class="resource-text-link" href="#/song/${escapeHtml(song.slug)}" aria-label="${language === "ka" ? `${title} — ტექსტის გახსნა` : `Open lyrics for ${title}`}">TXT</a>` : "";
 
+  const spotifyUrl = spotifyUrlFor(song.slug);
+  const spotify = spotifyUrl ? `<a class="resource-text-link resource-spotify" href="${escapeHtml(spotifyUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${language === "ka" ? `${title} — Spotify-ზე მოსმენა` : `Listen to ${title} on Spotify`}">Spotify</a>` : "";
+  const appleUrl = appleMusicUrlFor(song.slug);
+  const apple = appleUrl ? `<a class="resource-text-link" href="${escapeHtml(appleUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${language === "ka" ? `${title} — Apple Music-ზე მოსმენა` : `Listen to ${title} on Apple Music`}">Apple</a>` : "";
   return `
     <article class="release-card">
       <span class="release-number" aria-hidden="true">${number}</span>
@@ -33,7 +38,7 @@ export function renderSongCard(song: Song, index: number, language: Language): s
         <strong>${title}</strong>
         <span class="release-facts">${facts.map((fact) => `<b>${escapeHtml(String(fact))}</b>`).join("")}</span>
       </a>
-      <span class="release-resources" aria-label="${language === "ka" ? "ხელმისაწვდომი რესურსები" : "Available resources"}">${resources.map((resource) => `<i>${resource}</i>`).join("")}${lyricsResource}</span>
+      <span class="release-resources" aria-label="${language === "ka" ? "ხელმისაწვდომი რესურსები" : "Available resources"}">${resources.map((resource) => `<i>${resource}</i>`).join("")}${lyricsResource}${spotify}${apple}</span>
       ${play}
       ${youtube}
     </article>
