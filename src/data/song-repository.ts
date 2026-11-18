@@ -4,6 +4,7 @@ import { fileRules, type UploadFileType } from "../utils/file-validation";
 import { safeHttpUrl } from "../utils/safe-url";
 import { learningSongIdentity } from "../learning/artifact-identity";
 import { displaySongLanguage } from "../utils/song-language";
+import { loadPortfolio, orderForPortfolio } from "./portfolio";
 
 type SongRow = Record<string, unknown>;
 
@@ -166,7 +167,10 @@ export async function loadPublishedSongPage(options: CatalogPageOptions = {}): P
   const offset = Math.max(0, options.offset ?? 0);
   const limit = Math.min(48, Math.max(1, options.limit ?? 24));
   const filters = options.filters;
-  let query = supabase.from("songs").select(songSelect, { count: "exact" }).eq("status", "published");
+  // Only light columns are fetched for the whole filtered catalog so it can be
+  // de-duplicated and ordered newest-written first; full rows are then loaded
+  // for the visible page alone.
+  let query = supabase.from("songs").select("id,slug,created_at").eq("status", "published");
   const search = safeSearchTerm(filters?.query ?? "");
   if (search) query = query.or(`title_ka.ilike.%${search}%,title_en.ilike.%${search}%,display_credit.ilike.%${search}%,composer.ilike.%${search}%,lyricist.ilike.%${search}%`);
   if (filters?.language) query = query.eq("language", filters.language);
@@ -176,12 +180,23 @@ export async function loadPublishedSongPage(options: CatalogPageOptions = {}): P
   const resourceColumn = filters?.resource === "audio" ? "audio_url" : filters?.resource === "midi" ? "midi_url" : filters?.resource === "musicxml" ? "musicxml_url" : filters?.resource === "score" ? "score_pdf_url" : null;
   if (resourceColumn) query = query.not(resourceColumn, "is", null);
   if (filters?.resource === "lyrics") query = query.or("lyrics_ka.not.is.null,lyrics_en.not.is.null");
-  query = query.order("published_at", { ascending: false, nullsFirst: false }).order("id", { ascending: true }).range(offset, offset + limit - 1);
+  query = query.order("published_at", { ascending: false, nullsFirst: false }).order("id", { ascending: true }).limit(2000);
   if (options.signal) query = query.abortSignal(options.signal);
-  const { data, error, count } = await query;
+  const [{ data, error }, portfolio] = await Promise.all([query, loadPortfolio()]);
   if (error) throw error;
-  const songs = await hydrateLearningConfiguration(await hydrateSignedResources((data as SongRow[]).map(songFromRow)));
-  const total = count ?? songs.length;
+  const ordered = orderForPortfolio((data ?? []).map((row) => ({ id: String(row.id), slug: String(row.slug), created_at: typeof row.created_at === "string" ? row.created_at : null })), portfolio);
+  const pageIds = ordered.slice(offset, offset + limit).map((row) => row.id);
+  let rows: SongRow[] = [];
+  if (pageIds.length) {
+    let pageQuery = supabase.from("songs").select(songSelect).eq("status", "published").in("id", pageIds);
+    if (options.signal) pageQuery = pageQuery.abortSignal(options.signal);
+    const page = await pageQuery;
+    if (page.error) throw page.error;
+    const position = new Map(pageIds.map((id, index) => [id, index]));
+    rows = (page.data as SongRow[]).sort((a, b) => (position.get(String(a.id)) ?? 0) - (position.get(String(b.id)) ?? 0));
+  }
+  const songs = await hydrateLearningConfiguration(await hydrateSignedResources(rows.map(songFromRow)));
+  const total = ordered.length;
   return { songs, total, offset, limit, hasMore: offset + songs.length < total };
 }
 

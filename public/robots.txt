@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://vasozura.github.io/sitemap.xml
+Sitemap: https://zuraalexandria.com/sitemap.xml

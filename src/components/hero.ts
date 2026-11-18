@@ -1,13 +1,14 @@
 import type { Language } from "../i18n";
 
-const channelUrl = "https://www.youtube.com/@Zuravasadze-w5x";
+import { youtubeChannelUrl as channelUrl, spotifyArtistUrl, youtubeSubscribeUrl } from "./links";
 
 export function renderHero(language: Language, releaseCount: number): string {
   const copy = language === "ka"
-    ? "კომპოზიტორის ცოცხალი არქივი — სიმღერები, ტექსტები, ნოტები და შესრულებისთვის მომზადებული მუსიკალური მასალა ერთ სივრცეში."
-    : "A living composer archive — songs, lyrics, scores and performance-ready musical material in one place.";
+    ? "კომპოზიტორი ZURA — ქართველი პოეტების ლექსებზე დაწერილი სიმღერები, მუსიკალური ვიდეოები, ტექსტები და ნოტები ერთ სივრცეში."
+    : "Composer ZURA — songs set to the poetry of Georgian authors, music videos, lyrics and scores in one place.";
   const listenLabel = language === "ka" ? "ZURA-ს YouTube არხის გახსნა" : "Open ZURA's YouTube channel";
-  const explore = language === "ka" ? "არქივის დათვალიერება" : "Explore the archive";
+  const explore = language === "ka" ? "ვიდეოების ნახვა" : "Watch the videos";
+  const subscribe = language === "ka" ? "გამოიწერე YouTube-ზე" : "Subscribe on YouTube";
   const story = language === "ka" ? "ZURA-ს შესახებ" : "About ZURA";
   const releaseLabel = language === "ka" ? "გამოქვეყნებული ჩანაწერი" : "published releases";
   const archiveLabel = language === "ka" ? "ოფიციალური კომპოზიტორის არქივი" : "Official composer archive";
@@ -27,8 +28,10 @@ export function renderHero(language: Language, releaseCount: number): string {
           <p class="hero-subtitle">${titleLine}</p>
           <p class="hero-copy">${copy}</p>
           <div class="hero-actions">
-            <a class="hero-primary" href="#music">${explore} <span aria-hidden="true">↓</span></a>
-            <a class="hero-secondary" href="#story">${story} <span aria-hidden="true">↘</span></a>
+            <a class="hero-primary" href="#videos">${explore} <span aria-hidden="true">↓</span></a>
+            <a class="hero-secondary" href="${youtubeSubscribeUrl}" target="_blank" rel="noopener noreferrer">${subscribe} <span aria-hidden="true">↗</span></a>
+            <a class="hero-secondary" href="${spotifyArtistUrl}" target="_blank" rel="noopener noreferrer">Spotify <span aria-hidden="true">↗</span></a>
+            <a class="hero-secondary hero-tertiary" href="#story">${story} <span aria-hidden="true">↘</span></a>
           </div>
         </div>
         <aside class="hero-archive-note" aria-label="${releaseCount} ${releaseLabel}" data-release-label="${releaseLabel}">

@@ -2,6 +2,8 @@ import "./styles.css";
 import { renderFooter } from "./components/footer";
 import { renderHeader } from "./components/header";
 import { renderHome } from "./components/home";
+import { bindVideos } from "./components/videos";
+import { loadPortfolio, type Portfolio } from "./data/portfolio";
 import { renderPlayerShell } from "./components/player-shell";
 import { renderSongCard } from "./components/song-card";
 import { mountAdmin } from "./components/admin";
@@ -35,6 +37,7 @@ let karaokeCleanup: (() => void) | null = null;
 let draftPreview: { slug: string; result: DraftPreviewResult | null; error: string | null } | null = null;
 let catalogRequest: AbortController | null = null;
 let catalogTimer = 0;
+let portfolio: Portfolio | null = null;
 const loadingSongSlugs = new Set<string>();
 const missingSongSlugs = new Set<string>();
 
@@ -278,7 +281,7 @@ function render(): void {
       : loadingSongSlugs.has(route.slug)
         ? `<main class="route-message shell" id="main-content" tabindex="-1"><p>${language === "ka" ? "სიმღერა იტვირთება…" : "Loading song…"}</p></main>`
         : renderSongNotFound(language)
-    : renderHome(songs, language);
+    : renderHome(songs, language, portfolio);
 
   app.innerHTML = `
     <a class="skip-link" href="#main-content">${skipLabel}</a>
@@ -289,6 +292,7 @@ function render(): void {
   `;
 
   bindInteractions();
+  if (route.name === "home") bindVideos(app);
   if (route.name === "home") {
     if (route.anchor) scrollToHomeAnchor(route.anchor);
     else if (routeChanged) scrollToRouteTop();
@@ -323,9 +327,10 @@ getSupabase()?.auth.onAuthStateChange((event) => {
   if (parseRoute(window.location.hash).name === "admin-preview") render();
 });
 
-loadSongs()
-  .then((loadedSongs) => {
+Promise.all([loadSongs(), loadPortfolio()])
+  .then(([loadedSongs, loadedPortfolio]) => {
     songs = loadedSongs;
+    portfolio = loadedPortfolio;
     render();
   })
   .catch(renderLoadError);

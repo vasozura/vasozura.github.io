@@ -3,7 +3,7 @@ import type { Song } from "../types/song";
 import { renderSongCard } from "./song-card";
 import { escapeHtml } from "../utils/escape-html";
 
-const channelUrl = "https://www.youtube.com/@Zuravasadze-w5x";
+import { youtubeChannelUrl as channelUrl } from "./links";
 
 export function renderCatalog(songs: Song[], language: Language): string {
   const heading = language === "ka" ? "მუსიკა" : "Music";
@@ -17,7 +17,7 @@ export function renderCatalog(songs: Song[], language: Language): string {
   return `
     <section class="music shell" id="music" aria-labelledby="music-title">
       <div class="section-head">
-        <span class="num">01 · SELECTED SOUND</span>
+        <span class="num">02 · SELECTED SOUND</span>
         <h2 id="music-title">${heading}</h2>
         <a class="all-releases" href="${channelUrl}" target="_blank" rel="noopener noreferrer">${allReleases} <span aria-hidden="true">↗</span></a>
       </div>

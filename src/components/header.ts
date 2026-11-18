@@ -2,7 +2,7 @@ import type { Language } from "../i18n";
 import { renderLanguageSwitcher } from "./language-switcher";
 import { renderNavigation } from "./navigation";
 
-const channelUrl = "https://www.youtube.com/@Zuravasadze-w5x";
+import { youtubeChannelUrl as channelUrl } from "./links";
 
 export function renderHeader(language: Language): string {
   const listen = language === "ka" ? "მოსმენა" : "Listen";

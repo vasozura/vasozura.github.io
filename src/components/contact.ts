@@ -1,6 +1,6 @@
 import type { Language } from "../i18n";
 
-const channelUrl = "https://www.youtube.com/@Zuravasadze-w5x";
+import { youtubeChannelUrl as channelUrl } from "./links";
 
 export function renderContact(language: Language): string {
   const linkText = language === "ka" ? "ნახე ჩემი YouTube არხი" : "Visit my YouTube channel";
