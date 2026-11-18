@@ -41,3 +41,10 @@ describe("release covers", () => {
     expect(parsed.covers).toEqual({ a: "a3f8bb68b492f09f9d96d03d" });
   });
 });
+
+describe("site artwork", () => {
+  it("accepts only /covers/<slug>.webp paths", () => {
+    const parsed = parsePortfolio({ artwork: { a: "/covers/a.webp", b: "https://evil.example/x.webp", c: "/covers/../x.webp" } });
+    expect(parsed.artwork).toEqual({ a: "/covers/a.webp" });
+  });
+});
