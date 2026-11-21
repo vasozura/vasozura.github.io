@@ -19,3 +19,20 @@ Pinokio is reachable again. GPU checks before launcher starts were clear (0 MiB,
 A targeted Manager pip repair request with candidate pins (`diffusers==0.35.1 huggingface-hub==0.36.2`, not installed/validated) was denied: HTTP 403, `{"error":"security_level"}`. Manager reports this requires an administrator-enabled security configuration. No policy change or internal-CLI bypass was attempted. App-specific API notes are saved under `pinokio_agent/skills/api/comfy.git/SKILL.md`. External evidence: `node-status-2026-11-21.json`, `comfyui-startup-2026-11-21.log`.
 
 Task remains [~], blocked on compatible SeedVR2 dependencies and the denied Manager package-repair route. Resolve that installation blocker, verify node registration, then recheck GPU and finish weights/B/C/comparisons for the six current inputs. ComfyUI is left online. No inference job or model-weight download was submitted, and no per-job GPU timings/peaks exist. No application code, Wan2GP, MusicToVideo, production data or publication changed; pnpm code-change gates do not apply to this documentation/media checkpoint.
+
+## Wan2GP-only continuation - 2026-11-21 21:51-21:54 +04
+
+The owner's 21:49 decision supersedes the ComfyUI repair plan above: stay on the laptop, use the existing Wan2GP, and do not update/reinstall its code. This run inspected its installed files read-only and made no launcher, package, model, configuration, or process changes.
+
+Pinokio search/status identifies local `D:\pinokio\api\wan.git` as Wan2GP, currently offline. Installed app revision: `bd1ff5903cbc18b46c3cce3b75bd140870b536a2`. The launcher starts `wgp.py --multiple-images --advanced` through its managed venv. Do not replace that launcher with another installation.
+
+GPU gate blocked launch/inference at both 21:51:09 and 21:51:57: 194 MiB / 12,227 MiB, 0% utilization, but CUDA Python PID 24268 remains listed. Read-only process inspection reports `python.exe` with command line `"D:\pinokio\bin\miniconda\python.exe" main.py`; its working directory and exact application identity were not established. Low utilization does not satisfy the task's explicit no-Python-process gate. No process was stopped. Leave GPU work for the next scheduled run unless a later gate clears.
+
+Read-only resume findings from the installed app:
+
+- `docs/TEMPORAL_UPSAMPLERS.md`: RIFE uses `rife*2`, returning twice the source fps (16 to 32).
+- `docs/SPATIAL_UPSAMPLERS.md`: native late postprocessing includes SeedVR2 3B (`seedvr2`), 7B (`seedvr2_7b`), FlashVSR v1.1 (`flashvsr`) and FlashVSR+ Turbo (`flashvsrplus`), including two-pass variants. The docs default SeedVR2 to 3B. These are installed-source capabilities, not verified runtime/model readiness or measured quality rankings.
+- `docs/API.md`, Image And Video Postprocessing: supported `submit_media_postprocessing` accepts `temporal_upsampling` and `spatial_upsampling`; late tasks use `mode=edit_postprocessing` and `video_source`. The Post Processing tab supports existing media. The WebUI can expose an MCP API, off by default; its queue is scoped to that WebUI. Do not assume an endpoint or start a second standalone runtime. After the gate clears, launch through pterm, inspect the live API/processor discovery and owner's queue before submitting anything.
+- Preferred comparison candidates, subject to runtime availability and 12 GB fit: B = RIFE x2 plus SeedVR2 3B; C = RIFE x2 plus FlashVSR (Turbo if available). Confirm tiling/offload in the live interface. Use CPU FFmpeg afterward for exact 1920x1080/30 fps and A|B|C labels; preserve full duration. No method can yet be called best by observed quality.
+
+The latest owner scope targets the three `inputs_aafc6412` files (t40s/t125s/t210s) first. Their A previews already pass decode; no duplicate baseline rendering was needed. B/C, side-by-sides, inference seconds and peak VRAM are still pending. Original market inputs and historical c1db233c outputs remain preserved. No application code changed, so pnpm code-change gates do not apply. Next run: recheck GPU, then use Wan2GP only; do not resume the obsolete ComfyUI dependency repair.
