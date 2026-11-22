@@ -124,6 +124,19 @@ def foreign_gpu_work(before, current, own_pid):
                or size > before[pid] + 256) for pid, size in current.items())
 
 
+def windows_gpu_utilization():
+    """WDDM reports VRAM as N/A; Windows counters can attribute active engines."""
+    script = r"""$out=@{}; (Get-Counter '\GPU Engine(*)\Utilization Percentage' -ErrorAction Stop).CounterSamples | ForEach-Object {
+      if ($_.InstanceName -match '^pid_(\d+)_') {
+        $key=$Matches[1]; $value=[math]::Max(0,$_.CookedValue)
+        if (!$out.ContainsKey($key) -or $out[$key] -lt $value) {$out[$key]=$value}
+      }
+    }; ConvertTo-Json -InputObject $out -Compress"""
+    result = subprocess.run(['powershell.exe', '-NoProfile', '-NonInteractive', '-Command', script],
+                            capture_output=True, text=True, check=True, timeout=20, creationflags=FLAGS)
+    return {int(k): float(v) for k, v in json.loads(result.stdout).items()}
+
+
 def compose(raw, output, d):
     from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
     with Image.open(raw) as image:
@@ -228,7 +241,23 @@ def generate(rid):
                             if proc.poll() is not None:
                                 break
                             raise
-                        if utilization > 50 and foreign_gpu_work(baseline, memory, own_pids):
+                        interference = utilization > 50 and foreign_gpu_work(baseline, memory, own_pids)
+                        per_process = None
+                        if interference and sys.platform == 'win32':
+                            # A newly initialized/idle CUDA server need not be doing work.
+                            # On counter failure keep the conservative nvidia-smi decision.
+                            try:
+                                per_process = windows_gpu_utilization()
+                                foreign = set(memory) - own_pids
+                                if all(pid in per_process for pid in foreign):
+                                    interference = any(per_process[pid] > 50 for pid in foreign)
+                            except (OSError, ValueError, subprocess.SubprocessError):
+                                pass
+                        with (out / 'gpu_samples.jsonl').open('a', encoding='utf-8') as telemetry:
+                            telemetry.write(json.dumps({'time': datetime.now().isoformat(), 'candidate': i,
+                                            'utilization': utilization, 'memory': memory, 'own_pids': sorted(own_pids),
+                                            'per_process': per_process, 'interference': interference}) + '\n')
+                        if interference:
                             raise RuntimeError('Another GPU job started; stopped only the cover worker generation')
                         if time.monotonic() - started > 3600:
                             raise RuntimeError('Maestro generation exceeded one hour')

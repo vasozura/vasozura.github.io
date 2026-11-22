@@ -48,7 +48,11 @@ The GPU must remain below 10% utilization for a full minute before **each**
 candidate. The wait times out after 12 hours. During generation the worker
 checks every five seconds and stops only its own generation if utilization
 exceeds 50% and a new foreign GPU process appears or its allocated memory grows.
-On Windows, unavailable foreign process memory is handled conservatively.
+Windows reports process VRAM as N/A: the worker then checks Windows GPU Engine
+counters to attribute utilization to a foreign process, stopping above 50%.
+If counters cannot identify every foreign GPU process, it stops conservatively.
+Counter collection may add several seconds to the polling interval. GPU sample
+telemetry is retained as `gpu_samples.jsonl`.
 This is cooperative polling, not a system-wide lock on other applications.
 
 `covers/.worker-lock` prevents overlapping cover batches/UI workers. Its
