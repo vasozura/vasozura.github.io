@@ -145,3 +145,12 @@ hint: the same ref. If you want to integrate the remote changes, use
 hint: 'git pull' before pushing again.
 hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 ```
+
+
+## Codex KinoStudio analysis completed (2026-11-22)
+
+Pulled 5bc77a5 and completed only the new first Codex task. Analysis commit `1fe3649` adds docs/KINOSTUDIO_ANALYSIS.md in Georgian with a 10-line summary for Claude, verified app inventory, module reuse decisions, one Portal-style web workflow, one proposed project folder format, a 1-2 minute Georgian chapter MVP, a 15-23 working-day estimate and owner questions. Recommendation: CineAudio workspace/audio services plus Maestro Director/Character Studio and MusicToVideo engine adapters; retain useful Aurora contracts and Unified presence/style concepts. No implementation started.
+
+Read-only source inspection plus 110 selected Aurora tests and 34 selected CineAudio tests passed. Unified was copied to ignored site/tmp for smoke: its pinned FastAPI 0.115.12/Starlette 0.46.2 environment returns a 200 home response, creates the 250-scene scaffold and produces prompt text/rewrite tags, with 32 OpenAPI routes. Its TestClient lacks httpx; direct route/service checks were used. System Python's newer Starlette fails the old TemplateResponse call. Hard-coded missing Excel path/override and destructive Excel scene import are documented; no existing DB was opened or modified. Natural Georgian TTS quality and new Maestro integration remain unverified, as stated in the analysis.
+
+All external apps, production data, portfolio/covers and the OneDrive checkout remained untouched. No GPU generation, model/package installation, external provider call or publication. Only documentation changed, so pnpm typecheck/test/build code-change gates were not applicable. Next: Claude reviews the summary and owner questions and assigns implementation; the next existing open Codex task remains Send timeline to Maestro.
