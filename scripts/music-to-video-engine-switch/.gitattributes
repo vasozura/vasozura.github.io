@@ -1,0 +1,2 @@
+# Unified diff context lines use a mandatory single-space prefix.
+engine-switch.patch whitespace=-blank-at-eol

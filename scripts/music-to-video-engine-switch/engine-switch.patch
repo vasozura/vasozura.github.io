@@ -1,0 +1,520 @@
+--- a/main.py
++++ b/main.py
+@@ -59,6 +59,7 @@
+                       transcribe_audio, align_transcript_to_music,
+                       detect_style)
+ from generator import PromptGenerator, WANClient, SDMotionClient
++import engine_selection as _eng
+ from generator.wan_queue import (build_wan_queue, find_generated_clips,
+                                 build_dub_queue, dub_tag,
+                                 build_image_queue, find_generated_images,
+@@ -584,6 +585,8 @@
+                   region: str = "",
+                   render: str = "") -> None:
+     job = jobs[job_id]
++    if job.get("generation_engine") and (backend or config.WAN_BACKEND).strip() == "wan_queue":
++        brief = (brief + " One clear action per shot. Keep the camera calm and steady. Preserve the keyframe identity; no transformations.").strip()
+     # reshuffle-ისთვის params შევინახოთ
+     job["_params"] = {
+         "audio_path": str(audio_path), "lyrics": lyrics, "style": style,
+@@ -826,6 +829,9 @@
+                                                    boost=boost, ban=ban,
+                                                    should_stop=_check_cancel)
+         _ollama_release()              # ტეგირებას გზა თავისუფლდება
++        if job.get("generation_engine") and use_backend == "wan_queue":
++            prompt_list = _eng.split_shots(prompt_list, job.get("beat_times", []))
++            job["clip_count"] = len(prompt_list)
+         job["prompts"] = prompt_list
+         job["progress"] = 35
+         print(f"[{job_id}] {len(prompt_list)} prompt")
+@@ -898,7 +904,7 @@
+                     print(f"[{job_id}] keyframes ვერ დაგენერირდა ({e})")
+ 
+             # ── image-first: ჯერ სურათები, ვიდეო მოგვიანებით ──────────
+-            if getattr(config, "IMAGE_FIRST", False):
++            if getattr(config, "IMAGE_FIRST", False) or job.get("generation_engine"):
+                 iq = Path(config.CLIPS_DIR) / job_dir / "image_queue.zip"
+                 iq = build_image_queue(
+                     prompt_list, job_id, iq,
+@@ -1586,6 +1592,7 @@
+     style: Optional[str] = Form(None),
+     title: Optional[str] = Form(None),
+     backend: Optional[str] = Form(None),
++    generation_engine: str = Form("wan22"),
+     boost: Optional[str] = Form(None),
+     ban: Optional[str] = Form(None),
+     sd_motion: Optional[str] = Form(None),
+@@ -1608,6 +1615,10 @@
+         description="🎨 გამოხატვა: cartoon2d | cartoon3d | geoillus | "
+                     "papercut (ცარიელი = ფოტორეალური)"),
+ ):
++    try:
++        _eng.validate(generation_engine)
++    except ValueError as e:
++        raise HTTPException(400, str(e))
+     job_id = str(uuid.uuid4())[:8]
+     audio_path = UPLOAD_DIR / f"{job_id}_audio.mp3"
+     src_name = ""
+@@ -1640,7 +1651,7 @@
+         #   აირჩიე, `audio` არის None და გენერაცია ჩავარდებოდა:
+         #   AttributeError: NoneType has no attribute filename.
+         #   `src_name` ორივე გზაზე სწორად ივსება — ის უნდა იყოს.
+-        "audio_filename": src_name,
++        "audio_filename": src_name, "generation_engine": generation_engine,
+         "audio_path": str(audio_path),
+     })
+     loop = asyncio.get_event_loop()
+@@ -1709,7 +1720,7 @@
+     out = Path(job["output_path"])
+     if not out.exists():
+         raise HTTPException(500, "Output file not found")
+-    return FileResponse(str(out), media_type="video/mp4", filename=out.name)
++    return FileResponse(str(out), media_type="video/quicktime" if out.suffix.lower() == ".mov" else "video/mp4", filename=out.name)
+ 
+ 
+ @app.post("/prompts_only")
+@@ -1769,7 +1780,7 @@
+     if not qp.exists():
+         raise HTTPException(500, "Queue file deleted")
+     return FileResponse(str(qp), media_type="application/zip",
+-                        filename=f"{job_id}_queue.zip")
++                        filename=f"{job_id}_queue{qp.suffix}")
+ 
+ 
+ # ── VRAM-ის გათავისუფლება Wan2GP-ზე გადასვლამდე ───────────────────────────
+@@ -1955,7 +1966,9 @@
+ # ── montage: PICS საქაღალდე + პრომპტების ფაილი → queue ────────────────────
+ # ცალკე ნაკადი მზა სურათებისთვის. /studio-ს არ ეხება.
+ import pics2queue as _p2q                                      # noqa: E402
+-from generator import wan_cli                                    # noqa: E402
++from generator import wan_cli
++config.WAN_MODEL_PROFILES.setdefault(_eng.LTX_MODEL, {"fps": 24, "grid": 8, "base": "ltx2_22B", "end_frame": True, "steps": 8, "ltx": True})
++config.MAESTRO_MODEL_PREFIXES = tuple(config.MAESTRO_MODEL_PREFIXES) + (_eng.LTX_MODEL,)                                    # noqa: E402
+ 
+ 
+ _FACE_CASCADE = None
+@@ -2940,6 +2953,13 @@
+ def _montage_build_impl(pics_dir, prompts_file, model, seconds, chain, seed,
+                         resolution, job, skip, faces, face_model, picks,
+                         only, out_name, cast=None, sing=None, style=""):
++    selected_engine = (jobs.get(job) or {}).get("generation_engine", "")
++    if not selected_engine:
++        settings_path = Path(pics_dir) / "build_settings.json"
++        if settings_path.is_file():
++            selected_engine = json.loads(settings_path.read_text(encoding="utf-8")).get("generation_engine", "")
++    if selected_engine:
++        model = _eng.ENGINES[_eng.validate(selected_engine)]
+     model = (model or "").strip() or config.WAN_I2V_MODEL
+     # ⚠ პროფილის გარეშე მოდელი ნაგულისხმევ 16fps/4-ის ბადეს იღებდა და
+     #   ლირიკის სინქრონს შლიდა — ჯობია აქვე გავჩერდეთ.
+@@ -2990,7 +3010,7 @@
+             print(f"[montage] {_vmode}: 🎤 {len(_auto - sing_idx)} ტექსტიანი "
+                   f"კადრი ავტომატურად დაემატა")
+         sing_idx |= _auto
+-    sing_model = getattr(config, "WAN_I2V_MODEL_SING", "") or model
++    sing_model = model if selected_engine else (getattr(config, "WAN_I2V_MODEL_SING", "") or model)
+     vocals = ""
+     sing_warn = ""
+     if sing_idx:
+@@ -3033,7 +3053,7 @@
+         it = {"clip_index": i, "wan_prompt": pr, "start": 0.0,
+               "end": dur, "start_image_file": str(pics[i].resolve())}
+         if i in face_idx:                       # სახიანი კადრი → სხვა მოდელი
+-            it["i2v_model"] = fmodel
++            it["i2v_model"] = model if selected_engine else fmodel
+         if i in sing_idx:
+             it["i2v_model"] = sing_model
+             st = float((meta.get(str(i)) or {}).get("start") or 0.0)
+@@ -3080,13 +3100,13 @@
+         video_length=int(round(seconds * prof.get("fps", 16))),  # fallback
+ 
+         steps=config.WAN_QUEUE_STEPS, seed=seed,
+-        model_type=config.WAN_QUEUE_MODEL_TYPE, i2v_model=model, style=style)
++        model_type=config.WAN_QUEUE_MODEL_TYPE, i2v_model=model, style=style, engine=selected_engine)
+     # ⚠ ⟳ კლიპების ბადიდან იმავე პირობებით უნდა გაიმეოროს — თორემ
+     #   სახის რეფერენსიც და ჯაჭვიც იკარგება და მოდელი ადამიანს
+     #   თავიდან იგონებს (06.09: ⟳-მ სხვა სახე გამოიყვანა).
+     try:
+         (Path(pics_dir) / "build_settings.json").write_text(json.dumps({
+-            "model": model, "seconds": seconds, "chain": int(bool(chain)),
++            "generation_engine": selected_engine, "model": model, "seconds": seconds, "chain": int(bool(chain)),
+             "resolution": resolution, "job": job, "face_model": face_model,
+             "faces": sorted(face_idx), "cast": {str(k): v for k, v in
+                                                 (cast_map or {}).items()},
+@@ -3854,10 +3874,12 @@
+ @app.get("/montage/queue")
+ def montage_queue(pics_dir: str):
+     z = Path(pics_dir) / "queue.zip"
++    if Path(str(z.with_suffix(".json")) + ".engine.json").is_file():
++        z = z.with_suffix(".json")
+     if not z.exists():
+         raise HTTPException(404, "queue.zip ჯერ არ აგებულა")
+     return FileResponse(str(z), media_type="application/zip",
+-                        filename="pics_queue.zip")
++                        filename="pics_queue" + z.suffix)
+ 
+ 
+ # ── image-first: სურათების ეტაპი ──────────────────────────────────────────
+@@ -4223,6 +4245,8 @@
+         print(f"[{job_id}] წინა {len(old_files)} კადრი → {arch.name}")
+     _free_gpu_for_wan("Wan2GP-ის ავტომატური გაშვება")
+     try:
++        if job.get("generation_engine"):
++            _eng.mark_queue(qp, job["generation_engine"])
+         run = wan_cli.start(config, qp, dest, label=f"images {job_id}")
+     finally:
+         _GPU_RESERVED.clear()
+@@ -4379,6 +4403,7 @@
+         model_type=config.WAN_QUEUE_MODEL_TYPE,
+         ban_words=job.get("ban", ""), scene_mode=job.get("scene_mode", "poetry"),
+         i2v_model=config.WAN_I2V_MODEL,
++        engine=job.get("generation_engine", ""),
+     )
+     job["queue_path"] = str(qp)
+     job["clip_count"] = len(job["prompt_list"])
+@@ -9993,7 +10018,7 @@
+         n_ok += 1
+     if not n_ok:
+         return base
+-    out = base.with_name(base.stem + "_mix.mp4")
++    out = base.with_name(base.stem + "_mix" + base.suffix)
+     cmd = (["ffmpeg", "-v", "error", "-y"] + inputs +
+            ["-filter_complex", ";".join(fparts),
+             "-map", f"[{prev}]", "-map", "0:a?",
+@@ -10289,7 +10314,7 @@
+         if not audio_path.exists():
+             raise RuntimeError("აუდიო ვერ მოიძებნა — ჯერ mp3 ატვირთე")
+         # 🎵 რედაქტირებული აუდიო-ტრეკი (თუ ბლოკები შეიცვალა)
+-        if audio_segs:
++        if audio_segs and not any(it.get("generation_engine") for it in items):
+             total_v = sum(max(0.5, float(i.get("dur") or 4.5)) for i in items)
+             edited = out_dir / "audio_track.m4a"
+             try:
+@@ -10414,11 +10439,38 @@
+     return round(got / (b - a), 3)
+ 
+ 
++@app.post("/generation/split_shots")
++def generation_split_shots(payload: dict):
++    audio_path = UPLOAD_DIR / Path(str(payload.get("audio_id") or "")).name
++    if not audio_path.is_file():
++        raise HTTPException(400, "Choose the original song first.")
++    originals = payload.get("items") or []
++    rows, cursor = [], 0.0
++    for index, item in enumerate(originals):
++        end = cursor + float(item.get("dur") or 0)
++        rows.append({"start": cursor, "end": end, "_source_index": index})
++        cursor = end
++    beats = analyze_music(audio_path).beat_times
++    try:
++        parts = _eng.split_shots(rows, beats)
++    except ValueError as e:
++        raise HTTPException(400, str(e))
++    result = []
++    for part in parts:
++        source = rows[part["_source_index"]]
++        original = originals[part["_source_index"]]
++        result.append({**original, "dur": part["end"] - part["start"],
++                       "off": float(original.get("off") or 0) + part["start"] - source["start"],
++                       "_sid": "s" + uuid.uuid4().hex[:10]})
++    return {"items": result}
++
++
+ @app.post("/designer/sing_plan")
+ def designer_sing_plan(payload: dict = None):
+     """🔍 ვოკალის ანალიზი: რომელ ბლოკზე ისმის ხმა. ფონურ job-ად —
+     პირველად demucs-ს 1-3 წუთი სჭირდება (მერე საწყობიდან, წამებში)."""
+     p = payload or {}
++    engine = _eng.validate(p.get("generation_engine", "wan22"))
+     items = p.get("items") or []
+     if not items:
+         raise HTTPException(400, "timeline ცარიელია")
+@@ -10429,13 +10481,13 @@
+     jobs[job_id] = {"job_id": job_id, "kind": "designer_sing",
+                     "status": "preparing", "progress": 5,
+                     "clips_dir": ws.name, "ws": str(ws),
+-                    "scene_mode": "designer", "title": ws.name}
++                    "generation_engine": engine, "scene_mode": "designer", "title": ws.name}
+ 
+     def work():
+         jb = jobs[job_id]
+         try:
+             audio = _dsing_audio(ws, p.get("audio_id", ""),
+-                                 p.get("audio_segs") or [])
++                                 [])
+             jb["audio_path"] = str(audio)
+             jb["status"] = "vocals"; jb["progress"] = 15
+             voc = _make_vocals(jb)
+@@ -10490,7 +10542,10 @@
+         raise HTTPException(400, "ჯერ 🔍 ვოკალის ანალიზი გაუშვი")
+     if not jb.get("vocals_path"):
+         raise HTTPException(400, "ვოკალი ჯერ არ არის მზად")
++    jb["generation_engine"] = _eng.validate(p.get("generation_engine", jb.get("generation_engine", "wan22")))
+     rows = [r for r in (p.get("items") or []) if r.get("sid")]
++    if any(not 0 < float(r.get("dur", 0)) <= 10 for r in rows):
++        raise HTTPException(400, "Split shots on song beats to at most 10 seconds before generation.")
+     if not rows:
+         raise HTTPException(400, "🎤-ით მონიშნული ბლოკი არ არის")
+     if wan_cli.active():
+@@ -10532,7 +10587,7 @@
+     (stills / "meta.json").write_text(
+         json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
+ 
+-    sing_model = getattr(config, "WAN_I2V_MODEL_SING", "") or config.WAN_I2V_MODEL
++    sing_model = _eng.ENGINES[jb["generation_engine"]]
+     z = _build_video_queue(
+         str(stills), str(stills / "prompts.json"), model=sing_model,
+         seconds=5.0, chain=0, job=job_id,
+@@ -10557,7 +10612,7 @@
+     if not jb:
+         raise HTTPException(404, "job ვერ მოიძებნა")
+     out = {"status": jb.get("status"), "error": jb.get("error", ""),
+-           "ready": {}}
++           "ready": {}, "generation_engine": jb.get("generation_engine", "wan22")}
+     smap = jb.get("sing_map") or {}
+     outd = Path(jb.get("ws", "")) / "clips"
+     if smap and outd.is_dir():
+--- a/generator/wan_queue.py
++++ b/generator/wan_queue.py
+@@ -932,6 +932,7 @@
+     style: str = "",            # config.WAN_STYLE_PRESETS-ის სახელი
+     loras: Optional[List[str]] = None,   # ვიდეო-მოდელის LoRA (ფოლკლორი)
+     lora_mult: str = "",
++    engine: str = "",
+ ) -> Path:
+     """
+     PromptGenerator-ის შედეგი → Wan2GP queue zip.
+@@ -939,6 +940,13 @@
+     prompt_list: [{"clip_index": int, "wan_prompt": str, ...}, ...]
+     აბრუნებს zip ფაილის Path-ს (შიგნით queue.json).
+     """
++    if engine:
++        import engine_selection as engines
++        if engine == "ltx23":
++            return engines.write_ltx(prompt_list, job_id, out_path, seed)
++        prompt_list = engines.prepare(prompt_list, engine)
++        i2v_model = engines.ENGINES[engine]
++        resolution = "832x480"
+     template = _load_template()
+     _default_model = model_type or template.get("model_type", "")
+ 
+@@ -1219,6 +1227,8 @@
+                 zf.write(str(kf_b), f"task{task_id}_image_end_0.png")
+         zf.writestr("queue.json",
+                     json.dumps(queue, ensure_ascii=False, indent=1))
++    if engine:
++        engines.mark_queue(out_path, engine)
+     return out_path
+ 
+ 
+--- a/generator/wan_cli.py
++++ b/generator/wan_cli.py
+@@ -23,6 +23,7 @@
+ import threading
+ import time
+ import uuid
++import engine_selection as _eng
+ from pathlib import Path
+ 
+ # ── გაშვებების რეესტრი ────────────────────────────────────────────────────
+@@ -67,8 +68,13 @@
+     if not pref:
+         return ""
+     try:
+-        with _zf.ZipFile(str(queue_path)) as z:
+-            q = json.loads(z.read("queue.json").decode("utf-8"))
++        if Path(queue_path).suffix.lower() == ".json":
++            raw = json.loads(Path(queue_path).read_text(encoding="utf-8"))
++            raw = raw if isinstance(raw, list) else [raw]
++            q = [t if "params" in t else {"params": t} for t in raw]
++        else:
++            with _zf.ZipFile(str(queue_path)) as z:
++                q = json.loads(z.read("queue.json").decode("utf-8"))
+     except Exception:                            # noqa: BLE001
+         return ""
+     for t in q or []:
+@@ -217,6 +223,7 @@
+                 pass
+ 
+ 
++@_eng.serialized_launch
+ def start(cfg, queue_path, out_dir, label: str = "", dry_run: bool = False) -> dict:
+     """queue.zip-ის გაშვება ფონურ პროცესად → run ჩანაწერი."""
+     engine = engine_for_queue(cfg, queue_path)
+@@ -236,6 +243,11 @@
+     if dry_run:
+         cmd.append("--dry-run")
+ 
++    guarded = _eng.guarded_queue(qp) and not dry_run
++    if guarded:
++        if active():
++            raise RuntimeError("Another WanGP/Maestro job is already running.")
++        _eng.wait_idle()
+     env = dict(os.environ)
+     env["PYTHONIOENCODING"] = "utf-8"
+     env["PYTHONUNBUFFERED"] = "1"
+@@ -276,6 +288,11 @@
+     with _LOCK:
+         RUNS[run["run_id"]] = run
+     run["_proc"] = proc
++    if guarded:
++        def interrupt(message):
++            _absorb(run, "[ERROR] " + message)
++            cancel(run["run_id"])
++        threading.Thread(target=_eng.watch_gpu, args=(proc, interrupt), daemon=True).start()
+     threading.Thread(target=_reader, args=(run, proc), daemon=True,
+                      name=f"wan-cli-{run['run_id']}").start()
+     return snapshot(run["run_id"])
+--- a/ui.html
++++ b/ui.html
+@@ -134,12 +134,29 @@
+ </script>
+ <div class="card">
+   <h1>🎵 Music Video AI</h1>
++<label for="generationEngine" style="display:block;margin:12px 0 6px">Generation engine</label>
++<select id="generationEngine" aria-label="Generation engine">
++  <option value="wan22">Wan 2.2 (WanGP) · 832×480</option>
++  <option value="ltx23">LTX-2.3 (Maestro / WanGP) · 1280×704 native</option>
++  <option value="minimax_h3" disabled>MiniMax H3 (Maestro) · coming later</option>
++</select>
++<script>
++(() => {
++  const choice = document.getElementById("generationEngine");
++  try { const saved = localStorage.getItem("mtvGenerationEngine"); if (["wan22", "ltx23"].includes(saved)) choice.value = saved; } catch {}
++  choice.addEventListener("change", () => {
++    try { localStorage.setItem("mtvGenerationEngine", choice.value); } catch {}
++    const backend = document.querySelector('input[name="backend"][value="wan_queue"]');
++    if (backend) { backend.checked = true; backend.dispatchEvent(new Event("change", {bubbles:true})); }
++  });
++})();
++</script>
+   <div class="sub">mp3 → visual poetry ვიდეო კლიპი · ლირიკა და სტილი ავტომატურად დადგინდება</div>
+ 
+   <div class="grid2">
+   <div class="colA">
+   <div class="drop" id="drop">ჩააგდე mp3 აქ ან დააჭირე ასარჩევად</div>
+-  <input type="file" id="file" accept=".mp3,audio/mpeg" hidden>
++  <input type="file" id="file" accept=".mp3,.wav,audio/mpeg,audio/wav" hidden>
+   <!-- 🎵 mp3 ბიბლიოთეკიდან — ატვირთვა აღარ სჭირდება -->
+   <select id="libAudio" title="ბიბლიოთეკაში დაგროვილი mp3-ები"
+           style="width:100%;margin-top:6px;background:#14141f;color:#ddd;
+@@ -1671,6 +1688,7 @@
+ 
+   statusEl.className = "status"; statusEl.textContent = "იტვირთება…";
+   try {
++    fd.append("generation_engine", document.getElementById("generationEngine").value);
+     const r = await fetch("/generate", { method:"POST", body:fd });
+     if (!r.ok) throw new Error(await r.text());
+     const { job_id } = await r.json();
+--- a/designer.html
++++ b/designer.html
+@@ -140,6 +140,23 @@
+   document.querySelectorAll(".mtv-nav a").forEach(a => {
+     if (a.dataset.p === p) a.classList.add("on"); }); })();
+ </script>
++<section style="padding:10px 18px;background:#0d0d16"><label for="generationEngine" style="display:block;margin:12px 0 6px">Generation engine</label>
++<select id="generationEngine" aria-label="Generation engine">
++  <option value="wan22">Wan 2.2 (WanGP) · 832×480</option>
++  <option value="ltx23">LTX-2.3 (Maestro / WanGP) · 1280×704 native</option>
++  <option value="minimax_h3" disabled>MiniMax H3 (Maestro) · coming later</option>
++</select>
++<script>
++(() => {
++  const choice = document.getElementById("generationEngine");
++  try { const saved = localStorage.getItem("mtvGenerationEngine"); if (["wan22", "ltx23"].includes(saved)) choice.value = saved; } catch {}
++  choice.addEventListener("change", () => {
++    try { localStorage.setItem("mtvGenerationEngine", choice.value); } catch {}
++    const backend = document.querySelector('input[name="backend"][value="wan_queue"]');
++    if (backend) { backend.checked = true; backend.dispatchEvent(new Event("change", {bubbles:true})); }
++  });
++})();
++</script></section>
+ <header>
+   <h1>🎬 Clip Designer</h1>  <span style="color:#445">|</span>
+   <!-- ⚠ 28.10 — სია ხელით ეწერა და ჩამორჩა: კვარტეტი, სოლო,
+@@ -556,7 +573,16 @@
+   if (!audioId) { alert("ჯერ mp3 ატვირთე (🎵)"); return; }
+   if (!items.length) { alert("timeline ცარიელია"); return; }
+   const b = $("singScan"); b.disabled = true;
+-  const payload = {audio_id: audioId, audio_segs: audSegs,
++  let splitData;
++  try {
++    const splitResponse = await fetch("/generation/split_shots", {
++    method: "POST", headers: {"Content-Type": "application/json"},
++    body: JSON.stringify({audio_id: audioId, items})});
++    splitData = await splitResponse.json();
++    if (!splitResponse.ok) throw new Error(splitData.detail || "Cannot split shots");
++  } catch (error) { $("singInfo").textContent = error.message; b.disabled = false; return; }
++  snap(); items = splitData.items; selIdx = -1; selSet.clear(); renderTL();
++  const payload = {generation_engine: $("generationEngine").value, audio_id: audioId, audio_segs: audSegs,
+                    items: items.map(it => ({sid: sidOf(it), dur: it.dur}))};
+   $("singInfo").textContent = "⏳ ვოკალს ვყოფ (პირველად 1-3 წუთი, მერე წამები)…";
+   try {
+@@ -608,7 +634,7 @@
+   try {
+     const r = await fetch("/designer/sing_run", {method: "POST",
+       headers: {"Content-Type": "application/json"},
+-      body: JSON.stringify({job_id: singJob, items: rows})});
++      body: JSON.stringify({job_id: singJob, items: rows, generation_engine: $("generationEngine").value})});
+     const d = await r.json();
+     if (!r.ok) throw new Error(d.detail || r.status);
+     $("singBarW").style.display = "";
+@@ -633,7 +659,7 @@
+       if (k < 0 || items[k].sung || singRejected.has(sid)) return;
+       const old = {...items[k]}; delete old.orig;
+       items[k] = {kind: "fs", ref: path, off: 0, dur: old.dur,
+-                  fit: "cut_end", sung: 1, sing: 1, _sid: sid, orig: old};
++                  fit: "cut_end", sung: 1, sing: 1, generation_engine: st.generation_engine, _sid: sid, orig: old};
+       swapped++;
+     });
+     if (swapped) { loadSrcDurs(items); renderTL(); }
+--- a/assembler/video_assembler.py
++++ b/assembler/video_assembler.py
+@@ -97,7 +97,7 @@
+             video_no_audio = self._concat_simple(clip_paths)
+ 
+         print(f"[assembler] mixing audio from {audio_path.name} …")
+-        self._mux_audio(video_no_audio, audio_path, final_path, title,
++        final_path = self._mux_audio(video_no_audio, audio_path, final_path, title,
+                         beat_times=beat_times if pulse else None)
+ 
+         # Clean up temp files
+@@ -272,7 +272,7 @@
+         out_path: Path,
+         title: Optional[str],
+         beat_times: Optional[List[float]] = None,
+-    ) -> None:
++    ) -> Path:
+         """
+         Video + audio → საბოლოო ფაილი ზუსტად აუდიოს ხანგრძლივობით.
+ 
+@@ -303,6 +303,12 @@
+         fade_start = max(audio_dur - 1.5, 0)
+         vf.append(f"fade=t=out:st={fade_start:.3f}:d=1.5")
+ 
++        codec = subprocess.check_output([
++            "ffprobe", "-v", "error", "-select_streams", "a:0", "-show_entries",
++            "stream=codec_name", "-of", "default=noprint_wrappers=1:nokey=1", str(audio_path)
++        ], text=True).strip()
++        if codec.startswith("pcm_"):
++            out_path = out_path.with_suffix(".mov")
+         cmd = [
+             "ffmpeg", "-y",
+             "-i", str(video_path),
+@@ -313,13 +319,13 @@
+             "-c:v", self.video_codec,
+             "-crf", str(self.crf),
+             "-pix_fmt", "yuv420p",
+-            "-c:a", "aac",
+-            "-b:a", self.audio_bitrate,
+-            "-t", f"{audio_dur:.3f}",      # ზუსტად აუდიოს სიგრძე
++            "-c:a", "copy",
++            "-shortest",
+             *metadata,
+             str(out_path),
+         ]
+         self._run(cmd, "mux_audio")
++        return out_path
+ 
+     def _probe_duration(self, video_path: Path) -> float:
+         """Return duration in seconds using ffprobe."""
