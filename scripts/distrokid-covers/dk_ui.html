@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ka"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ატვირთვის ცენტრი</title>
+<style>
+:root{--bg:#f5f4f0;--card:#fff;--fg:#1c1c1a;--mut:#6d6c67;--line:#e2e0da;--acc:#2b5fb5;--ok:#237a46;--bad:#b23a2a;--warn:#a8650f}
+@media (prefers-color-scheme:dark){:root{--bg:#141413;--card:#1e1e1c;--fg:#ecebe6;--mut:#a09f99;--line:#34332f;--acc:#6f9be8;--ok:#5cc58a;--bad:#ef7a68;--warn:#e2a54b}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,"Segoe UI",sans-serif}
+header{display:flex;gap:10px;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+header h1{font-size:18px;margin:0 12px 0 0}
+button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:7px;padding:6px 12px;cursor:pointer}
+button.pri{background:var(--acc);border-color:var(--acc);color:#fff}button:hover{filter:brightness(1.07)}
+.wrap{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 56px)}
+aside{border-right:1px solid var(--line);overflow:auto}
+.item{padding:10px 14px;border-bottom:1px solid var(--line);cursor:pointer}.item:hover,.item.sel{background:var(--card)}
+.item b{display:block}.st{font-size:12px;border-radius:10px;padding:1px 8px;border:1px solid currentColor}
+.st.draft{color:var(--warn)}.st.ready{color:var(--acc)}.st.uploaded{color:var(--ok)}.st.live{color:var(--ok);font-weight:600}
+main{padding:16px 22px;overflow:auto}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px}
+label{display:block;font-size:13px;color:var(--mut);margin-bottom:3px}
+input,textarea,select{width:100%;font:inherit;padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--fg)}
+textarea{min-height:180px}.full{grid-column:1/-1}
+.chk{font-size:13px;margin-top:4px}.chk.ok{color:var(--ok)}.chk.bad{color:var(--bad)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
+section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0}
+section h2{font-size:15px;margin:0 0 10px}
+.cp{display:grid;grid-template-columns:230px 1fr 70px;gap:8px;align-items:start;padding:6px 0;border-bottom:1px dashed var(--line)}
+.cp .v{white-space:pre-wrap;max-height:90px;overflow:auto}.cp .k{color:var(--mut);font-size:13px}
+.tabs{display:flex;gap:4px;padding:8px 14px 0;border-bottom:1px solid var(--line);background:var(--card)}
+.tabs button{border-radius:8px 8px 0 0;border-bottom:none;padding:8px 16px}.tabs button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.pane{display:none}.pane.on{display:block}iframe{width:100%;height:calc(100vh - 48px);border:0;background:var(--bg)}
+.vl{max-height:calc(100vh - 120px);overflow:auto}.bar{height:10px;background:var(--line);border-radius:5px;overflow:hidden}.bar i{display:block;height:100%;background:var(--acc)}
+pre.log{white-space:pre-wrap;font-size:12px;background:var(--bg);padding:8px;border-radius:6px;max-height:200px;overflow:auto}
+button.play{width:34px;height:34px;padding:0;border-radius:50%;font-size:14px;vertical-align:middle}
+.msg{position:fixed;right:16px;bottom:16px;background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;display:none}
+.note{font-size:13px;color:var(--mut)}
+@media (max-width:800px){.wrap{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.cp{grid-template-columns:1fr}}
+</style></head><body>
+<nav class="tabs"><button data-t="alex" onclick="tab('alex')">Zura Alexandria · YouTube</button><button data-t="vas" onclick="tab('vas')">Zura Vasadze · YouTube</button><button data-t="dk" onclick="tab('dk')">DistroKid</button></nav>
+<div class="pane" id="p-alex"><div class="wrap"><aside class="vl" id="vlist"></aside><main id="ved"><p class="note">აირჩიე ვიდეო მარცხნივ (Library\\outputs\\final).</p></main></div></div>
+<div class="pane" id="p-vas"><iframe id="vfr" title="Zura Vasadze"></iframe></div>
+<div class="pane" id="p-dk">
+<header><h1>DistroKid რელიზები</h1>
+<button class="pri" onclick="showSug()">💡 შემოთავაზებები</button><button onclick="newRel()">+ ახალი რელიზი</button>
+<button onclick="importQ()">Suno რიგიდან შემოტანა</button>
+<button onclick="api('open_distrokid',{})">DistroKid-ის ფორმის გახსნა ↗</button>
+<span class="note" id="data"></span></header>
+<div class="wrap"><aside id="list"></aside><main id="ed"></main></div>
+</div>
+<div class="msg" id="msg"></div>
+<script>
+let S={releases:[],fields:[],defaults:{}},cur=null;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ST={draft:'მონახაზი',ready:'მზადაა ასატვირთად',uploaded:'DistroKid-ზე ატვირთულია',live:'გამოვიდა'};
+function toast(t){const m=$('#msg');m.textContent=t;m.style.display='block';clearTimeout(m._t);m._t=setTimeout(()=>m.style.display='none',2200)}
+async function api(p,b){const r=await fetch('/api/'+p,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});const j=await r.json();if(!r.ok){toast('შეცდომა: '+j.error);throw j}return j}
+async function load(sel){const r=await fetch('/api/list');S=await r.json();$('#data').textContent='მონაცემები: '+S.data;
+ $('#list').innerHTML=S.releases.map(d=>`<div class="item ${cur&&cur.id===d.id?'sel':''}" onclick="openRel('${d.id}')"><b>${esc(d.title||'(უსათაურო)')}</b><span class="st ${d.status}">${ST[d.status]||d.status}</span> <span class="note">${esc(d.release_date||'')}</span></div>`).join('')||'<p class="note" style="padding:14px">ჯერ რელიზი არ არის.</p>';
+ if(sel)openRel(sel)}
+function newRel(){cur=Object.assign({id:'',title:'',title_en:'',lyricist:'',audio:'',cover:'',lyrics:'',release_date:''},S.defaults);render()}
+function openRel(id){cur=JSON.parse(JSON.stringify(S.releases.find(d=>d.id===id)));render();load()}
+function inp(k,lab,cls=''){return `<div class="${cls}"><label>${lab}</label><input data-k="${k}" value="${esc(cur[k])}"></div>`}
+function chk(c){return c?`<div class="chk ${c.ok?'ok':'bad'}">${c.ok?'✓':'✗'} ${esc(c.msg)}</div>`:''}
+function render(){clearTimeout(coverTimer);const d=cur;$('#ed').innerHTML=`
+<div class="row"><span class="st ${d.status}">${ST[d.status]||d.status}</span>
+<button class="pri" onclick="saveRel()">შენახვა და შემოწმება</button>
+${d.id&&d.status==='ready'?'<button onclick="setSt(\'uploaded\')">✓ DistroKid-ზე ავტვირთე</button>':''}
+${d.id&&d.status==='uploaded'?'<button onclick="setSt(\'live\')">✓ გამოვიდა (Spotify-ზე ჩანს)</button>':''}
+${d.id?'<button onclick="delRel()">არქივში გადატანა</button>':''}</div>
+<section><h2>1. ფაილები</h2>
+<div class="row"><button onclick="findF()">🔎 MP3 / WAV / ტექსტის მოძებნა სათაურით</button><span class="note">ეძებს NEEDS_REVIEW-ში, Downloads-ში, D:\\Suno-ში და distrokid\\wav-ში</span></div>
+<div id="found"></div><div class="grid">
+<div class="full"><label>აუდიო (WAV ჯობია) — სრული მისამართი</label><input data-k="audio" value="${esc(d.audio)}">${chk(d.audio_check)}
+<div class="row">${d.id&&d.audio_check&&!d.audio_check.ok&&d.audio?'<button onclick="fix(\'fix_audio\')">გადაყვანა WAV 16-bit/44.1kHz</button>':''}${d.audio?'<button onclick="api(\'open_folder\',{path:cur.audio})">საქაღალდის გახსნა</button>':''}</div></div>
+<div class="full"><label>ყდა (კვადრატი, 3000×3000) — სრული მისამართი</label><input data-k="cover" value="${esc(d.cover)}">${chk(d.cover_check)}
+<div class="row"><select data-k="cover_style" style="width:auto"><option value="">ავტომატური (ქართული / უცხოენოვანი)</option><option value="poetic">პოეტური (უცხოენოვანი სიმღერებისთვის)</option><option value="quartet">კვარტეტი</option><option value="solo_woman">სოლისტი ქალი</option><option value="solo_man">სოლისტი კაცი</option><option value="scene">სცენა ხალხის გარეშე</option></select><button class="pri" onclick="generateCovers()">🎨 ყდის გენერაცია</button><button onclick="newestImg()">Downloads-დან უახლესი სურათი</button>${d.id&&d.cover?'<button class="pri" onclick="fix(\'fix_cover\')">3000×3000 + ლოგო</button>':''}${d.cover?'<button onclick="api(\'open_folder\',{path:cur.cover})">საქაღალდის გახსნა</button>':''}</div>
+<p class="note">ადგილობრივი Maestro / WanGP · უფასო · GPU-ის გათავისუფლებას ელოდება · სათაურს პროგრამა ამატებს</p><div id="coverJob"></div><div id="coverCandidates" class="row"></div><div id="gpt"></div><div class="note">სათაური და არტისტი უნდა ემთხვეოდეს რელიზს. ატვირთვამდე ყდა გადაამოწმე.</div></div>
+</div></section>
+<section><h2>2. მონაცემები</h2><div class="grid">
+${inp('title','სათაური (ქართულად, როგორც სიმღერაშია)')}${inp('title_en','სათაური ინგლისურად')}
+${inp('lyricist','პოეტი (ქართულად)')}${inp('lyricist_en','პოეტი ლათინურად (DistroKid-ისთვის)')}${inp('release_date','გამოშვების თარიღი (YYYY-MM-DD)')}
+${inp('artist','არტისტი')}${inp('songwriter_real_name','კომპოზიტორი — ნამდვილი სახელი')}
+${inp('genre','ძირითადი ჟანრი')}${inp('genre2','მეორე ჟანრი')}
+${inp('ai_music','AI: მუსიკა / არანჟირება','full')}${inp('ai_melody','AI: მელოდია','full')}${inp('ai_lyrics','AI: ტექსტი','full')}
+${inp('spotify','Spotify-ს ბმული (გამოსვლის შემდეგ)','full')}
+<div class="full"><label>ტექსტი (Suno-ს [Verse]/[Chorus] ტეგები შენახვისას წაიშლება)</label><textarea data-k="lyrics">${esc(d.lyrics)}</textarea></div>
+</div></section>
+${d.id?`<section><h2>3. DistroKid-ის ფორმა — დააკოპირე თანმიმდევრობით</h2>
+<p class="note">ფაილები: აუდიო და ყდა საქაღალდიდან გადაათრიე DistroKid-ის ფორმაში. ბოლოს Submit შენ დააჭირე და აქ მონიშნე „DistroKid-ზე ავტვირთე“.</p>
+${S.fields.map(([k,l])=>`<div class="cp"><div class="k">${esc(l)}</div><div class="v">${esc(d[k]||'—')}</div><button onclick="cp('${k}')">Copy</button></div>`).join('')}</section>`:''}`;
+ document.querySelectorAll('[data-k]').forEach(e=>{if(e.tagName==='SELECT'&&cur[e.dataset.k])e.value=cur[e.dataset.k];e.oninput=e.onchange=()=>cur[e.dataset.k]=e.value});if(d.id)pollCovers(d.id)}
+async function saveRel(){cur=await api('save',cur);toast('შენახულია');load(cur.id)}
+async function fix(p){toast('მუშავდება…');cur=await api(p,cur);toast('მზადაა');load(cur.id)}
+async function setSt(s){cur.status=s;if(s==='uploaded')cur.uploaded_on=new Date().toISOString().slice(0,10);await saveRel()}
+async function delRel(){if(!confirm('რელიზი არქივში გადავიდეს? (ფაილი არ წაიშლება)'))return;await api('delete',{id:cur.id});cur=null;$('#ed').innerHTML='';load()}
+async function importQ(){const r=await api('import_queue',{});toast('შემოვიდა: '+r.added);load()}
+async function findF(){if(!cur.title){toast('ჯერ სათაური ჩაწერე');return}const r=await api('find',{title:cur.title});
+ const L=(k,lab)=>r[k].length?`<div class="note" style="margin-top:6px">${lab}</div>`+r[k].map(x=>`<div class="row"><button onclick='pick("${k}",${JSON.stringify(x.path)})'>აირჩიე</button> ${esc(x.name)} <span class="note">${x.dur?Math.floor(x.dur/60)+':'+String(Math.round(x.dur%60)).padStart(2,'0'):''} · ${x.mtime}</span></div>`).join(''):'';
+ $('#found').innerHTML=(L('wav','WAV (ატვირთვისთვის ეს ჯობია)')+L('mp3','MP3')+L('txt','ტექსტი'))||'<p class="note">ვერაფერი ვიპოვე — Suno-დან უნდა წამოვიღოთ.</p>'}
+async function pick(k,p){if(k==='txt'){const r=await api('read_txt',{path:p});cur.lyrics=r.text}else if(k==='wav'||!cur.audio||!/\.wav$/i.test(cur.audio)){cur.audio=p}if(k==='mp3')cur.mp3=p;render();toast('არჩეულია')}
+let coverTimer;
+async function generateCovers(){cur=await api('save',cur);await api('covers/start',{id:cur.id});render();load()}
+async function chooseCover(n){cur=await api('save',cur);cur=await api('covers/choose',{id:cur.id,n});render();await load();toast('ყდა არჩეულია')}
+async function pollCovers(id){
+ clearTimeout(coverTimer);
+ try{const r=await fetch('/api/covers/status?id='+encodeURIComponent(id));const j=await r.json();
+ if(!r.ok||!cur||cur.id!==id||!$('#coverJob'))return;
+ const labels={idle:'',starting:'იწყება…',waiting:'GPU-ის გათავისუფლებას ველოდები…',generating:'ყდა მზადდება…',done:'სამი ყდა მზადაა — აირჩიე',error:'შეცდომა'};
+ $('#coverJob').textContent=(labels[j.state]||j.state)+(j.message?' · '+j.message:'');
+ $('#coverCandidates').innerHTML=(j.candidates||[]).map(n=>`<div style="width:200px"><img alt="ყდა ${n}" style="width:200px;height:200px;object-fit:cover;border-radius:8px" src="/cover-candidate?id=${encodeURIComponent(id)}&n=${n}"><button onclick="chooseCover(${n})">აირჩიე ${n}</button></div>`).join('');
+ if(['starting','waiting','generating'].includes(j.state))coverTimer=setTimeout(()=>pollCovers(id),3000);
+ }catch(e){if(cur&&cur.id===id)coverTimer=setTimeout(()=>pollCovers(id),5000)}
+}
+async function prompt4gpt(){const r=await api('cover_prompt',cur);$('#gpt').innerHTML=`<label>ChatGPT-ის პრომპტი</label><textarea id="gptt" style="min-height:140px">${esc(r.text)}</textarea><div class="row"><button onclick="navigator.clipboard.writeText($('#gptt').value);toast('დაკოპირდა')">Copy</button><button onclick="api('open_url',{url:'https://chatgpt.com/'})">ChatGPT-ის გახსნა ↗</button><span class="note">შეამოწმე ქართული ასოები სათაურში. სურათი Downloads-ში გადმოწერე და მერე „Downloads-დან უახლესი სურათი“.</span></div>`}
+async function newestImg(){const r=await api('newest_image',{});if(!r.path){toast('Downloads-ში სურათი ვერ ვიპოვე');return}cur.cover=r.path;cur.cover_original=r.path;render();toast('არჩეულია: '+r.path.split(/[\\/]/).pop())}
+function cp(k){navigator.clipboard.writeText(cur[k]||'');toast('დაკოპირდა')}
+let V={videos:[],job:{}},vcur=null,poll=null;
+function tab(t){document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id==='p-'+t));document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+ try{localStorage.setItem('uc_tab',t)}catch(e){}
+ if(t==='vas'&&!$('#vfr').src)$('#vfr').src='http://127.0.0.1:8750/';if(t==='alex')vload();if(t==='dk'&&!cur)showSug()}
+async function vload(){const r=await fetch('/api/yt/list');V=await r.json();
+ $('#vlist').innerHTML=V.videos.map((v,i)=>`<div class="item ${vcur&&vcur.path===v.path?'sel':''}" onclick="vopen(${i})"><b>${esc(v.name)}</b><span class="note">${v.mtime} · ${v.mb} MB</span> ${v.uploaded?`<span class="st live">ატვირთულია</span>`:''}</div>`).join('')||'<p class="note" style="padding:14px">ვიდეო არ არის.</p>';
+ if(V.job.running&&!poll)vpoll()}
+function vopen(i){const v=V.videos[i];vcur={path:v.path,name:v.name,uploaded:v.uploaded,title:'',poet:'',yt_title:'',description:'',publish_at:''};vrender()}
+function vrender(){const v=vcur,j=V.job;$('#ved').innerHTML=`
+<section><h2>${esc(v.name)}</h2>${v.uploaded?`<p>უკვე ატვირთულია: <a href="${esc(v.uploaded.url)}" target="_blank">${esc(v.uploaded.url)}</a> (${esc(v.uploaded.when)})</p>`:''}
+<div class="grid"><div><label>სიმღერის სათაური (ქართულად)</label><input data-v="title" value="${esc(v.title)}"></div><div><label>პოეტი (მაგ. ვარლამ რუხაძე)</label><input data-v="poet" value="${esc(v.poet)}"></div></div>
+<div class="row"><button onclick="vmeta()">სათაურის და აღწერის შედგენა</button></div>
+<div class="grid"><div class="full"><label>YouTube-ის სათაური</label><input data-v="yt_title" value="${esc(v.yt_title)}"></div>
+<div class="full"><label>აღწერა</label><textarea data-v="description">${esc(v.description)}</textarea></div>
+<div><label>გამოჩნდეს (დუბაის დროით; ცარიელი = ახლავე)</label><input type="datetime-local" data-v="publish_at" value="${esc(v.publish_at)}"></div></div>
+<p class="note">მუსიკა · არა საბავშვო · AI-კონტენტის ნიშანი ავტომატურად.</p>
+<div class="row"><button class="pri" onclick="vup()" ${j.running?'disabled':''}>⬆ ატვირთვა Zura Alexandria-ზე</button></div>
+${j.log&&j.log.length?`<div class="bar"><i style="width:${j.progress||0}%"></i></div><pre class="log">${esc(j.log.join('\n'))}</pre>`:''}</section>`;
+ document.querySelectorAll('[data-v]').forEach(e=>e.oninput=()=>vcur[e.dataset.v]=e.value)}
+async function vmeta(){if(!vcur.title||!vcur.poet){toast('სათაური და პოეტი ჩაწერე');return}const m=await api('yt/meta',{title:vcur.title,poet:vcur.poet});Object.assign(vcur,m);vrender()}
+async function vup(){if(!vcur.yt_title){toast('ჯერ სათაური და აღწერა შეადგინე');return}
+ if(!confirm('ავტვირთო Zura Alexandria-ზე?\n'+vcur.yt_title+'\n'+(vcur.publish_at?'გამოჩნდება: '+vcur.publish_at.replace('T',' '):'საჯარო ახლავე')))return;
+ await api('yt/upload',vcur);vpoll()}
+function vpoll(){clearInterval(poll);poll=setInterval(async()=>{const r=await fetch('/api/yt/job');V.job=await r.json();if(vcur)vrender();if(!V.job.running){clearInterval(poll);poll=null;vload()}},2000)}
+let SUG=null,sugOnlyWav=false,sugQ='';
+async function showSug(){cur=null;load();$('#ed').innerHTML='<p class="note">ვეძებ არქივში…</p>';SUG=await api('suggest',{});renderSug()}
+function renderSug(){const its=SUG.items.filter(x=>(!sugOnlyWav||x.wav)&&(!sugQ||(x.title+' '+x.poet).toLowerCase().includes(sugQ.toLowerCase())));
+ $('#ed').innerHTML=`<section><h2>💡 DistroKid-ზე ჯერ არ არის: ${SUG.items.length} სიმღერა</h2>
+ <p class="note">Composer Archive-დან (D:\\ComposerArchive). DistroKid-ზე უკვე ${SUG.released} რელიზია — ისინი აქ არ ჩანს. ზემოთ ის სიმღერებია, რომლებიც საიტზე უკვე გამოქვეყნებულია და WAV აქვთ.</p>
+ <div class="row" style="position:sticky;top:0;background:var(--card);z-index:2;padding:6px 0"><button class="pri" onclick="sugMany()" ${SEL.size?'':'disabled'}>✓ არჩეულების მომზადება (${SEL.size})</button>${SEL.size?'<button onclick="SEL.clear();renderSug()">მონიშვნის მოხსნა</button>':''}<span class="note">მონიშნე რამდენიმე — მარცხნივ ჩაჯდება, ყდებს ღამით გააკეთებს</span></div>
+ <div class="row"><input placeholder="ძებნა სათაურით ან პოეტით" value="${esc(sugQ)}" oninput="sugQ=this.value;renderSug()" style="max-width:340px"><label style="display:flex;gap:6px;align-items:center;margin:0"><input type="checkbox" style="width:auto" ${sugOnlyWav?'checked':''} onchange="sugOnlyWav=this.checked;renderSug()"> მხოლოდ WAV-ით</label><span class="note">ნაჩვენებია ${its.length}</span></div>
+ ${its.slice(0,150).map(x=>`<div class="cp" style="grid-template-columns:1fr auto"><div><input type="checkbox" style="width:18px;height:18px;vertical-align:middle" ${SEL.has(x.key)?'checked':''} onchange="this.checked?SEL.add('${esc(x.key)}'):SEL.delete('${esc(x.key)}');renderSugBar()"> <button class="play" data-p="${esc(x.wav||x.mp3)}" onclick="playA(this)" title="მოსმენა">▶</button> <b>${esc(x.title)}</b> <span class="note">${esc(x.poet||'პოეტი ვერ ამოვიცანი')}</span><br>
+ <span class="chk ${x.wav?'ok':'bad'}">${x.wav?'✓ WAV':'✗ მხოლოდ MP3'}</span> <span class="chk ${x.lyrics?'ok':'bad'}">${x.lyrics?'✓ ტექსტი':'✗ ტექსტი'}</span> ${x.published?'<span class="chk ok">✓ საიტზეა</span>':''} ${x.versions>1?`<a class="note" href="#" onclick="event.preventDefault();togV('${esc(x.key)}')">${x.versions} ვერსია — მოუსმინე და აირჩიე ▾</a>`:''} ${x.draft?'<span class="st draft">უკვე მზადდება</span>':''}
+ ${x.suno?` <a class="note" href="${esc(x.suno)}" target="_blank">Suno ↗</a>`:''}
+ ${OPENV.has(x.key)?`<div style="margin:6px 0 2px 26px">${x.all.map((v,i)=>`<div class="row" style="margin:3px 0"><button class="play" data-p="${esc(v.wav||v.mp3)}" onclick="playA(this)">▶</button><span class="note">${i===0?'⭐ ':''}${esc(v.folder)} · ${v.wav?'WAV':'MP3'} · ${v.duration?Math.floor(v.duration/60)+':'+String(Math.round(v.duration%60)).padStart(2,'0'):'?'}${v.published?' · საიტზეა':''}</span><button onclick='sugStart(${JSON.stringify(x.key)},${i})'>ეს ვერსია</button><label class="note" style="display:flex;gap:4px;align-items:center;margin:0"><input type="radio" style="width:auto" name="v_${esc(x.key)}" ${(CHOICE[x.key]??0)===i?'checked':''} onchange="CHOICE['${esc(x.key)}']=${i};SEL.add('${esc(x.key)}');renderSugBar()"> არჩევაში</label>${v.suno?`<a class="note" href="${esc(v.suno)}" target="_blank">Suno ↗</a>`:''}</div>`).join('')}</div>`:''}</div>
+ <div class="row" style="margin:0"><button class="pri" onclick='sugStart(${JSON.stringify(x.key)})'>მომზადება</button><button onclick='sugSkip(${JSON.stringify(x.key)})' title="აღარ შემომთავაზო">არ ავტვირთავ</button></div></div>`).join('')}</section>`}
+const OPENV=new Set();const SEL=new Set();const CHOICE={};
+function renderSugBar(){const y=window.scrollY;renderSug();window.scrollTo(0,y)}
+async function sugMany(){AU.pause();const items=[...SEL].map(k=>{const x=SUG.items.find(i=>i.key===k);return CHOICE[k]!=null?Object.assign({},x,{chosen:x.all[CHOICE[k]]}):x}).filter(Boolean);
+ const r=await api('suggest/start_many',{items});toast('მომზადდა: '+r.ids.length+' — ყდები ღამით გაკეთდება');
+ SUG.items=SUG.items.filter(i=>!SEL.has(i.key));SEL.clear();await load();renderSug()}const AU=new Audio();let AUbtn=null;
+AU.onended=()=>{if(AUbtn)AUbtn.textContent='▶';AUbtn=null};
+function playA(b){const p=b.dataset.p;if(!p){toast('აუდიო არ არის');return}
+ if(AUbtn===b&&!AU.paused){AU.pause();b.textContent='▶';return}
+ if(AUbtn===b&&AU.paused){AU.play();b.textContent='⏸';return}
+ if(AUbtn)AUbtn.textContent='▶';AU.src='/audio?p='+encodeURIComponent(p);AU.play().catch(e=>toast('ვერ ჩაირთო: '+e.message));AUbtn=b;b.textContent='⏸'}
+function togV(k){OPENV.has(k)?OPENV.delete(k):OPENV.add(k);AU.pause();if(AUbtn)AUbtn.textContent='▶';AUbtn=null;renderSug()}
+async function sugStart(k,vi){AU.pause();const x=SUG.items.find(i=>i.key===k);const body=Object.assign({},x,vi!=null?{chosen:x.all[vi]}:{});const d=await api('suggest/start',body);toast('რელიზი შეიქმნა');await load(d.id)}
+async function sugSkip(k){await api('suggest/skip',{key:k});SUG.items=SUG.items.filter(i=>i.key!==k);renderSug()}
+load();let t0='alex';try{t0=localStorage.getItem('uc_tab')||'alex'}catch(e){};tab(t0);
+</script></body></html>

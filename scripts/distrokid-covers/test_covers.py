@@ -1,0 +1,114 @@
+import json
+from pathlib import Path
+import tempfile
+import sys
+import types
+import threading
+import urllib.request
+import urllib.error
+import unittest
+from unittest.mock import patch
+import dk_covers as covers
+
+
+class CoversTest(unittest.TestCase):
+    def test_prompt_never_requests_lettering(self):
+        with patch.dict(sys.modules, {'yt_alexandria': types.ModuleType('yt_alexandria')}):
+            for title in ('მაისი-თვრამეტი', 'A memory'):
+                prompt = covers.artwork_prompt({'title': title, 'title_en': 'May the Eighteenth'})
+                self.assertNotIn('write exactly', prompt)
+                self.assertNotIn('Copy every Georgian letter', prompt)
+                self.assertIn('no text, no letters', prompt)
+
+    def test_path_cannot_escape_cover_folder(self):
+        for rid in ('../escape', '..', 'C:\\escape', 'a/b', ''):
+            with self.assertRaises(ValueError):
+                covers.folder(rid)
+        with self.assertRaises(ValueError):
+            covers.image_path('valid', 4)
+
+    def test_gpu_interference(self):
+        self.assertFalse(covers.foreign_gpu_work({10: 200}, {10: 200, 20: 9000}, 20))
+        self.assertTrue(covers.foreign_gpu_work({10: 200}, {10: 900, 20: 9000}, 20))
+        self.assertTrue(covers.foreign_gpu_work({}, {30: 2000, 20: 9000}, 20))
+        self.assertFalse(covers.foreign_gpu_work({}, {20: None, 21: None}, {20, 21}))
+
+    def test_full_minute_idle_is_required(self):
+        now = [0]
+        def sleep(seconds):
+            now[0] += seconds
+        with patch.object(covers, 'gpu_sample', return_value=(0, {})), \
+             patch.object(covers.time, 'monotonic', side_effect=lambda: now[0]), \
+             patch.object(covers.time, 'sleep', side_effect=sleep):
+            covers.wait_idle(lambda *args: None)
+        self.assertGreaterEqual(now[0], 60)
+
+    def test_compositor_writes_both_title_layouts(self):
+        from PIL import Image
+        with tempfile.TemporaryDirectory() as temp:
+            temp = Path(temp)
+            raw = temp / 'raw.png'
+            Image.new('RGB', (1024, 1024), '#345678').save(raw)
+            with patch.object(covers, 'HERE', Path(__file__).resolve().parent):
+                for title, english in [('მაისი-თვრამეტი', ''), ('Осень', 'Autumn')]:
+                    out = temp / 'cover.jpg'
+                    covers.compose(raw, out, {'title': title, 'title_en': english})
+                    with Image.open(out) as result:
+                        self.assertEqual(result.size, (3000, 3000))
+                        self.assertEqual(result.mode, 'RGB')
+                        self.assertGreater(len(result.crop((90, 90, 570, 570)).getcolors(300000) or []), 100)
+
+    def test_completed_candidates_are_not_overwritten(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(covers, 'DATA', Path(temp)):
+            root = Path(temp)
+            (root / 'releases').mkdir()
+            (root / 'releases/test.json').write_text(json.dumps({'title': 'test'}))
+            for i in range(1, 4):
+                p = covers.image_path('test', i)
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_bytes(b'preserved')
+            covers.generate('test')
+            self.assertEqual(covers.status('test')['state'], 'done')
+            self.assertEqual(covers.image_path('test', 1).read_bytes(), b'preserved')
+
+    def test_http_candidate_selection_preserves_release_metadata(self):
+        from PIL import Image
+        from http.server import ThreadingHTTPServer
+        with patch.dict(sys.modules, {'yt_alexandria': types.ModuleType('yt_alexandria')}):
+            import dk_ui as ui
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            releases = root / 'releases'
+            releases.mkdir()
+            release = releases / 'test.json'
+            release.write_text(json.dumps({'id': 'test', 'title': 'Test', 'owner_note': 'keep me'}))
+            with patch.object(ui, 'DATA', root), patch.object(ui, 'REL', releases), patch.object(covers, 'DATA', root), \
+                 patch.object(ui, 'check_audio', return_value={'ok': False}), \
+                 patch.object(ui, 'check_cover', return_value={'ok': True}):
+                image = covers.image_path('test', 1)
+                image.parent.mkdir(parents=True)
+                Image.new('RGB', (3000, 3000)).save(image)
+                server = ThreadingHTTPServer(('127.0.0.1', 0), ui.H)
+                threading.Thread(target=server.serve_forever, daemon=True).start()
+                base = f'http://127.0.0.1:{server.server_port}'
+                try:
+                    with urllib.request.urlopen(base + '/cover-candidate?id=test&n=1') as response:
+                        self.assertEqual(response.headers['Content-Type'], 'image/jpeg')
+                    req = urllib.request.Request(base + '/api/covers/choose', data=b'{"id":"test","n":1}',
+                                                 headers={'Content-Type': 'application/json'})
+                    with urllib.request.urlopen(req) as response:
+                        result = json.load(response)
+                    self.assertEqual(result['owner_note'], 'keep me')
+                    self.assertEqual(result['cover'], str(image))
+                    with urllib.request.urlopen(base + '/api/covers/status?id=test') as response:
+                        self.assertEqual(json.load(response)['candidates'], [1])
+                    with self.assertRaises(urllib.error.HTTPError) as error:
+                        urllib.request.urlopen(base + '/cover-candidate?id=..&n=1')
+                    self.assertEqual(error.exception.code, 404)
+                finally:
+                    server.shutdown()
+                    server.server_close()
+
+
+if __name__ == '__main__':
+    unittest.main()
