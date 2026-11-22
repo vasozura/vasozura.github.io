@@ -25,6 +25,7 @@ settings remain intact.
 Final assembly copies the original audio stream and discards generated audio.
 MP3 stays in MP4; PCM WAV uses MOV to preserve the stream. Engine-generated
 Designer timelines use the original song rather than the edited guide track.
+Finished-video listing, playback, and thumbnails support those MOV exports.
 
 ## Local verification
 

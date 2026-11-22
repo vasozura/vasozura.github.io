@@ -1,7 +1,7 @@
 {
   "main.py": {
     "before": "5546b089650b6b9f643ac731a2c172fbb4d8a26587da77807c9d62ef50f98862",
-    "after": "d739b015270168c0ae1b4a623cd6a58d44c2a2cefc046e3673a7f3096b80fd79"
+    "after": "163b2055d3c2703d2a8075585c4fd1dfc3b2ef27b611a833bbe0f39675893b3d"
   },
   "generator/wan_queue.py": {
     "before": "fbc87fe8817f03357e78bedd5172c1c1858dd9d6719ff6d7172d51fc8ccec26e",

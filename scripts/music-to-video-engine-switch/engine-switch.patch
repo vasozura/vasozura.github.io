@@ -274,6 +274,37 @@
      smap = jb.get("sing_map") or {}
      outd = Path(jb.get("ws", "")) / "clips"
      if smap and outd.is_dir():
+@@ -10939,7 +10994,8 @@
+     if not d.exists():
+         return {"videos": []}
+     out = []
+-    for f in sorted(d.glob("*.mp4"), key=lambda x: -x.stat().st_mtime)[:limit]:
++    files = (f for f in d.iterdir() if f.is_file() and f.suffix.lower() in {".mp4", ".mov"})
++    for f in sorted(files, key=lambda x: -x.stat().st_mtime)[:limit]:
+         st = f.stat()
+         out.append({"name": f.name,
+                     "size_mb": round(st.st_size / 1e6, 1),
+@@ -10954,9 +11010,9 @@
+     """inline=1 → ბრაუზერში უკრავს (preview); 0 → ჩამოტვირთვა.
+     FileResponse Range-ს უჭერს მხარს, ამიტომ გადახვევაც მუშაობს."""
+     f = Path(config.FINAL_DIR) / Path(name).name
+-    if not f.exists() or f.suffix.lower() != ".mp4":
++    if not f.exists() or f.suffix.lower() not in {".mp4", ".mov"}:
+         raise HTTPException(404, "ვიდეო ვერ მოიძებნა")
+-    return FileResponse(str(f), media_type="video/mp4",
++    return FileResponse(str(f), media_type="video/quicktime" if f.suffix.lower() == ".mov" else "video/mp4",
+                         filename=None if inline else f.name)
+ 
+ 
+@@ -10966,7 +11022,7 @@
+     import hashlib as _hl
+     import subprocess
+     f = Path(config.FINAL_DIR) / Path(name).name
+-    if not f.exists() or f.suffix.lower() != ".mp4":
++    if not f.exists() or f.suffix.lower() not in {".mp4", ".mov"}:
+         raise HTTPException(404, "ვიდეო ვერ მოიძებნა")
+     thumbs = Path(config.LIB_ROOT) / "thumbs"
+     thumbs.mkdir(parents=True, exist_ok=True)
 --- a/generator/wan_queue.py
 +++ b/generator/wan_queue.py
 @@ -932,6 +932,7 @@

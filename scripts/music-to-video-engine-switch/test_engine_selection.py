@@ -28,6 +28,26 @@ def execute(*args):
     return subprocess.check_output(list(map(str, args)), stderr=subprocess.STDOUT, text=True)
 
 class EngineTests(unittest.TestCase):
+    def test_finished_video_routes_include_pcm_mov(self):
+        with tempfile.TemporaryDirectory(dir=HERE) as directory:
+            root = Path(directory)
+            video = root / 'pcm_export.mov'
+            execute('ffmpeg', '-v', 'error', '-f', 'lavfi', '-i', 'color=black:s=160x96:r=24:d=1', '-f', 'lavfi', '-i', 'sine=frequency=440:duration=1', '-c:v', 'libx264', '-c:a', 'pcm_s16le', video)
+            tree = ast.parse((STAGED / 'main.py').read_text(encoding='utf-8'))
+            nodes = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name in ('videos_list', 'video_file', 'video_thumb')]
+            for node in nodes:
+                node.decorator_list = []
+            namespace = dict(Path=Path, config=types.SimpleNamespace(FINAL_DIR=str(root), LIB_ROOT=str(root)), _media_duration=lambda f: 1.0,
+                             FileResponse=lambda path, **kwargs: types.SimpleNamespace(path=path, **kwargs), HTTPException=RuntimeError)
+            exec(compile(ast.Module(body=nodes, type_ignores=[]), 'isolated_video_routes.py', 'exec'), namespace)
+            self.assertEqual(namespace['videos_list']()['videos'][0]['name'], video.name)
+            response = namespace['video_file'](video.name)
+            self.assertEqual(response.media_type, 'video/quicktime')
+            self.assertEqual(response.filename, video.name)
+            thumb = namespace['video_thumb'](video.name)
+            self.assertTrue(Path(thumb.path).is_file())
+            self.assertEqual(thumb.media_type, 'image/jpeg')
+
     def test_gpu_gate_and_competing_process_interrupt(self):
         with patch.object(engines, 'gpu_sample', return_value=(30, 0, set())):
             with self.assertRaises(RuntimeError):
