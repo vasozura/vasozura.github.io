@@ -125,3 +125,23 @@ Checkpoint commit `449e621` records local Suno ID/duration candidates, including
 Pulled 7de1000 and took the newly inserted first Codex task, the MusicToVideo engine switch. Installed seven local application files with original-hash guards and backups under Program/_engine_switch_backup_20261122. Reviewable patch, engine module, guarded installer and regression checks are under scripts/music-to-video-engine-switch/. The running server has not been restarted yet. Six Python checks and both HTML preference/syntax checks pass; repository typecheck, all 456 tests and build pass. No website source, production data, portfolio/covers, OneDrive checkout or WanGP/Maestro settings changed.
 
 Task remains in progress while the sequential three-shot GPU comparison finishes. LTX calibration rendered all three shots; native 1280x704 keyframe padding corrects the source-aspect resize found in that pass. Wan 2.2 is on its third shot; exact-size LTX will run after it. Next: verify outputs and measurements, restart the idle local MusicToVideo server, finish engine_test.md and mark the task done. WAV source audio exports as MOV with PCM preserved; MP3 is copied into MP4.
+
+
+## Codex MusicToVideo engine switch completed (2026-11-22)
+
+Completed only the first assigned task. Code checkpoints `ca8abf5` and `33c1ec5` provide the local engine choice and PCM export compatibility; the completion package also removes the stale hard-coded LTX confirmation label. The seven installed application files match the guarded source package in scripts/music-to-video-engine-switch/, with originals preserved in Program/_engine_switch_backup_20261122. Restarted only the confirmed idle MusicToVideo server and left it running hidden. Both /studio and /designer return HTTP 200 with the engine control, OpenAPI includes the new split route, and H3 is rejected with HTTP 400 before upload/generation. Shared last choice, job/restored-build engine persistence, start/end keyframes, beat splitting, GPU gates and source-audio stream copying are covered by seven Python regressions and both HTML checks. MP3 exports remain MP4; PCM WAV uses MOV with history/playback/thumbnail support. Final pnpm typecheck, all 456 tests and build pass.
+
+The sequential three-shot test for the requested song is complete. Wan 2.2: 279.890 / 244.438 / 273.781 seconds, sampled peak 3590 MiB; native LTX-2.3: 162.375 / 117.500 / 117.922 seconds, sampled peak 4292 MiB. Whole-process times are 825.469 versus 425.781 seconds. All six outputs decode cleanly; Wan is 832x480/16 fps and LTX is 1280x704/24 fps. Full paths, telemetry, startup quirks, probe/decode evidence and source-composite quality limitations are recorded in D:/Prog/MusicToVideo/Library/_agent/upscale_test/engine_test.md and docs/MUSICTOVIDEO_ENGINE_SWITCH_2026-11-22.md. Both engines turn the third double-exposure park reference into a stage/guitarist scene: this is evidence for review, not approved media. Maestro/WanGP code and settings, production database rows, portfolio/covers and the OneDrive checkout were not changed. No media upload or publishing command was run. Next open Codex task is Claude's Send timeline to Maestro; it was preserved during rebase and was not started.
+
+The first checkpoint push was rejected because Claude had pushed a new task. Ran git pull --rebase, preserved Claude's new task and this run's status, resolved the task-board conflict, and pushed successfully. Subsequent code-fix push also succeeded. Exact initial push output:
+
+```text
+To https://github.com/vasozura/vasozura.github.io.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/vasozura/vasozura.github.io.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+```

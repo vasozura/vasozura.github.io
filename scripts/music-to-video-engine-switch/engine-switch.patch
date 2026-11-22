@@ -481,7 +481,15 @@
                     items: items.map(it => ({sid: sidOf(it), dur: it.dur}))};
    $("singInfo").textContent = "⏳ ვოკალს ვყოფ (პირველად 1-3 წუთი, მერე წამები)…";
    try {
-@@ -608,7 +634,7 @@
+@@ -601,14 +627,14 @@
+   if (!rows.length) return;
+   const sec = rows.reduce((a, x) => a + x.dur, 0);
+   if (!confirm(`${rows.length} ბლოკი (${sec.toFixed(0)} წმ) თავიდან დაგენერირდება `
+-             + `ტუჩების სინქრონით (LTX-2).\n\nმზა კლიპები თავისით ჩაჯდება `
++             + `არჩეული ძრავით.\n\nმზა კლიპები თავისით ჩაჯდება `
+              + `იმავე ადგილას. დავიწყო?`)) return;
+   $("singRun").disabled = true;
+   rows.forEach(r => singRejected.delete(r.sid));
    try {
      const r = await fetch("/designer/sing_run", {method: "POST",
        headers: {"Content-Type": "application/json"},
