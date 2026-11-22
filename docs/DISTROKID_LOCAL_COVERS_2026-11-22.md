@@ -62,3 +62,27 @@ and no production database, portfolio/covers or OneDrive checkout was changed.
 See the package README for operation, font sources/licenses and stale-lock
 recovery. The night batch is provided for the existing scheduler; no Windows
 scheduled task was registered.
+
+## Completed review set, 21:13 +04
+
+Final code commits: `53730fc`, `abbdc3d`, `cafd074`. The installed files match
+the final source package; final installation backup ends `_210813`.
+
+All three `cand_1.jpg`–`cand_3.jpg` decode as 3000×3000 RGB JPEGs, and their
+live candidate endpoints return HTTP 200 with identical bytes. `validation.json`
+in the output folder records sizes, SHA-256 hashes, seeds and timings:
+
+| Candidate | Seed | Generation + composition seconds, excluding idle wait | Bytes |
+| --- | ---: | ---: | ---: |
+| 1 | 827277248 | 43.000 | 2,314,202 |
+| 2 | 1855050091 | 43.563 | 2,493,965 |
+| 3 | 2070426775 | 44.907 | 2,560,094 |
+
+Visual review found no visible generated lettering in the replacement set;
+the only title is the readable program-rendered Georgian title. Candidate 1
+has a generated dark rectangular region at the upper right, retained as a
+review variant; 2 and 3 have cleaner title backgrounds. The owner can choose
+using the local release editor. No candidate was selected automatically: the
+release's `cover` is still empty. The worker exited successfully and released
+its lock. Final GPU sample was 0% utilization / 194 MiB; the owner's idle
+ComfyUI remains running. No uploaded or published media.
