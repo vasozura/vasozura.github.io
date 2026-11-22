@@ -81,10 +81,29 @@ def start(rid):
 
 def artwork_prompt(d):
     from dk_ui import cover_prompt
-    # Remove the complete lettering instruction paragraph, including its continuation.
-    text = re.sub(r'Title:.*?(?=Leave the TOP-LEFT)', '', cover_prompt(d), flags=re.S)
-    text = text.replace('3000x3000 px', '1024x1024 px')
-    return text + '\nArtwork only: no text, no letters, no typography, no logo, no watermark. Leave top-right space for a title added later.'
+    # Literal song titles/lyrics make Flux draw lettering even with a negative
+    # instruction. Retain the existing visual style/subject, not printable copy.
+    text = cover_prompt(d).split('\n\n', 1)[1]
+    text = re.split(r'\nLyrics(?: \(Georgian\))?:', text)[0]
+    text = re.sub(r'Title:.*?(?=Leave the TOP-LEFT)', '', text, flags=re.S)
+    text = re.sub(r'Leave the TOP-LEFT.*?afterwards\.',
+                  'Keep the upper corners quiet, dark and uncluttered.', text, flags=re.S)
+    text = text.replace("Keep the same style as the artist's previous covers:", 'Visual style:')
+    text = text.replace('Take the mood, place and symbols from the lyrics below.', '')
+    text = text.replace('taken from the lyrics below', 'expressing memory and longing')
+    # Small deterministic vocabulary supplies lyrical imagery locally, without
+    # an online translator or feeding the actual words to the image model.
+    lyrics = (d.get('lyrics', '') + ' ' + d.get('title', '')).lower()
+    motifs = [('მაის', 'spring blossoms in May'), ('ალბომ', 'a faded photograph resting on a table'),
+              ('მზ', 'warm sunrise'), ('მთვარ', 'soft moonlight'), ('წვიმ', 'rain on a quiet road'),
+              ('ზღვ', 'the distant sea'), ('ვარდ', 'roses'), ('თოვლ', 'snow'),
+              ('გულ', 'a feeling of tender love'), ('ხსოვ', 'nostalgic memories')]
+    found = [description for word, description in motifs if word in lyrics]
+    if found:
+        text += '\nVisual inspiration: ' + ', '.join(found[:3]) + '.'
+    return ('A square cinematic illustration, 1024x1024 pixels. Pure pictorial artwork: no text, no letters, '
+            'no writing, no typography, no logos, no watermark.\n' + text.strip()
+            + '\nThe entire picture contains only scenery and subjects, with no lettering or graphic badges.')
 
 
 def gpu_sample():

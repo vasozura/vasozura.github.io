@@ -29,12 +29,16 @@ Runtime defaults:
 - Data: `D:/Prog/MusicToVideo/Library/_agent/distrokid` (`DK_DATA` override).
 - Maestro: `D:/pinokio/api/Maestro.git/app` (`DK_MAESTRO` override).
 - Worker Python: Maestro's installed `env-rtx50/Scripts/python.exe`; Pillow is
-  already available there. The HTTP server remains standard-library Python.
+  and psutil are already available there. The HTTP server remains
+  standard-library Python.
 - Installed model: `flux2_klein_9b`, 1024×1024, four steps, CFG 1, three random
   seeds. The transformer's int8 checkpoint, Qwen3 8B int8 encoder and Flux2 VAE
   must already exist. Hugging Face/Transformers offline mode prevents downloads.
-- Existing cover prompt style, lyrics and composition are retained, with the
-  lettering instruction removed. The generator receives “no text, no letters”.
+- Existing cover prompt visual style, subject and composition are retained.
+  Literal titles, lyrics and lettering instructions are removed: otherwise Flux
+  may reproduce them despite “no text, no letters”. A small local keyword map
+  carries lyrical motifs such as May blossoms, sunrise, rain and memories into
+  the artwork brief, without any translation API.
 - Final RGB JPGs are 3000×3000 with Lanczos resampling, the round logo at the
   upper left, and program-rendered Georgian bold serif at the upper right or
   the English title in light pale-gold serif at the bottom center.

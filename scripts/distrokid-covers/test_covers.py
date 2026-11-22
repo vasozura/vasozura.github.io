@@ -15,10 +15,13 @@ class CoversTest(unittest.TestCase):
     def test_prompt_never_requests_lettering(self):
         with patch.dict(sys.modules, {'yt_alexandria': types.ModuleType('yt_alexandria')}):
             for title in ('მაისი-თვრამეტი', 'A memory'):
-                prompt = covers.artwork_prompt({'title': title, 'title_en': 'May the Eighteenth'})
+                prompt = covers.artwork_prompt({'title': title, 'title_en': 'May the Eighteenth', 'lyrics': 'UNIQUE_LYRIC_COPY'})
                 self.assertNotIn('write exactly', prompt)
                 self.assertNotIn('Copy every Georgian letter', prompt)
                 self.assertIn('no text, no letters', prompt)
+                self.assertNotIn(title, prompt)
+                self.assertNotIn('May the Eighteenth', prompt)
+                self.assertNotIn('UNIQUE_LYRIC_COPY', prompt)
 
     def test_path_cannot_escape_cover_folder(self):
         for rid in ('../escape', '..', 'C:\\escape', 'a/b', ''):

@@ -20,7 +20,20 @@ generation and stop only their own generation when foreign GPU work appears
 above 50%. Windows virtual-environment Python can launch a second interpreter
 process: the guard includes all descendants, covered by a regression. The
 first trial stopped conservatively because it counted that interpreter as
-foreign; it produced no candidate. The corrected trial follows it.
+foreign; it produced no candidate. A second trial encountered a newly started
+ComfyUI context. Windows reports its process VRAM as N/A; the final guard uses
+Windows GPU Engine counters to attribute actual utilization before stopping.
+Verified counter samples show ComfyUI at 0% while the cover process reaches
+83%. The owner's ComfyUI was not stopped. Samples are retained in the output
+folder as `gpu_samples.jsonl`.
+
+Visual review rejected the first completed artwork because Flux drew garbled
+lyrics despite the negative instruction. That set and interrupted second render
+are retained under `rejected_lettering_210808/`. The corrected prompt keeps the
+existing visual style/subject but omits literal title/lyric copy and all
+lettering instructions, translating a small set of lyrical keywords into visual
+motifs locally. The title is drawn only by the compositor. This correction is
+covered by the prompt regression.
 
 Maestro's existing transformer, Qwen3 8B encoder and VAE are present. No model
 or dependency was installed. The worker copies config into the external job
