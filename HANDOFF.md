@@ -169,3 +169,6 @@ PC3: 2026-11-23. Completed the first-run inventory in docs/PC3_SETUP.md (e8b4984
 
 
 PC2: 2026-11-24. Completed the first-run inventory in docs/PC2_SETUP.md (03978e4). E:/Generate is a candidate Wan2GP clip location; the full library path remains unverified. Awaiting the next Codex-PC2 assignment.
+
+
+PC2: 2026-11-25. Completed the archive catalog at 04:58 with 204,951 entries across six drives (2450eb6). The Georgian summary has per-drive and per-folder totals and duration buckets. The CSV, probe cache and five ranked Wan2GP folder paths are local in D:/ZuraCatalog. For r3, start with the top F: entry (14,351 matching clips) in the local JSON report. The existing RUN_CODEX_PC2.bat points to the PC3 prompt and log. Verify the scheduled launcher before relying on it for a future PC2 run.
