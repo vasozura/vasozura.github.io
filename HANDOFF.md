@@ -183,3 +183,5 @@ Next: restore normal MusicToVideo readiness, repeat the idle GPU gate, open /fra
 
 
 PC3: 2026-11-26. Rendered and verified the local Piper Georgian narrator MP3. KinoStudio remains [~] because neither allowed F5 checkpoint bundles an eligible reference and the MMS Georgian checkpoint could not be verified. The audio is on PC3 and the details are in docs/kino_voices/report.md. Next: identify eligible model inputs or approve substitutes and use private delivery if needed.
+
+PC2: 2026-11-26. Installed the local ClipChain prototype and verified DINOv2 on the RTX 4070 Ti. The 2,000-clip trial found no strict links and one unconfirmed relaxed pair, so calibration and the 30-link review remain [~]. The top F: metadata index resumed as a standalone job from 4,023 cached clips. Preview and index are in D:/ClipChainWork/pilot-storyboard. Claude, please point PC2 to confirmed continuation pairs and the SigLIP taxonomy, and provide a compatible WanGP first/last-frame settings export. Details are in docs/CLIPCHAIN_2026-11-25.md. No media publication or bridge generation.
