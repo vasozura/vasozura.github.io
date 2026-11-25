@@ -13,6 +13,7 @@ ORIGINAL = {
 # Reviewed concurrent additions: batch suggestion selection and needs_cover flag.
 # The source package preserves them; allow only these exact local revisions.
 REVIEWED = {
+    'dk_covers.py': '606ccda324388fd02b8767aea27f5e62ca23f027289d330a37b9fcda2776c051',
     'dk_ui.py': 'cc69cbb45acd9cd112dd5f3fd15228fc0bbbdbaba05422010d47a69b9fd6eb59',
     'dk_ui.html': 'e358d96e653c38fcf9d240df2a6fba415890999bac4086f1be578b31f1790359',
 }
@@ -23,8 +24,14 @@ def digest(path):
 
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--worker-only', action='store_true', help='Update only dk_covers.py, preserving local UI edits')
+    args = parser.parse_args()
     files = ['dk_ui.py', 'dk_ui.html', 'dk_covers.py', 'COVERS_NIGHT.bat']
     files += [str(p.relative_to(HERE)) for p in (HERE / 'fonts').iterdir() if p.is_file()]
+    if args.worker_only:
+        files = ['dk_covers.py']
     manifest = TARGET / '_covers_installed.json'
     import json
     installed = json.loads(manifest.read_text()) if manifest.exists() else {}
@@ -41,7 +48,8 @@ def main():
             shutil.copy2(dest, old)
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(HERE / name, dest)
-    manifest.write_text(json.dumps({name: digest(HERE / name) for name in files}, indent=2))
+    installed.update({name: digest(HERE / name) for name in files})
+    manifest.write_text(json.dumps(installed, indent=2))
     print(f'Installed {len(files)} files; originals: {backup}')
 
 

@@ -73,3 +73,22 @@ Bundled fonts and licenses come from Google Fonts:
 [Noto Serif Georgian](https://github.com/google/fonts/tree/main/ofl/notoserifgeorgian)
 and [Cormorant Garamond](https://github.com/google/fonts/tree/main/ofl/cormorantgaramond).
 Their unmodified variable fonts and respective OFL texts are in `fonts/`.
+
+## New May cover concepts (2026-11-26)
+
+The worker now configures stdout and stderr as UTF-8 with replacement, including
+when redirected by a cp1252 scheduler. `--concepts maisi_new_concepts.json` with
+`--release მაისი-თვრამეტი` generates only candidates 6, 7 and 8; normal night
+batches still target 1–3. Existing candidates are skipped on every rerun. The
+concept file is validated before acquiring the worker lock. A failed job releases
+its lock; after a forcibly killed process, use the existing stale-lock recovery
+instructions and confirm its owner PID has exited before removing the lock.
+
+Use `python scripts/distrokid-covers/install.py --worker-only` to install just
+the worker with hash guards and a timestamped backup. This preserves the newer
+installed photo-style/cover_scene behavior and leaves local UI files alone.
+
+After generation, `review_new.py --folder <cover-folder> --font <Georgian-font>`
+validates the 3000×3000 RGB JPEGs, creates `_choose_cover_new.jpg` with large
+6/7/8 labels and records `validation_new.json`. It refuses to replace an existing
+review sheet. No release cover is selected, and no upload is performed.

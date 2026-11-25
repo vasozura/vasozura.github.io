@@ -47,7 +47,7 @@ def status(rid):
 
 
 def image_path(rid, index):
-    if int(index) not in (1, 2, 3):
+    if int(index) not in (1, 2, 3, 6, 7, 8):
         raise ValueError('Invalid candidate')
     return folder(rid) / f'cand_{int(index)}.jpg'
 
@@ -79,7 +79,24 @@ def start(rid):
     return status(rid)
 
 
+PHOTO_STYLE = ('Photorealistic cinematic photograph, warm golden-hour backlight, shallow depth of field, '
+               'soft bokeh, 85mm lens, rich natural colours, gentle film grain, emotional and intimate.')
+DEFAULT_SUBJECT = ('A Georgian man of about fifty with swept-back salt-and-pepper hair and a short grey beard, '
+                   'wearing a dark green shirt and a brown suede vest, playing an acoustic guitar, eyes lowered in thought.')
+
+
 def artwork_prompt(d):
+    """cover_scene (English, written by Claude from the lyrics) drives the picture; style = the owner's guitarist photo look."""
+    scene = (d.get('cover_scene') or '').strip()
+    if scene or (d.get('cover_style') or 'guitarist') == 'guitarist':
+        return ('A square photograph, 1024x1024 pixels. Pure picture: no text, no letters, no writing, no typography, '
+                'no logos, no watermark.\n' + PHOTO_STYLE + '\n'
+                + (scene if scene else DEFAULT_SUBJECT + ' Autumn park, falling golden leaves.')
+                + '\nKeep the upper-left corner calm and slightly darker. The picture contains no lettering or badges.')
+    return _painted_prompt(d)
+
+
+def _painted_prompt(d):
     from dk_ui import cover_prompt
     # Literal song titles/lyrics make Flux draw lettering even with a negative
     # instruction. Retain the existing visual style/subject, not printable copy.
@@ -209,7 +226,8 @@ def compose(raw, output, d):
     temp.replace(output)
 
 
-def generate(rid):
+def generate(rid, concepts=None):
+    indices = tuple(concepts) if concepts else (1, 2, 3)
     import psutil  # already installed in Maestro; handles Windows venv launcher children
     d = json.loads((DATA / 'releases' / f'{release_id(rid)}.json').read_text(encoding='utf-8'))
     out = folder(rid)
@@ -217,7 +235,7 @@ def generate(rid):
     def report(state, message=''):
         write_json(out / 'job.json', {'state': state, 'message': message, 'updated': datetime.now().isoformat()})
     try:
-        if all(image_path(rid, i).is_file() for i in range(1, 4)):
+        if all(image_path(rid, i).is_file() for i in indices):
             report('done', 'Three candidates already exist; choose one below')
             return
         # Pin runtime to existing local models; never download or install dependencies.
@@ -230,20 +248,20 @@ def generate(rid):
         config['checkpoints_paths'] = [str((MAESTRO / p).resolve()) for p in config['checkpoints_paths']]
         config_dir = out / 'runtime'
         write_json(config_dir / 'wgp_config.json', config)
-        for i in range(1, 4):
+        for i in indices:
             if image_path(rid, i).is_file():
                 continue
             raw_dir = out / f'raw_{i}'
             raw_dir.mkdir(exist_ok=True)
             seed = secrets.randbelow(2**31)
-            settings = {'model_type': 'flux2_klein_9b', 'prompt': artwork_prompt(d),
+            settings = {'model_type': 'flux2_klein_9b', 'prompt': (concept_prompt(concepts[i]) if concepts else artwork_prompt(d)),
                         'resolution': '1024x1024', 'num_inference_steps': 4, 'guidance_scale': 1,
                         'image_mode': 1, 'video_length': 1, 'batch_size': 1, 'seed': seed,
                         'prompt_enhancer': '', 'repeat_generation': 1}
             job = out / f'settings_{i}.json'
             write_json(job, settings)
             baseline = wait_idle(report)
-            report('generating', f'Candidate {i}/3; Maestro / WanGP Flux Klein 9B')
+            report('generating', f'Candidate {i}; Maestro / WanGP Flux Klein 9B')
             env = dict(os.environ, HF_HUB_OFFLINE='1', TRANSFORMERS_OFFLINE='1', PYTHONIOENCODING='utf-8')
             started = time.monotonic()
             with (out / f'maestro_{i}.log').open('wb') as log:
@@ -303,14 +321,41 @@ def generate(rid):
         raise
 
 
+def concept_prompt(scene):
+    return ('Pure picture: no text, no letters, no writing, no typography, no logos, no watermark.\n'
+            'Square 1024x1024 artwork. ' + scene + '\n'
+            'No recognisable real person. Keep the upper-left corner calm and slightly darker for a logo. '
+            'No lettering or graphic badges anywhere in the picture.')
+
+
+def load_concepts(path):
+    data = json.loads(Path(path).read_text(encoding='utf-8'))
+    if not isinstance(data, dict) or set(data) != {'6', '7', '8'}:
+        raise ValueError('Concept file must contain exactly keys 6, 7, 8')
+    if any(not isinstance(v, str) or not v.strip() for v in data.values()):
+        raise ValueError('Each concept must be a nonempty scene description')
+    return {int(k): v for k, v in data.items()}
+
+
+def configure_console():
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, 'reconfigure'):
+            stream.reconfigure(encoding='utf-8', errors='replace')
+
+
 def main():
+    configure_console()
     parser = argparse.ArgumentParser()
     parser.add_argument('--release')
+    parser.add_argument('--concepts', help='JSON scene descriptions keyed by 6, 7, 8; requires --release')
     parser.add_argument('--night', action='store_true')
     parser.add_argument('--locked', action='store_true')
     args = parser.parse_args()
     if not args.release and not args.night:
         parser.error('Use --release ID or --night')
+    if args.concepts and (not args.release or args.night):
+        parser.error('--concepts requires --release and cannot be used with --night')
+    concepts = load_concepts(args.concepts) if args.concepts else None
     lock = DATA / 'covers/.worker-lock'
     lock.parent.mkdir(parents=True, exist_ok=True)
     if not args.locked:
@@ -325,7 +370,7 @@ def main():
                       if not json.loads(p.read_text(encoding='utf-8')).get('cover')]
         for rid in ids:
             try:
-                generate(rid)
+                generate(rid, concepts)
             except Exception as error:
                 failed = True
                 print(f'{rid}: {error}', flush=True)

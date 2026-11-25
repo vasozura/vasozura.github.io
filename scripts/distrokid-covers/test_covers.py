@@ -74,6 +74,43 @@ class CoversTest(unittest.TestCase):
             self.assertEqual(covers.status('test')['state'], 'done')
             self.assertEqual(covers.image_path('test', 1).read_bytes(), b'preserved')
 
+    def test_console_handles_georgian_under_cp1252(self):
+        import io
+        output = io.BytesIO()
+        stream = io.TextIOWrapper(output, encoding='cp1252')
+        with patch.object(covers.sys, 'stdout', stream), patch.object(covers.sys, 'stderr', stream):
+            covers.configure_console()
+            print('მაისი-თვრამეტი', file=stream, flush=True)
+        self.assertEqual(output.getvalue().decode('utf-8').strip(), 'მაისი-თვრამეტი')
+
+    def test_partial_concept_set_resumes_only_missing_candidate(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(covers, 'DATA', Path(temp)), \
+             patch.object(covers, 'MAESTRO', Path(temp) / 'model'):
+            root = Path(temp)
+            (root / 'releases').mkdir()
+            (root / 'releases/test.json').write_text(json.dumps({'title': 'test'}))
+            for name in ('flux-2-klein-9b_quanto_bf16_int8.safetensors', 'flux2_vae.safetensors',
+                         'qwen3_8b/qwen3_8b_quanto_bf16_int8.safetensors'):
+                f = covers.MAESTRO / 'ckpts' / name
+                f.parent.mkdir(parents=True, exist_ok=True)
+                f.touch()
+            (covers.MAESTRO / 'wgp_config.json').write_text('{"checkpoints_paths": ["ckpts"]}')
+            for i in (1, 6, 8):
+                f = covers.image_path('test', i)
+                f.parent.mkdir(parents=True, exist_ok=True)
+                f.write_bytes(b'preserved')
+            with patch.object(covers, 'wait_idle', side_effect=RuntimeError('busy GPU')):
+                with self.assertRaisesRegex(RuntimeError, 'busy GPU'):
+                    covers.generate('test', {6: 'six', 7: 'seven', 8: 'eight'})
+            out = covers.folder('test')
+            self.assertTrue((out / 'settings_7.json').is_file())
+            self.assertFalse((out / 'settings_6.json').exists())
+            for i in (1, 6, 8):
+                self.assertEqual(covers.image_path('test', i).read_bytes(), b'preserved')
+            prompt = json.loads((out / 'settings_7.json').read_text())['prompt']
+            self.assertTrue(prompt.startswith('Pure picture: no text'))
+            self.assertIn('seven', prompt)
+
     def test_http_candidate_selection_preserves_release_metadata(self):
         from PIL import Image
         from http.server import ThreadingHTTPServer
