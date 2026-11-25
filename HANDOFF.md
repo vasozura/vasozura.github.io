@@ -185,3 +185,24 @@ Next: restore normal MusicToVideo readiness, repeat the idle GPU gate, open /fra
 PC3: 2026-11-26. Rendered and verified the local Piper Georgian narrator MP3. KinoStudio remains [~] because neither allowed F5 checkpoint bundles an eligible reference and the MMS Georgian checkpoint could not be verified. The audio is on PC3 and the details are in docs/kino_voices/report.md. Next: identify eligible model inputs or approve substitutes and use private delivery if needed.
 
 PC2: 2026-11-26. Installed the local ClipChain prototype and verified DINOv2 on the RTX 4070 Ti. The 2,000-clip trial found no strict links and one unconfirmed relaxed pair, so calibration and the 30-link review remain [~]. The top F: metadata index resumed as a standalone job from 4,023 cached clips. Preview and index are in D:/ClipChainWork/pilot-storyboard. Claude, please point PC2 to confirmed continuation pairs and the SigLIP taxonomy, and provide a compatible WanGP first/last-frame settings export. Details are in docs/CLIPCHAIN_2026-11-25.md. No media publication or bridge generation.
+
+## Codex new May cover concepts completed (2026-11-26)
+
+Pulled 678cfad and completed only the first laptop Codex task. Pushed code f10a450: UTF-8-safe stdout/stderr, an explicit 6/7/8 concept file and missing-candidate resume, preserving the installed newer photo-style behavior. The worker-only hash-guarded install backed up dk_covers.py under D:/Prog/YT_Upload/DistroKid/_covers_backup_20261126_033037; local UI files were left alone. Nine cover regressions, pnpm typecheck, all 456 tests and pnpm build pass. Commits use [skip ci] to avoid a website deployment.
+
+Three visually reviewed 3000×3000 RGB JPEGs and the numbered side-by-side _choose_cover_new.jpg are ready under D:/Prog/MusicToVideo/Library/_agent/distrokid/covers/მაისი-თვრამეტი/. Concepts: hands/old photograph, woman from behind on a Tbilisi balcony, blank notebook/candle still life. All prompts start with the no-text block; the existing CPU compositor adds the round ZA logo and Georgian title. Each render passed the full 60-second below-10% GPU gate. Candidates 6/7 took 46.750/36.172 s excluding idle waits. Candidate 8 saved its complete image and logged queue success (19.5 s) before the monitor reported interference on a late sample with no process counters. The subsequent GPU check was 0%/0 MiB and listed only ChatGPT. Recovered the already completed image on CPU; no rerender or other-process termination. Candidate 8's full wall time is deliberately not claimed. The historical monitor error remains in telemetry.
+
+validation_new.json and verification_20261126.json record image dimensions, hashes, seeds and telemetry. Existing candidates, the old review sheet and release JSON match their pre-run SHA-256 values. A repeat of the same concept command returned success without generation; the worker lock is cleared. Nothing selected, uploaded or published; no production DB, public/data/portfolio.json, public/covers/, Maestro/WanGP settings or OneDrive checkout edits. Next: owner chooses candidate 6, 7 or 8; Claude handles the release after explicit approval.
+
+The final documentation push was rejected by a concurrent PC2 push. Rebased while retaining PC2's handoff and task progress. Exact initial push error:
+
+```text
+To https://github.com/vasozura/vasozura.github.io.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/vasozura/vasozura.github.io.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+```
