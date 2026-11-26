@@ -208,3 +208,9 @@ hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 ```
 
 PC3: 2026-11-27. Rechecked the KinoStudio narrator models. The first Piper sample is still on PC3. F5 lacks an eligible bundled reference and Meta's Georgian MMS endpoints did not yield a verified checkpoint. Task stays [~]. Next: identify eligible inputs or approve substitutes and arrange private delivery for off-PC listening.
+
+## Codex First Snow cover candidates completed (2026-11-27)
+
+Pulled 5020597 and completed only the first laptop Codex task. Evidence commit c280440 records three visually reviewed 3000×3000 RGB JPEGs and the numbered _choose_cover.jpg in D:/Prog/MusicToVideo/Library/_agent/distrokid/covers/პირველი-თოვლი/. Used the existing UTF-8-fixed local worker, installed Flux Klein 9B and CPU title/logo compositor; no application changes. Candidate 3 is closest to the requested back-view composition. Generation/composition times excluding idle gates: 46.922 / 37.094 / 36.625 seconds.
+
+Every render passed the 60-second idle gate. The initial sandboxed renderer remained on CPU with an empty log; stopped only that renderer, retained attempt evidence, and completed the same worker through approved unrestricted execution. All JPEGs fully decode; local validation.json records dimensions/hashes and unchanged release JSON. Cover remains empty, worker exited successfully, lock cleared, GPU 0%/0 MiB. No upload/publication, production writes, public portfolio/covers, OneDrive checkout, Maestro code/config or model/package changes. Repository changes are documentation only, so pnpm code-change gates were not applicable. Commits use [skip ci] to avoid website deployment. Next: owner chooses a cover; Claude handles the release after explicit approval. No second task started.
