@@ -206,3 +206,5 @@ hint: the same ref. If you want to integrate the remote changes, use
 hint: 'git pull' before pushing again.
 hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 ```
+
+PC3: 2026-11-27. Rechecked the KinoStudio narrator models. The first Piper sample is still on PC3. F5 lacks an eligible bundled reference and Meta's Georgian MMS endpoints did not yield a verified checkpoint. Task stays [~]. Next: identify eligible inputs or approve substitutes and arrange private delivery for off-PC listening.

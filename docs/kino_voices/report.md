@@ -10,6 +10,8 @@ PC3 checkpoint, 2026-11-26.
 
 Piper audio is available on PC3 at D:/ZuraWork/kino_voices/sample_1_piper.mp3. The remote is public, so the audio stayed on PC3 under the scheduled run's publication restriction. The listening comparison still needs a qualifying bundled F5 reference, a verified Georgian MMS checkpoint or an approved substitute, and a private delivery destination if the owner wants to listen off PC3.
 
+2026-11-27 recheck. Both allowed F5 file lists still lack bundled audio. The exact MMS model API returned HTTP 401, the Georgian generator path in Meta's Hugging Face collection returned 404, and Meta's direct Georgian archive URL returned 403. These responses did not verify a usable Georgian checkpoint. The existing Piper MP3 is still present locally (224,069 bytes).
+
 Sources
 
 - [Piper Natia model card](https://huggingface.co/rhasspy/piper-voices/blob/main/ka/ka_GE/natia/medium/MODEL_CARD) and [voice directory](https://huggingface.co/rhasspy/piper-voices/tree/main/ka/ka_GE/natia/medium)
