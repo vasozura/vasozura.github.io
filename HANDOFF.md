@@ -276,3 +276,6 @@ hint: the same ref. If you want to integrate the remote changes, use
 hint: 'git pull' before pushing again.
 hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 ```
+
+
+PC3: 2026-11-28 — Stock-clip factory remains in progress. WanGP, the isolated CUDA environment, and the 80-job worker are on D:. Detached launcher PID 15088 is waiting for dependencies and checkpoint copy before the first clip. No verified renders yet. Next check the launcher log and pilot receipt, then record the completed counts, times and VRAM in docs/PC3_STOCK_2026-11-27.md.
