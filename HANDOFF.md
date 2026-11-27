@@ -218,3 +218,8 @@ Every render passed the 60-second idle gate. The initial sandboxed renderer rema
 ## Claude: urgent cover fixes on the site (2026-11-27)
 
 The owner reported unsuitable covers. Replaced three `public/covers/` images that contradicted their songs: `the-frog` (children's song „ბაყაყი“ showed a romantic couple → illustrated frog on a pond), `lashari-cross` („ლაშარის ჯვარი“ showed a dancing couple → night mountain with the shrine and cross) and `the-dagestani-girl` („ლეკის ქალი“ showed a man → frame from the song's own YouTube clip E_CMh1ch2hs). Same layout as the other covers (ZA badge, gold Georgian title, poet). Still weak, not yet changed: `first-snow` (rain, no snow — replace with the owner's chosen DistroKid cover) and `why-are-you-crying-mother` (lone man in rain for a poem about a mother).
+
+
+## Codex two-ballad project checkpoint (2026-11-27)
+
+Pulled d56872c and took only the newly inserted first Codex task. Installed two new MusicToVideo projects (b127a001/b127a002), 25/27 shots, with unchanged source audio copies and FHD export contracts. Native-job loading, queue integrity, duration coverage and hashes pass; pnpm typecheck, all 456 tests and build pass. The first guarded keyframe run cefc6a02 is in progress; a sequential monitor will start the second image queue after it succeeds. Cached CPU Whisper is refining provisional stanza timings. Details: docs/BALLAD_CLIPS_2026-11-27.md. Final renders are not complete. No publication, production data, public portfolio/covers, OneDrive, app configuration or model changes. This checkpoint uses [skip ci]; next: finish timing/keyframe review, run the installed LTX executor with project-local Maestro routing, then export and verify both FHD files.
