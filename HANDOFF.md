@@ -230,3 +230,17 @@ Pulled d56872c and took only the newly inserted first Codex task. Installed two 
 All 53 keyframes (25/28) now fully decode and passed visual review; rejected spring/piano images are retained, with corrected replacements installed. CPU Whisper stanza anchors refined the original timing, with listening review still needed for opening/tails. Both projects retain source MP3 hashes, native jobs, final 1080p30 export contracts, review sheets and resumable render/export helpers. No app source or manual installed-configuration edits.
 
 The first LTX run 6b6a88b9 is in progress; five clips are complete and the first two passed full decode and start/mid/end visual checks. Project-only config routes LTX2.3 to existing Maestro weights. Found and handled legacy settings conversion: stamp installed schema2.58 so the explicit241-frame window survives. Corrected dry-run passes25/25 and runtime uses one window; stopped calibration attempts are retained. Details: docs/BALLAD_CLIPS_2026-11-27.md. Repository typecheck,456 tests and build already pass. No final FHD file yet, upload/publication, production DB, public portfolio/covers or OneDrive changes. Next: finish first render/review, run second sequentially, export and verify both exact final paths. Checkpoint uses [skip ci].
+
+
+Checkpoint push was rejected by concurrent work. Rebased successfully, preserving the other agent notes. Exact initial push error:
+
+```text
+To https://github.com/vasozura/vasozura.github.io.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/vasozura/vasozura.github.io.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+```
