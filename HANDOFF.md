@@ -244,3 +244,35 @@ hint: the same ref. If you want to integrate the remote changes, use
 hint: 'git pull' before pushing again.
 hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 ```
+
+
+## Codex first ballad FHD verified (2026-11-27)
+
+First-song native run 6b6a88b9 completed25/25 in4353s. All clips passed decode and sampled visual review. Library/outputs/final/rotsa_dzalian_mogenatrebi_FHD.mp4 is ready:1920x1080,30fps,5623frames,187.44s; full decode and black-gap checks pass, original MP3 packets are identical. A0.33s black tail was trimmed before fitting shot timing. Exact segment-duration directives fixed a6ms concat rounding issue; initial mux retained. Final review images and receipts are saved with the project; public technical receipt:docs/ballad_clips/2026-11-27-first-song.json.
+
+Second-song run55b15529 is active; no second task started. Next:finish its28clips, review/export/verify its FHD file, then close the task. No uploads/publication, production data, protected public assets, OneDrive or app-source/config edits. Typecheck,456tests and build passed. The earlier checkpoint push rejection was resolved by rebase and successful push; its exact output is retained here:
+
+```text
+To https://github.com/vasozura/vasozura.github.io.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/vasozura/vasozura.github.io.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+```
+
+
+2026-11-27: the first-FHD checkpoint push was also rejected by concurrent work with the same fetch-first error. Rebased successfully, preserving both agents work. Exact repeated error:
+
+```text
+To https://github.com/vasozura/vasozura.github.io.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/vasozura/vasozura.github.io.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+```

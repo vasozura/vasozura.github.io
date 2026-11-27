@@ -1,0 +1,32 @@
+{
+  "song": "როცა ძალიან მოგენატრები",
+  "job": "b127a001",
+  "output": "D:\\Prog\\MusicToVideo\\Library\\outputs\\final\\rotsa_dzalian_mogenatrebi_FHD.mp4",
+  "output_sha256": "58e00b5232e05fba74e2941cdb8b3398f1bd7df78684c9e91db5cac17f62b06d",
+  "source_audio_sha256": "b7ae6fefdfab25d8997c297397760900cd3cba67a5e3373ec95979287448d749",
+  "audio_packets_sha256": "80480c4ba63165fe699bbffb214e361698de86b4ce91ce20a1d58e72ae940ec9",
+  "original_audio_packets_identical": true,
+  "width": 1920,
+  "height": 1080,
+  "fps": "30/1",
+  "frames": 5623,
+  "duration": 187.44,
+  "shots": 25,
+  "full_decode": "pass",
+  "edge_trims": [
+    {
+      "index": 7,
+      "usable_start": 0.0,
+      "usable_end": 6.833333,
+      "black_edge_intervals": [
+        [
+          6.833333,
+          7.125
+        ]
+      ]
+    }
+  ],
+  "timing_status": "review: Whisper no-VAD stanza anchors manually matched to recognizable Georgian lines; opening/end and instrumental spans remain listening-review material",
+  "review_status": "local owner-review render; not approved for release",
+  "uploaded": false
+}

@@ -1,6 +1,6 @@
 # Two ballad projects — 2026-11-27
 
-მომზადებულია ორი MusicToVideo პროექტი: 53 მოკლე კადრი, წვიმა, პიანინო, ცისფერი-ნაცრისფერი და თბილი ნათურა. პერსონაჟი მხოლოდ ერთი ანონიმური სრულწლოვანია, ზურგიდან; სახე და ტექსტი არ ჩანს. საბოლოო ვიდეოები ჯერ მზად არ არის. სტროფების დროები წინასწარია და სიმღერასთან შემოწმება სჭირდება.
+მომზადებულია ორი MusicToVideo პროექტი: 53 მოკლე კადრი, წვიმა, პიანინო, ცისფერი-ნაცრისფერი და თბილი ნათურა. პერსონაჟი ანონიმური სრულწლოვანია, ზურგიდან; სახე და ტექსტი არ ჩანს. პირველი FHD ვიდეო მზადაა; მეორე რენდერდება. სტროფების დროები სიმღერასთან მოსმენით შემოწმებას საჭიროებს.
 
 ## Projects
 
@@ -24,7 +24,7 @@ Lyrics come from the existing `Library/lyrics_bank/0061_…txt` and `0059_…txt
 
 Use LTX-2.3 (`ltx2_22B_distilled_1_1`, eight steps, native 1280×704/24 fps); `wan22` remains the alternate. Keyframes use the installed Z-Image Base model at its configured 30 steps/CFG 4. No Georgian dress LoRA or culture injection. Each prompt contains one primary action, calm-camera and anti-morph instructions, and at most one anonymous adult seen from behind.
 
-Final targets, not yet completed:
+Final paths (first verified, second rendering):
 
 - `D:/Prog/MusicToVideo/Library/outputs/final/rotsa_dzalian_mogenatrebi_FHD.mp4`
 - `D:/Prog/MusicToVideo/Library/outputs/final/kheivantan_chaviare_FHD.mp4`
@@ -43,6 +43,10 @@ The runtime restores newly added folders without restarting, but this disk-resto
 
 Two calibration attempts exposed a CLI migration: without `settings_version`, legacy conversion strips explicit sliding-window fields and falls back to 129 frames. Their settings/logs are retained under `window129_attempt/` and `window241_unversioned_attempt/`; only the verified calibration process trees were stopped. The helper now reads the installed Maestro schema version (2.58), supplies a 241-frame window, overlap 9 and discard 0, and gives each shot a distinct seed. The installed LTX handler declares 241 as its native window default. The corrected CLI dry-run passed 25/25 tasks; evidence is in `dryrun_validation/`. Runtime confirms single-window generation at the planned durations.
 
-First-song run `6b6a88b9` is in progress. The first two clips fully decode at 1280×704/24 fps, with durations 9.208333 and 9.541667 seconds. Opening/midpoint/ending frames retain the anonymous back views, rain, piano and walking composition without visible face or text. The first task took 242.1 seconds including model startup. Remaining video generation, visual review and FHD verification are pending. Render/export helpers are saved under each project's `tools/` folder. The export helper fits cumulative frame counts to the full song, uses CPU H.264 encoding, copies original MP3 packets and verifies their SHA-256 after muxing.
+First-song run `6b6a88b9` completed 25/25 clips in 4,353 seconds, excluding the idle gate and queue preparation. All native clips fully decode at 1280×704/24 fps. Opening/midpoint/ending samples for every clip retain the rain, piano, anonymous back views and walking composition without visible face or text. The first task took 242.1 seconds including model startup. One piano clip had a 0.33-second black tail; export removes only black edges and refits usable footage to the planned duration. Interior black intervals require review rather than being silently removed.
 
-Repository validation: `pnpm typecheck`, all 456 tests and `pnpm build` pass. Test/build retried with normal subprocess access after sandbox `spawn EPERM`. No application code or configuration changes.
+The first FHD file passed full decode, 1920×1080, exact 30 fps, 5,623-frame and 187.44-second checks. No sustained black interval remains. Original MP3 packet SHA-256 matches byte-for-byte after muxing. The initial mux exposed six milliseconds of container-duration rounding; remuxing the retained encoded clips with explicit `N/30` segment durations fixed the strict frame-rate check. The rejected initial mux is retained locally. Nine samples across the final FHD output also passed visual review. Receipt: [first-song verification](ballad_clips/2026-11-27-first-song.json).
+
+Second-song run `55b15529` is active, with 28 clips planned. Both render/export helpers are saved under each project's `tools/` folder; the export helper uses CPU H.264 encoding, exact cumulative frame counts, edge-black checks and original MP3 stream copying. Final song timing remains listening-review material. Nothing uploaded or published.
+
+Repository validation: `pnpm typecheck`, all 456 tests and `pnpm build` pass. Test/build retried with normal subprocess access after sandbox `spawn EPERM`. No website/application source or manual installed-configuration edits.
