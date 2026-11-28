@@ -50,3 +50,19 @@ The first FHD file passed full decode, 1920×1080, exact 30 fps, 5,623-frame and
 Second-song run `55b15529` is active, with 28 clips planned. Both render/export helpers are saved under each project's `tools/` folder; the export helper uses CPU H.264 encoding, exact cumulative frame counts, edge-black checks and original MP3 stream copying. Final song timing remains listening-review material. Nothing uploaded or published.
 
 Repository validation: `pnpm typecheck`, all 456 tests and `pnpm build` pass. Test/build retried with normal subprocess access after sandbox `spawn EPERM`. No website/application source or manual installed-configuration edits.
+
+
+## Interrupted second render ? 2026-11-28, 14:32 +04
+
+The old runtime snapshot is stale: process 25076 is absent, `/wan/run/55b15529` returns 404, and `/wan/check` reports no active runs. Three of 28 clips exist (c000?c002); all fully decode at 1280?704/24 fps. Their opening/midpoint/ending samples show the anonymous back view, wet rose alley and moon; no visible face or text. The source MP3 hash still matches the project. The second final FHD does not exist. No inference was started during this daytime run: the task specifies nights, even when the GPU is idle. A single GPU sample was 0%/0 MiB; it is not a completed idle gate.
+
+Prepared [remaining 25-shot queue](ballad_clips/2026-11-28-second-song-resume.json) and its `.engine.json` guard, excluding the three completed output names. Every referenced start image exists; model, seeds, schema 2.58 and 241-frame settings are preserved. [Checkpoint receipt](ballad_clips/2026-11-28-second-song-checkpoint.json) records the three hashes and decode results. Existing media, project queues and runtime snapshots were left untouched. Recalculate remaining outputs before using this saved queue if another run has made progress.
+
+**Night resume:** first confirm `/wan/check` has no active runs and pass the full installed 60-second GPU idle/rival-runtime gate. The running app's `main.py` now extends the Maestro routing with the LTX model, so its documented API can run this queue without the old internal executor. Submit this form to `POST http://127.0.0.1:8000/montage/autorun`:
+
+- `queue_path`: `D:/Prog/_codex/site/docs/ballad_clips/2026-11-28-second-song-resume.json`
+- `out_dir`: `D:/Prog/MusicToVideo/Library/outputs/clips/kheivantan_chaviare__b127a002/generated`
+
+Poll the returned run ID through `/wan/run/{run_id}`. Do not run the original 28-shot queue or press the generic build/generate button: these can regenerate completed clips or change the export contract. After all 28 native clips exist, review them and use the saved project `tools/export_ballad.py` CPU export recipe; full decode, 1080p30, duration, black-gap checks and original MP3 packet identity remain required. There is no verified FHD export button for this exact contract.
+
+Pinokio control-plane search failed with `AxiosError: connect ECONNREFUSED 192.168.1.19:42000`; its loopback path endpoint was also unreachable. MusicToVideo itself remains reachable at port 8000; no launch/restart, configuration change, process termination, upload or publication was performed. Task remains [~], blocked on the permitted night render window, followed by native review and FHD export. Repository changes are documentation and queue/receipt data only; no code changes, so pnpm code-change gates do not apply.

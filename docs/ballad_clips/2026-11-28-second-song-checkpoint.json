@@ -1,0 +1,44 @@
+{
+  "checked_at": "2026-11-28T14:32:47.397434+04:00",
+  "job": "b127a002",
+  "old_run": "55b15529",
+  "state": "interrupted; night-only restart pending",
+  "complete": 3,
+  "remaining": 25,
+  "clips": [
+    {
+      "path": "D:\\Prog\\MusicToVideo\\Library\\outputs\\clips\\kheivantan_chaviare__b127a002\\generated\\b127a002_c000.mp4",
+      "sha256": "831bb7a8a7dae5deb9c69c17a3c6b529ed8d7547874b71c9b6826ab472a0b4b3",
+      "seconds": 8.875,
+      "width": 1280,
+      "height": 704,
+      "fps": "24/1",
+      "full_decode": "pass"
+    },
+    {
+      "path": "D:\\Prog\\MusicToVideo\\Library\\outputs\\clips\\kheivantan_chaviare__b127a002\\generated\\b127a002_c001.mp4",
+      "sha256": "64dac318dcb9f32c0b15d2d432fa15ee15b33605efb20c828b1be42e7071bbaa",
+      "seconds": 8.875,
+      "width": 1280,
+      "height": 704,
+      "fps": "24/1",
+      "full_decode": "pass"
+    },
+    {
+      "path": "D:\\Prog\\MusicToVideo\\Library\\outputs\\clips\\kheivantan_chaviare__b127a002\\generated\\b127a002_c002.mp4",
+      "sha256": "bc3b451e2da511a4e3b8901871bf09af71919b79cb9009ad0fc267affc52edd3",
+      "seconds": 8.875,
+      "width": 1280,
+      "height": 704,
+      "fps": "24/1",
+      "full_decode": "pass"
+    }
+  ],
+  "source_audio_sha256": "ce37f474c7a6868fe77547b15f748541c35ec78f91a23f8688cfe62fa0b7a74e",
+  "resume_queue": "docs\\ballad_clips\\2026-11-28-second-song-resume.json",
+  "output_exists": false,
+  "api": "MusicToVideo reachable; no active runs; old run returns 404",
+  "pinokio": "ECONNREFUSED 192.168.1.19:42000; loopback also unreachable",
+  "gpu_sample": "0 percent, 0 MiB; not a full idle gate",
+  "publication": "none"
+}
