@@ -279,3 +279,12 @@ hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 
 
 PC3: 2026-11-28 — Stock-clip factory remains in progress. WanGP, the isolated CUDA environment, and the 80-job worker are on D:. Detached launcher PID 15088 is waiting for dependencies and checkpoint copy before the first clip. No verified renders yet. Next check the launcher log and pilot receipt, then record the completed counts, times and VRAM in docs/PC3_STOCK_2026-11-27.md.
+
+
+## Codex Composer Archive fill blocked (2026-11-28)
+
+Pulled c94b15d and took only the first open laptop Codex task. Evidence commit a9122de records the archive audit and a Georgian summary. Found an earlier local Claude fill log (516 duplicate moves, 20 new songs, 93 attachments); the task manifest is stale. Counts from the pre-fill backup to current: songs 460 -> 480, songs with WAV 38 -> 85, MP3 385 -> 405, MIDI/ZIP 15 -> 16, lyrics 229 -> 230. These changes predate this run. 262 non-JSON review files remain.
+
+Created the requested consistent SQLite backup without replacing existing backups. Hashed all 1,279 indexed assets; seven MP3 hash mismatches, no missing files. SQLite integrity/foreign keys pass. The tooling's own verifier ran against a snapshot and independently returned the same seven errors (176 warnings). Metadata inventory audit has 460 per-file review findings, including conflicting/shared folders; not a count of corrupt songs. Live database logical dump hashes are identical before/after this run. Local evidence: D:/ComposerArchive/05_LOGS/fill_audit_2026-11-28.json, fill_tool_validation_2026-11-28.json and fill_report_2026-11-28.md.
+
+Task remains [~], blocked: required importer overwrites fixed original.mp3/original.wav destinations, removes source/sidecars, and its ZIP extractor can overwrite stems. UI attachment wrappers call it; lyrics are unsupported by addAsset. Provide collision-safe attachment and reconcile the seven mismatches from preserved sources before importing further; existing row rewrites need owner approval. UI GET on 127.0.0.1:4783 timed out; no UI start/migration against the live database. No source files moved/deleted, database rows changed, protected public assets or OneDrive checkout edited, uploads or publication. Documentation only, so pnpm code-change checks were not applicable. Commits use [skip ci]. No second task started.
