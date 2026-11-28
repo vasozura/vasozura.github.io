@@ -295,3 +295,19 @@ Task remains [~], blocked: required importer overwrites fixed original.mp3/origi
 Pulled fbada8f and followed the updated first Codex task: finish the second ballad. Evidence commit `71de638` is pushed. Run 55b15529 is interrupted, not actively rendering: recorded PID 25076 is absent; the running MusicToVideo API returns 404 for the run and reports no active runs. Only c000?c002 exist. All three fully decode at 1280?704/24 fps and pass opening/midpoint/ending visual review. Source MP3 hash is unchanged; second FHD output is absent.
 
 Prepared a 25-shot remaining queue and its engine guard under docs/ballad_clips, retaining existing seeds/settings and checking all start images. At 14:32 +04 the task's night-only restriction prevents inference; no GPU run was started. Next: at night pass the complete installed idle gate, submit the saved queue through /montage/autorun, finish native review, then execute the saved CPU FHD export recipe and verify original audio packet identity. Exact form fields and the generic-button caveat are in docs/BALLAD_CLIPS_2026-11-27.md. Pinokio control plane refused connections (192.168.1.19:42000 and loopback); MusicToVideo remains reachable on port 8000. No app restart/configuration edits, media overwrites, source moves/deletions, production changes, protected assets, OneDrive checkout, upload or publication. Task remains [~] with the night-window blocker. Documentation/queue/receipt data only; pnpm code-change gates are not applicable. Commits use [skip ci]. No second task started.
+
+
+PC2: 2026-11-28 — Installed prompt-first/DINOv2 ClipChain sorting. EP1 reused 14,354 cached clips and CUDA embedding is active. The detached five-folder worker is PID 108952. Verified 744 scenes and 2,000 chains on the 2,000-clip pilot, and the local review server responds on port 8040. Next, verify the five full counts and storyboard paths using docs/CLIPCHAIN_2026-11-27.md. No film rendered or published.
+
+The initial PC2 push was rejected by a concurrent update to main. The rebase retained both handoff entries. Exact initial push output:
+
+```text
+To https://github.com/vasozura/vasozura.github.io.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/vasozura/vasozura.github.io.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+```
